@@ -1,0 +1,221 @@
+{
+  "output_path": "/Users/cmccaffery/Library/CloudStorage/OneDrive-Personal/Downloads/Ongoing Projects/Claude/FAI/FAI Brand/FAI Brand Resources/FAI Illustrations/Brand Illustrations Cleanup/output/banners-generated/banner-004-low-mirror-s1003.svg",
+  "seed": 1003,
+  "energy": "low",
+  "template": "mirror",
+  "primary_families": [
+    "circle",
+    "float"
+  ],
+  "accent_families": [
+    "joint"
+  ],
+  "rotation_pattern": "mirror",
+  "continuity_strength": 0.7,
+  "dimensions": [
+    1920,
+    960
+  ],
+  "color_bias": null,
+  "cells": [
+    {
+      "col": 0,
+      "row": 0,
+      "tile_id": "float-03",
+      "tile_filename": "Float/03.svg",
+      "rotation": 0,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 1,
+      "row": 0,
+      "tile_id": "circle-15",
+      "tile_filename": "Circle/15.svg",
+      "rotation": 90,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 2,
+      "row": 0,
+      "tile_id": "circle-07",
+      "tile_filename": "Circle/07.svg",
+      "rotation": 180,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 3,
+      "row": 0,
+      "tile_id": "circle-07",
+      "tile_filename": "Circle/07.svg",
+      "rotation": 180,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 4,
+      "row": 0,
+      "tile_id": "circle-06",
+      "tile_filename": "Circle/06.svg",
+      "rotation": 90,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 5,
+      "row": 0,
+      "tile_id": "circle-12",
+      "tile_filename": "Circle/12.svg",
+      "rotation": 0,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 0,
+      "row": 1,
+      "tile_id": "circle-10",
+      "tile_filename": "Circle/10.svg",
+      "rotation": 0,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 1,
+      "row": 1,
+      "tile_id": "circle-10",
+      "tile_filename": "Circle/10.svg",
+      "rotation": 90,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 2,
+      "row": 1,
+      "tile_id": "float-05",
+      "tile_filename": "Float/05.svg",
+      "rotation": 180,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 3,
+      "row": 1,
+      "tile_id": "float-05",
+      "tile_filename": "Float/05.svg",
+      "rotation": 180,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 4,
+      "row": 1,
+      "tile_id": "circle-11",
+      "tile_filename": "Circle/11.svg",
+      "rotation": 90,
+      "fg_color": "#FF4F00",
+      "bg_color": "#F3F3F3",
+      "fg_name": "international_orange",
+      "bg_name": "smoke_white"
+    },
+    {
+      "col": 5,
+      "row": 1,
+      "tile_id": "circle-05",
+      "tile_filename": "Circle/05.svg",
+      "rotation": 0,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 0,
+      "row": 2,
+      "tile_id": "circle-10",
+      "tile_filename": "Circle/10.svg",
+      "rotation": 0,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 1,
+      "row": 2,
+      "tile_id": "float-03",
+      "tile_filename": "Float/03.svg",
+      "rotation": 90,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 2,
+      "row": 2,
+      "tile_id": "float-05",
+      "tile_filename": "Float/05.svg",
+      "rotation": 180,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 3,
+      "row": 2,
+      "tile_id": "circle-07",
+      "tile_filename": "Circle/07.svg",
+      "rotation": 180,
+      "fg_color": "#FF4F00",
+      "bg_color": "#F3F3F3",
+      "fg_name": "international_orange",
+      "bg_name": "smoke_white"
+    },
+    {
+      "col": 4,
+      "row": 2,
+      "tile_id": "circle-07",
+      "tile_filename": "Circle/07.svg",
+      "rotation": 90,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 5,
+      "row": 2,
+      "tile_id": "float-01",
+      "tile_filename": "Float/01.svg",
+      "rotation": 0,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    }
+  ],
+  "generated_at": "2026-03-02T11:36:01.907915+00:00"
+}
