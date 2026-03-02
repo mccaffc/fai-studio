@@ -1,0 +1,105 @@
+<svg width="1920" height="960" viewBox="0 0 1920 960" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_75_4126)">
+<rect width="1920" height="960" fill="#CCC9C4"/>
+<g clip-path="url(#clip1_75_4126)">
+<rect width="320" height="320" transform="translate(960)" fill="#F3F3F3"/>
+<path d="M1004.18 57.1902C1041.48 70.455 1059.14 113.067 1042.14 148.833C1015.15 205.62 1074.39 264.859 1131.17 237.862C1166.93 220.863 1209.54 238.516 1222.81 275.818C1232.57 303.264 1255.79 317.989 1280 320L1280 -1.39876e-05L960 0C962.018 24.2109 976.736 47.429 1004.18 57.1902Z" fill="#CCC9C4"/>
+</g>
+<g clip-path="url(#clip2_75_4126)">
+<rect width="320" height="320" transform="translate(960) rotate(90)" fill="#CCC9C4"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M928 0L960 0L960 320L911.078 320L692.932 320L640 320C640 290.839 663.699 267.2 692.932 267.2C677.873 267.2 665.664 255.38 665.664 240.8C665.664 226.219 677.873 214.4 692.932 214.4C723.168 214.4 748.459 224.732 772.262 234.457C816.326 252.459 872.21 269.978 928 214.4C928 214.4 928 189.16 928 160C928 130.839 928 107.2 928 107.2C928 107.2 928 50.4024 928 20.8L928 0Z" fill="#F3F3F3"/>
+<circle cx="928" cy="192" r="64" fill="#F3F3F3"/>
+<circle cx="928" cy="64" r="64" fill="#F3F3F3"/>
+</g>
+<g clip-path="url(#clip3_75_4126)">
+<rect width="320" height="320" transform="translate(1280 320) rotate(90)" fill="#DBE2E9"/>
+<path d="M1222.81 364.182C1209.55 401.484 1166.93 419.137 1131.17 402.138C1074.38 375.147 1015.14 434.387 1042.14 491.167C1059.14 526.926 1041.48 569.539 1004.18 582.81C976.736 592.571 962.011 615.789 960 640H1280V320C1255.79 322.018 1232.57 336.736 1222.81 364.182Z" fill="#CCC9C4"/>
+</g>
+<g clip-path="url(#clip4_75_4126)">
+<rect width="320" height="320" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 960 640)" fill="#CCC9C4"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M928 640L960 640L960 320L911.078 320L692.932 320L640 320C640 349.161 663.699 372.8 692.932 372.8C677.873 372.8 665.664 384.62 665.664 399.2C665.664 413.781 677.873 425.6 692.932 425.6C723.168 425.6 748.459 415.268 772.262 405.543C816.326 387.541 872.21 370.022 928 425.6C928 425.6 928 450.84 928 480C928 509.161 928 532.8 928 532.8C928 532.8 928 589.598 928 619.2L928 640Z" fill="#DBE2E9"/>
+<circle cx="64" cy="64" r="64" transform="matrix(1 5.56363e-08 5.56363e-08 -1 864 512)" fill="#DBE2E9"/>
+<circle cx="64" cy="64" r="64" transform="matrix(1 5.56363e-08 5.56363e-08 -1 864 640)" fill="#DBE2E9"/>
+</g>
+<g clip-path="url(#clip5_75_4126)">
+<rect width="320" height="320" transform="matrix(-1 -5.56363e-08 -5.56363e-08 1 1600 320)" fill="#CCC9C4"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1440 480L1600 320L1600 640L1280 640L1280 560L1440 480Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip6_75_4126)">
+<rect width="320" height="320" transform="matrix(-1 -5.56363e-08 -5.56363e-08 1 1920 320)" fill="#CCC9C4"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1760 480L1920 320L1920 640L1600 640L1600 560L1760 480Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip7_75_4126)">
+<rect width="320" height="320" transform="translate(1280 960) rotate(-180)" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1120 800L1280 960L1280 640L960 640L960 960L1120 800Z" fill="#CCC9C4"/>
+</g>
+<g clip-path="url(#clip8_75_4126)">
+<rect width="320" height="320" transform="matrix(-1 -5.56363e-08 -5.56363e-08 1 320 0)" fill="#CCC9C4"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M160 160L320 0L320 320L-7.88388e-05 320L-3.94194e-05 160L160 160Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip9_75_4126)">
+<rect width="320" height="320" transform="matrix(-4.37114e-08 -1 -1 4.37114e-08 640 640)" fill="#CCC9C4"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M480 480L640 640L320 640L320 320L480 320L480 480Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip10_75_4126)">
+<rect width="320" height="320" transform="translate(640 640)" fill="#CCC9C4"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M797.6 880L640 640L640 960L960 960V880H797.6Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip11_75_4126)">
+<rect width="320" height="320" transform="translate(320)" fill="#CCC9C4"/>
+<path d="M320 1.65299e-05L480 320L320 320L320 1.65299e-05Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(320 640)" fill="#121212"/>
+<path d="M320 720L560 720L560 960L320 960L320 720Z" fill="#FFA300"/>
+<rect width="320" height="320" transform="translate(1600 640)" fill="#121212"/>
+<path d="M1710 750L1810 750L1810 850L1710 850L1710 750Z" fill="#FFA300"/>
+<rect width="320" height="320" transform="translate(1280 640)" fill="#121212"/>
+<path d="M1390 750L1490 750L1490 850L1390 850L1390 750Z" fill="#FFA300"/>
+<rect width="320" height="320" transform="translate(1600)" fill="#CCC9C4"/>
+<ellipse cx="1760" cy="160" rx="120" ry="120" transform="rotate(-90 1760 160)" fill="#FFA300"/>
+<rect width="320" height="320" transform="translate(0 640)" fill="#121212"/>
+<path d="M2.09815e-05 720L240 720L240 960L0 960L2.09815e-05 720Z" fill="#FFA300"/>
+<rect width="320" height="320" transform="translate(0 320)" fill="#121212"/>
+<path d="M2.09815e-05 400L240 400L240 640L0 640L2.09815e-05 400Z" fill="#FFA300"/>
+<rect width="320" height="320" transform="translate(1280)" fill="#CCC9C4"/>
+<rect x="1280" width="320" height="320" fill="#CCC9C4"/>
+</g>
+<defs>
+<clipPath id="clip0_75_4126">
+<rect width="1920" height="960" fill="white"/>
+</clipPath>
+<clipPath id="clip1_75_4126">
+<rect width="320" height="320" fill="white" transform="translate(960)"/>
+</clipPath>
+<clipPath id="clip2_75_4126">
+<rect width="320" height="320" fill="white" transform="translate(960) rotate(90)"/>
+</clipPath>
+<clipPath id="clip3_75_4126">
+<rect width="320" height="320" fill="white" transform="translate(1280 320) rotate(90)"/>
+</clipPath>
+<clipPath id="clip4_75_4126">
+<rect width="320" height="320" fill="white" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 960 640)"/>
+</clipPath>
+<clipPath id="clip5_75_4126">
+<rect width="320" height="320" fill="white" transform="matrix(-1 -5.56363e-08 -5.56363e-08 1 1600 320)"/>
+</clipPath>
+<clipPath id="clip6_75_4126">
+<rect width="320" height="320" fill="white" transform="matrix(-1 -5.56363e-08 -5.56363e-08 1 1920 320)"/>
+</clipPath>
+<clipPath id="clip7_75_4126">
+<rect width="320" height="320" fill="white" transform="translate(1280 960) rotate(-180)"/>
+</clipPath>
+<clipPath id="clip8_75_4126">
+<rect width="320" height="320" fill="white" transform="matrix(-1 -5.56363e-08 -5.56363e-08 1 320 0)"/>
+</clipPath>
+<clipPath id="clip9_75_4126">
+<rect width="320" height="320" fill="white" transform="matrix(-4.37114e-08 -1 -1 4.37114e-08 640 640)"/>
+</clipPath>
+<clipPath id="clip10_75_4126">
+<rect width="320" height="320" fill="white" transform="translate(640 640)"/>
+</clipPath>
+<clipPath id="clip11_75_4126">
+<rect width="320" height="320" fill="white" transform="translate(320)"/>
+</clipPath>
+</defs>
+</svg>

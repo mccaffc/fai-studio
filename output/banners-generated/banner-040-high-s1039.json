@@ -1,0 +1,193 @@
+{
+  "output_path": "/Users/cmccaffery/Library/CloudStorage/OneDrive-Personal/Downloads/Ongoing Projects/Claude/FAI/FAI Brand/FAI Brand Resources/FAI Illustrations/Brand Illustrations Cleanup/output/banners-generated/banner-040-high-s1039.svg",
+  "seed": 1039,
+  "energy": "high",
+  "dimensions": [
+    1920,
+    960
+  ],
+  "color_bias": null,
+  "cells": [
+    {
+      "col": 0,
+      "row": 0,
+      "tile_id": "composition-05",
+      "tile_filename": "Composition/05.svg",
+      "fg_color": "#4997D0",
+      "bg_color": "#121212",
+      "fg_name": "celestial_blue",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 1,
+      "row": 0,
+      "tile_id": "lines-01",
+      "tile_filename": "Lines/01.svg",
+      "fg_color": "#121212",
+      "bg_color": "#D9D9D6",
+      "fg_name": "cod_gray",
+      "bg_name": "timberwolf"
+    },
+    {
+      "col": 2,
+      "row": 0,
+      "tile_id": "circle-13",
+      "tile_filename": "Circle/13.svg",
+      "fg_color": "#FFA300",
+      "bg_color": "#F3F3F3",
+      "fg_name": "chrome_yellow",
+      "bg_name": "smoke_white"
+    },
+    {
+      "col": 3,
+      "row": 0,
+      "tile_id": "joint-01",
+      "tile_filename": "Joint/01.svg",
+      "fg_color": "#FF4F00",
+      "bg_color": "#D9D9D6",
+      "fg_name": "international_orange",
+      "bg_name": "timberwolf"
+    },
+    {
+      "col": 4,
+      "row": 0,
+      "tile_id": "square-05",
+      "tile_filename": "Square/05.svg",
+      "fg_color": "#4997D0",
+      "bg_color": "#FF4F00",
+      "fg_name": "celestial_blue",
+      "bg_name": "international_orange"
+    },
+    {
+      "col": 5,
+      "row": 0,
+      "tile_id": "centric-02",
+      "tile_filename": "Centric/02.svg",
+      "fg_color": "#D9D9D6",
+      "bg_color": "#FF4F00",
+      "fg_name": "timberwolf",
+      "bg_name": "international_orange"
+    },
+    {
+      "col": 0,
+      "row": 1,
+      "tile_id": "curve-05",
+      "tile_filename": "Curve/05.svg",
+      "fg_color": "#D9D9D6",
+      "bg_color": "#121212",
+      "fg_name": "timberwolf",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 1,
+      "row": 1,
+      "tile_id": "ramp-04",
+      "tile_filename": "Ramp/04.svg",
+      "fg_color": "#4997D0",
+      "bg_color": "#121212",
+      "fg_name": "celestial_blue",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 2,
+      "row": 1,
+      "tile_id": "angle-06",
+      "tile_filename": "Angle/06.svg",
+      "fg_color": "#FF4F00",
+      "bg_color": "#121212",
+      "fg_name": "international_orange",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 3,
+      "row": 1,
+      "tile_id": "curve-02",
+      "tile_filename": "Curve/02.svg",
+      "fg_color": "#121212",
+      "bg_color": "#F3F3F3",
+      "fg_name": "cod_gray",
+      "bg_name": "smoke_white"
+    },
+    {
+      "col": 4,
+      "row": 1,
+      "tile_id": "float-01",
+      "tile_filename": "Float/01.svg",
+      "fg_color": "#F3F3F3",
+      "bg_color": "#4997D0",
+      "fg_name": "smoke_white",
+      "bg_name": "celestial_blue"
+    },
+    {
+      "col": 5,
+      "row": 1,
+      "tile_id": "mirror-01",
+      "tile_filename": "Mirror/01.svg",
+      "fg_color": "#FF4F00",
+      "bg_color": "#121212",
+      "fg_name": "international_orange",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 0,
+      "row": 2,
+      "tile_id": "joint-06",
+      "tile_filename": "Joint/06.svg",
+      "fg_color": "#FF4F00",
+      "bg_color": "#F3F3F3",
+      "fg_name": "international_orange",
+      "bg_name": "smoke_white"
+    },
+    {
+      "col": 1,
+      "row": 2,
+      "tile_id": "merge-02",
+      "tile_filename": "Merge/02.svg",
+      "fg_color": "#FFA300",
+      "bg_color": "#FFFFFF",
+      "fg_name": "chrome_yellow",
+      "bg_name": "white"
+    },
+    {
+      "col": 2,
+      "row": 2,
+      "tile_id": "wave-05",
+      "tile_filename": "Wave/05.svg",
+      "fg_color": "#4997D0",
+      "bg_color": "#FF4F00",
+      "fg_name": "celestial_blue",
+      "bg_name": "international_orange"
+    },
+    {
+      "col": 3,
+      "row": 2,
+      "tile_id": "shape-01",
+      "tile_filename": "Shape/01.svg",
+      "fg_color": "#FF4F00",
+      "bg_color": "#F3F3F3",
+      "fg_name": "international_orange",
+      "bg_name": "smoke_white"
+    },
+    {
+      "col": 4,
+      "row": 2,
+      "tile_id": "open-06",
+      "tile_filename": "Open/06.svg",
+      "fg_color": "#4997D0",
+      "bg_color": "#F3F3F3",
+      "fg_name": "celestial_blue",
+      "bg_name": "smoke_white"
+    },
+    {
+      "col": 5,
+      "row": 2,
+      "tile_id": "shape-02",
+      "tile_filename": "Shape/02.svg",
+      "fg_color": "#FFA300",
+      "bg_color": "#121212",
+      "fg_name": "chrome_yellow",
+      "bg_name": "cod_gray"
+    }
+  ],
+  "generated_at": "2026-03-02T08:53:53.313973+00:00"
+}

@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="960" viewBox="0 0 1920 960">
+<g clip-path="url(#clip0_85_5055)">
+<rect width="1920" height="960" fill="#F3F3F3"/>
+<g clip-path="url(#clip1_85_5055)">
+<rect width="320" height="320" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 1280 640)" fill="#D9D9D6"/>
+<path d="M1119.96 480L1120 320.045L960 320C959.974 408.34 1031.59 479.974 1119.96 480Z" fill="#121212"/>
+<path d="M1280 480.045L1120.04 480L1120 640C1208.34 640.026 1279.97 568.41 1280 480.045Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(320 960) rotate(-180)" fill="#FFA300"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M304 640L304 960L296 960L296 640L304 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M128 640L128 960L120 960L120 640L128 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M264 640L264 960L256 960L256 640L264 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M96 640L96 960L88 960L88 640L96 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M224 640L224 960L216 960L216 640L224 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M64 640L64 960L56 960L56 640L64 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M192 640L192 960L184 960L184 640L192 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M40 640L40 960L32 960L32 640L40 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16 640L16 960L8 960L8.00001 640L16 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M160 640L160 960L152 960L152 640L160 640Z" fill="#121212"/>
+<g clip-path="url(#clip2_85_5055)">
+<rect width="320" height="320" transform="translate(320) rotate(90)" fill="#F3F3F3"/>
+<path d="M159.955 160L160 319.955L7.63066e-06 320C-0.025594 231.66 71.5904 160.026 159.955 160Z" fill="#121212"/>
+<path d="M320 159.955L160.045 160L160 -8.26497e-06C248.34 -0.0256011 319.974 71.5904 320 159.955Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip3_85_5055)">
+<rect width="320" height="320" transform="translate(640 960) rotate(-90)" fill="#F3F3F3"/>
+<path d="M800.045 800L800 640.045L960 640C960.026 728.34 888.41 799.974 800.045 800Z" fill="#121212"/>
+<path d="M640 800.045L799.955 800L800 960C711.66 960.026 640.026 888.41 640 800.045Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip4_85_5055)">
+<rect width="320" height="320" transform="translate(320 640) rotate(-90)" fill="#F3F3F3"/>
+<path d="M480.045 480L480 320.045L640 320C640.026 408.34 568.41 479.974 480.045 480Z" fill="#121212"/>
+<path d="M320 480.045L479.955 480L480 640C391.66 640.026 320.026 568.41 320 480.045Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(1600 320) rotate(-180)" fill="#FFA300"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1584 3.49691e-07L1584 320L1576 320L1576 0L1584 3.49691e-07Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1408 3.49691e-07L1408 320L1400 320L1400 0L1408 3.49691e-07Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1544 3.49692e-07L1544 320L1536 320L1536 0L1544 3.49692e-07Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1376 3.49691e-07L1376 320L1368 320L1368 0L1376 3.49691e-07Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1504 3.49692e-07L1504 320L1496 320L1496 0L1504 3.49692e-07Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1344 3.4969e-07L1344 320L1336 320L1336 0L1344 3.4969e-07Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1472 3.49692e-07L1472 320L1464 320L1464 0L1472 3.49692e-07Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1320 3.4969e-07L1320 320L1312 320L1312 0L1320 3.4969e-07Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1296 3.4969e-07L1296 320L1288 320L1288 0L1296 3.4969e-07Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1440 3.49691e-07L1440 320L1432 320L1432 0L1440 3.49691e-07Z" fill="#121212"/>
+<g clip-path="url(#clip5_85_5055)">
+<rect width="320" height="320" transform="translate(1600 640) rotate(90)" fill="#F3F3F3"/>
+<path d="M1600 960C1467.45 960 1360 960 1360 960C1360 827.452 1467.45 720 1600 720C1600 720 1600 827.452 1600 960Z" fill="#121212"/>
+<path d="M1600 960C1533.73 960 1480 960 1480 960C1480 893.726 1533.73 840 1600 840C1600 840 1600 893.726 1600 960Z" fill="#F3F3F3"/>
+</g>
+<g clip-path="url(#clip6_85_5055)">
+<rect width="320" height="320" transform="translate(0 640) rotate(-90)" fill="#D9D9D6"/>
+<path d="M-1.33527e-05 320C132.548 320 240 320 240 320C240 452.548 132.548 560 0 560C0 560 -5.97821e-06 452.548 -1.33527e-05 320Z" fill="#121212"/>
+<path d="M9.53044e-07 320C66.2742 320 120 320 120 320C120 386.274 66.2742 440 7.62939e-06 440C7.62939e-06 440 4.64029e-06 386.274 9.53044e-07 320Z" fill="#F3F3F3"/>
+</g>
+<rect width="320" height="320" transform="translate(1280 960) rotate(180)" fill="#FF4F00"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1264 640L1264 960L1256 960L1256 640L1264 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1088 640L1088 960L1080 960L1080 640L1088 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1224 640L1224 960L1216 960L1216 640L1224 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1056 640L1056 960L1048 960L1048 640L1056 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1184 640L1184 960L1176 960L1176 640L1184 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1024 640L1024 960L1016 960L1016 640L1024 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1152 640L1152 960L1144 960L1144 640L1152 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1000 640L1000 960L992 960L992 640L1000 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M976 640L976 960L968 960L968 640L976 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1120 640L1120 960L1112 960L1112 640L1120 640Z" fill="#121212"/>
+<g clip-path="url(#clip7_85_5055)">
+<rect width="320" height="320" transform="translate(1280) rotate(90)" fill="#D9D9D6"/>
+<path d="M1119.96 160L1120 319.955L960 320C959.974 231.66 1031.59 160.026 1119.96 160Z" fill="#121212"/>
+<path d="M1280 159.955L1120.04 160L1120 -1.71668e-05C1208.34 -0.0256051 1279.97 71.5904 1280 159.955Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip8_85_5055)">
+<rect width="320" height="320" transform="matrix(0 -1 1 0 1280 640)" fill="#F3F3F3"/>
+<path d="M1280 320C1412.55 320 1520 320 1520 320C1520 452.548 1412.55 560 1280 560C1280 560 1280 452.548 1280 320Z" fill="#121212"/>
+<path d="M1280 320C1346.27 320 1400 320 1400 320C1400 386.274 1346.27 440 1280 440C1280 440 1280 386.274 1280 320Z" fill="#F3F3F3"/>
+</g>
+<g clip-path="url(#clip9_85_5055)">
+<rect width="320" height="320" transform="translate(1600 640) rotate(-90)" fill="#F3F3F3"/>
+<path d="M1760.04 480L1760 320.045L1920 320C1920.03 408.34 1848.41 479.974 1760.04 480Z" fill="#121212"/>
+<path d="M1600 480.045L1759.96 480L1760 640C1671.66 640.026 1600.03 568.41 1600 480.045Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(1600 640)" fill="#FFA300"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1616 960L1616 640L1624 640L1624 960L1616 960Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1792 960L1792 640L1800 640L1800 960L1792 960Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1656 960L1656 640L1664 640L1664 960L1656 960Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1824 960L1824 640L1832 640L1832 960L1824 960Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1696 960L1696 640L1704 640L1704 960L1696 960Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1856 960L1856 640L1864 640L1864 960L1856 960Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1728 960L1728 640L1736 640L1736 960L1728 960Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1880 960L1880 640L1888 640L1888 960L1880 960Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1904 960L1904 640L1912 640L1912 960L1904 960Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1760 960L1760 640L1768 640L1768 960L1760 960Z" fill="#121212"/>
+<g clip-path="url(#clip10_85_5055)">
+<rect width="320" height="320" transform="translate(1920) rotate(90)" fill="#F3F3F3"/>
+<path d="M1759.96 160L1760 319.955L1600 320C1599.97 231.66 1671.59 160.026 1759.96 160Z" fill="#121212"/>
+<path d="M1920 159.955L1760.04 160L1760 -1.71668e-05C1848.34 -0.0256051 1919.97 71.5904 1920 159.955Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(640 320)" fill="#FF4F00"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M656 640L656 320L664 320L664 640L656 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M832 640L832 320L840 320L840 640L832 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M696 640L696 320L704 320L704 640L696 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M864 640L864 320L872 320L872 640L864 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M736 640L736 320L744 320L744 640L736 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M896 640L896 320L904 320L904 640L896 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M768 640L768 320L776 320L776 640L768 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M920 640L920 320L928 320L928 640L920 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M944 640L944 320L952 320L952 640L944 640Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M800 640L800 320L808 320L808 640L800 640Z" fill="#121212"/>
+<g clip-path="url(#clip11_85_5055)">
+<rect width="320" height="320" transform="translate(960) rotate(90)" fill="#D9D9D6"/>
+<path d="M799.955 160L800 319.955L640 320C639.974 231.66 711.59 160.026 799.955 160Z" fill="#121212"/>
+<path d="M960 159.955L800.045 160L800 -1.71668e-05C888.34 -0.0256051 959.974 71.5904 960 159.955Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(320)" fill="#FF4F00"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M336 320L336 3.49691e-07L344 0L344 320L336 320Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M512 320L512 3.49691e-07L520 0L520 320L512 320Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M376 320L376 3.49691e-07L384 0L384 320L376 320Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M544 320L544 3.49691e-07L552 0L552 320L544 320Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M416 320L416 3.49691e-07L424 0L424 320L416 320Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M576 320L576 3.49691e-07L584 0L584 320L576 320Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M448 320L448 3.49691e-07L456 0L456 320L448 320Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M600 320L600 3.49691e-07L608 0L608 320L600 320Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M624 320L624 3.49691e-07L632 0L632 320L624 320Z" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M480 320L480 3.49691e-07L488 0L488 320L480 320Z" fill="#121212"/>
+<g clip-path="url(#clip12_85_5055)">
+<rect width="320" height="320" transform="translate(640 640) rotate(90)" fill="#D9D9D6"/>
+<path d="M479.955 800L480 959.955L320 960C319.974 871.66 391.59 800.026 479.955 800Z" fill="#121212"/>
+<path d="M640 799.955L480.045 800L480 640C568.34 639.974 639.974 711.59 640 799.955Z" fill="#121212"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_85_5055">
+<rect width="1920" height="960" fill="#FFFFFF"/>
+</clipPath>
+<clipPath id="clip1_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 1280 640)"/>
+</clipPath>
+<clipPath id="clip2_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320) rotate(90)"/>
+</clipPath>
+<clipPath id="clip3_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(640 960) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip4_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320 640) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip5_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1600 640) rotate(90)"/>
+</clipPath>
+<clipPath id="clip6_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(0 640) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip7_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1280) rotate(90)"/>
+</clipPath>
+<clipPath id="clip8_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="matrix(0 -1 1 0 1280 640)"/>
+</clipPath>
+<clipPath id="clip9_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1600 640) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip10_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1920) rotate(90)"/>
+</clipPath>
+<clipPath id="clip11_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(960) rotate(90)"/>
+</clipPath>
+<clipPath id="clip12_85_5055">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(640 640) rotate(90)"/>
+</clipPath>
+</defs>
+</svg>

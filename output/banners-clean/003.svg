@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="960" viewBox="0 0 1920 960">
+<g clip-path="url(#clip0_1_2)">
+<rect width="1920" height="960" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="matrix(0 -1 1 0 0 320)" fill="#F3F3F3"/>
+<rect y="320" width="320" height="320" transform="rotate(-90 0 320)" fill="#F3F3F3"/>
+<g clip-path="url(#clip1_1_2)">
+<rect width="320" height="320" transform="matrix(0 -1 1 0 0 320)" fill="#FF4F00"/>
+<path d="M3.91738e-09 320L320 320L320 0C143.32 -0.0512085 0.0511857 143.27 3.91738e-09 320Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip2_1_2)">
+<rect width="320" height="320" transform="translate(0 320)" fill="#D9D9D6"/>
+<path d="M320 320L0 320L5.59506e-05 640C2.50502e-05 463.27 143.27 320 320 320Z" fill="#121212"/>
+<path d="M160 413.333C123.183 413.333 93.3335 443.175 93.3335 480C93.3335 516.825 123.183 546.667 160 546.667C178.413 546.667 195.08 539.206 207.143 527.143C219.207 515.079 226.667 498.413 226.667 480C226.667 443.175 196.818 413.333 160 413.333Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="matrix(0 -1 1 0 1280 320)" fill="#F3F3F3"/>
+<rect x="1280" y="320" width="320" height="320" transform="rotate(-90 1280 320)" fill="#F3F3F3"/>
+<g clip-path="url(#clip3_1_2)">
+<rect width="320" height="320" transform="matrix(0 -1 1 0 1280 320)" fill="#F3F3F3"/>
+<path d="M1280 320L1600 320L1600 0C1423.32 -0.0512085 1280.05 143.27 1280 320Z" fill="#4997D0"/>
+</g>
+<rect width="320" height="320" transform="translate(1280 640) rotate(90)" fill="#F3F3F3"/>
+<rect x="1280" y="640" width="320" height="320" transform="rotate(90 1280 640)" fill="#F3F3F3"/>
+<g clip-path="url(#clip4_1_2)">
+<rect width="320" height="320" transform="translate(1280 640) rotate(90)" fill="#121212"/>
+<path d="M1280 640L960 640L960 960C1136.68 960.051 1279.95 816.73 1280 640Z" fill="#FF4F00"/>
+</g>
+<rect width="320" height="320" transform="translate(320)" fill="#F3F3F3"/>
+<rect x="320" width="320" height="320" fill="#F3F3F3"/>
+<g clip-path="url(#clip5_1_2)">
+<rect width="320" height="320" transform="translate(320)" fill="#F3F3F3"/>
+<path d="M320 3.91738e-09L320 320L640 320C640.051 143.32 496.73 0.0511857 320 3.91738e-09Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(1600)" fill="#F3F3F3"/>
+<rect x="1600" width="320" height="320" fill="#F3F3F3"/>
+<g clip-path="url(#clip6_1_2)">
+<rect width="320" height="320" transform="translate(1600)" fill="#121212"/>
+<path d="M1600 3.91738e-09L1600 320L1920 320C1920.05 143.32 1776.73 0.0511857 1600 3.91738e-09Z" fill="#4997D0"/>
+</g>
+<rect width="320" height="320" transform="translate(960 960) rotate(-180)" fill="#F3F3F3"/>
+<rect x="960" y="960" width="320" height="320" transform="rotate(-180 960 960)" fill="#F3F3F3"/>
+<g clip-path="url(#clip7_1_2)">
+<rect width="320" height="320" transform="translate(960 960) rotate(-180)" fill="#121212"/>
+<path d="M960 960L960 640L640 640C639.949 816.68 783.27 959.949 960 960Z" fill="#FF4F00"/>
+</g>
+<rect width="320" height="320" transform="translate(1280 640)" fill="#F3F3F3"/>
+<rect x="1280" y="640" width="320" height="320" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="translate(1280 640)" fill="#F3F3F3"/>
+<rect x="1280" y="640" width="320" height="320" fill="#F3F3F3"/>
+<g clip-path="url(#clip8_1_2)">
+<rect width="320" height="320" transform="translate(1280) rotate(90)" fill="#F3F3F3"/>
+<path d="M1280 -1.39837e-05L960 -1.39837e-05L960 320C1136.68 320.051 1279.95 176.73 1280 -1.39837e-05Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip9_1_2)">
+<rect width="320" height="320" transform="translate(1280 960) rotate(-90)" fill="#121212"/>
+<path d="M1280 960L1600 960L1600 640C1423.32 639.949 1280.05 783.27 1280 960Z" fill="#FFA300"/>
+</g>
+<g clip-path="url(#clip10_1_2)">
+<rect width="320" height="320" transform="translate(0 960) rotate(-90)" fill="#D9D9D6"/>
+<path d="M3.91799e-09 960L320 960L320 640C143.32 639.949 0.0511779 783.27 3.91799e-09 960Z" fill="#4997D0"/>
+</g>
+<g clip-path="url(#clip11_1_2)">
+<rect width="320" height="320" transform="translate(960 320) rotate(-180)" fill="#F3F3F3"/>
+<path d="M960 320L960 -3.05176e-05L640 -2.79753e-05C639.949 176.68 783.27 319.949 960 320Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip12_1_2)">
+<rect width="320" height="320" transform="translate(1600 640)" fill="#121212"/>
+<path d="M1600 640L1600 960L1920 960C1920.05 783.32 1776.73 640.051 1600 640Z" fill="#FFA300"/>
+</g>
+<g clip-path="url(#clip13_1_2)">
+<rect width="320" height="320" transform="translate(320 640)" fill="#D9D9D6"/>
+<path d="M320 640L320 960L640 960C640.051 783.32 496.73 640.051 320 640Z" fill="#4997D0"/>
+</g>
+<g clip-path="url(#clip14_1_2)">
+<rect width="320" height="320" transform="translate(640 320) rotate(90)" fill="#D9D9D6"/>
+<path d="M640 640L640 320L320 320C496.73 320 640 463.27 640 640Z" fill="#121212"/>
+</g>
+<g clip-path="url(#clip15_1_2)">
+<rect width="320" height="320" transform="translate(1920 320) rotate(90)" fill="#121212"/>
+<path d="M1920 640L1920 320L1600 320C1776.73 320 1920 463.27 1920 640Z" fill="#4997D0"/>
+</g>
+<g clip-path="url(#clip16_1_2)">
+<rect width="320" height="320" transform="translate(1280 320)" fill="#121212"/>
+<path d="M1600 320L1280 320V640C1280 463.27 1423.27 320 1600 320Z" fill="#4997D0"/>
+</g>
+<g clip-path="url(#clip17_1_2)">
+<rect width="320" height="320" transform="translate(640 640) rotate(-90)" fill="#F3F3F3"/>
+<path d="M640 320L640 640L960 640C783.27 640 640 496.73 640 320Z" fill="#FF4F00"/>
+</g>
+<g clip-path="url(#clip18_1_2)">
+<rect width="320" height="320" transform="translate(1280 640) rotate(-180)" fill="#F3F3F3"/>
+<path d="M960 640L1280 640L1280 320C1280 496.73 1136.73 640 960 640Z" fill="#FF4F00"/>
+<path d="M1120 546.667C1156.82 546.667 1186.67 516.825 1186.67 480C1186.67 443.175 1156.82 413.333 1120 413.333C1101.59 413.333 1084.92 420.794 1072.86 432.857C1060.79 444.921 1053.33 461.587 1053.33 480C1053.33 516.825 1083.18 546.667 1120 546.667Z" fill="#121212"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_1_2">
+<rect width="1920" height="960" fill="#FFFFFF"/>
+</clipPath>
+<clipPath id="clip1_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="matrix(0 -1 1 0 0 320)"/>
+</clipPath>
+<clipPath id="clip2_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(0 320)"/>
+</clipPath>
+<clipPath id="clip3_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="matrix(0 -1 1 0 1280 320)"/>
+</clipPath>
+<clipPath id="clip4_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1280 640) rotate(90)"/>
+</clipPath>
+<clipPath id="clip5_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320)"/>
+</clipPath>
+<clipPath id="clip6_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1600)"/>
+</clipPath>
+<clipPath id="clip7_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(960 960) rotate(-180)"/>
+</clipPath>
+<clipPath id="clip8_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1280) rotate(90)"/>
+</clipPath>
+<clipPath id="clip9_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1280 960) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip10_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(0 960) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip11_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(960 320) rotate(-180)"/>
+</clipPath>
+<clipPath id="clip12_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1600 640)"/>
+</clipPath>
+<clipPath id="clip13_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320 640)"/>
+</clipPath>
+<clipPath id="clip14_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(640 320) rotate(90)"/>
+</clipPath>
+<clipPath id="clip15_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1920 320) rotate(90)"/>
+</clipPath>
+<clipPath id="clip16_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1280 320)"/>
+</clipPath>
+<clipPath id="clip17_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(640 640) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip18_1_2">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1280 640) rotate(-180)"/>
+</clipPath>
+</defs>
+</svg>
