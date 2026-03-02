@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1920" height="960" viewBox="0 0 1920 960">
+  <svg x="0.0" y="0.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns0:g xmlns:ns0="http://www.w3.org/2000/svg" clip-path="url(#clip0_5_6178)">
+<ns0:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns0:g clip-path="url(#clip1_5_6178)">
+<ns0:path d="M7.50001 14.636C8.0629 19.144 8.66849 25.344 9.23526 33.848C10.4503 52.068 11.118 75.564 11.118 100C11.118 124.436 10.4503 147.932 9.23526 166.152C8.66849 174.656 8.06678 180.856 7.50001 185.364C6.93712 180.856 6.33153 174.656 5.76476 166.152C4.5497 147.932 3.882 124.436 3.882 100C3.882 75.564 4.5497 52.068 5.76476 33.848C6.33153 25.344 6.93324 19.144 7.50001 14.636ZM7.50001 8.74228e-06C3.35793 8.74228e-06 8.74228e-06 44.772 8.74228e-06 100C8.74228e-06 155.228 3.35793 200 7.50001 200C11.6421 200 15 155.228 15 100C15 44.772 11.6421 8.74228e-06 7.50001 8.74228e-06Z" fill="#FFFFFF"/>
+<ns0:path d="M30.8332 4.00001C32.323 4.00001 37.6175 8.80001 42.2392 30.136C46.2722 48.752 48.4949 73.564 48.4949 100C48.4949 126.436 46.2722 151.248 42.2392 169.864C37.6175 191.196 32.323 196 30.8332 196C29.3433 196 24.0488 191.2 19.4271 169.864C15.3942 151.248 13.1714 126.436 13.1714 100C13.1714 73.564 15.3942 48.752 19.4271 30.136C24.0528 8.80001 29.3433 4.00001 30.8332 4.00001ZM30.8332 8.74228e-06C18.8705 8.74228e-06 9.16651 44.772 9.16651 100C9.16651 155.228 18.8664 200 30.8332 200C42.7999 200 52.4998 155.228 52.4998 100C52.4998 44.772 42.7999 8.74228e-06 30.8332 8.74228e-06Z" fill="#FFFFFF"/>
+<ns0:path d="M53.7502 4.00001C57.3006 4.00001 60.9108 6.16401 64.4852 10.432C68.3384 15.036 71.9885 22.02 75.0368 30.628C81.5758 49.096 85.1781 73.732 85.1781 100C85.1781 126.268 81.5758 150.904 75.0368 169.372C71.9885 177.98 68.3384 184.964 64.4852 189.568C60.9108 193.836 57.3006 196 53.7502 196C50.1997 196 46.5895 193.836 43.0152 189.568C39.1619 184.964 35.5119 177.98 32.4635 169.372C25.9245 150.904 22.3223 126.268 22.3223 100C22.3223 73.732 25.9245 49.096 32.4635 30.628C35.5119 22.02 39.1619 15.036 43.0152 10.432C46.5895 6.16401 50.1997 4.00001 53.7502 4.00001ZM53.7502 8.74228e-06C34.1889 8.74228e-06 18.3335 44.772 18.3335 100C18.3335 155.228 34.1889 200 53.7502 200C73.3114 200 89.1668 155.228 89.1668 100C89.1668 44.772 73.3074 8.74228e-06 53.7502 8.74228e-06Z" fill="#FFFFFF"/>
+<ns0:path d="M77.0833 4.00001C82.7931 4.00001 88.4106 6.32001 93.7755 10.9C99.2647 15.584 104.237 22.368 108.547 31.064C117.645 49.412 122.653 73.892 122.653 100C122.653 126.108 117.645 150.592 108.547 168.936C104.237 177.632 99.2647 184.416 93.7755 189.1C88.4106 193.676 82.7931 196 77.0833 196C71.3736 196 65.7561 193.68 60.3912 189.1C54.902 184.416 49.93 177.632 45.6196 168.936C36.5217 150.588 31.5137 126.108 31.5137 100C31.5137 73.892 36.5217 49.408 45.6196 31.064C49.93 22.368 54.902 15.584 60.3912 10.9C65.7561 6.32401 71.3736 4.00001 77.0833 4.00001ZM77.0833 8.74228e-06C49.7014 8.74228e-06 27.5 44.772 27.5 100C27.5 155.228 49.6974 200 77.0833 200C104.469 200 126.667 155.228 126.667 100C126.667 44.772 104.465 8.74228e-06 77.0833 8.74228e-06Z" fill="#FFFFFF"/>
+<ns0:path d="M99.5795 4.00001C107.377 4.00001 114.974 6.41601 122.16 11.184C129.282 15.908 135.707 22.72 141.26 31.428C146.897 40.268 151.327 50.592 154.433 62.108C157.668 74.1 159.306 86.848 159.306 99.996C159.306 113.144 157.668 125.892 154.433 137.884C151.327 149.4 146.897 159.724 141.26 168.564C135.707 177.272 129.282 184.084 122.16 188.808C114.974 193.576 107.377 195.992 99.5795 195.992C91.7817 195.992 84.1852 193.576 76.999 188.808C69.8772 184.084 63.4515 177.272 57.899 168.564C52.2619 159.724 47.8319 149.4 44.7257 137.884C41.4907 125.892 39.8531 113.144 39.8531 99.996C39.8531 86.848 41.4907 74.096 44.7257 62.108C47.8319 50.592 52.2619 40.268 57.899 31.428C63.4515 22.72 69.8772 15.908 76.999 11.184C84.1852 6.41601 91.7817 4.00001 99.5795 4.00001ZM99.5795 8.74228e-06C64.3729 8.74228e-06 35.8335 44.772 35.8335 100C35.8335 155.228 64.3729 200 99.5835 200C134.794 200 163.334 155.228 163.334 100C163.334 44.772 134.786 8.74228e-06 99.5795 8.74228e-06Z" fill="#FFFFFF"/>
+<ns0:path d="M122.496 4.00001C163.019 4.00001 195.985 47.064 195.985 100C195.985 152.936 163.019 196 122.496 196C81.9731 196 49.007 152.936 49.007 100C49.007 47.064 81.9772 4.00001 122.496 4.00001ZM122.496 8.74228e-06C79.6949 8.74228e-06 45 44.772 45 100C45 155.228 79.6989 200 122.5 200C165.301 200 200 155.228 200 100C200 44.772 165.297 8.74228e-06 122.496 8.74228e-06Z" fill="#FFFFFF"/>
+</ns0:g>
+</ns0:g>
+<ns1:defs xmlns:ns1="http://www.w3.org/2000/svg">
+<ns1:clipPath id="clip0_5_6178">
+<ns1:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns1:clipPath>
+<ns1:clipPath id="clip1_5_6178">
+<ns1:rect width="200" height="200" fill="#FFFFFF"/>
+</ns1:clipPath>
+</ns1:defs>
+</svg>
+  <svg x="320.0" y="0.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns2:g xmlns:ns2="http://www.w3.org/2000/svg" clip-path="url(#clip0_3_624)">
+<ns2:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns2:path d="M200 1.67962e-05L200 150L8.74228e-06 150L4.41485e-05 -6.51651e-06L200 1.67962e-05Z" fill="#FFFFFF"/>
+</ns2:g>
+<ns3:defs xmlns:ns3="http://www.w3.org/2000/svg">
+<ns3:clipPath id="clip0_3_624">
+<ns3:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns3:clipPath>
+</ns3:defs>
+</svg>
+  <svg x="640.0" y="0.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns4:rect xmlns:ns4="http://www.w3.org/2000/svg" width="200" height="200" transform="translate(8.74228e-06 200) rotate(-90)" fill="#121212"/>
+<ns5:path xmlns:ns5="http://www.w3.org/2000/svg" d="M77 67C77 73.0751 72.0751 78 66 78C59.9249 78 55 73.0751 55 67C55 60.9249 59.9249 56 66 56C72.0751 56 77 60.9249 77 67Z" fill="#FFFFFF"/>
+<ns6:path xmlns:ns6="http://www.w3.org/2000/svg" d="M200 109C200 115.075 195.075 120 189 120C182.925 120 178 115.075 178 109C178 102.925 182.925 98 189 98C195.075 98 200 102.925 200 109Z" fill="#FFFFFF"/>
+<ns7:path xmlns:ns7="http://www.w3.org/2000/svg" d="M0.008 8.74193e-06L0 8.74228e-06L8.74228e-06 200L200 200C89.876 200 0.00800483 110.417 0.008 8.74193e-06Z" fill="#FFFFFF"/>
+<ns8:path xmlns:ns8="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" d="M179.933 199C85.7297 189.563 10.4137 114.42 1 20.0043C0.343971 13.4246 0.00800029 6.75124 0.008 8.74193e-06L0 8.74228e-06L8.74228e-06 200L200 200C193.229 200 186.535 199.661 179.933 199ZM171.614 199C83.5333 186.485 13.5081 116.612 1 28.3523L1.00001 199L171.614 199Z" fill="#FFFFFF"/>
+<ns9:path xmlns:ns9="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" d="M35 8.74228e-06C35 91.127 108.873 165 200 165V175C103.35 175 25 96.6498 25 8.74228e-06H35Z" fill="#FFFFFF"/>
+<ns10:path xmlns:ns10="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" d="M75 8.74228e-06C75 69.0356 130.964 125 200 125V135C125.442 135 65 74.5584 65 8.74228e-06H75Z" fill="#FFFFFF"/>
+<ns11:path xmlns:ns11="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" d="M115 8.74228e-06C115 46.9442 153.056 85 200 85V95C147.533 95 105 52.4671 105 8.74228e-06H115Z" fill="#FFFFFF"/>
+<ns12:path xmlns:ns12="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" d="M155 8.74228e-06C155 24.8528 175.147 45 200 45V55C169.624 55 145 30.3757 145 8.74228e-06H155Z" fill="#FFFFFF"/>
+<ns13:path xmlns:ns13="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" d="M195 8.74228e-06C195 2.76143 197.239 5.00001 200 5.00001V15C191.716 15 185 8.28428 185 8.74228e-06H195Z" fill="#FFFFFF"/>
+</svg>
+  <svg x="960.0" y="0.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns14:g xmlns:ns14="http://www.w3.org/2000/svg" clip-path="url(#clip0_35_2275)">
+<ns14:rect width="200" height="200" transform="translate(200 1.52588e-05) rotate(90)" fill="#121212"/>
+<ns14:path fill-rule="evenodd" clip-rule="evenodd" d="M100.538 79.1952C108.405 89.9719 115.713 99.9825 130.461 100C115.713 100.017 108.405 110.028 100.538 120.805C91.3581 133.381 81.4163 147 58.0001 147C24.129 147 1.41209 184.88 0.156097 200L9.15527e-05 200L9.59239e-05 100L0.000100295 0.000192662L0.156091 0.000192668C1.4121 15.1202 24.1291 53.0002 58.0001 53.0002C81.4163 53.0002 91.3581 66.6193 100.538 79.1952Z" fill="#FFFFFF"/>
+</ns14:g>
+<ns15:defs xmlns:ns15="http://www.w3.org/2000/svg">
+<ns15:clipPath id="clip0_35_2275">
+<ns15:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 1.52588e-05) rotate(90)"/>
+</ns15:clipPath>
+</ns15:defs>
+</svg>
+  <svg x="1280.0" y="0.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns16:rect xmlns:ns16="http://www.w3.org/2000/svg" width="200" height="200" transform="translate(200 1.52588e-05) rotate(90)" fill="#121212"/>
+<ns17:path xmlns:ns17="http://www.w3.org/2000/svg" d="M141.667 100C141.667 76.9842 123.011 58.3334 100 58.3334C76.9891 58.3334 58.3333 76.9841 58.3333 100C58.3333 123.016 76.989 141.667 100 141.667C111.508 141.667 121.925 137.004 129.464 129.464C137.004 121.925 141.667 111.508 141.667 100Z" fill="#FFFFFF"/>
+<ns18:path xmlns:ns18="http://www.w3.org/2000/svg" d="M100.028 0.0280153L0.0559627 1.08889e-05L0.0279585 100C55.2405 100.016 100.012 55.256 100.028 0.0280153Z" fill="#FFFFFF"/>
+</svg>
+  <svg x="1600.0" y="0.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns19:g xmlns:ns19="http://www.w3.org/2000/svg" clip-path="url(#clip0_20_1209)">
+<ns19:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns19:path fill-rule="evenodd" clip-rule="evenodd" d="M100 135.417L100 149.167L190.047 149.167L190 199.953L200 200L200 8.30516e-06L190 9.4496e-06C190 107.037 159.583 135.417 100 135.417Z" fill="#FFFFFF"/>
+</ns19:g>
+<ns20:defs xmlns:ns20="http://www.w3.org/2000/svg">
+<ns20:clipPath id="clip0_20_1209">
+<ns20:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns20:clipPath>
+</ns20:defs>
+</svg>
+  <svg x="0.0" y="320.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns21:g xmlns:ns21="http://www.w3.org/2000/svg" clip-path="url(#clip0_5_5484)">
+<ns21:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns21:path d="M175.025 200C152.775 200 141.632 173.098 157.365 157.365Lnan nanL157.365 157.365C173.098 141.632 200 152.775 200 175.025L200 200L175.025 200Z" fill="#FFFFFF"/>
+</ns21:g>
+<ns22:defs xmlns:ns22="http://www.w3.org/2000/svg">
+<ns22:clipPath id="clip0_5_5484">
+<ns22:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns22:clipPath>
+</ns22:defs>
+</svg>
+  <svg x="320.0" y="320.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns23:g xmlns:ns23="http://www.w3.org/2000/svg" clip-path="url(#clip0_20_1208)">
+<ns23:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns23:path fill-rule="evenodd" clip-rule="evenodd" d="M200 200C132.395 150.473 132.395 49.5275 200 2.62268e-05L-5.22929e-05 0L-6.10352e-05 200L200 200Z" fill="#FFFFFF"/>
+</ns23:g>
+<ns24:defs xmlns:ns24="http://www.w3.org/2000/svg">
+<ns24:clipPath id="clip0_20_1208">
+<ns24:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns24:clipPath>
+</ns24:defs>
+</svg>
+  <svg x="640.0" y="320.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns25:rect xmlns:ns25="http://www.w3.org/2000/svg" width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#FFFFFF"/>
+<ns26:path xmlns:ns26="http://www.w3.org/2000/svg" d="M133 116.667H166.333C166.333 79.848 136.485 50 99.6667 50C62.848 50 33 79.848 33 116.667H66.3333C66.3333 135.077 81.256 150 99.6667 150C118.077 150 133 135.077 133 116.667Z" fill="#FF4F00"/>
+</svg>
+  <svg x="960.0" y="320.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns27:g xmlns:ns27="http://www.w3.org/2000/svg" clip-path="url(#clip0_4_5445)">
+<ns27:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns27:path d="M200 3.49691e-05L8.74228e-06 200L3.49691e-05 8.74228e-06L200 3.49691e-05Z" fill="#FFFFFF"/>
+<ns27:path d="M200 100L100 200Lnan nanL100 200C100 144.772 144.772 100 200 100Lnan nanL200 100Z" fill="#FFFFFF"/>
+<ns27:path d="M100 200L200 100L200 200L100 200Z" fill="#FFFFFF"/>
+</ns27:g>
+<ns28:defs xmlns:ns28="http://www.w3.org/2000/svg">
+<ns28:clipPath id="clip0_4_5445">
+<ns28:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns28:clipPath>
+</ns28:defs>
+</svg>
+  <svg x="1280.0" y="320.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns29:g xmlns:ns29="http://www.w3.org/2000/svg" clip-path="url(#clip0_5_5482)">
+<ns29:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns29:path d="M150 100H200C200 44.772 155.228 8.74228e-06 100 8.74228e-06C44.772 8.74228e-06 8.74228e-06 44.772 8.74228e-06 100H50C50 127.616 72.384 150 100 150C127.616 150 150 127.616 150 100Z" fill="#FFFFFF"/>
+</ns29:g>
+<ns30:defs xmlns:ns30="http://www.w3.org/2000/svg">
+<ns30:clipPath id="clip0_5_5482">
+<ns30:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns30:clipPath>
+</ns30:defs>
+</svg>
+  <svg x="1600.0" y="320.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns31:g xmlns:ns31="http://www.w3.org/2000/svg" clip-path="url(#clip0_3_605)">
+<ns31:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns31:path d="M200 1.97103e-05L200 50L8.74228e-06 100L3.49691e-05 -6.51651e-06L200 1.97103e-05Z" fill="#FFFFFF"/>
+</ns31:g>
+<ns32:defs xmlns:ns32="http://www.w3.org/2000/svg">
+<ns32:clipPath id="clip0_3_605">
+<ns32:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns32:clipPath>
+</ns32:defs>
+</svg>
+  <svg x="0.0" y="640.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns33:g xmlns:ns33="http://www.w3.org/2000/svg" clip-path="url(#clip0_3_549)">
+<ns33:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns33:path d="M200 3.49691e-05L8.74228e-06 100L2.73743e-05 8.74228e-06L200 3.49691e-05Z" fill="#FFFFFF"/>
+</ns33:g>
+<ns34:defs xmlns:ns34="http://www.w3.org/2000/svg">
+<ns34:clipPath id="clip0_3_549">
+<ns34:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns34:clipPath>
+</ns34:defs>
+</svg>
+  <svg x="320.0" y="640.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns35:g xmlns:ns35="http://www.w3.org/2000/svg" clip-path="url(#clip0_20_1334)">
+<ns35:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#FFFFFF"/>
+<ns35:path d="M100 8.74228e-06H8.74228e-06V100C8.74228e-06 44.772 44.772 8.74228e-06 100 8.74228e-06Z" fill="#FF4F00"/>
+<ns35:path d="M50.0001 150C50.0001 122.387 27.6192 100 0.000126998 100C0.000126998 100 0.000126019 122.387 0.000124812 150C0.000128023 163.81 0.000126441 200 0.000126441 200C27.6192 200 50.0001 177.613 50.0001 150Z" fill="#FF4F00"/>
+</ns35:g>
+<ns36:defs xmlns:ns36="http://www.w3.org/2000/svg">
+<ns36:clipPath id="clip0_20_1334">
+<ns36:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns36:clipPath>
+</ns36:defs>
+</svg>
+  <svg x="640.0" y="640.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns37:g xmlns:ns37="http://www.w3.org/2000/svg" clip-path="url(#clip0_76_2087)">
+<ns37:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns37:circle cx="40" cy="200" r="40" fill="#FFFFFF"/>
+<ns37:circle cx="120" cy="200" r="40" fill="#FFFFFF"/>
+<ns37:circle cx="200" cy="120" r="40" fill="#FFFFFF"/>
+<ns37:circle cx="200" cy="40" r="40" fill="#FFFFFF"/>
+<ns37:circle cx="200" cy="200" r="40" fill="#FFFFFF"/>
+</ns37:g>
+<ns38:defs xmlns:ns38="http://www.w3.org/2000/svg">
+<ns38:clipPath id="clip0_76_2087">
+<ns38:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns38:clipPath>
+</ns38:defs>
+</svg>
+  <svg x="960.0" y="640.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns39:rect xmlns:ns39="http://www.w3.org/2000/svg" width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns40:path xmlns:ns40="http://www.w3.org/2000/svg" d="M175 200C133.579 200 25 200 25 200C25 158.579 58.5787 125 100 125C141.421 125 175 158.579 175 200Z" fill="#FFFFFF"/>
+</svg>
+  <svg x="1280.0" y="640.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns41:g xmlns:ns41="http://www.w3.org/2000/svg" clip-path="url(#clip0_35_1226)">
+<ns41:rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns41:path d="M200 9.16684e-06Lnan nanL200 9.16684e-06C200 27.6142 177.614 50 150 50L8.74228e-06 50L2.92866e-05 -1.41459e-05L200 9.16684e-06Z" fill="#FFFFFF"/>
+</ns41:g>
+<ns42:defs xmlns:ns42="http://www.w3.org/2000/svg">
+<ns42:clipPath id="clip0_35_1226">
+<ns42:rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
+</ns42:clipPath>
+</ns42:defs>
+</svg>
+  <svg x="1600.0" y="640.0" width="320.0" height="320.0" viewBox="0 0 200 200"><ns43:rect xmlns:ns43="http://www.w3.org/2000/svg" width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#121212"/>
+<ns44:path xmlns:ns44="http://www.w3.org/2000/svg" d="M100 2.18557e-05L100 100L8.74228e-06 100L2.84124e-05 8.74228e-06L100 2.18557e-05Z" fill="#FFFFFF"/>
+</svg>
+</svg>

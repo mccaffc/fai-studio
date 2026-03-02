@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1920 960">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #ff4f00;
+      }
+
+      .st2, .st3 {
+        fill: #121212;
+      }
+
+      .st2, .st4 {
+        fill-rule: evenodd;
+      }
+
+      .st5 {
+        fill: #d9d9d6;
+      }
+
+      .st6, .st4 {
+        fill: #ffa300;
+      }
+
+      .st7 {
+        fill: #4997d0;
+      }
+
+      .st8 {
+        fill: #f3f3f3;
+      }
+    </style>
+  </defs>
+  <rect class="st0" width="1920" height="960"/>
+  <rect class="st8" width="1920" height="960"/>
+  <rect class="st0" x="1280" width="320" height="320"/>
+  <rect class="st5" x="1280" y="0" width="320" height="320"/>
+  <path class="st3" d="M1600,0h-80l-80,320h160V0Z"/>
+  <rect class="st0" x="640" width="320" height="320"/>
+  <rect class="st1" x="640" y="0" width="320" height="320"/>
+  <path class="st5" d="M960,0h-80l-80,320h160V0Z"/>
+  <rect class="st0" x="960" y="640" width="320" height="320"/>
+  <rect class="st3" x="960" y="640" width="320" height="320"/>
+  <path class="st4" d="M1120,800l160-160h-320v320h80l80-160Z"/>
+  <rect class="st0" x="1280" y="640" width="320" height="320"/>
+  <rect class="st7" x="1280" y="640" width="320" height="320"/>
+  <path class="st3" d="M1280,960h80s80-320,80-320h-160s0,320,0,320Z"/>
+  <path class="st3" d="M1280,960h80s80-320,80-320h-160s0,320,0,320Z"/>
+  <path class="st3" d="M1600,640l-80,320h80s0-320,0-320Z"/>
+  <rect class="st1" x="640" y="320" width="320" height="320"/>
+  <rect class="st1" x="640" y="320" width="320" height="320"/>
+  <rect class="st0" x="320" width="320" height="320"/>
+  <rect class="st1" x="320" width="320" height="320"/>
+  <path class="st2" d="M480,22l-80,.07V.07l-80-.07v320h80c.04-147.27,0-218,80-298Z"/>
+  <rect class="st0" x="0" width="320" height="320"/>
+  <rect class="st7" x="0" y="0" width="320" height="320"/>
+  <path class="st2" d="M160,22l80,.07V.07L320,0v320h-80c-.04-147.27,0-218-80-298Z"/>
+  <rect class="st0" x="320" y="320" width="320" height="320"/>
+  <rect class="st1" x="320" y="320" width="320" height="320"/>
+  <path class="st3" d="M320,320h80l80,320h-160v-320Z"/>
+  <rect class="st0" y="640" width="320" height="320"/>
+  <rect class="st1" y="640" width="320" height="320"/>
+  <path class="st3" d="M320,640h-80l-80,320h160v-320Z"/>
+  <rect class="st0" x="320" y="640" width="320" height="320"/>
+  <rect class="st6" x="320" y="640" width="320" height="320"/>
+  <path class="st3" d="M320,640h80l80,320h-160v-320Z"/>
+  <rect class="st0" y="320" width="320" height="320"/>
+  <rect class="st7" y="320" width="320" height="320"/>
+  <path class="st3" d="M320,320h-80l-80,320h160v-320Z"/>
+  <rect class="st0" x="640" y="640" width="320" height="320"/>
+  <rect class="st6" x="640" y="640" width="320" height="320"/>
+  <path class="st3" d="M920,960h-240c0-66.27,53.73-120,120-120s120,53.73,120,120Z"/>
+  <rect class="st8" x="1600" y="640" width="320" height="320"/>
+  <rect class="st3" x="1600" y="640" width="320" height="320"/>
+  <rect class="st5" x="1280" y="320" width="320" height="320"/>
+  <path class="st3" d="M1440,640v-160h160v160h-160Z"/>
+  <rect class="st3" x="1600" width="320" height="320"/>
+  <path class="st6" d="M1812.8,186.67h53.33c0-58.91-47.75-106.67-106.66-106.67s-106.67,47.76-106.67,106.67h53.33c0,29.46,23.88,53.33,53.34,53.33s53.33-23.88,53.33-53.33Z"/>
+  <rect class="st0" x="1600" y="320" width="320" height="320"/>
+  <rect class="st3" x="1600" y="320" width="320" height="320"/>
+  <path class="st5" d="M1840,640h-240v-240c0,132.55,107.45,240,240,240Z"/>
+  <rect class="st5" x="960" width="320" height="320"/>
+  <path class="st3" d="M1172.8,186.67h53.33c0-58.91-47.75-106.67-106.66-106.67s-106.67,47.76-106.67,106.67h53.33c0,29.46,23.88,53.33,53.34,53.33s53.33-23.88,53.33-53.33Z"/>
+  <rect class="st0" x="960" y="320" width="320" height="320"/>
+  <rect class="st5" x="960" y="320" width="320" height="320"/>
+  <path class="st1" d="M960,400v240h240c-132.55,0-240-107.45-240-240Z"/>
+</svg>

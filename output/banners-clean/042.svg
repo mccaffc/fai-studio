@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="960" viewBox="0 0 1920 960">
+<g clip-path="url(#clip0_85_4058)">
+<rect width="1920" height="960" fill="#F3F3F3"/>
+<g clip-path="url(#clip1_85_4058)">
+<rect width="320" height="320" transform="matrix(-4.37114e-08 1 1 4.37114e-08 1280 640)" fill="#FFA300"/>
+<ellipse cx="80" cy="80" rx="80" ry="80" transform="matrix(-1 -8.74228e-08 -8.74228e-08 1 1440 720)" fill="#121212"/>
+<circle cx="80" cy="80" r="80" transform="matrix(-1 -8.74228e-08 -8.74228e-08 1 1440 560)" fill="#121212"/>
+<circle cx="80" cy="80" r="80" transform="matrix(-1 -8.74228e-08 -8.74228e-08 1 1440 880)" fill="#121212"/>
+<rect width="80" height="352" transform="matrix(-1 -8.74228e-08 -8.74228e-08 1 1360 624)" fill="#121212"/>
+</g>
+<g clip-path="url(#clip2_85_4058)">
+<rect width="320" height="320" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 1600 640)" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1280.04 480L1280 320L1600 320L1600 640L1440.04 639.955C1440.02 551.59 1368.38 479.974 1280.04 480Z" fill="#FFA300"/>
+</g>
+<g clip-path="url(#clip3_85_4058)">
+<rect width="320" height="320" transform="translate(640 640) rotate(90)" fill="#FFA300"/>
+<ellipse cx="560" cy="800" rx="80" ry="80" fill="#121212"/>
+<circle cx="560" cy="640" r="80" fill="#121212"/>
+<circle cx="560" cy="960" r="80" fill="#121212"/>
+<rect x="560" y="624" width="80" height="352" fill="#121212"/>
+</g>
+<g clip-path="url(#clip4_85_4058)">
+<rect width="320" height="320" transform="translate(1280 640) rotate(-180)" fill="#FFA300"/>
+<ellipse cx="1120" cy="560" rx="80" ry="80" transform="rotate(90 1120 560)" fill="#121212"/>
+<circle cx="1280" cy="560" r="80" transform="rotate(90 1280 560)" fill="#121212"/>
+<circle cx="960" cy="560" r="80" transform="rotate(90 960 560)" fill="#121212"/>
+<rect x="1296" y="560" width="80" height="352" transform="rotate(90 1296 560)" fill="#121212"/>
+</g>
+<g clip-path="url(#clip5_85_4058)">
+<rect width="320" height="320" transform="translate(960 640) rotate(-180)" fill="#FFA300"/>
+<ellipse cx="800" cy="560" rx="80" ry="80" transform="rotate(90 800 560)" fill="#121212"/>
+<circle cx="960" cy="560" r="80" transform="rotate(90 960 560)" fill="#121212"/>
+<circle cx="640" cy="560" r="80" transform="rotate(90 640 560)" fill="#121212"/>
+<rect x="976" y="560" width="80" height="352" transform="rotate(90 976 560)" fill="#121212"/>
+</g>
+<g clip-path="url(#clip6_85_4058)">
+<rect width="320" height="320" transform="translate(320 640) rotate(-90)" fill="#121212"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M639.955 480L640 320L320 320L320 640L479.955 639.955C479.981 551.59 551.615 479.974 639.955 480Z" fill="#FFA300"/>
+</g>
+<g clip-path="url(#clip7_85_4058)">
+<rect width="320" height="320" transform="translate(320 320) rotate(90)" fill="#FFA300"/>
+<path d="M240 480H320C320 391.635 248.365 320 160 320C71.6352 320 0 391.635 0 480H80C80 480 115.814 480 160 480C204.186 480 240 480 240 480Z" fill="#FF4F00"/>
+<path d="M72 640L104 640L104 480L72 480L72 640Z" fill="#121212"/>
+<path d="M144 640L176 640L176 480L144 480L144 640Z" fill="#121212"/>
+<path d="M216 640H248V480H216V640Z" fill="#121212"/>
+<path d="M7.62939e-06 640L32 640L32 480L7.6294e-06 480L7.62939e-06 640Z" fill="#121212"/>
+<path d="M288 640H320V480H288V640Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(320 960) rotate(-180)" fill="#FFA300"/>
+<path d="M248 640L216 640L216 960L248 960L248 640Z" fill="#121212"/>
+<path d="M176 640L144 640L144 960L176 960L176 640Z" fill="#121212"/>
+<path d="M104 640L72 640L72 960L104 960L104 640Z" fill="#121212"/>
+<path d="M320 640L288 640L288 960L320 960L320 640Z" fill="#121212"/>
+<path d="M32 640L0 640L-2.79753e-05 960L32 960L32 640Z" fill="#121212"/>
+<rect width="320" height="320" transform="translate(1920 960) rotate(-180)" fill="#FFA300"/>
+<path d="M1848 640L1816 640L1816 960L1848 960L1848 640Z" fill="#121212"/>
+<path d="M1776 640L1744 640L1744 960L1776 960L1776 640Z" fill="#121212"/>
+<path d="M1704 640L1672 640L1672 960L1704 960L1704 640Z" fill="#121212"/>
+<path d="M1920 640L1888 640L1888 960L1920 960L1920 640Z" fill="#121212"/>
+<path d="M1632 640L1600 640L1600 960L1632 960L1632 640Z" fill="#121212"/>
+<rect width="320" height="320" transform="translate(1920 640) rotate(-180)" fill="#FFA300"/>
+<path d="M1848 320L1816 320L1816 640L1848 640L1848 320Z" fill="#121212"/>
+<path d="M1776 320L1744 320L1744 640L1776 640L1776 320Z" fill="#121212"/>
+<path d="M1704 320L1672 320L1672 640L1704 640L1704 320Z" fill="#121212"/>
+<path d="M1920 320L1888 320L1888 640L1920 640L1920 320Z" fill="#121212"/>
+<path d="M1632 320L1600 320L1600 640L1632 640L1632 320Z" fill="#121212"/>
+<g clip-path="url(#clip8_85_4058)">
+<rect width="320" height="320" transform="translate(1920) rotate(90)" fill="#FFA300"/>
+<path d="M1840 160H1920C1920 71.6352 1848.36 0 1760 0C1671.64 0 1600 71.6352 1600 160H1680C1680 160 1715.81 160 1760 160C1804.19 160 1840 160 1840 160Z" fill="#FF4F00"/>
+<path d="M1672 320L1704 320L1704 160L1672 160L1672 320Z" fill="#121212"/>
+<path d="M1744 320L1776 320L1776 160L1744 160L1744 320Z" fill="#121212"/>
+<path d="M1816 320H1848V160H1816V320Z" fill="#121212"/>
+<path d="M1600 320L1632 320L1632 160L1600 160L1600 320Z" fill="#121212"/>
+<path d="M1888 320H1920V160H1888V320Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(640 320) rotate(-90)" fill="#FFA300"/>
+<path d="M960 248L960 216L640 216L640 248L960 248Z" fill="#121212"/>
+<path d="M960 176L960 144L640 144L640 176L960 176Z" fill="#121212"/>
+<path d="M960 104L960 72L640 72L640 104L960 104Z" fill="#121212"/>
+<path d="M960 320L960 288L640 288L640 320L960 320Z" fill="#121212"/>
+<path d="M960 32L960 0L640 -4.19629e-05L640 32L960 32Z" fill="#121212"/>
+<rect width="320" height="320" transform="translate(320 320) rotate(-90)" fill="#FFA300"/>
+<path d="M640 248L640 216L320 216L320 248L640 248Z" fill="#121212"/>
+<path d="M640 176L640 144L320 144L320 176L640 176Z" fill="#121212"/>
+<path d="M640 104L640 72L320 72L320 104L640 104Z" fill="#121212"/>
+<path d="M640 320L640 288L320 288L320 320L640 320Z" fill="#121212"/>
+<path d="M640 32L640 0L320 -4.19629e-05L320 32L640 32Z" fill="#121212"/>
+<g clip-path="url(#clip9_85_4058)">
+<rect width="320" height="320" transform="translate(320) rotate(90)" fill="#F3F3F3"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M160 160L320 2.79753e-05L3.05176e-05 -1.39876e-05L1.65299e-05 320L320 320L160 160Z" fill="#FFA300"/>
+</g>
+<rect width="320" height="320" transform="translate(960 320) rotate(-90)" fill="#FFA300"/>
+<path d="M1280 248L1280 216L960 216L960 248L1280 248Z" fill="#121212"/>
+<path d="M1280 176L1280 144L960 144L960 176L1280 176Z" fill="#121212"/>
+<path d="M1280 104L1280 72L960 72L960 104L1280 104Z" fill="#121212"/>
+<path d="M1280 320L1280 288L960 288L960 320L1280 320Z" fill="#121212"/>
+<path d="M1280 32L1280 0L960 -4.19629e-05L960 32L1280 32Z" fill="#121212"/>
+<g clip-path="url(#clip10_85_4058)">
+<rect width="320" height="320" transform="translate(1600 320) rotate(-180)" fill="#FFA300"/>
+<path d="M1440 240L1440 320C1528.36 320 1600 248.365 1600 160C1600 71.6352 1528.36 -3.13127e-06 1440 -6.99382e-06L1440 80C1440 80 1440 115.814 1440 160C1440 204.186 1440 240 1440 240Z" fill="#4997D0"/>
+<path d="M1280 72L1280 104L1440 104L1440 72L1280 72Z" fill="#121212"/>
+<path d="M1280 144L1280 176L1440 176L1440 144L1280 144Z" fill="#121212"/>
+<path d="M1280 216L1280 248L1440 248L1440 216L1280 216Z" fill="#121212"/>
+<path d="M1280 7.62939e-06L1280 32L1440 32L1440 1.46232e-05L1280 7.62939e-06Z" fill="#121212"/>
+<path d="M1280 288L1280 320L1440 320L1440 288L1280 288Z" fill="#121212"/>
+</g>
+<rect width="320" height="320" transform="translate(960 640)" fill="#D9D9D6"/>
+<ellipse cx="1120" cy="800" rx="120" ry="80" fill="#F3F3F3"/>
+<ellipse cx="1152" cy="800" rx="53.3333" ry="53.3333" transform="rotate(-90 1152 800)" fill="#121212"/>
+<rect width="320" height="320" transform="translate(640 640)" fill="#D9D9D6"/>
+<ellipse cx="800" cy="800" rx="120" ry="80" fill="#F3F3F3"/>
+<ellipse cx="831.999" cy="800" rx="53.3333" ry="53.3333" transform="rotate(-90 831.999 800)" fill="#121212"/>
+</g>
+<defs>
+<clipPath id="clip0_85_4058">
+<rect width="1920" height="960" fill="#FFFFFF"/>
+</clipPath>
+<clipPath id="clip1_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="matrix(-4.37114e-08 1 1 4.37114e-08 1280 640)"/>
+</clipPath>
+<clipPath id="clip2_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 1600 640)"/>
+</clipPath>
+<clipPath id="clip3_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(640 640) rotate(90)"/>
+</clipPath>
+<clipPath id="clip4_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1280 640) rotate(-180)"/>
+</clipPath>
+<clipPath id="clip5_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(960 640) rotate(-180)"/>
+</clipPath>
+<clipPath id="clip6_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320 640) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip7_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320 320) rotate(90)"/>
+</clipPath>
+<clipPath id="clip8_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1920) rotate(90)"/>
+</clipPath>
+<clipPath id="clip9_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320) rotate(90)"/>
+</clipPath>
+<clipPath id="clip10_85_4058">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1600 320) rotate(-180)"/>
+</clipPath>
+</defs>
+</svg>

@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="960" viewBox="0 0 1920 960">
+<g clip-path="url(#clip0_81_2434)">
+<rect width="1920" height="960" fill="#F3F3F3"/>
+<rect width="320" height="320" fill="#121212"/>
+<circle cx="160" cy="160" r="80" transform="rotate(-90 160 160)" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="translate(0 640)" fill="#121212"/>
+<circle cx="160" cy="800" r="80" transform="rotate(-90 160 800)" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="translate(0 320)" fill="#121212"/>
+<circle cx="160" cy="480" r="80" transform="rotate(-90 160 480)" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="translate(640)" fill="#121212"/>
+<circle cx="800" cy="160" r="80" transform="rotate(-90 800 160)" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="translate(640 640)" fill="#121212"/>
+<circle cx="800" cy="800" r="80" transform="rotate(-90 800 800)" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="translate(640 320)" fill="#121212"/>
+<circle cx="800" cy="480" r="80" transform="rotate(-90 800 480)" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="translate(1280)" fill="#121212"/>
+<circle cx="1440" cy="160" r="80" transform="rotate(-90 1440 160)" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="translate(1280 640)" fill="#121212"/>
+<circle cx="1440" cy="800" r="80" transform="rotate(-90 1440 800)" fill="#F3F3F3"/>
+<rect width="320" height="320" transform="translate(1280 320)" fill="#121212"/>
+<circle cx="1440" cy="480" r="80" transform="rotate(-90 1440 480)" fill="#F3F3F3"/>
+<g clip-path="url(#clip1_81_2434)">
+<rect width="320" height="320" transform="translate(320)" fill="#121212"/>
+<path d="M400 240C355.817 240 320 204.183 320 160C320 115.817 355.817 80 400 80L560 80C604.183 80 640 115.817 640 160C640 204.183 604.183 240 560 240L400 240Z" fill="#F3F3F3"/>
+<ellipse cx="554.133" cy="160" rx="53.3333" ry="53.3333" transform="rotate(-90 554.133 160)" fill="#121212"/>
+</g>
+<g clip-path="url(#clip2_81_2434)">
+<rect width="320" height="320" transform="translate(320 640)" fill="#121212"/>
+<path d="M400 880C355.817 880 320 844.183 320 800C320 755.817 355.817 720 400 720L560 720C604.183 720 640 755.817 640 800C640 844.183 604.183 880 560 880L400 880Z" fill="#F3F3F3"/>
+<ellipse cx="554.133" cy="800" rx="53.3333" ry="53.3333" transform="rotate(-90 554.133 800)" fill="#FF4F00"/>
+</g>
+<g clip-path="url(#clip3_81_2434)">
+<rect width="320" height="320" transform="translate(320 320)" fill="#121212"/>
+<path d="M400 560C355.817 560 320 524.183 320 480C320 435.817 355.817 400 400 400L560 400C604.183 400 640 435.817 640 480C640 524.183 604.183 560 560 560L400 560Z" fill="#F3F3F3"/>
+</g>
+<g clip-path="url(#clip4_81_2434)">
+<rect width="320" height="320" transform="translate(960)" fill="#121212"/>
+<path d="M1040 240C995.817 240 960 204.183 960 160C960 115.817 995.817 80 1040 80L1200 80C1244.18 80 1280 115.817 1280 160C1280 204.183 1244.18 240 1200 240L1040 240Z" fill="#F3F3F3"/>
+<circle cx="1120" cy="160" r="53.3333" transform="rotate(-90 1120 160)" fill="#FF4F00"/>
+</g>
+<g clip-path="url(#clip5_81_2434)">
+<rect width="320" height="320" transform="translate(960 640)" fill="#121212"/>
+<path d="M1040 880C995.817 880 960 844.183 960 800C960 755.817 995.817 720 1040 720L1200 720C1244.18 720 1280 755.817 1280 800C1280 844.183 1244.18 880 1200 880L1040 880Z" fill="#F3F3F3"/>
+</g>
+<g clip-path="url(#clip6_81_2434)">
+<rect width="320" height="320" transform="translate(960 320)" fill="#121212"/>
+<path d="M1040 560C995.817 560 960 524.183 960 480C960 435.817 995.817 400 1040 400L1200 400C1244.18 400 1280 435.817 1280 480C1280 524.183 1244.18 560 1200 560L1040 560Z" fill="#F3F3F3"/>
+</g>
+<g clip-path="url(#clip7_81_2434)">
+<rect width="320" height="320" transform="translate(1600)" fill="#121212"/>
+<path d="M1680 240C1635.82 240 1600 204.183 1600 160C1600 115.817 1635.82 80 1680 80L1840 80C1884.18 80 1920 115.817 1920 160C1920 204.183 1884.18 240 1840 240L1680 240Z" fill="#F3F3F3"/>
+</g>
+<g clip-path="url(#clip8_81_2434)">
+<rect width="320" height="320" transform="translate(1600 640)" fill="#121212"/>
+<path d="M1680 880C1635.82 880 1600 844.183 1600 800C1600 755.817 1635.82 720 1680 720L1840 720C1884.18 720 1920 755.817 1920 800C1920 844.183 1884.18 880 1840 880L1680 880Z" fill="#F3F3F3"/>
+<circle cx="1760" cy="800" r="53.3333" transform="rotate(-90 1760 800)" fill="#121212"/>
+</g>
+<g clip-path="url(#clip9_81_2434)">
+<rect width="320" height="320" transform="translate(1600 320)" fill="#121212"/>
+<path d="M1680 560C1635.82 560 1600 524.183 1600 480C1600 435.817 1635.82 400 1680 400L1840 400C1884.18 400 1920 435.817 1920 480C1920 524.183 1884.18 560 1840 560L1680 560Z" fill="#F3F3F3"/>
+<ellipse cx="1834.13" cy="480" rx="53.3333" ry="53.3333" transform="rotate(-90 1834.13 480)" fill="#121212"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_81_2434">
+<rect width="1920" height="960" fill="#FFFFFF"/>
+</clipPath>
+<clipPath id="clip1_81_2434">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320)"/>
+</clipPath>
+<clipPath id="clip2_81_2434">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320 640)"/>
+</clipPath>
+<clipPath id="clip3_81_2434">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(320 320)"/>
+</clipPath>
+<clipPath id="clip4_81_2434">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(960)"/>
+</clipPath>
+<clipPath id="clip5_81_2434">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(960 640)"/>
+</clipPath>
+<clipPath id="clip6_81_2434">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(960 320)"/>
+</clipPath>
+<clipPath id="clip7_81_2434">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1600)"/>
+</clipPath>
+<clipPath id="clip8_81_2434">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1600 640)"/>
+</clipPath>
+<clipPath id="clip9_81_2434">
+<rect width="320" height="320" fill="#FFFFFF" transform="translate(1600 320)"/>
+</clipPath>
+</defs>
+</svg>

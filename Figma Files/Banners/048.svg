@@ -1,0 +1,208 @@
+<svg width="1920" height="960" viewBox="0 0 1920 960" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_95_6498)">
+<rect width="1920" height="960" fill="#F3F3F3"/>
+<g clip-path="url(#clip1_95_6498)">
+<rect width="320" height="320" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 1280 640)" fill="#121212"/>
+<circle cx="64" cy="64" r="64" transform="matrix(1 5.56363e-08 5.56363e-08 -1 960 384)" fill="#48A0CC"/>
+<circle cx="64" cy="64" r="64" transform="matrix(1 5.56363e-08 5.56363e-08 -1 1088 384)" fill="#48A0CC"/>
+<circle cx="64" cy="64" r="64" transform="matrix(1 5.56363e-08 5.56363e-08 -1 1216 512)" fill="#48A0CC"/>
+<circle cx="64" cy="64" r="64" transform="matrix(1 5.56363e-08 5.56363e-08 -1 1216 640)" fill="#48A0CC"/>
+<circle cx="64" cy="64" r="64" transform="matrix(1 5.56363e-08 5.56363e-08 -1 1216 384)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip2_95_6498)">
+<rect width="320" height="320" transform="translate(320 640) rotate(90)" fill="#FF4F00"/>
+<circle cx="64" cy="960" r="64" fill="#48A0CC"/>
+<circle cx="192" cy="960" r="64" fill="#48A0CC"/>
+<circle cx="320" cy="832" r="64" fill="#48A0CC"/>
+<circle cx="320" cy="704" r="64" fill="#48A0CC"/>
+<circle cx="320" cy="960" r="64" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip3_95_6498)">
+<rect width="320" height="320" transform="translate(960 640) rotate(-180)" fill="#FF4F00"/>
+<circle cx="640" cy="384" r="64" transform="rotate(90 640 384)" fill="#48A0CC"/>
+<circle cx="640" cy="512" r="64" transform="rotate(90 640 512)" fill="#48A0CC"/>
+<circle cx="768" cy="640" r="64" transform="rotate(90 768 640)" fill="#48A0CC"/>
+<circle cx="896" cy="640" r="64" transform="rotate(90 896 640)" fill="#48A0CC"/>
+<circle cx="640" cy="640" r="64" transform="rotate(90 640 640)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip4_95_6498)">
+<rect width="320" height="320" transform="translate(640 640) rotate(-180)" fill="#FF4F00"/>
+<circle cx="320" cy="384" r="64" transform="rotate(90 320 384)" fill="#48A0CC"/>
+<circle cx="320" cy="512" r="64" transform="rotate(90 320 512)" fill="#48A0CC"/>
+<circle cx="448" cy="640" r="64" transform="rotate(90 448 640)" fill="#48A0CC"/>
+<circle cx="576" cy="640" r="64" transform="rotate(90 576 640)" fill="#48A0CC"/>
+<circle cx="320" cy="640" r="64" transform="rotate(90 320 640)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip5_95_6498)">
+<rect width="320" height="320" transform="translate(1600 960) rotate(-180)" fill="#FF4F00"/>
+<circle cx="1280" cy="704" r="64" transform="rotate(90 1280 704)" fill="#48A0CC"/>
+<circle cx="1280" cy="832" r="64" transform="rotate(90 1280 832)" fill="#48A0CC"/>
+<circle cx="1408" cy="960" r="64" transform="rotate(90 1408 960)" fill="#48A0CC"/>
+<circle cx="1536" cy="960" r="64" transform="rotate(90 1536 960)" fill="#48A0CC"/>
+<circle cx="1280" cy="960" r="64" transform="rotate(90 1280 960)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip6_95_6498)">
+<rect width="320" height="320" transform="translate(0 640) rotate(-90)" fill="#121212"/>
+<circle cx="256" cy="320" r="64" transform="rotate(180 256 320)" fill="#48A0CC"/>
+<circle cx="128" cy="320" r="64" transform="rotate(180 128 320)" fill="#48A0CC"/>
+<circle cx="2.53976e-07" cy="448" r="64" transform="rotate(180 2.53976e-07 448)" fill="#48A0CC"/>
+<circle cx="2.53976e-07" cy="576" r="64" transform="rotate(180 2.53976e-07 576)" fill="#48A0CC"/>
+<circle cx="2.53976e-07" cy="320" r="64" transform="rotate(180 2.53976e-07 320)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip7_95_6498)">
+<rect width="320" height="320" transform="translate(1280 960) rotate(180)" fill="#121212"/>
+<circle cx="960" cy="704" r="64" transform="rotate(90 960 704)" fill="#48A0CC"/>
+<circle cx="960" cy="832" r="64" transform="rotate(90 960 832)" fill="#48A0CC"/>
+<circle cx="1088" cy="960" r="64" transform="rotate(90 1088 960)" fill="#48A0CC"/>
+<circle cx="1216" cy="960" r="64" transform="rotate(90 1216 960)" fill="#48A0CC"/>
+<circle cx="960" cy="960" r="64" transform="rotate(90 960 960)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip8_95_6498)">
+<rect width="320" height="320" transform="translate(960 320) rotate(-90)" fill="#121212"/>
+<circle cx="1216" cy="5.84903e-06" r="64" transform="rotate(180 1216 5.84903e-06)" fill="#48A0CC"/>
+<circle cx="1088" cy="5.84903e-06" r="64" transform="rotate(180 1088 5.84903e-06)" fill="#48A0CC"/>
+<circle cx="960" cy="128" r="64" transform="rotate(180 960 128)" fill="#48A0CC"/>
+<circle cx="960" cy="256" r="64" transform="rotate(180 960 256)" fill="#48A0CC"/>
+<circle cx="960" cy="5.84903e-06" r="64" transform="rotate(180 960 5.84903e-06)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip9_95_6498)">
+<rect width="320" height="320" transform="translate(1600) rotate(90)" fill="#FF4F00"/>
+<circle cx="1344" cy="320" r="64" fill="#48A0CC"/>
+<circle cx="1472" cy="320" r="64" fill="#48A0CC"/>
+<circle cx="1600" cy="192" r="64" fill="#48A0CC"/>
+<circle cx="1600" cy="64" r="64" fill="#48A0CC"/>
+<circle cx="1600" cy="320" r="64" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip10_95_6498)">
+<rect width="320" height="320" transform="translate(1920) rotate(90)" fill="#FF4F00"/>
+<circle cx="1664" cy="320" r="64" fill="#48A0CC"/>
+<circle cx="1792" cy="320" r="64" fill="#48A0CC"/>
+<circle cx="1920" cy="192" r="64" fill="#48A0CC"/>
+<circle cx="1920" cy="64" r="64" fill="#48A0CC"/>
+<circle cx="1920" cy="320" r="64" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip11_95_6498)">
+<rect width="320" height="320" transform="translate(320) rotate(90)" fill="#FF4F00"/>
+<circle cx="64" cy="320" r="64" fill="#48A0CC"/>
+<circle cx="192" cy="320" r="64" fill="#48A0CC"/>
+<circle cx="320" cy="192" r="64" fill="#48A0CC"/>
+<circle cx="320" cy="64" r="64" fill="#48A0CC"/>
+<circle cx="320" cy="320" r="64" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip12_95_6498)">
+<rect width="320" height="320" transform="matrix(0 -1 1 0 1280 640)" fill="#FF4F00"/>
+<circle cx="1536" cy="320" r="64" transform="rotate(180 1536 320)" fill="#48A0CC"/>
+<circle cx="1408" cy="320" r="64" transform="rotate(180 1408 320)" fill="#48A0CC"/>
+<circle cx="1280" cy="448" r="64" transform="rotate(180 1280 448)" fill="#48A0CC"/>
+<circle cx="1280" cy="576" r="64" transform="rotate(180 1280 576)" fill="#48A0CC"/>
+<circle cx="1280" cy="320" r="64" transform="rotate(180 1280 320)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip13_95_6498)">
+<rect width="320" height="320" transform="translate(1600 640) rotate(-90)" fill="#FF4F00"/>
+<circle cx="1856" cy="320" r="64" transform="rotate(180 1856 320)" fill="#48A0CC"/>
+<circle cx="1728" cy="320" r="64" transform="rotate(180 1728 320)" fill="#48A0CC"/>
+<circle cx="1600" cy="448" r="64" transform="rotate(180 1600 448)" fill="#48A0CC"/>
+<circle cx="1600" cy="576" r="64" transform="rotate(180 1600 576)" fill="#48A0CC"/>
+<circle cx="1600" cy="320" r="64" transform="rotate(180 1600 320)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip14_95_6498)">
+<rect width="320" height="320" transform="translate(1600 640)" fill="#FF4F00"/>
+<circle cx="1920" cy="896" r="64" transform="rotate(-90 1920 896)" fill="#48A0CC"/>
+<circle cx="1920" cy="768" r="64" transform="rotate(-90 1920 768)" fill="#48A0CC"/>
+<circle cx="1792" cy="640" r="64" transform="rotate(-90 1792 640)" fill="#48A0CC"/>
+<circle cx="1664" cy="640" r="64" transform="rotate(-90 1664 640)" fill="#48A0CC"/>
+<circle cx="1920" cy="640" r="64" transform="rotate(-90 1920 640)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip15_95_6498)">
+<rect width="320" height="320" transform="translate(640 640)" fill="#121212"/>
+<circle cx="960" cy="896" r="64" transform="rotate(-90 960 896)" fill="#48A0CC"/>
+<circle cx="960" cy="768" r="64" transform="rotate(-90 960 768)" fill="#48A0CC"/>
+<circle cx="832" cy="640" r="64" transform="rotate(-90 832 640)" fill="#48A0CC"/>
+<circle cx="704" cy="640" r="64" transform="rotate(-90 704 640)" fill="#48A0CC"/>
+<circle cx="960" cy="640" r="64" transform="rotate(-90 960 640)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip16_95_6498)">
+<rect width="320" height="320" transform="translate(320 640)" fill="#121212"/>
+<circle cx="640" cy="896" r="64" transform="rotate(-90 640 896)" fill="#48A0CC"/>
+<circle cx="640" cy="768" r="64" transform="rotate(-90 640 768)" fill="#48A0CC"/>
+<circle cx="512" cy="640" r="64" transform="rotate(-90 512 640)" fill="#48A0CC"/>
+<circle cx="384" cy="640" r="64" transform="rotate(-90 384 640)" fill="#48A0CC"/>
+<circle cx="640" cy="640" r="64" transform="rotate(-90 640 640)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip17_95_6498)">
+<rect width="320" height="320" transform="translate(320)" fill="#121212"/>
+<circle cx="640" cy="256" r="64" transform="rotate(-90 640 256)" fill="#48A0CC"/>
+<circle cx="640" cy="128" r="64" transform="rotate(-90 640 128)" fill="#48A0CC"/>
+<circle cx="512" cy="1.01717e-06" r="64" transform="rotate(-90 512 1.01717e-06)" fill="#48A0CC"/>
+<circle cx="384" cy="1.01717e-06" r="64" transform="rotate(-90 384 1.01717e-06)" fill="#48A0CC"/>
+<circle cx="640" cy="1.01717e-06" r="64" transform="rotate(-90 640 1.01717e-06)" fill="#48A0CC"/>
+</g>
+<g clip-path="url(#clip18_95_6498)">
+<rect width="320" height="320" transform="translate(960 320) rotate(-180)" fill="#FF4F00"/>
+<circle cx="640" cy="64" r="64" transform="rotate(90 640 64)" fill="#48A0CC"/>
+<circle cx="640" cy="192" r="64" transform="rotate(90 640 192)" fill="#48A0CC"/>
+<circle cx="768" cy="320" r="64" transform="rotate(90 768 320)" fill="#48A0CC"/>
+<circle cx="896" cy="320" r="64" transform="rotate(90 896 320)" fill="#48A0CC"/>
+<circle cx="640" cy="320" r="64" transform="rotate(90 640 320)" fill="#48A0CC"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_95_6498">
+<rect width="1920" height="960" fill="white"/>
+</clipPath>
+<clipPath id="clip1_95_6498">
+<rect width="320" height="320" fill="white" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 1280 640)"/>
+</clipPath>
+<clipPath id="clip2_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(320 640) rotate(90)"/>
+</clipPath>
+<clipPath id="clip3_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(960 640) rotate(-180)"/>
+</clipPath>
+<clipPath id="clip4_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(640 640) rotate(-180)"/>
+</clipPath>
+<clipPath id="clip5_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(1600 960) rotate(-180)"/>
+</clipPath>
+<clipPath id="clip6_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(0 640) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip7_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(1280 960) rotate(180)"/>
+</clipPath>
+<clipPath id="clip8_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(960 320) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip9_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(1600) rotate(90)"/>
+</clipPath>
+<clipPath id="clip10_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(1920) rotate(90)"/>
+</clipPath>
+<clipPath id="clip11_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(320) rotate(90)"/>
+</clipPath>
+<clipPath id="clip12_95_6498">
+<rect width="320" height="320" fill="white" transform="matrix(0 -1 1 0 1280 640)"/>
+</clipPath>
+<clipPath id="clip13_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(1600 640) rotate(-90)"/>
+</clipPath>
+<clipPath id="clip14_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(1600 640)"/>
+</clipPath>
+<clipPath id="clip15_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(640 640)"/>
+</clipPath>
+<clipPath id="clip16_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(320 640)"/>
+</clipPath>
+<clipPath id="clip17_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(320)"/>
+</clipPath>
+<clipPath id="clip18_95_6498">
+<rect width="320" height="320" fill="white" transform="translate(960 320) rotate(-180)"/>
+</clipPath>
+</defs>
+</svg>
