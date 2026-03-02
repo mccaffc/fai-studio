@@ -2,22 +2,24 @@
 """
 Phase 2: Build Tile Manifest
 
-Analyzes cleaned shape tile SVGs and builds tiles-manifest.json with
-computed metadata for each tile: shape_family, visual_weight, edge_type,
-and rendering classification. Also embeds the composition grammar
-(energy levels, adjacency rules, grid spec).
+Analyzes shape tile SVGs and builds tiles-manifest.json with computed metadata
+for each tile: shape_family, visual_weight, edge_type, edge_coverage, symmetry,
+corner_type, complexity, and rendering classification.
 
 Uses macOS qlmanage for SVG-to-PNG rendering, then Pillow for pixel analysis.
 
 Usage:
     python build_manifest.py
     python build_manifest.py --shapes-dir path/to/shapes-clean --output manifest.json
+    python build_manifest.py --shapes-dir output/shapes-simplified --output tiles-manifest-v2.json
 """
 
 import argparse
 import io
 import json
+import math
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -61,6 +63,10 @@ class TileMetadata:
     visual_weight: float       # 0.0–1.0
     weight_band: str           # "light" | "medium" | "heavy"
     edge_type: dict            # {"top": bool, "right": bool, "bottom": bool, "left": bool}
+    edge_coverage: dict        # {"top": float, ...} fraction of edge pixels that are dark
+    corner_touch: dict         # {"tl": bool, "tr": bool, "bl": bool, "br": bool}
+    symmetry: str              # "none"|"horizontal"|"vertical"|"both"|"rotational"
+    complexity: str            # "simple"|"moderate"|"complex" based on path segment count
     has_clippath: bool
     has_background_rect: bool  # figure-on-ground vs full-bleed
     path_count: int
@@ -126,10 +132,11 @@ def compute_visual_weight(img: Image.Image) -> tuple[float, str]:
     return round(ratio, 4), band
 
 
-def compute_edge_type(img: Image.Image) -> dict[str, bool]:
+def compute_edge_type(img: Image.Image) -> tuple[dict, dict]:
     """
     Determine which edges have foreground shapes touching the boundary.
-    Samples the border pixels and checks for dark (foreground) pixels.
+    Returns (bool_dict, coverage_dict) where coverage is fraction 0.0–1.0 of
+    edge pixels that are dark (foreground).
     """
     w, h = img.size
     pixels = img.load()
@@ -137,24 +144,107 @@ def compute_edge_type(img: Image.Image) -> dict[str, bool]:
     # Sample border strips (2px deep for robustness against anti-aliasing)
     depth = 2
 
-    def has_dark_in_strip(positions):
-        for x, y in positions:
-            r, g, b = pixels[x, y]
-            if _is_dark_pixel(r, g, b):
-                return True
-        return False
+    def edge_stats(positions: list) -> tuple[bool, float]:
+        if not positions:
+            return False, 0.0
+        # Deduplicate by x-coordinate for top/bottom, y for left/right
+        # to count unique column/row positions, not pixel pairs
+        dark = sum(1 for x, y in positions if _is_dark_pixel(*pixels[x, y]))
+        # Normalise by span (w or h), not total including depth
+        unique_span = len(set(x for x, y in positions)) or len(set(y for x, y in positions)) or 1
+        cov = round(dark / (unique_span * depth), 3)
+        return dark > 0, min(cov, 1.0)
 
-    top_positions = [(x, y) for y in range(depth) for x in range(w)]
-    bottom_positions = [(x, y) for y in range(h - depth, h) for x in range(w)]
-    left_positions = [(x, y) for x in range(depth) for y in range(h)]
-    right_positions = [(x, y) for x in range(w - depth, w) for y in range(h)]
+    top_pos    = [(x, y) for y in range(depth)         for x in range(w)]
+    bottom_pos = [(x, y) for y in range(h-depth, h)    for x in range(w)]
+    left_pos   = [(x, y) for x in range(depth)         for y in range(h)]
+    right_pos  = [(x, y) for x in range(w-depth, w)    for y in range(h)]
 
+    t_bool, t_cov = edge_stats(top_pos)
+    b_bool, b_cov = edge_stats(bottom_pos)
+    l_bool, l_cov = edge_stats(left_pos)
+    r_bool, r_cov = edge_stats(right_pos)
+
+    edge_type     = {"top": t_bool, "right": r_bool, "bottom": b_bool, "left": l_bool}
+    edge_coverage = {"top": t_cov,  "right": r_cov,  "bottom": b_cov,  "left": l_cov}
+    return edge_type, edge_coverage
+
+
+def compute_corner_touch(img: Image.Image, corner_size: int = 12) -> dict[str, bool]:
+    """
+    Check which corners have dark pixels within a corner_size×corner_size region.
+    """
+    w, h = img.size
+    pixels = img.load()
+
+    def any_dark_in(xs, ys):
+        return any(_is_dark_pixel(*pixels[x, y]) for x in xs for y in ys)
+
+    cs = min(corner_size, w, h)
     return {
-        "top": has_dark_in_strip(top_positions),
-        "right": has_dark_in_strip(right_positions),
-        "bottom": has_dark_in_strip(bottom_positions),
-        "left": has_dark_in_strip(left_positions),
+        "tl": any_dark_in(range(cs), range(cs)),
+        "tr": any_dark_in(range(w-cs, w), range(cs)),
+        "bl": any_dark_in(range(cs), range(h-cs, h)),
+        "br": any_dark_in(range(w-cs, w), range(h-cs, h)),
     }
+
+
+def compute_symmetry(img: Image.Image, threshold: float = 0.92) -> str:
+    """
+    Detect approximate symmetry by comparing halves.
+    Returns "none"|"horizontal"|"vertical"|"both"|"rotational".
+    """
+    import numpy as np
+
+    arr = np.array(img.convert("L"), dtype=np.float32)
+    h, w = arr.shape
+
+    def similarity(a, b):
+        diff = np.abs(a.astype(float) - b.astype(float))
+        return 1.0 - diff.mean() / 255.0
+
+    top  = arr[:h//2, :]
+    bot  = arr[h//2:h//2 + h//2, :]
+    left = arr[:, :w//2]
+    rgt  = arr[:, w//2:w//2 + w//2]
+
+    h_sym = similarity(top, bot[::-1, :]) >= threshold       # horizontal (top↔bottom)
+    v_sym = similarity(left, rgt[:, ::-1]) >= threshold      # vertical (left↔right)
+    rot_sym = similarity(arr, arr[::-1, ::-1]) >= threshold  # 180° rotational
+
+    if h_sym and v_sym:
+        return "both"
+    if h_sym:
+        return "horizontal"
+    if v_sym:
+        return "vertical"
+    if rot_sym:
+        return "rotational"
+    return "none"
+
+
+def compute_complexity(svg_path: Path) -> str:
+    """
+    Count path segment commands to classify complexity.
+    simple (<20 commands), moderate (20–80), complex (>80).
+    """
+    try:
+        tree = etree.parse(str(svg_path))
+        d_values = [
+            elem.get("d", "")
+            for elem in tree.iter()
+            if isinstance(elem.tag, str) and etree.QName(elem.tag).localname == "path"
+        ]
+        d_all = " ".join(d_values)
+        # Count command letters
+        count = len(re.findall(r"[MLHVCSQTAZmlhvcsqtaz]", d_all))
+        if count < 20:
+            return "simple"
+        if count < 80:
+            return "moderate"
+        return "complex"
+    except Exception:
+        return "simple"
 
 
 # ── SVG Structure Analysis ───────────────────────────────
@@ -264,14 +354,20 @@ def build_manifest(shapes_dir: Path) -> dict:
         try:
             img = render_svg_to_image(svg_path, RENDER_SIZE)
             weight, band = compute_visual_weight(img)
-            edges = compute_edge_type(img)
+            edge_type, edge_coverage = compute_edge_type(img)
+            corner_touch = compute_corner_touch(img)
+            symmetry = compute_symmetry(img)
         except Exception as e:
             print(f"  WARNING: Could not render {filename}: {e}")
             weight, band = 0.0, "light"
-            edges = {"top": False, "right": False, "bottom": False, "left": False}
+            edge_type     = {"top": False, "right": False, "bottom": False, "left": False}
+            edge_coverage = {"top": 0.0,   "right": 0.0,   "bottom": 0.0,   "left": 0.0}
+            corner_touch  = {"tl": False, "tr": False, "bl": False, "br": False}
+            symmetry      = "none"
 
         # SVG structure analysis
         structure = analyze_svg_structure(svg_path)
+        complexity = compute_complexity(svg_path)
 
         tile = TileMetadata(
             id=tile_id,
@@ -279,7 +375,11 @@ def build_manifest(shapes_dir: Path) -> dict:
             shape_family=family,
             visual_weight=weight,
             weight_band=band,
-            edge_type=edges,
+            edge_type=edge_type,
+            edge_coverage=edge_coverage,
+            corner_touch=corner_touch,
+            symmetry=symmetry,
+            complexity=complexity,
             has_clippath=structure["has_clippath"],
             has_background_rect=structure["has_background_rect"],
             path_count=structure["path_count"],
@@ -292,7 +392,7 @@ def build_manifest(shapes_dir: Path) -> dict:
 
     # Build the full manifest
     manifest = {
-        "version": "1.0",
+        "version": "2.0",
         "generated": datetime.now(timezone.utc).isoformat(),
         "source_dir": str(shapes_dir),
         "tile_count": len(tiles),
@@ -390,8 +490,15 @@ def main():
     for t in tiles:
         bands[t["weight_band"]] += 1
 
+    syms = {}
+    for t in tiles:
+        s = t.get("symmetry", "none")
+        syms[s] = syms.get(s, 0) + 1
+    edge_touch = sum(1 for t in tiles if any(t["edge_type"].values()))
     print(f"  Shape families: {len(families)} ({', '.join(sorted(families))})")
     print(f"  Weight distribution: light={bands['light']}, medium={bands['medium']}, heavy={bands['heavy']}")
+    print(f"  Tiles touching any edge: {edge_touch}")
+    print(f"  Symmetry: {syms}")
     print(f"  With background rect: {sum(1 for t in tiles if t['has_background_rect'])}")
     print(f"  With clipPath: {sum(1 for t in tiles if t['has_clippath'])}")
 
