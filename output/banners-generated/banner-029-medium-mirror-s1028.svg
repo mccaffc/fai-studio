@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1920" height="960" viewBox="0 0 1920 960">
+  <rect x="0" y="0" width="320" height="320" fill="#FFFFFF"/>
+  <g transform="translate(0,0) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M175 25L175 175L25 175L25 25L175 25Z" fill="#4997D0"/>
+</g>
+  <rect x="320" y="0" width="320" height="320" fill="#121212"/>
+  <g transform="translate(320,0) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M190 1.8399e-05L190 190L8.74228e-06 190L4.61155e-05 -6.51651e-06L190 1.8399e-05Z" fill="#FF4F00"/>
+</g>
+  <rect x="640" y="0" width="320" height="320" fill="#FFFFFF"/>
+  <g transform="translate(640,0) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M100 2.18557e-05L100 100L8.74228e-06 100L2.84124e-05 8.74228e-06L100 2.18557e-05Z" fill="#4997D0"/>
+</g>
+  <rect x="960" y="0" width="320" height="320" fill="#4997D0"/>
+  <g transform="translate(960,0) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M195 5.00003L195 195L5.00001 195L5.00005 5.00001L195 5.00003Z M200 8.74228e-06L8.74228e-06 200V8.74228e-06H200Z M100 200L200 100V200H100Z" fill="#FFFFFF"/>
+</g>
+  <rect x="1280" y="0" width="320" height="320" fill="#121212"/>
+  <g transform="translate(1280,0) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M190 1.8399e-05L190 190L8.74228e-06 190L4.61155e-05 -6.51651e-06L190 1.8399e-05Z" fill="#FFFFFF"/>
+</g>
+  <rect x="1600" y="0" width="320" height="320" fill="#FFFFFF"/>
+  <g transform="translate(1600,0) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M200 50L200 150L8.74228e-06 150L3.49691e-05 50L200 50Z" fill="#121212"/>
+</g>
+  <rect x="0" y="320" width="320" height="320" fill="#4997D0"/>
+  <g transform="translate(0,320) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M195 5.00003L195 195L5.00001 195L5.00005 5.00001L195 5.00003Z M200 8.74228e-06L8.74228e-06 200V8.74228e-06H200Z M100 200L200 100V200H100Z" fill="#FFFFFF"/>
+</g>
+  <rect x="320" y="320" width="320" height="320" fill="#F3F3F3"/>
+  <g transform="translate(320,320) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M100 2.18557e-05L100 100L8.74228e-06 100L2.84124e-05 8.74228e-06L100 2.18557e-05Z" fill="#121212"/>
+</g>
+  <rect x="640" y="320" width="320" height="320" fill="#FFFFFF"/>
+  <g transform="translate(640,320) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M100 2.18557e-05L100 100L8.74228e-06 100L2.84124e-05 8.74228e-06L100 2.18557e-05Z" fill="#FF4F00"/>
+</g>
+  <rect x="960" y="320" width="320" height="320" fill="#F3F3F3"/>
+  <g transform="translate(960,320) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M150 50L150 150L50 150L50 50L150 50Z" fill="#121212"/>
+</g>
+  <rect x="1280" y="320" width="320" height="320" fill="#FF4F00"/>
+  <g transform="translate(1280,320) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M190 1.8399e-05L190 190L8.74228e-06 190L4.61155e-05 -6.51651e-06L190 1.8399e-05Z" fill="#FFFFFF"/>
+</g>
+  <rect x="1600" y="320" width="320" height="320" fill="#F3F3F3"/>
+  <g transform="translate(1600,320) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M175 25L175 175L25 175L25 25L175 25Z" fill="#FF4F00"/>
+</g>
+  <rect x="0" y="640" width="320" height="320" fill="#121212"/>
+  <g transform="translate(0,640) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M175 25L175 175L25 175L25 25L175 25Z" fill="#FF4F00"/>
+</g>
+  <rect x="320" y="640" width="320" height="320" fill="#121212"/>
+  <g transform="translate(320,640) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M200 75L200 125L8.74228e-06 125L2.84124e-05 75L200 75Z" fill="#4997D0"/>
+</g>
+  <rect x="640" y="640" width="320" height="320" fill="#FFFFFF"/>
+  <g transform="translate(640,640) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M100 2.18557e-05L100 100L8.74228e-06 100L2.84124e-05 8.74228e-06L100 2.18557e-05Z" fill="#121212"/>
+</g>
+  <rect x="960" y="640" width="320" height="320" fill="#FF4F00"/>
+  <g transform="translate(960,640) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M195 5.00003L195 195L5.00001 195L5.00005 5.00001L195 5.00003Z M200 8.74228e-06L8.74228e-06 200V8.74228e-06H200Z M100 200L200 100V200H100Z" fill="#FFFFFF"/>
+</g>
+  <rect x="1280" y="640" width="320" height="320" fill="#121212"/>
+  <g transform="translate(1280,640) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M190 1.8399e-05L190 190L8.74228e-06 190L4.61155e-05 -6.51651e-06L190 1.8399e-05Z" fill="#FFFFFF"/>
+</g>
+  <rect x="1600" y="640" width="320" height="320" fill="#FFFFFF"/>
+  <g transform="translate(1600,640) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M195 5.00003L195 195L5.00001 195L5.00005 5.00001L195 5.00003Z M200 8.74228e-06L8.74228e-06 200V8.74228e-06H200Z M100 200L200 100V200H100Z" fill="#4997D0"/>
+</g>
+</svg>

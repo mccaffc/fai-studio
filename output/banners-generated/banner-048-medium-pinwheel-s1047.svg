@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1920" height="960" viewBox="0 0 1920 960">
+  <rect x="0" y="0" width="320" height="320" fill="#4997D0"/>
+  <g transform="translate(0,0) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M2.18557e-06 150L0 200L200 200L200 8.74228e-06L150 0.0373421C150 91.5 75 150 2.18557e-06 150Z" fill="#FFFFFF"/>
+</g>
+  <rect x="320" y="0" width="320" height="320" fill="#FF4F00"/>
+  <g transform="translate(320,0) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M200 200C144.772 200 8.74228e-06 200 8.74228e-06 200C8.74228e-06 144.772 44.7715 100 100 100C155.228 100 200 144.772 200 200Z" fill="#121212"/>
+</g>
+  <rect x="640" y="0" width="320" height="320" fill="#121212"/>
+  <g transform="translate(640,0) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M200 3.49691e-05L158.802 14.981C131.366 24.9578 105.224 38.1843 80.9328 54.3781C56.3423 70.7718 30.613 85.3893 3.9409 98.1191L8.74228e-06 100L2.73743e-05 8.74228e-06L200 3.49691e-05Z" fill="#FFFFFF"/>
+</g>
+  <rect x="960" y="0" width="320" height="320" fill="#4997D0"/>
+  <g transform="translate(960,0) scale(1.6) rotate(270,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M200 200C132.395 150.473 132.395 49.5275 200 2.62268e-05L-5.22929e-05 0L-6.10352e-05 200L200 200Z" fill="#D9D9D6"/>
+</g>
+  <rect x="1280" y="0" width="320" height="320" fill="#FF4F00"/>
+  <g transform="translate(1280,0) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M149.958 50L150 199.958L6.59691e-06 200C-0.0240027 117.181 67.116 50.024 149.958 50Z" fill="#D9D9D6"/>
+</g>
+  <rect x="1600" y="0" width="320" height="320" fill="#121212"/>
+  <g transform="translate(1600,0) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M149.958 50L150 199.958L6.59691e-06 200C-0.0240027 117.181 67.116 50.024 149.958 50Z" fill="#D9D9D6"/>
+</g>
+  <rect x="0" y="320" width="320" height="320" fill="#121212"/>
+  <g transform="translate(0,320) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M25.0,100.0 A75.0,75.0 0 1,0 175.0,100.0 A75.0,75.0 0 1,0 25.0,100.0 Z" fill="#FF4F00"/>
+</g>
+  <rect x="320" y="320" width="320" height="320" fill="#F3F3F3"/>
+  <g transform="translate(320,320) scale(1.6) rotate(270,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M150 8.70392e-06L0.0420009 8.70392e-06L2.18557e-06 150C82.8188 150.024 149.976 82.842 150 8.70392e-06Z" fill="#121212"/>
+</g>
+  <rect x="640" y="320" width="320" height="320" fill="#121212"/>
+  <g transform="translate(640,320) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M0.0,100.0 A100.0,100.0 0 1,0 200.0,100.0 A100.0,100.0 0 1,0 0.0,100.0 Z" fill="#FFFFFF"/>
+</g>
+  <rect x="960" y="320" width="320" height="320" fill="#F3F3F3"/>
+  <g transform="translate(960,320) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M25.0,100.0 A75.0,75.0 0 1,0 175.0,100.0 A75.0,75.0 0 1,0 25.0,100.0 Z" fill="#121212"/>
+</g>
+  <rect x="1280" y="320" width="320" height="320" fill="#F3F3F3"/>
+  <g transform="translate(1280,320) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M200 3.49691e-05L200 3.49691e-05C144.149 43.2927 80.768 75.8745 13.0589 96.0993L8.74228e-06 100L2.73743e-05 8.74228e-06L200 3.49691e-05Z" fill="#FFA300"/>
+</g>
+  <rect x="1600" y="320" width="320" height="320" fill="#121212"/>
+  <g transform="translate(1600,320) scale(1.6) rotate(270,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M0.0,100.0 A100.0,100.0 0 1,0 200.0,100.0 A100.0,100.0 0 1,0 0.0,100.0 Z" fill="#D9D9D6"/>
+</g>
+  <rect x="0" y="640" width="320" height="320" fill="#FFFFFF"/>
+  <g transform="translate(0,640) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M99.972 100L100 199.972L1.74846e-05 200C-0.0159862 144.787 44.744 100.016 99.972 100Z" fill="#FFA300"/>
+</g>
+  <rect x="320" y="640" width="320" height="320" fill="#121212"/>
+  <g transform="translate(320,640) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M175 200C133.579 200 25 200 25 200C25 158.579 58.5787 125 100 125C141.421 125 175 158.579 175 200Z" fill="#FF4F00"/>
+</g>
+  <rect x="640" y="640" width="320" height="320" fill="#F3F3F3"/>
+  <g transform="translate(640,640) scale(1.6) rotate(180,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M2.18557e-06 150L0 200L200 200L200 8.74228e-06L150 0.0373421C150 91.5 75 150 2.18557e-06 150Z" fill="#FFA300"/>
+</g>
+  <rect x="960" y="640" width="320" height="320" fill="#121212"/>
+  <g transform="translate(960,640) scale(1.6) rotate(270,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M149.958 50L150 199.958L6.59691e-06 200C-0.0240027 117.181 67.116 50.024 149.958 50Z" fill="#FFFFFF"/>
+</g>
+  <rect x="1280" y="640" width="320" height="320" fill="#121212"/>
+  <g transform="translate(1280,640) scale(1.6)"><path xmlns="http://www.w3.org/2000/svg" d="M200 3.49691e-05L200 3.49691e-05C144.149 43.2927 80.768 75.8745 13.0589 96.0993L8.74228e-06 100L2.73743e-05 8.74228e-06L200 3.49691e-05Z" fill="#FFA300"/>
+</g>
+  <rect x="1600" y="640" width="320" height="320" fill="#F3F3F3"/>
+  <g transform="translate(1600,640) scale(1.6) rotate(90,100,100)"><path xmlns="http://www.w3.org/2000/svg" d="M149.958 50L150 199.958L6.59691e-06 200C-0.0240027 117.181 67.116 50.024 149.958 50Z" fill="#121212"/>
+</g>
+</svg>
