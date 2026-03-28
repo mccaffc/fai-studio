@@ -1,11 +1,11 @@
 # Tile Simplification Report
 
-**Total:** 141  |  **OK:** 140  |  **Empty:** 1  |  **Validation failed:** 0  |  **Errors:** 0
+**Total:** 142  |  **OK:** 140  |  **Empty:** 2  |  **Validation failed:** 0  |  **Errors:** 0
 
 
 ## Strategy summary
 
-- `validate_existing`: 141
+- `validate_existing`: 142
 
 ## All results
 
@@ -51,6 +51,7 @@
 | Circle/13.svg | OK | validate_existing | 3 |
 | Circle/14.svg | OK | validate_existing | 1 |
 | Circle/15.svg | OK | validate_existing | 1 |
+| shapes-clean/Clear.svg | EMPTY | validate_existing | 0 |
 | Composition/01.svg | OK | validate_existing | 1 |
 | Composition/02.svg | OK | validate_existing | 2 |
 | Composition/03.svg | OK | validate_existing | 3 |
@@ -81,7 +82,7 @@
 | Float/06.svg | OK | validate_existing | 1 |
 | Float/07.svg | OK | validate_existing | 2 |
 | Float/08.svg | OK | validate_existing | 2 |
-| Joint/01.svg | OK | validate_existing | 3 |
+| Joint/01.svg | OK | validate_existing | 2 |
 | Joint/02.svg | OK | validate_existing | 2 |
 | Joint/03.svg | OK | validate_existing | 2 |
 | Joint/04.svg | OK | validate_existing | 2 |

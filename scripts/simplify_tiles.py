@@ -29,6 +29,9 @@ from typing import Optional
 
 from lxml import etree
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from clean_svgs import geometry_to_path_d as shapely_geometry_to_path_d, sampled_path_geometry
+
 try:
     from shapely.geometry import box as shapely_box
     from shapely.geometry import Polygon, MultiPolygon, LineString, MultiLineString
@@ -61,8 +64,8 @@ WHITE_FILL = "#FFFFFF"
 # Regex to extract all numeric tokens from a path `d` attribute
 _COORD_RE = re.compile(r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?")
 
-# Match Lnan nan artefacts from Figma rounded-corner exports
-_NAN_RE = re.compile(r"[Ll]nan\s+nan\s*")
+SVG_PATH_COMMANDS = set("AaCcHhLlMmQqSsTtVvZz")
+NAN_TOKEN_RE = re.compile(r"(?i)[-+]?nan")
 
 
 # ── Data classes ─────────────────────────────────────────
@@ -183,7 +186,7 @@ def classify_tile(svg_path: Path) -> TileClassification:
                 has_rects_fg = True
             if tag == "path":
                 d = _attr(elem, "d", "")
-                if _NAN_RE.search(d):
+                if "nan" in d.lower():
                     has_nan = True
                 if "evenodd" in _attr(elem, "fill-rule", "").lower():
                     uses_evenodd = True
@@ -213,8 +216,32 @@ def classify_tile(svg_path: Path) -> TileClassification:
 
 # ── Stage 2: NaN sanitization ────────────────────────────
 def sanitize_nan(d: str) -> str:
-    """Remove Lnan nan / lnan nan segments from path data."""
-    return _NAN_RE.sub("", d).strip()
+    """Drop malformed SVG command segments containing NaN coordinates."""
+    if not d or "nan" not in d.lower():
+        return d
+
+    segments = []
+    i = 0
+    while i < len(d):
+        char = d[i]
+        if char in SVG_PATH_COMMANDS and (i == 0 or not d[i - 1].isalpha()):
+            j = i + 1
+            while j < len(d):
+                next_char = d[j]
+                if next_char in SVG_PATH_COMMANDS and not d[j - 1].isalpha():
+                    break
+                j += 1
+            segments.append(d[i:j].strip())
+            i = j
+            continue
+        i += 1
+
+    kept_segments = [
+        segment
+        for segment in segments
+        if not NAN_TOKEN_RE.search(segment)
+    ]
+    return " ".join(segment for segment in kept_segments if segment)
 
 
 # ── Stage 3: Primitive → path ────────────────────────────
@@ -293,86 +320,12 @@ def needs_clipping(d: str) -> bool:
 
 
 def _d_to_shapely(d: str, resolution: int = 64) -> Optional[object]:
-    """
-    Convert an SVG path d string to a Shapely geometry via point sampling.
-    Uses svgpathtools if available for accurate curve tracing, otherwise
-    falls back to coordinate-only extraction (good enough for simple polygons).
-    """
-    if not HAS_SHAPELY:
-        return None
-    try:
-        import svgpathtools
-        path = svgpathtools.parse_path(d)
-        if len(path) == 0:
-            return None
-        # Sample points along each subpath
-        all_subpaths = []
-        current_sub = []
-        for seg in path:
-            pts = [seg.point(t / resolution) for t in range(resolution + 1)]
-            current_sub.extend(pts)
-        if current_sub:
-            coords = [(p.real, p.imag) for p in current_sub]
-            if len(coords) >= 3:
-                try:
-                    poly = Polygon(coords)
-                    if not poly.is_valid:
-                        poly = poly.buffer(0)
-                    return poly
-                except Exception:
-                    pass
-        return None
-    except Exception:
-        return None
+    del resolution
+    return sampled_path_geometry(d)
 
 
 def _shapely_to_d(geom) -> str:
-    """Convert a Shapely geometry back to an SVG path d string."""
-    if geom is None or geom.is_empty:
-        return ""
-
-    parts = []
-
-    def _ring_to_d(coords):
-        pts = list(coords)
-        if not pts:
-            return ""
-        # Remove duplicate last point (shapely closes rings)
-        if len(pts) > 1 and pts[0] == pts[-1]:
-            pts = pts[:-1]
-        if len(pts) < 2:
-            return ""
-        d = f"M{pts[0][0]:.4f},{pts[0][1]:.4f}"
-        for x, y in pts[1:]:
-            d += f" L{x:.4f},{y:.4f}"
-        d += " Z"
-        return d
-
-    def _poly_to_d(poly):
-        d = _ring_to_d(poly.exterior.coords)
-        for interior in poly.interiors:
-            d += " " + _ring_to_d(interior.coords)
-        return d
-
-    geom_type = geom.geom_type
-    if geom_type == "Polygon":
-        parts.append(_poly_to_d(geom))
-    elif geom_type in ("MultiPolygon", "GeometryCollection"):
-        for g in geom.geoms:
-            if g.geom_type == "Polygon":
-                parts.append(_poly_to_d(g))
-    elif geom_type in ("LineString", "MultiLineString", "LinearRing"):
-        # Lines: trace as open path
-        coords = list(geom.coords) if hasattr(geom, "coords") else []
-        if coords:
-            d = f"M{coords[0][0]:.4f},{coords[0][1]:.4f}"
-            for x, y in coords[1:]:
-                d += f" L{x:.4f},{y:.4f}"
-            parts.append(d)
-    elif geom_type == "Point":
-        pass  # skip degenerate
-
-    return " ".join(p for p in parts if p)
+    return shapely_geometry_to_path_d(geom)
 
 
 def clip_d_to_box(d: str) -> str:
@@ -411,24 +364,56 @@ def clip_d_to_box(d: str) -> str:
 
 
 # ── Stage 5: Merge multiple paths ───────────────────────
-def merge_paths_to_compound(path_data: list[tuple[str, str]]) -> tuple[str, str]:
+def merge_paths_to_compound(path_data: list[tuple[str, str, str]]) -> tuple[str, str]:
     """
-    Merge a list of (d_string, fill_color) into a single compound path.
+    Merge a list of (d_string, fill_color, fill_rule) into a single compound path.
     Returns (merged_d, fill_rule).
 
     Mixed-color strategy: #F3F3F3 shapes are treated as "holes" in #121212 shapes.
-    Combined with fill-rule="evenodd", the light regions become transparent.
+    When possible, use boolean geometry so source fill-rules are preserved.
     """
+    normalized_parts = []
     dark_parts = []
     light_parts = []
 
-    for d, fill in path_data:
+    for d, fill, fill_rule in path_data:
         if not d.strip():
             continue
+        fill_rule = (fill_rule or "nonzero").lower()
+        normalized_parts.append((d, fill, fill_rule))
         if fill.upper() == BG_FILL.upper():
             light_parts.append(d)
         else:
             dark_parts.append(d)
+
+    if len(normalized_parts) == 1:
+        d, _, fill_rule = normalized_parts[0]
+        return d, fill_rule
+
+    if HAS_SHAPELY and normalized_parts:
+        needs_boolean_merge = bool(light_parts) or any(
+            fill_rule != "nonzero"
+            for _, _, fill_rule in normalized_parts
+        )
+        if needs_boolean_merge:
+            visible_geom = None
+            for d, fill, fill_rule in normalized_parts:
+                geom = sampled_path_geometry(d, fill_rule=fill_rule)
+                if geom is None or geom.is_empty:
+                    continue
+                if fill.upper() == BG_FILL.upper():
+                    if visible_geom is not None:
+                        visible_geom = visible_geom.difference(geom)
+                else:
+                    if visible_geom is None:
+                        visible_geom = geom
+                    else:
+                        visible_geom = visible_geom.union(geom)
+
+            if visible_geom is not None and not visible_geom.is_empty:
+                merged_d = shapely_geometry_to_path_d(visible_geom)
+                if merged_d:
+                    return merged_d, "nonzero"
 
     if light_parts:
         # Mixed: combine dark shapes + light "hole" shapes with evenodd
@@ -489,8 +474,7 @@ def count_dark_pixels(png_path: Path) -> int:
     if not HAS_PILLOW:
         return 0
     img = Image.open(png_path).convert("L")
-    pixels = list(img.getdata())
-    return sum(1 for p in pixels if p < 128)
+    return sum(1 for p in img.tobytes() if p < 128)
 
 
 def validate_simplification(
@@ -541,12 +525,12 @@ def simplify_tile(
             return SimplificationResult(rel, "EMPTY", "clear_tile", 0, 0)
 
         # Build list of (d_string, fill_color) from all fg elements
-        raw: list[tuple[str, str]] = []
+        raw: list[tuple[str, str, str]] = []
         for tag, fill, elem in clf.fg_elements:
             d = elem_to_d(tag, elem)
             if not d.strip():
                 continue
-            raw.append((d, fill))
+            raw.append((d, fill, _attr(elem, "fill-rule", "nonzero")))
 
         if not raw:
             write_empty_svg(output_path)
@@ -554,12 +538,12 @@ def simplify_tile(
 
         # Clip paths that genuinely overflow the bounding box
         strategy_parts = []
-        clipped: list[tuple[str, str]] = []
-        for d, fill in raw:
+        clipped: list[tuple[str, str, str]] = []
+        for d, fill, fill_rule in raw:
             if needs_clipping(d):
                 strategy_parts.append("geo_clip")
                 d = clip_d_to_box(d)
-            clipped.append((d, fill))
+            clipped.append((d, fill, fill_rule))
 
         if not strategy_parts:
             if clf.has_circles or clf.has_ellipses or clf.has_rects_fg:

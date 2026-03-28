@@ -1,12 +1,19 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-<g clip-path="url(#clip0_5_6255)">
-<rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#F3F3F3"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M200 0.0558432C199.97 55.2587 155.21 100 100 100C44.7715 100 2.76243e-05 55.2285 2.51139e-05 2.23213e-05L8.74228e-06 2.24121e-05V200C8.74228e-06 144.772 44.7715 100 100 100C155.228 100 200 144.772 200 200V0.0558432Z" fill="#121212"/>
-</g>
-<defs>
-<clipPath id="clip0_5_6255">
-<rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
-</clipPath>
-</defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 200 200">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #121212;
+      }
+
+      .st1 {
+        fill: #f3f3f3;
+      }
+    </style>
+  </defs>
+  <path class="st1" d="M0,0c0,55.23,44.77,100,100,100S199.97,55.26,200,.06v-.06H0Z"/>
+  <path class="st1" d="M100,100C44.77,100,0,144.77,0,200h200c0-55.23-44.77-100-100-100Z"/>
+  <path class="st0" d="M100,100C44.77,100,0,55.23,0,0v200c0-55.23,44.77-100,100-100Z"/>
+  <path class="st0" d="M100,100c55.23,0,100,44.77,100,100V.06c-.03,55.2-44.79,99.94-100,99.94Z"/>
 </svg>

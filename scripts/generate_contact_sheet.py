@@ -301,6 +301,8 @@ def _render_card(banner: dict, index: int) -> str:
     energy = banner["energy"]
     seed = banner["seed"]
     filename = banner["filename"]
+    label = banner.get("label") or filename
+    template = banner.get("template", "unknown")
     data_uri = banner["data_uri"]
     fg_dist = banner["fg_distribution"]
     bg_dist = banner["bg_distribution"]
@@ -347,15 +349,17 @@ def _render_card(banner: dict, index: int) -> str:
     <img class="card-img" src="{data_uri}" alt="Banner {index}" loading="lazy">
     <div class="card-body">
       <div class="card-title">
-        <span class="name">#{index:03d} &mdash; {filename}</span>
+        <span class="name">#{index:03d} &mdash; {label}</span>
         {badge}
       </div>
       <div class="color-bar">{color_bar_html}</div>
       <div class="color-legend">{legend_html}</div>
       <div class="meta-row">
         <span class="meta-tag">seed: {seed}</span>
+        <span class="meta-tag">template: {template}</span>
         <span class="meta-tag">{n_fg_colors} fg colors</span>
         <span class="meta-tag">{n_bg_colors} bg colors</span>
+        <span class="meta-tag">{filename}</span>
       </div>
     </div>
   </div>"""
@@ -384,8 +388,10 @@ def discover_banners(input_dir: Path) -> list[dict]:
 
         banners.append({
             "filename": svg_path.name,
+            "label": sidecar.get("request", {}).get("name") or svg_path.name,
             "energy": sidecar.get("energy", "unknown"),
             "seed": sidecar.get("seed", 0),
+            "template": sidecar.get("template", "unknown"),
             "dimensions": sidecar.get("dimensions", [1920, 960]),
             "color_bias": sidecar.get("color_bias"),
             "generated_at": sidecar.get("generated_at", ""),

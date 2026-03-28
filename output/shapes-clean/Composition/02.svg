@@ -1,13 +1,19 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-<g clip-path="url(#clip0_5_6323)">
-<rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#F3F3F3"/>
-<path d="M200 200C144.772 200 8.74228e-06 200 8.74228e-06 200C8.74228e-06 144.772 44.7715 100 100 100C155.228 100 200 144.772 200 200Z" fill="#121212"/>
-<path d="M1.74846e-05 -8.74228e-06C55.2285 -3.91405e-06 200 8.74228e-06 200 8.74228e-06C200 55.2285 155.228 100 100 100C44.7715 100 1.26563e-05 55.2285 1.74846e-05 -8.74228e-06Z" fill="#121212"/>
-</g>
-<defs>
-<clipPath id="clip0_5_6323">
-<rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
-</clipPath>
-</defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 200 200">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #121212;
+      }
+
+      .st1 {
+        fill: #f3f3f3;
+      }
+    </style>
+  </defs>
+  <path class="st1" d="M100,100C44.77,100,0,55.23,0,0v200c0-55.23,44.77-100,100-100Z"/>
+  <path class="st1" d="M100,100c55.23,0,100,44.77,100,100V0c0,55.23-44.77,100-100,100Z"/>
+  <path class="st0" d="M100,100C44.77,100,0,144.77,0,200h200c0-55.23-44.77-100-100-100Z"/>
+  <path class="st0" d="M100,100c55.23,0,100-44.77,100-100H0c0,55.23,44.77,100,100,100Z"/>
 </svg>
