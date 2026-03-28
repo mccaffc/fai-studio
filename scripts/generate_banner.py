@@ -11,15 +11,21 @@ The generator now works as a small generate-and-score pipeline:
   - select short continuity chains from genuine edge matches
   - assign colors jointly across continuity groups
   - score several candidates and keep the best one
+
+Single-banner usage:
+  python scripts/generate_banner.py --list-options
+  python scripts/generate_banner.py --write-spec-template banner-request.json
+  python scripts/generate_banner.py --spec banner-request.json --name policy-launch
 """
 
 import argparse
 import json
 import math
 import random
+import re
 import sys
 from collections import Counter, defaultdict
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -60,6 +66,7 @@ MOTIF_TEMPLATES = {
     "river",
     "checkerboard",
 }
+MIRROR_TEMPLATES = {"mirror", "symmetric"}
 
 FLOW_FAMILIES = {"wave", "curve", "lines", "cascade", "ramp", "angle", "open"}
 GEOMETRIC_FAMILIES = {"square", "rectangle", "circle", "mirror", "float", "composition", "centric"}
@@ -83,6 +90,201 @@ GRADIENT_COLOR_ORDER = [
     "smoke_white",
     "white",
 ]
+
+TOPIC_STYLE_PROFILES = {
+    "ai_compute_policy": {
+        "label": "AI / Compute Policy",
+        "description": "Sharper systems, model flow, and cool technical energy.",
+        "keywords": {
+            "ai": 3.0,
+            "artificial intelligence": 4.0,
+            "model": 2.0,
+            "models": 2.0,
+            "compute": 3.0,
+            "inference": 2.0,
+            "training": 2.0,
+            "chip": 2.0,
+            "chips": 2.0,
+            "semiconductor": 2.0,
+            "copyright": 2.0,
+            "open weight": 3.0,
+            "open source": 2.0,
+        },
+        "energy": "medium",
+        "template": "flow",
+        "color_bias": "celestial_blue",
+        "primary_families": ["lines", "float"],
+        "accent_families": ["circle"],
+        "continuity_strength": 0.8,
+        "symmetry_strength": 0.68,
+        "rhythm_strength": 0.82,
+    },
+    "energy_infrastructure": {
+        "label": "Energy / Infrastructure",
+        "description": "Directional movement, buildout, and load-bearing momentum.",
+        "keywords": {
+            "energy": 3.0,
+            "grid": 4.0,
+            "power": 3.0,
+            "electricity": 3.0,
+            "transmission": 2.5,
+            "permitting": 2.5,
+            "load": 2.0,
+            "baseload": 3.0,
+            "demand surge": 3.0,
+            "nuclear": 2.5,
+            "infrastructure": 3.0,
+            "buildout": 2.0,
+        },
+        "energy": "medium",
+        "template": "river",
+        "color_bias": "international_orange",
+        "primary_families": ["ramp", "open"],
+        "accent_families": ["angle"],
+        "continuity_strength": 0.88,
+        "symmetry_strength": 0.62,
+        "rhythm_strength": 0.84,
+    },
+    "industrial_supply_chain": {
+        "label": "Industry / Supply Chains",
+        "description": "Modular, manufactured, and more gridlike than organic.",
+        "keywords": {
+            "manufacturing": 3.5,
+            "industrial": 3.0,
+            "trade": 2.5,
+            "supply chain": 3.5,
+            "supply chains": 3.5,
+            "rare earth": 4.0,
+            "rare earths": 4.0,
+            "minerals": 2.5,
+            "china": 2.0,
+            "factory": 2.0,
+            "exports": 2.0,
+            "imports": 2.0,
+            "border adjustment": 3.0,
+        },
+        "energy": "medium",
+        "template": "checkerboard",
+        "color_bias": "chrome_yellow",
+        "primary_families": ["rectangle", "composition"],
+        "accent_families": ["angle"],
+        "continuity_strength": 0.58,
+        "symmetry_strength": 0.82,
+        "rhythm_strength": 0.86,
+    },
+    "governance_institutions": {
+        "label": "Governance / Institutions",
+        "description": "Orderly, balanced, and state-capacity oriented.",
+        "keywords": {
+            "governance": 3.5,
+            "institution": 3.0,
+            "institutions": 3.0,
+            "state capacity": 4.0,
+            "reform": 2.5,
+            "regulation": 2.0,
+            "agency": 2.0,
+            "agencies": 2.0,
+            "federal": 2.0,
+            "congress": 2.0,
+            "policy": 1.6,
+            "commission": 2.0,
+        },
+        "energy": "low",
+        "template": "symmetric",
+        "color_bias": "cod_gray",
+        "primary_families": ["composition", "rectangle"],
+        "accent_families": ["square"],
+        "continuity_strength": 0.68,
+        "symmetry_strength": 0.95,
+        "rhythm_strength": 0.72,
+    },
+    "frontier_science": {
+        "label": "Frontier Science / Deep Tech",
+        "description": "Orbital, precise, and slightly more exploratory.",
+        "keywords": {
+            "science": 3.0,
+            "research": 2.5,
+            "lab": 2.0,
+            "labs": 2.0,
+            "innovation": 2.0,
+            "quantum": 4.0,
+            "deep tech": 4.0,
+            "frontier": 2.0,
+            "materials": 2.0,
+            "biotech": 2.5,
+            "semiconductor": 2.0,
+            "advanced technology": 2.5,
+        },
+        "energy": "medium",
+        "template": "spiral",
+        "color_bias": "celestial_blue",
+        "primary_families": ["centric", "circle"],
+        "accent_families": ["float"],
+        "continuity_strength": 0.64,
+        "symmetry_strength": 0.78,
+        "rhythm_strength": 0.8,
+    },
+    "speech_creativity": {
+        "label": "Speech / Creativity",
+        "description": "Softer arcs, clearer focal accents, and brighter contrast.",
+        "keywords": {
+            "speech": 3.0,
+            "creator": 2.0,
+            "creative": 2.0,
+            "copyright": 4.0,
+            "media": 2.0,
+            "culture": 2.0,
+            "expression": 2.5,
+            "publishing": 1.8,
+            "story": 1.5,
+            "art": 1.5,
+        },
+        "energy": "medium",
+        "template": "mirror",
+        "color_bias": "chrome_yellow",
+        "primary_families": ["curve", "circle"],
+        "accent_families": ["float"],
+        "continuity_strength": 0.6,
+        "symmetry_strength": 0.86,
+        "rhythm_strength": 0.74,
+    },
+    "national_security": {
+        "label": "Defense / National Security",
+        "description": "Harder edges, stronger contrast, and disciplined symmetry.",
+        "keywords": {
+            "defense": 4.0,
+            "security": 3.0,
+            "military": 3.0,
+            "deterrence": 3.0,
+            "arsenal": 2.5,
+            "war": 2.0,
+            "weapon": 2.0,
+            "alliance": 2.0,
+            "national security": 4.0,
+        },
+        "energy": "medium",
+        "template": "mirror",
+        "color_bias": "cod_gray",
+        "primary_families": ["angle", "merge"],
+        "accent_families": ["rectangle"],
+        "continuity_strength": 0.72,
+        "symmetry_strength": 0.9,
+        "rhythm_strength": 0.8,
+    },
+    "general_fai": {
+        "label": "General FAI",
+        "description": "Balanced geometric language for broad policy topics.",
+        "keywords": {},
+        "energy": "medium",
+        "template": "mirror",
+        "color_bias": "international_orange",
+        "primary_families": ["composition", "circle"],
+        "accent_families": ["float"],
+        "continuity_strength": 0.72,
+        "symmetry_strength": 0.84,
+        "rhythm_strength": 0.78,
+    },
+}
 
 # After rotation R, new edge P comes from original edge SOURCE[R][P].
 EDGE_ROTATION_SOURCE = {
@@ -212,8 +414,8 @@ TEMPLATE_ENERGY_WEIGHTS = {
     "low": {
         "flow": 3,
         "river": 3,
-        "mirror": 2,
-        "symmetric": 2,
+        "mirror": 3,
+        "symmetric": 3,
         "focal": 1,
         "gradient": 1,
         "checkerboard": 1,
@@ -224,26 +426,26 @@ TEMPLATE_ENERGY_WEIGHTS = {
     "medium": {
         "pinwheel": 2,
         "spiral": 2,
-        "mirror": 2,
-        "symmetric": 2,
-        "flow": 2,
-        "river": 2,
+        "mirror": 3,
+        "symmetric": 3,
+        "flow": 3,
+        "river": 3,
         "checkerboard": 2,
-        "focal": 2,
-        "gradient": 2,
-        "scatter": 1,
+        "focal": 1.5,
+        "gradient": 1.5,
+        "scatter": 0.35,
     },
     "high": {
-        "pinwheel": 2,
-        "spiral": 2,
+        "pinwheel": 2.5,
+        "spiral": 2.5,
         "checkerboard": 2,
-        "scatter": 3,
-        "gradient": 3,
+        "scatter": 0.75,
+        "gradient": 2,
         "focal": 2,
-        "mirror": 1,
-        "symmetric": 1,
-        "flow": 1,
-        "river": 1,
+        "mirror": 1.5,
+        "symmetric": 1.5,
+        "flow": 1.5,
+        "river": 1.5,
     },
 }
 
@@ -283,6 +485,42 @@ class CandidateBanner:
 
 
 @dataclass
+class BannerRequest:
+    energy: str = "medium"
+    seed: Optional[int] = None
+    dimensions: tuple[int, int] = (1920, 960)
+    color_bias: Optional[str] = None
+    topic_description: Optional[str] = None
+    continuity_strength: float = 0.7
+    symmetry_strength: float = 0.85
+    rhythm_strength: float = 0.75
+    template: Optional[str] = None
+    candidate_count: int = 24
+    primary_families: list[str] = field(default_factory=list)
+    accent_families: list[str] = field(default_factory=list)
+    tile_ids: list[str] = field(default_factory=list)
+    name: Optional[str] = None
+
+    def normalized(self) -> "BannerRequest":
+        return BannerRequest(
+            energy=str(self.energy).lower(),
+            seed=int(self.seed) if self.seed is not None else None,
+            dimensions=normalize_dimensions(self.dimensions),
+            color_bias=self.color_bias.lower() if self.color_bias else None,
+            topic_description=normalize_topic_description(self.topic_description),
+            continuity_strength=float(self.continuity_strength),
+            symmetry_strength=float(self.symmetry_strength),
+            rhythm_strength=float(self.rhythm_strength),
+            template=self.template.lower() if self.template else None,
+            candidate_count=max(1, int(self.candidate_count)),
+            primary_families=normalize_name_list(self.primary_families),
+            accent_families=normalize_name_list(self.accent_families),
+            tile_ids=normalize_name_list(self.tile_ids),
+            name=normalize_banner_name(self.name),
+        )
+
+
+@dataclass
 class BannerResult:
     output_path: Optional[str]
     seed: int
@@ -292,18 +530,71 @@ class BannerResult:
     accent_families: list[str]
     rotation_pattern: str
     continuity_strength: float
+    symmetry_strength: float
+    rhythm_strength: float
     candidate_count: int
     dimensions: tuple[int, int]
     color_bias: Optional[str]
     score: float
     score_breakdown: dict[str, float]
     cells: list
+    request: dict
     generated_at: str
 
 
 # - Small helpers -----------------------------------------------------------
 def clamp01(value: float) -> float:
     return max(0.0, min(1.0, value))
+
+
+def normalize_banner_name(value: Optional[str]) -> Optional[str]:
+    if value is None:
+        return None
+    cleaned = value.strip()
+    return cleaned or None
+
+
+def normalize_topic_description(value: Optional[str]) -> Optional[str]:
+    if value is None:
+        return None
+    cleaned = " ".join(value.strip().split())
+    return cleaned or None
+
+
+def dedupe_preserving_order(values: list[str]) -> list[str]:
+    seen = set()
+    ordered = []
+    for value in values:
+        if value in seen:
+            continue
+        seen.add(value)
+        ordered.append(value)
+    return ordered
+
+
+def normalize_name_list(values: Optional[list[str]]) -> list[str]:
+    if not values:
+        return []
+    return dedupe_preserving_order([value.strip().lower() for value in values if value and value.strip()])
+
+
+def request_payload(request: BannerRequest) -> dict:
+    return {
+        "name": request.name,
+        "energy": request.energy,
+        "seed": request.seed,
+        "dimensions": list(request.dimensions),
+        "color_bias": request.color_bias,
+        "topic_description": request.topic_description,
+        "continuity_strength": request.continuity_strength,
+        "symmetry_strength": request.symmetry_strength,
+        "rhythm_strength": request.rhythm_strength,
+        "template": request.template,
+        "candidate_count": request.candidate_count,
+        "primary_families": normalize_name_list(request.primary_families),
+        "accent_families": normalize_name_list(request.accent_families),
+        "tile_ids": normalize_name_list(request.tile_ids),
+    }
 
 
 def pair_key(a: tuple[int, int], b: tuple[int, int]) -> tuple[tuple[int, int], tuple[int, int]]:
@@ -366,10 +657,316 @@ class UnionFind:
         return self.sizes[self.find(item)]
 
 
+def available_families(tiles: list[dict]) -> list[str]:
+    return sorted(
+        {
+            tile.get("shape_family", "")
+            for tile in tiles
+            if tile.get("shape_family") and not (tile.get("shape_family") == "lines" and "clear" in tile.get("id", ""))
+        }
+    )
+
+
+def tile_lookup(tiles: list[dict]) -> dict[str, dict]:
+    return {
+        tile["id"]: tile
+        for tile in tiles
+    }
+
+
 # - Manifest ----------------------------------------------------------------
 def load_manifest(path: Path) -> dict:
     with open(path) as handle:
         return json.load(handle)
+
+
+def load_request_spec(path: Optional[Path]) -> dict:
+    if path is None:
+        return {}
+    with open(path) as handle:
+        data = json.load(handle)
+    if not isinstance(data, dict):
+        raise ValueError("Request spec must be a JSON object")
+    return data
+
+
+def merged_value(cli_value, spec_data: dict, key: str, default):
+    if cli_value not in (None, []):
+        return cli_value
+    if key in spec_data and spec_data[key] is not None:
+        return spec_data[key]
+    return default
+
+
+def normalize_dimensions(value) -> tuple[int, int]:
+    if value is None:
+        return (1920, 960)
+    if len(value) != 2:
+        raise ValueError("dimensions must contain exactly two integers")
+    return (int(value[0]), int(value[1]))
+
+
+def build_banner_request(
+    *,
+    energy=None,
+    seed=None,
+    dimensions=None,
+    color_bias=None,
+    topic_description=None,
+    continuity_strength=None,
+    symmetry_strength=None,
+    rhythm_strength=None,
+    template=None,
+    candidate_count=None,
+    primary_families=None,
+    accent_families=None,
+    tile_ids=None,
+    name=None,
+    spec_data: Optional[dict] = None,
+) -> BannerRequest:
+    spec_data = spec_data or {}
+    request = BannerRequest(
+        energy=merged_value(energy, spec_data, "energy", "medium"),
+        seed=merged_value(seed, spec_data, "seed", None),
+        dimensions=normalize_dimensions(merged_value(dimensions, spec_data, "dimensions", [1920, 960])),
+        color_bias=merged_value(color_bias, spec_data, "color_bias", None),
+        topic_description=merged_value(topic_description, spec_data, "topic_description", None),
+        continuity_strength=float(merged_value(continuity_strength, spec_data, "continuity_strength", 0.7)),
+        symmetry_strength=float(merged_value(symmetry_strength, spec_data, "symmetry_strength", 0.85)),
+        rhythm_strength=float(merged_value(rhythm_strength, spec_data, "rhythm_strength", 0.75)),
+        template=merged_value(template, spec_data, "template", None),
+        candidate_count=int(merged_value(candidate_count, spec_data, "candidate_count", 24)),
+        primary_families=normalize_name_list(merged_value(primary_families, spec_data, "primary_families", [])),
+        accent_families=normalize_name_list(merged_value(accent_families, spec_data, "accent_families", [])),
+        tile_ids=normalize_name_list(merged_value(tile_ids, spec_data, "tile_ids", [])),
+        name=merged_value(name, spec_data, "name", None),
+    )
+    return request.normalized()
+
+
+def validate_request(manifest: dict, request: BannerRequest):
+    if request.energy not in {"low", "medium", "high"}:
+        raise ValueError(f"Unknown energy level: {request.energy}")
+    if request.dimensions[0] <= 0 or request.dimensions[1] <= 0:
+        raise ValueError("dimensions must contain positive integers")
+    if request.candidate_count < 1:
+        raise ValueError("candidate_count must be at least 1")
+    if not 0.0 <= request.continuity_strength <= 1.0:
+        raise ValueError("continuity_strength must be between 0.0 and 1.0")
+    if not 0.0 <= request.symmetry_strength <= 1.0:
+        raise ValueError("symmetry_strength must be between 0.0 and 1.0")
+    if not 0.0 <= request.rhythm_strength <= 1.0:
+        raise ValueError("rhythm_strength must be between 0.0 and 1.0")
+
+    validate_overrides(
+        manifest,
+        primary_families=request.primary_families,
+        accent_families=request.accent_families,
+        tile_ids=request.tile_ids,
+        template=request.template,
+        color_bias=request.color_bias,
+    )
+
+
+def request_template() -> dict:
+    return {
+        "name": "policy-launch",
+        "energy": "medium",
+        "seed": 42,
+        "dimensions": [1920, 960],
+        "color_bias": None,
+        "topic_description": None,
+        "continuity_strength": 0.7,
+        "symmetry_strength": 0.85,
+        "rhythm_strength": 0.75,
+        "template": "mirror",
+        "candidate_count": 24,
+        "primary_families": ["circle"],
+        "accent_families": ["wave"],
+        "tile_ids": [],
+    }
+
+
+def slugify(value: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", value.strip().lower()).strip("-")
+    return slug or "banner"
+
+
+def next_banner_index(output_dir: Path) -> int:
+    highest = 0
+    for svg_path in output_dir.glob("banner-*.svg"):
+        match = re.match(r"banner-(\d+)", svg_path.stem)
+        if match:
+            highest = max(highest, int(match.group(1)))
+    return highest + 1
+
+
+def default_single_output_path(output_dir: Path, request: BannerRequest, result: BannerResult) -> Path:
+    index = next_banner_index(output_dir)
+    parts = [f"banner-{index:03d}", result.energy, result.template, f"s{result.seed}"]
+    if request.name:
+        parts.append(slugify(request.name))
+    return output_dir / f"{'-'.join(parts)}.svg"
+
+
+def write_banner_artifacts(result: BannerResult, banner_root: etree._Element, svg_path: Path):
+    svg_path.parent.mkdir(parents=True, exist_ok=True)
+    svg_path.write_bytes(etree.tostring(banner_root, xml_declaration=True, encoding="UTF-8", pretty_print=True))
+    result.output_path = str(svg_path)
+
+    with open(svg_path.with_suffix(".json"), "w") as handle:
+        json.dump(asdict(result), handle, indent=2)
+
+
+def validate_overrides(
+    manifest: dict,
+    primary_families: Optional[list[str]] = None,
+    accent_families: Optional[list[str]] = None,
+    tile_ids: Optional[list[str]] = None,
+    template: Optional[str] = None,
+    color_bias: Optional[str] = None,
+):
+    tiles = manifest["tiles"]
+    families = set(available_families(tiles))
+    ids = set(tile_lookup(tiles))
+
+    bad_families = [
+        family
+        for family in normalize_name_list(primary_families) + normalize_name_list(accent_families)
+        if family not in families
+    ]
+    if bad_families:
+        raise ValueError(f"Unknown families: {', '.join(sorted(set(bad_families)))}")
+
+    bad_tiles = [tile_id for tile_id in normalize_name_list(tile_ids) if tile_id not in ids]
+    if bad_tiles:
+        raise ValueError(f"Unknown tile ids: {', '.join(bad_tiles)}")
+
+    if template is not None and template.lower() not in TEMPLATES:
+        raise ValueError(f"Unknown template: {template}")
+
+    if color_bias is not None and color_bias.lower() not in COLOR_TOKEN_TO_HEX:
+        raise ValueError(f"Unknown color bias: {color_bias}")
+
+
+def print_generator_options(manifest: dict):
+    options = generator_options(manifest)
+    print("Templates:")
+    print("  " + ", ".join(options["templates"]))
+    print("\nColors:")
+    print("  " + ", ".join(options["colors"]))
+    print("\nFamilies:")
+    for family in options["families"]:
+        examples = ", ".join(options["family_tile_ids"][family][:4])
+        print(f"  {family}: {examples}")
+
+
+def generator_options(manifest: dict) -> dict:
+    tiles = manifest["tiles"]
+    families = available_families(tiles)
+    ids_by_family = defaultdict(list)
+    for tile in tiles:
+        family = tile.get("shape_family", "")
+        if not family:
+            continue
+        ids_by_family[family].append(tile["id"])
+
+    return {
+        "templates": list(TEMPLATES),
+        "colors": sorted(COLOR_TOKEN_TO_HEX),
+        "color_hex": COLOR_TOKEN_TO_HEX.copy(),
+        "families": families,
+        "family_tile_ids": {family: ids_by_family[family] for family in families},
+        "topic_profiles": [
+            {
+                "key": key,
+                "label": profile["label"],
+                "description": profile["description"],
+            }
+            for key, profile in TOPIC_STYLE_PROFILES.items()
+            if key != "general_fai"
+        ],
+        "defaults": {
+            "energy": "medium",
+            "dimensions": [1920, 960],
+            "continuity_strength": 0.7,
+            "symmetry_strength": 0.85,
+            "rhythm_strength": 0.75,
+            "candidate_count": 24,
+        },
+    }
+
+
+def topic_keyword_hits(description: str, keywords: dict[str, float]) -> tuple[float, list[str]]:
+    normalized = re.sub(r"[^a-z0-9]+", " ", description.lower()).strip()
+    if not normalized:
+        return 0.0, []
+
+    score = 0.0
+    hits = []
+    for keyword, weight in keywords.items():
+        if not keyword:
+            continue
+        pattern = r"\b" + re.escape(keyword.lower()) + r"\b"
+        if re.search(pattern, normalized):
+            score += weight
+            hits.append(keyword)
+    return score, hits
+
+
+def suggest_topic_style(description: Optional[str], manifest: dict) -> Optional[dict]:
+    description = normalize_topic_description(description)
+    if not description:
+        return None
+
+    available = set(available_families(manifest["tiles"]))
+    scored = []
+    for key, profile in TOPIC_STYLE_PROFILES.items():
+        score, hits = topic_keyword_hits(description, profile["keywords"])
+        if key == "general_fai":
+            score = max(score, 0.1)
+        scored.append((score, key, hits, profile))
+
+    scored.sort(key=lambda item: item[0], reverse=True)
+    score, key, hits, profile = scored[0]
+
+    primary_families = [family for family in profile["primary_families"] if family in available]
+    accent_families = [family for family in profile["accent_families"] if family in available and family not in primary_families]
+    keyword_hits = hits[:5]
+    return {
+        "key": key,
+        "label": profile["label"],
+        "description": profile["description"],
+        "keyword_hits": keyword_hits,
+        "match_score": score,
+        "energy": profile["energy"],
+        "template": profile["template"],
+        "color_bias": profile["color_bias"],
+        "continuity_strength": profile["continuity_strength"],
+        "symmetry_strength": profile["symmetry_strength"],
+        "rhythm_strength": profile["rhythm_strength"],
+        "primary_families": primary_families,
+        "accent_families": accent_families,
+    }
+
+
+def apply_topic_style_to_request(request: BannerRequest, manifest: dict) -> tuple[BannerRequest, Optional[dict]]:
+    suggestion = suggest_topic_style(request.topic_description, manifest)
+    if suggestion is None:
+        return request, None
+
+    styled_request = replace(
+        request,
+        energy=suggestion["energy"],
+        template=suggestion["template"],
+        color_bias=suggestion["color_bias"],
+        continuity_strength=suggestion["continuity_strength"],
+        symmetry_strength=suggestion["symmetry_strength"],
+        rhythm_strength=suggestion["rhythm_strength"],
+        primary_families=suggestion["primary_families"],
+        accent_families=suggestion["accent_families"],
+    ).normalized()
+    return styled_request, suggestion
 
 
 def choose_template(energy: str, rng: random.Random, override: Optional[str]) -> str:
@@ -413,6 +1010,51 @@ def build_rotated_pool(tiles: list[dict]) -> list[RotatedTile]:
 
 
 # - Family and tile palette selection ---------------------------------------
+def target_rotation_for_position(template: str, row: int, col: int) -> Optional[int]:
+    rotation_fn = ROTATION_PATTERN_FNS[TEMPLATE_CONFIG[template]["rotation"]]
+    if rotation_fn is None:
+        return None
+    return ROTATIONS[rotation_fn(row, col)]
+
+
+def candidate_pool_for_target_rotation(
+    rotated_pool: list[RotatedTile],
+    target_rotation: Optional[int],
+    rotation_strict: bool,
+) -> list[RotatedTile]:
+    if rotation_strict and target_rotation is not None:
+        exact = [candidate for candidate in rotated_pool if candidate.rotation == target_rotation]
+        if exact:
+            return exact
+    return rotated_pool
+
+
+def pair_structure_bonus(left: RotatedTile, right: RotatedTile, template: str) -> float:
+    score = 0.0
+    left_family = left.tile.get("shape_family", "")
+    right_family = right.tile.get("shape_family", "")
+
+    if left.tile.get("id") == right.tile.get("id"):
+        score += 5.2 if template == "mirror" else 4.4
+    elif left_family and left_family == right_family:
+        score += 2.8
+
+    left_weight = left.tile.get("visual_weight", 0.0)
+    right_weight = right.tile.get("visual_weight", 0.0)
+    score += max(0.0, 1.5 - abs(left_weight - right_weight) * 14.0)
+
+    if left.tile.get("symmetry") in ("horizontal", "vertical", "rotational", "both"):
+        score += 0.35
+    if right.tile.get("symmetry") in ("horizontal", "vertical", "rotational", "both"):
+        score += 0.25
+
+    center_match = (left.coverage["right"] + right.coverage["left"]) / 2
+    if left.edges["right"] == right.edges["left"]:
+        score += 0.3 + 0.2 * center_match
+
+    return score
+
+
 def family_weight_for_template(template: str, family: str, family_size: int) -> float:
     weight = float(family_size)
     if template in {"flow", "river"} and family in FLOW_FAMILIES:
@@ -451,6 +1093,40 @@ def pick_family_focus(
     n_accent = rng.randint(*cfg["accent_fam"])
     accent = weighted_sample_without_replacement(accent_candidates, accent_weights, n_accent, rng)
     return primary, accent
+
+
+def resolve_family_focus(
+    tiles: list[dict],
+    template: str,
+    rng: random.Random,
+    primary_override: Optional[list[str]] = None,
+    accent_override: Optional[list[str]] = None,
+    tile_ids_override: Optional[list[str]] = None,
+) -> tuple[list[str], list[str]]:
+    primary = normalize_name_list(primary_override)
+    accent = [family for family in normalize_name_list(accent_override) if family not in primary]
+
+    if tile_ids_override and not primary and not accent:
+        lookup = tile_lookup(tiles)
+        families = dedupe_preserving_order([
+            lookup[tile_id]["shape_family"]
+            for tile_id in normalize_name_list(tile_ids_override)
+            if tile_id in lookup
+        ])
+        if families:
+            return families, []
+
+    if primary and accent:
+        return primary, accent
+
+    picked_primary, picked_accent = pick_family_focus(tiles, template, rng)
+    if primary:
+        picked_primary = primary
+    if accent:
+        picked_accent = accent
+
+    picked_accent = [family for family in picked_accent if family not in picked_primary]
+    return picked_primary, picked_accent
 
 
 def tile_palette_weight(tile: dict, template: str, role: str) -> float:
@@ -546,6 +1222,22 @@ def pick_tile_palette(
     return chosen or tiles
 
 
+def resolve_tile_palette(
+    tiles: list[dict],
+    template: str,
+    primary_families: list[str],
+    accent_families: list[str],
+    rng: random.Random,
+    tile_ids_override: Optional[list[str]] = None,
+) -> list[dict]:
+    tile_ids = normalize_name_list(tile_ids_override)
+    if tile_ids:
+        lookup = tile_lookup(tiles)
+        return [lookup[tile_id] for tile_id in tile_ids if tile_id in lookup]
+
+    return pick_tile_palette(tiles, template, primary_families, accent_families, rng)
+
+
 # - Tile placement ----------------------------------------------------------
 def make_position_weights(template: str) -> list[float]:
     weights = [1.0] * TOTAL_SLOTS
@@ -605,12 +1297,14 @@ def score_candidate(
         score += max(0.0, 1.5 - rotation_counts.get(candidate.rotation, 0) * 0.25)
 
     uses = tile_counts.get(tile_id, 0)
+    reuse_soft_limit = 4 if template in MOTIF_TEMPLATES else 3
     if uses == 0:
         score += 1.4
-    elif uses <= 3:
-        score += 0.6
+    elif uses <= reuse_soft_limit:
+        score += 0.8 if template in MOTIF_TEMPLATES else 0.6
     else:
-        score -= 0.9 * (uses - 2)
+        penalty_scale = 0.55 if template in MOTIF_TEMPLATES else 0.9
+        score -= penalty_scale * (uses - reuse_soft_limit + 1)
 
     for neighbor_offset, our_edge, their_edge in [
         ((0, -1), "left", "right"),
@@ -634,10 +1328,133 @@ def score_candidate(
             score -= 0.8
 
         if neighbor.tile.get("id") == tile_id:
-            score -= 1.0
+            score -= 0.4 if template in MOTIF_TEMPLATES else 1.0
 
     score += candidate.tile.get("visual_weight", 0.0) * pos_weight
     return max(score, 0.01)
+
+
+def paired_symmetric_tile_placement(
+    rotated_pool: list[RotatedTile],
+    template: str,
+    primary_families: list[str],
+    accent_families: list[str],
+    rng: random.Random,
+    top_k: int = 10,
+) -> list[dict]:
+    cfg = TEMPLATE_CONFIG[template]
+    position_weights = make_position_weights(template)
+    order = [pos for pos in placement_order(template, position_weights) if divmod(pos, GRID_COLS)[1] < GRID_COLS // 2]
+
+    placed = {}
+    rotation_counts = Counter()
+    tile_counts = Counter()
+
+    for pos in order:
+        row, col = divmod(pos, GRID_COLS)
+        partner_col = GRID_COLS - 1 - col
+
+        left_target = target_rotation_for_position(template, row, col)
+        right_target = target_rotation_for_position(template, row, partner_col)
+        left_candidates = candidate_pool_for_target_rotation(rotated_pool, left_target, cfg["rotation_strict"])
+        right_pool = candidate_pool_for_target_rotation(rotated_pool, right_target, cfg["rotation_strict"])
+
+        left_scored = []
+        for candidate in left_candidates:
+            left_scored.append(
+                (
+                    candidate,
+                    score_candidate(
+                        candidate,
+                        placed,
+                        row,
+                        col,
+                        primary_families,
+                        accent_families,
+                        left_target,
+                        rotation_counts,
+                        tile_counts,
+                        template,
+                        position_weights[pos],
+                    ),
+                )
+            )
+
+        left_top = sorted(left_scored, key=lambda item: item[1], reverse=True)[: max(4, min(top_k, len(left_scored)))]
+        pair_scored = []
+
+        for left_candidate, left_score in left_top:
+            preferred_right = [candidate for candidate in right_pool if candidate.tile.get("id") == left_candidate.tile.get("id")]
+            if not preferred_right:
+                preferred_right = [
+                    candidate
+                    for candidate in right_pool
+                    if candidate.tile.get("shape_family") == left_candidate.tile.get("shape_family")
+                ]
+            if not preferred_right:
+                preferred_right = right_pool
+
+            placed_with_left = dict(placed)
+            placed_with_left[(row, col)] = left_candidate
+            right_scored = []
+            for right_candidate in preferred_right:
+                bonus = pair_structure_bonus(left_candidate, right_candidate, template)
+                right_scored.append(
+                    (
+                        right_candidate,
+                        score_candidate(
+                            right_candidate,
+                            placed_with_left,
+                            row,
+                            partner_col,
+                            primary_families,
+                            accent_families,
+                            right_target,
+                            rotation_counts,
+                            tile_counts,
+                            template,
+                            position_weights[row * GRID_COLS + partner_col],
+                        )
+                        + bonus,
+                    )
+                )
+
+            right_top = sorted(right_scored, key=lambda item: item[1], reverse=True)[: max(3, min(6, len(right_scored)))]
+            for right_candidate, right_score in right_top:
+                pair_scored.append((left_candidate, right_candidate, left_score + right_score))
+
+        if not pair_scored:
+            raise ValueError(f"Could not build a symmetric placement pair for template {template}")
+
+        top_pairs = sorted(pair_scored, key=lambda item: item[2], reverse=True)[:8]
+        left_choice, right_choice, _ = rng.choices(
+            top_pairs,
+            weights=[score for _, _, score in top_pairs],
+            k=1,
+        )[0]
+
+        placed[(row, col)] = left_choice
+        placed[(row, partner_col)] = right_choice
+        rotation_counts[left_choice.rotation] += 1
+        rotation_counts[right_choice.rotation] += 1
+        tile_counts[left_choice.tile["id"]] += 1
+        tile_counts[right_choice.tile["id"]] += 1
+
+    result = []
+    for row in range(GRID_ROWS):
+        for col in range(GRID_COLS):
+            chosen = placed[(row, col)]
+            result.append(
+                {
+                    "row": row,
+                    "col": col,
+                    "tile": chosen.tile,
+                    "rotation": chosen.rotation,
+                    "edges": chosen.edges,
+                    "coverage": chosen.coverage,
+                }
+            )
+    return result
 
 
 def scored_tile_placement(
@@ -648,8 +1465,10 @@ def scored_tile_placement(
     rng: random.Random,
     top_k: int = 10,
 ) -> list[dict]:
+    if template in MIRROR_TEMPLATES:
+        return paired_symmetric_tile_placement(rotated_pool, template, primary_families, accent_families, rng, top_k=top_k)
+
     cfg = TEMPLATE_CONFIG[template]
-    rotation_fn = ROTATION_PATTERN_FNS[cfg["rotation"]]
     position_weights = make_position_weights(template)
     order = placement_order(template, position_weights)
 
@@ -659,13 +1478,8 @@ def scored_tile_placement(
 
     for pos in order:
         row, col = divmod(pos, GRID_COLS)
-        target_rotation = ROTATIONS[rotation_fn(row, col)] if rotation_fn is not None else None
-
-        candidates = rotated_pool
-        if cfg["rotation_strict"] and target_rotation is not None:
-            exact = [candidate for candidate in rotated_pool if candidate.rotation == target_rotation]
-            if exact:
-                candidates = exact
+        target_rotation = target_rotation_for_position(template, row, col)
+        candidates = candidate_pool_for_target_rotation(rotated_pool, target_rotation, cfg["rotation_strict"])
 
         scored = []
         for candidate in candidates:
@@ -815,19 +1629,46 @@ def build_color_targets(
     color_bias: Optional[str] = None,
 ) -> dict[str, int]:
     if energy == "low":
-        dominant = rng.choice(["cod_gray", "white", "smoke_white"])
-        orange_count = rng.randint(1, 2)
-        max_secondary = max(0, TOTAL_SLOTS - orange_count - 12)
+        if color_bias in {"cod_gray", "white", "smoke_white", "timberwolf"}:
+            dominant = color_bias
+        else:
+            dominant = rng.choice(["cod_gray", "white", "smoke_white"])
+
+        targets = {}
+        accent_color = "international_orange"
+        if color_bias in {"international_orange", "celestial_blue", "chrome_yellow"}:
+            accent_color = color_bias
+
+        accent_count = rng.randint(1, 2)
+        if accent_color != "international_orange":
+            accent_count = rng.randint(3, 4)
+        elif color_bias == "international_orange":
+            accent_count = rng.randint(3, 4)
+        max_secondary = max(0, TOTAL_SLOTS - accent_count - 12)
         secondary_count = rng.randint(0, min(3, max_secondary))
 
-        targets = {
-            dominant: TOTAL_SLOTS - orange_count - secondary_count,
-            "international_orange": orange_count,
-        }
+        targets[dominant] = TOTAL_SLOTS - accent_count - secondary_count
+        targets[accent_color] = accent_count
+
         if secondary_count:
             allowed = [color for color in ["cod_gray", "white", "smoke_white", "timberwolf"] if color != dominant]
             secondary = color_bias if color_bias in allowed else rng.choice(allowed)
             targets[secondary] = secondary_count
+
+        if color_bias in {"international_orange", "celestial_blue", "chrome_yellow"}:
+            desired = 6 if color_bias == "international_orange" else 4
+            targets.setdefault(color_bias, targets.get(color_bias, 0))
+            while targets[color_bias] < desired:
+                donors = [
+                    color
+                    for color, count in sorted(targets.items(), key=lambda item: item[1], reverse=True)
+                    if color != color_bias and count > 2
+                ]
+                if not donors:
+                    break
+                donor = donors[0]
+                targets[donor] -= 1
+                targets[color_bias] += 1
         return targets
 
     if energy == "medium":
@@ -854,6 +1695,17 @@ def build_color_targets(
             chosen = rng.choice(candidates)
             targets[chosen] += 1
             remaining -= 1
+        if color_bias:
+            desired = 7 if color_bias in {"international_orange", "cod_gray"} else 6
+            current = targets.get(color_bias, 0)
+            targets.setdefault(color_bias, current)
+            while targets[color_bias] < desired:
+                donors = [color for color, count in sorted(targets.items(), key=lambda item: item[1], reverse=True) if color != color_bias and count > 2]
+                if not donors:
+                    break
+                donor = donors[0]
+                targets[donor] -= 1
+                targets[color_bias] += 1
         return targets
 
     num_colors = rng.randint(6, 7)
@@ -879,6 +1731,17 @@ def build_color_targets(
         chosen = rng.choice(candidates)
         targets[chosen] += 1
         remaining -= 1
+    if color_bias:
+        desired = 6 if color_bias in {"international_orange", "celestial_blue", "chrome_yellow"} else 5
+        current = targets.get(color_bias, 0)
+        targets.setdefault(color_bias, current)
+        while targets[color_bias] < desired:
+            donors = [color for color, count in sorted(targets.items(), key=lambda item: item[1], reverse=True) if color != color_bias and count > 2]
+            if not donors:
+                break
+            donor = donors[0]
+            targets[donor] -= 1
+            targets[color_bias] += 1
     return targets
 
 
@@ -915,6 +1778,7 @@ def group_color_choice_score(
     adjacency: dict,
     template: str,
     energy: str,
+    color_bias: Optional[str] = None,
 ) -> float:
     size = info[group_id]["size"]
     remaining = target_counts.get(color_name, 0) - used_counts[color_name]
@@ -951,6 +1815,13 @@ def group_color_choice_score(
     if template == "river" and color_name in ("international_orange", "celestial_blue"):
         score += info[group_id]["middle_row_weight"] * 0.5
 
+    if color_bias:
+        bias_gap = max(0, target_counts.get(color_bias, 0) - used_counts[color_bias])
+        if color_name == color_bias:
+            score += 1.2 + info[group_id]["anchor"] * 0.6 + min(size, bias_gap) * 0.22
+        elif bias_gap > 0:
+            score -= min(size, bias_gap) * 0.16
+
     return score
 
 
@@ -961,6 +1832,7 @@ def group_coloring_objective(
     target_counts: dict[str, int],
     template: str,
     energy: str,
+    color_bias: Optional[str] = None,
 ) -> float:
     used = Counter()
     for group_id, color_name in assignments.items():
@@ -990,6 +1862,13 @@ def group_coloring_objective(
             goal = round(avg_col / max(1, GRID_COLS - 1) * (len(ordered_palette) - 1))
             score -= abs(ordered_palette.index(color_name) - goal) * 0.6
 
+    if color_bias:
+        bias_cells = sum(len(groups[group_id]) for group_id, color_name in assignments.items() if color_name == color_bias)
+        bias_target = max(1, target_counts.get(color_bias, 0))
+        bias_fit = 1.0 - abs(bias_cells - bias_target) / bias_target
+        score += bias_cells * 0.22
+        score += clamp01(bias_fit) * 1.4
+
     return score
 
 
@@ -1000,6 +1879,7 @@ def assign_group_colors(
     template: str,
     energy: str,
     rng: random.Random,
+    color_bias: Optional[str] = None,
 ) -> dict:
     info = group_info(groups, adjacency)
     group_ids = sorted(
@@ -1025,6 +1905,7 @@ def assign_group_colors(
                 adjacency,
                 template,
                 energy,
+                color_bias,
             )
             scored.append((color_name, score))
 
@@ -1033,7 +1914,7 @@ def assign_group_colors(
         assignments[group_id] = chosen
         used_counts[chosen] += len(groups[group_id])
 
-    current_score = group_coloring_objective(assignments, groups, adjacency, target_counts, template, energy)
+    current_score = group_coloring_objective(assignments, groups, adjacency, target_counts, template, energy, color_bias)
     for _ in range(120):
         trial = dict(assignments)
         if rng.random() < 0.65:
@@ -1042,7 +1923,7 @@ def assign_group_colors(
         else:
             g1, g2 = rng.sample(group_ids, 2)
             trial[g1], trial[g2] = trial[g2], trial[g1]
-        trial_score = group_coloring_objective(trial, groups, adjacency, target_counts, template, energy)
+        trial_score = group_coloring_objective(trial, groups, adjacency, target_counts, template, energy, color_bias)
         if trial_score > current_score:
             assignments = trial
             current_score = trial_score
@@ -1061,32 +1942,91 @@ def preferred_backgrounds(fg_name: str) -> list[str]:
     return ["cod_gray", "international_orange", "celestial_blue", "chrome_yellow", "timberwolf"]
 
 
+def background_palette_limit(template: str) -> int:
+    if template in MIRROR_TEMPLATES | {"flow", "river"}:
+        return 3
+    if template in {"focal", "gradient"}:
+        return 4
+    return 5
+
+
+def background_candidate_score(
+    bg_name: str,
+    positions: list[tuple[int, int]],
+    backgrounds: dict,
+    fg_by_pos: dict,
+    template: str,
+) -> float:
+    used_backgrounds = set(backgrounds.values())
+    score = 0.0
+
+    for row, col in positions:
+        fg_name = fg_by_pos[(row, col)]
+        if bg_name == fg_name:
+            return -999.0
+
+        preferred = [color for color in preferred_backgrounds(fg_name) if color != fg_name]
+        if bg_name in preferred:
+            score += float(len(preferred) - preferred.index(bg_name))
+        else:
+            score -= 1.25
+
+        for neighbor in ((row, col - 1), (row, col + 1), (row - 1, col), (row + 1, col)):
+            if neighbor not in backgrounds:
+                continue
+            if backgrounds[neighbor] == bg_name:
+                bonus = 0.12
+                if template in {"flow", "river"} and neighbor[0] == row:
+                    bonus = 0.55
+                elif template in MIRROR_TEMPLATES and neighbor[0] == row:
+                    bonus = 0.32
+                score += bonus
+            if fg_by_pos.get(neighbor) == bg_name:
+                score -= 0.2
+
+        if template == "checkerboard" and (row + col) % 2 == 0 and color_temperature(bg_name) == "neutral":
+            score += 0.25
+
+    if bg_name not in used_backgrounds and len(used_backgrounds) >= background_palette_limit(template):
+        score -= 1.4
+
+    if template in MIRROR_TEMPLATES and len(positions) == 2:
+        score += 0.9
+
+    return score
+
+
 def assign_backgrounds(fg_by_pos: dict, template: str, rng: random.Random) -> dict:
     backgrounds = {}
     positions = [(row, col) for row in range(GRID_ROWS) for col in range(GRID_COLS)]
 
+    if template in MIRROR_TEMPLATES:
+        paired_positions = [
+            [(row, col), (row, GRID_COLS - 1 - col)]
+            for row in range(GRID_ROWS)
+            for col in range(GRID_COLS // 2)
+        ]
+        paired_positions.sort(key=lambda pair: (abs(pair[0][1] - 2.5), abs(pair[0][0] - 1)))
+
+        for pair in paired_positions:
+            candidates = [color for color in ALL_COLOR_TOKENS if all(fg_by_pos[pos] != color for pos in pair)]
+            scored = [(bg_name, background_candidate_score(bg_name, pair, backgrounds, fg_by_pos, template)) for bg_name in candidates]
+            top = sorted(scored, key=lambda item: item[1], reverse=True)[:3]
+            chosen = rng.choices([name for name, _ in top], weights=[max(score, 0.01) for _, score in top], k=1)[0]
+            for pos in pair:
+                backgrounds[pos] = chosen
+        return backgrounds
+
     if template == "focal":
         positions.sort(key=lambda pos: abs(pos[0] - 1) + abs(pos[1] - 2.5))
+    elif template == "river":
+        positions.sort(key=lambda pos: (abs(pos[0] - 1), pos[1]))
+    elif template == "flow":
+        positions.sort(key=lambda pos: (pos[0], abs(pos[1] - 2.5)))
 
     for row, col in positions:
-        fg_name = fg_by_pos[(row, col)]
-        preferred = [color for color in preferred_backgrounds(fg_name) if color != fg_name]
-        candidates = preferred + [color for color in ALL_COLOR_TOKENS if color not in preferred and color != fg_name]
-
-        scored = []
-        for bg_name in candidates:
-            score = float(len(candidates) - candidates.index(bg_name))
-            for neighbor in ((row, col - 1), (row - 1, col)):
-                nr, nc = neighbor
-                if nr < 0 or nc < 0:
-                    continue
-                if backgrounds.get(neighbor) == bg_name:
-                    score -= 0.35
-                if fg_by_pos.get(neighbor) == bg_name:
-                    score -= 0.2
-            if template == "checkerboard" and (row + col) % 2 == 0 and color_temperature(bg_name) == "neutral":
-                score += 0.25
-            scored.append((bg_name, score))
+        candidates = [color for color in ALL_COLOR_TOKENS if fg_by_pos[(row, col)] != color]
+        scored = [(bg_name, background_candidate_score(bg_name, [(row, col)], backgrounds, fg_by_pos, template)) for bg_name in candidates]
 
         top = sorted(scored, key=lambda item: item[1], reverse=True)[:3]
         chosen = rng.choices([name for name, _ in top], weights=[max(score, 0.01) for _, score in top], k=1)[0]
@@ -1145,6 +2085,156 @@ def score_weight_balance(placement: list[dict]) -> float:
     return clamp01((row_ratio / 0.65 + side_ratio / 0.65) / 2)
 
 
+def transition_signature(values: list[str]) -> tuple[int, ...]:
+    return tuple(int(values[index] != values[index + 1]) for index in range(len(values) - 1))
+
+
+def signature_similarity(left: tuple[int, ...], right: tuple[int, ...]) -> float:
+    if not left or not right:
+        return 1.0
+    matches = sum(1 for a, b in zip(left, right) if a == b)
+    return matches / min(len(left), len(right))
+
+
+def score_symmetry(cells: list[CellAssignment], placement: list[dict], template: str) -> float:
+    placement_map = {(item["row"], item["col"]): item for item in placement}
+    cell_map = {(cell.row, cell.col): cell for cell in cells}
+    pair_scores = []
+    column_intensity = [0.0] * GRID_COLS
+
+    for row in range(GRID_ROWS):
+        for col in range(GRID_COLS):
+            item = placement_map[(row, col)]
+            cell = cell_map[(row, col)]
+            column_intensity[col] += item["tile"].get("visual_weight", 0.0) * COLOR_IMPACT.get(cell.fg_name, 0.5)
+
+    for row in range(GRID_ROWS):
+        for col in range(GRID_COLS // 2):
+            left_pos = (row, col)
+            right_pos = (row, GRID_COLS - 1 - col)
+            left_item = placement_map[left_pos]
+            right_item = placement_map[right_pos]
+            left_cell = cell_map[left_pos]
+            right_cell = cell_map[right_pos]
+
+            pair_score = 0.0
+            if left_item["tile"]["id"] == right_item["tile"]["id"]:
+                pair_score += 0.45
+            elif left_item["tile"].get("shape_family") == right_item["tile"].get("shape_family"):
+                pair_score += 0.26
+
+            pair_score += max(
+                0.0,
+                0.22 - abs(left_item["tile"].get("visual_weight", 0.0) - right_item["tile"].get("visual_weight", 0.0)) * 10.0,
+            )
+
+            if left_cell.fg_name == right_cell.fg_name:
+                pair_score += 0.18
+            elif color_temperature(left_cell.fg_name) == color_temperature(right_cell.fg_name):
+                pair_score += 0.08
+
+            if left_cell.bg_name == right_cell.bg_name:
+                pair_score += 0.15
+            elif color_temperature(left_cell.bg_name) == color_temperature(right_cell.bg_name):
+                pair_score += 0.06
+
+            pair_scores.append(clamp01(pair_score))
+
+    mirror_balance = []
+    for col in range(GRID_COLS // 2):
+        left_value = column_intensity[col]
+        right_value = column_intensity[GRID_COLS - 1 - col]
+        mirror_balance.append(1.0 - abs(left_value - right_value) / max(left_value, right_value, 0.001))
+
+    pair_score = sum(pair_scores) / max(1, len(pair_scores))
+    balance_score = sum(mirror_balance) / max(1, len(mirror_balance))
+    pair_weight = 0.7 if template in MIRROR_TEMPLATES else 0.58
+    return clamp01(pair_weight * pair_score + (1.0 - pair_weight) * balance_score)
+
+
+def score_rhythm(cells: list[CellAssignment], placement: list[dict], template: str) -> float:
+    placement_map = {(item["row"], item["col"]): item for item in placement}
+    cell_map = {(cell.row, cell.col): cell for cell in cells}
+    target_changes = {
+        "mirror": 2.0,
+        "symmetric": 2.0,
+        "flow": 2.6,
+        "river": 2.4,
+        "spiral": 3.0,
+        "pinwheel": 3.2,
+        "checkerboard": 4.0,
+        "gradient": 3.4,
+        "focal": 3.0,
+        "scatter": 4.2,
+    }.get(template, 3.0)
+
+    change_scores = []
+    repeat_scores = []
+    signatures = []
+
+    for row in range(GRID_ROWS):
+        families = [placement_map[(row, col)]["tile"].get("shape_family", "") for col in range(GRID_COLS)]
+        fg_names = [cell_map[(row, col)].fg_name for col in range(GRID_COLS)]
+        bg_names = [cell_map[(row, col)].bg_name for col in range(GRID_COLS)]
+
+        family_changes = sum(1 for index in range(GRID_COLS - 1) if families[index] != families[index + 1])
+        fg_changes = sum(1 for index in range(GRID_COLS - 1) if fg_names[index] != fg_names[index + 1])
+        bg_changes = sum(1 for index in range(GRID_COLS - 1) if bg_names[index] != bg_names[index + 1])
+        weighted_changes = (1.2 * family_changes + fg_changes + 0.7 * bg_changes) / 2.9
+        change_scores.append(clamp01(1.0 - abs(weighted_changes - target_changes) / max(1.0, target_changes)))
+
+        two_step_family = sum(1 for index in range(GRID_COLS - 2) if families[index] == families[index + 2]) / max(1, GRID_COLS - 2)
+        two_step_color = sum(1 for index in range(GRID_COLS - 2) if fg_names[index] == fg_names[index + 2]) / max(1, GRID_COLS - 2)
+        repeat_scores.append(0.65 * two_step_family + 0.35 * two_step_color)
+        signatures.append((transition_signature(families), transition_signature(fg_names)))
+
+    signature_scores = []
+    for index in range(len(signatures)):
+        for other_index in range(index + 1, len(signatures)):
+            family_similarity = signature_similarity(signatures[index][0], signatures[other_index][0])
+            color_similarity = signature_similarity(signatures[index][1], signatures[other_index][1])
+            signature_scores.append(0.6 * family_similarity + 0.4 * color_similarity)
+
+    return clamp01(
+        0.45 * (sum(change_scores) / max(1, len(change_scores)))
+        + 0.30 * (sum(repeat_scores) / max(1, len(repeat_scores)))
+        + 0.25 * (sum(signature_scores) / max(1, len(signature_scores)))
+    )
+
+
+def score_background_discipline(cells: list[CellAssignment], template: str) -> float:
+    grid = {(cell.row, cell.col): cell for cell in cells}
+    counts = Counter(cell.bg_name for cell in cells)
+    unique_count = len(counts)
+    ideal_unique = 3 if template in MIRROR_TEMPLATES | {"flow", "river"} else 4
+    unique_score = 1.0 if unique_count <= ideal_unique else clamp01(1.0 - (unique_count - ideal_unique) * 0.3)
+
+    row_change_target = 1.0 if template in MIRROR_TEMPLATES else 1.8 if template in {"flow", "river"} else 2.6
+    row_scores = []
+    for row in range(GRID_ROWS):
+        backgrounds = [grid[(row, col)].bg_name for col in range(GRID_COLS)]
+        changes = sum(1 for index in range(GRID_COLS - 1) if backgrounds[index] != backgrounds[index + 1])
+        row_scores.append(clamp01(1.0 - abs(changes - row_change_target) / max(1.0, row_change_target)))
+
+    mirror_scores = []
+    for row in range(GRID_ROWS):
+        for col in range(GRID_COLS // 2):
+            left = grid[(row, col)].bg_name
+            right = grid[(row, GRID_COLS - 1 - col)].bg_name
+            if left == right:
+                mirror_scores.append(1.0)
+            elif color_temperature(left) == color_temperature(right):
+                mirror_scores.append(0.55)
+            else:
+                mirror_scores.append(0.0)
+
+    return clamp01(
+        0.35 * unique_score
+        + 0.35 * (sum(row_scores) / max(1, len(row_scores)))
+        + 0.30 * (sum(mirror_scores) / max(1, len(mirror_scores)))
+    )
+
+
 def score_continuity(placement: list[dict], continuity_pairs: list[tuple[tuple[int, int], tuple[int, int]]]) -> float:
     possible = matched_edge_candidates(placement, "flow", random.Random(0))
     if not possible:
@@ -1188,16 +2278,18 @@ def score_color_adjacency(
                 pair_count += 1
                 if current.fg_name == other.fg_name:
                     if pair_key((row, col), neighbor) in continuity_lookup:
-                        raw += 1.0
+                        raw += 0.9
                     else:
-                        raw -= 1.9
+                        raw -= 1.4
                 else:
-                    raw += 0.75
+                    raw += 0.4
                     if color_temperature(current.fg_name) != color_temperature(other.fg_name):
-                        raw += 0.15
+                        raw += 0.08
+                    if current.bg_name != other.bg_name:
+                        raw += 0.12
 
-    min_raw = -1.9 * pair_count
-    max_raw = 0.9 * pair_count
+    min_raw = -1.4 * pair_count
+    max_raw = 0.6 * pair_count
     return clamp01((raw - min_raw) / (max_raw - min_raw)) if pair_count else 1.0
 
 
@@ -1222,20 +2314,33 @@ def score_target_fit(cells: list[CellAssignment], target_counts: dict[str, int])
     return clamp01(1.0 - delta / (TOTAL_SLOTS * 1.6))
 
 
-def score_energy_adherence(cells: list[CellAssignment], energy: str) -> float:
+def score_energy_adherence(
+    cells: list[CellAssignment],
+    energy: str,
+    color_bias: Optional[str] = None,
+) -> float:
     counts = Counter(cell.fg_name for cell in cells)
     unique_colors = len(counts)
     orange = counts.get("international_orange", 0)
 
     if energy == "low":
         dominant = max(counts.values())
-        excluded = counts.get("chrome_yellow", 0) + counts.get("celestial_blue", 0)
+        excluded = 0
+        for accent_color in ("chrome_yellow", "celestial_blue"):
+            if accent_color != color_bias:
+                excluded += counts.get(accent_color, 0)
         score = 1.0
         if unique_colors > 3:
             score -= 0.35
         if dominant < 12:
             score -= 0.35
-        if orange not in (1, 2):
+        if color_bias == "international_orange":
+            if not 4 <= orange <= 6:
+                score -= 0.2
+        elif color_bias in {"celestial_blue", "chrome_yellow"}:
+            if orange > 1:
+                score -= 0.2
+        elif orange not in (1, 2):
             score -= 0.2
         if excluded:
             score -= 0.3
@@ -1261,6 +2366,28 @@ def score_energy_adherence(cells: list[CellAssignment], energy: str) -> float:
     return clamp01(score)
 
 
+def score_color_bias_expression(
+    cells: list[CellAssignment],
+    target_counts: dict[str, int],
+    color_bias: Optional[str],
+) -> float:
+    if not color_bias:
+        return 1.0
+
+    bias_cells = [cell for cell in cells if cell.fg_name == color_bias]
+    if not bias_cells:
+        return 0.0
+
+    target = max(1, target_counts.get(color_bias, 0))
+    count_score = clamp01(1.0 - abs(len(bias_cells) - target) / target)
+    power_hits = sum(1 for cell in bias_cells if (cell.row, cell.col) in POWER_POSITIONS)
+    power_score = clamp01(power_hits / max(1, min(2, len(bias_cells))))
+    row_spread = len({cell.row for cell in bias_cells}) / min(GRID_ROWS, len(bias_cells))
+    col_spread = len({cell.col for cell in bias_cells}) / min(GRID_COLS, len(bias_cells))
+    spread_score = 0.45 * row_spread + 0.55 * col_spread
+    return clamp01(0.55 * count_score + 0.2 * power_score + 0.25 * spread_score)
+
+
 def score_candidate_banner(
     cells: list[CellAssignment],
     placement: list[dict],
@@ -1268,6 +2395,9 @@ def score_candidate_banner(
     target_counts: dict[str, int],
     template: str,
     energy: str,
+    symmetry_strength: float,
+    rhythm_strength: float,
+    color_bias: Optional[str] = None,
 ) -> tuple[float, dict[str, float]]:
     breakdown = {
         "color_adjacency": score_color_adjacency(cells, continuity_pairs),
@@ -1277,19 +2407,31 @@ def score_candidate_banner(
         "rotation": score_rotation_pattern(placement, template),
         "anchors": score_anchor_distribution(cells, placement),
         "target_fit": score_target_fit(cells, target_counts),
-        "energy": score_energy_adherence(cells, energy),
+        "energy": score_energy_adherence(cells, energy, color_bias=color_bias),
+        "symmetry": score_symmetry(cells, placement, template),
+        "rhythm": score_rhythm(cells, placement, template),
+        "background_discipline": score_background_discipline(cells, template),
     }
+    if color_bias:
+        breakdown["color_bias"] = score_color_bias_expression(cells, target_counts, color_bias)
 
-    score = (
-        0.22 * breakdown["color_adjacency"]
-        + 0.16 * breakdown["continuity"]
-        + 0.14 * breakdown["repetition"]
-        + 0.14 * breakdown["weight_balance"]
-        + 0.10 * breakdown["rotation"]
-        + 0.10 * breakdown["anchors"]
-        + 0.08 * breakdown["target_fit"]
-        + 0.06 * breakdown["energy"]
-    )
+    weights = {
+        "color_adjacency": 0.11,
+        "continuity": 0.12,
+        "repetition": 0.11,
+        "weight_balance": 0.10,
+        "rotation": 0.08,
+        "anchors": 0.07,
+        "target_fit": 0.06,
+        "energy": 0.05,
+        "background_discipline": 0.10,
+        "symmetry": 0.11 + 0.09 * symmetry_strength,
+        "rhythm": 0.09 + 0.08 * rhythm_strength,
+    }
+    if color_bias:
+        weights["color_bias"] = 0.09
+    total_weight = sum(weights.values())
+    score = sum((weights[key] / total_weight) * breakdown[key] for key in weights)
     return score, breakdown
 
 
@@ -1363,15 +2505,34 @@ def generate_candidate(
     manifest: dict,
     energy: str,
     continuity_strength: float,
+    symmetry_strength: float,
+    rhythm_strength: float,
     color_bias: Optional[str],
     template_override: Optional[str],
     rng: random.Random,
+    primary_families_override: Optional[list[str]] = None,
+    accent_families_override: Optional[list[str]] = None,
+    tile_ids_override: Optional[list[str]] = None,
 ) -> CandidateBanner:
     template = choose_template(energy, rng, template_override)
     tiles = manifest["tiles"]
 
-    primary_families, accent_families = pick_family_focus(tiles, template, rng)
-    tile_palette = pick_tile_palette(tiles, template, primary_families, accent_families, rng)
+    primary_families, accent_families = resolve_family_focus(
+        tiles,
+        template,
+        rng,
+        primary_override=primary_families_override,
+        accent_override=accent_families_override,
+        tile_ids_override=tile_ids_override,
+    )
+    tile_palette = resolve_tile_palette(
+        tiles,
+        template,
+        primary_families,
+        accent_families,
+        rng,
+        tile_ids_override=tile_ids_override,
+    )
     rotated_pool = build_rotated_pool(tile_palette)
     placement = scored_tile_placement(rotated_pool, template, primary_families, accent_families, rng)
 
@@ -1380,7 +2541,7 @@ def generate_candidate(
     adjacency = build_group_adjacency(pos_to_group)
 
     target_counts = build_color_targets(energy, rng, color_bias)
-    group_colors = assign_group_colors(groups, adjacency, target_counts, template, energy, rng)
+    group_colors = assign_group_colors(groups, adjacency, target_counts, template, energy, rng, color_bias=color_bias)
 
     fg_by_pos = {}
     for pos, group_id in pos_to_group.items():
@@ -1415,6 +2576,9 @@ def generate_candidate(
         target_counts,
         template,
         energy,
+        symmetry_strength,
+        rhythm_strength,
+        color_bias=color_bias,
     )
 
     return CandidateBanner(
@@ -1437,49 +2601,84 @@ def generate_banner(
     seed: Optional[int] = None,
     dimensions: tuple[int, int] = (1920, 960),
     color_bias: Optional[str] = None,
+    topic_description: Optional[str] = None,
     continuity_strength: float = 0.7,
+    symmetry_strength: float = 0.85,
+    rhythm_strength: float = 0.75,
     template: Optional[str] = None,
-    candidate_count: int = 16,
+    candidate_count: int = 24,
+    primary_families: Optional[list[str]] = None,
+    accent_families: Optional[list[str]] = None,
+    tile_ids: Optional[list[str]] = None,
+    request: Optional[BannerRequest] = None,
 ) -> tuple[BannerResult, etree._Element]:
-    manifest = load_manifest(manifest_path)
+    if request is None:
+        request = BannerRequest(
+            energy=energy,
+            seed=seed,
+            dimensions=dimensions,
+            color_bias=color_bias,
+            topic_description=topic_description,
+            continuity_strength=continuity_strength,
+            symmetry_strength=symmetry_strength,
+            rhythm_strength=rhythm_strength,
+            template=template,
+            candidate_count=candidate_count,
+            primary_families=primary_families or [],
+            accent_families=accent_families or [],
+            tile_ids=tile_ids or [],
+        ).normalized()
+    else:
+        request = request.normalized()
 
-    if seed is None:
-        seed = random.randint(0, 2**31 - 1)
-    master_rng = random.Random(seed)
+    manifest = load_manifest(manifest_path)
+    validate_request(manifest, request)
+
+    if request.seed is None:
+        request = replace(request, seed=random.randint(0, 2**31 - 1))
+    master_rng = random.Random(request.seed)
 
     best_candidate = None
-    for _ in range(max(1, candidate_count)):
+    for _ in range(request.candidate_count):
         candidate_rng = random.Random(master_rng.randint(0, 2**31 - 1))
         candidate = generate_candidate(
             manifest=manifest,
-            energy=energy,
-            continuity_strength=continuity_strength,
-            color_bias=color_bias,
-            template_override=template,
+            energy=request.energy,
+            continuity_strength=request.continuity_strength,
+            symmetry_strength=request.symmetry_strength,
+            rhythm_strength=request.rhythm_strength,
+            color_bias=request.color_bias,
+            template_override=request.template,
             rng=candidate_rng,
+            primary_families_override=request.primary_families,
+            accent_families_override=request.accent_families,
+            tile_ids_override=request.tile_ids,
         )
         if best_candidate is None or candidate.score > best_candidate.score:
             best_candidate = candidate
 
     assert best_candidate is not None
     rotation_pattern = TEMPLATE_CONFIG[best_candidate.template]["rotation"]
-    banner_root = assemble_banner_svg(best_candidate.cells, tiles_dir, dimensions)
+    banner_root = assemble_banner_svg(best_candidate.cells, tiles_dir, request.dimensions)
 
     result = BannerResult(
         output_path=None,
-        seed=seed,
-        energy=energy,
+        seed=request.seed,
+        energy=request.energy,
         template=best_candidate.template,
         primary_families=best_candidate.primary_families,
         accent_families=best_candidate.accent_families,
         rotation_pattern=rotation_pattern,
-        continuity_strength=continuity_strength,
-        candidate_count=max(1, candidate_count),
-        dimensions=dimensions,
-        color_bias=color_bias,
+        continuity_strength=request.continuity_strength,
+        symmetry_strength=request.symmetry_strength,
+        rhythm_strength=request.rhythm_strength,
+        candidate_count=request.candidate_count,
+        dimensions=request.dimensions,
+        color_bias=request.color_bias,
         score=best_candidate.score,
         score_breakdown=best_candidate.score_breakdown,
         cells=[asdict(cell) for cell in best_candidate.cells],
+        request=request_payload(request),
         generated_at=datetime.now(timezone.utc).isoformat(),
     )
     return result, banner_root
@@ -1494,8 +2693,10 @@ def generate_batch(
     dimensions: tuple[int, int] = (1920, 960),
     starting_seed: Optional[int] = None,
     continuity_strength: float = 0.7,
+    symmetry_strength: float = 0.85,
+    rhythm_strength: float = 0.75,
     template: Optional[str] = None,
-    candidate_count: int = 16,
+    candidate_count: int = 24,
 ) -> list[BannerResult]:
     if energy_mix is None:
         energy_mix = {"low": 0.3, "medium": 0.5, "high": 0.2}
@@ -1514,24 +2715,23 @@ def generate_batch(
     for index, energy_level in enumerate(allocations):
         seed = (starting_seed or 1000) + index
         result, banner_root = generate_banner(
+            request=BannerRequest(
+                energy=energy_level,
+                seed=seed,
+                dimensions=dimensions,
+                continuity_strength=continuity_strength,
+                symmetry_strength=symmetry_strength,
+                rhythm_strength=rhythm_strength,
+                template=template,
+                candidate_count=candidate_count,
+            ),
             manifest_path=manifest_path,
             tiles_dir=tiles_dir,
-            energy=energy_level,
-            seed=seed,
-            dimensions=dimensions,
-            continuity_strength=continuity_strength,
-            template=template,
-            candidate_count=candidate_count,
         )
 
         filename = f"banner-{index + 1:03d}-{energy_level}-{result.template}-s{seed}"
         svg_path = output_dir / f"{filename}.svg"
-        svg_path.write_bytes(etree.tostring(banner_root, xml_declaration=True, encoding="UTF-8", pretty_print=True))
-        result.output_path = str(svg_path)
-
-        json_path = output_dir / f"{filename}.json"
-        with open(json_path, "w") as handle:
-            json.dump(asdict(result), handle, indent=2)
+        write_banner_artifacts(result, banner_root, svg_path)
 
         results.append(result)
         if (index + 1) % 10 == 0 or (index + 1) == n:
@@ -1543,14 +2743,25 @@ def generate_batch(
 # - CLI ---------------------------------------------------------------------
 def main():
     parser = argparse.ArgumentParser(description="FAI Banner Generator")
-    parser.add_argument("--energy", choices=["low", "medium", "high"], default="medium")
+    parser.add_argument("--energy", choices=["low", "medium", "high"], default=None)
     parser.add_argument("--seed", type=int, default=None)
-    parser.add_argument("--dimensions", type=int, nargs=2, default=[1920, 960])
+    parser.add_argument("--dimensions", type=int, nargs=2, default=None)
     parser.add_argument("--color-bias", type=str, default=None)
+    parser.add_argument("--topic-description", type=str, default=None)
     parser.add_argument("--output", type=str, default=None)
+    parser.add_argument("--name", type=str, default=None, help="Optional label stored in the request metadata and appended to the filename")
     parser.add_argument("--template", choices=TEMPLATES, default=None)
-    parser.add_argument("--continuity-strength", type=float, default=0.7)
-    parser.add_argument("--candidate-count", type=int, default=16)
+    parser.add_argument("--continuity-strength", type=float, default=None)
+    parser.add_argument("--symmetry-strength", type=float, default=None)
+    parser.add_argument("--rhythm-strength", type=float, default=None)
+    parser.add_argument("--candidate-count", type=int, default=None)
+    parser.add_argument("--primary-family", action="append", dest="primary_families", default=None)
+    parser.add_argument("--accent-family", action="append", dest="accent_families", default=None)
+    parser.add_argument("--tile-id", action="append", dest="tile_ids", default=None)
+    parser.add_argument("--spec", type=Path, default=None, help="JSON file with single-banner parameter overrides")
+    parser.add_argument("--write-spec-template", type=Path, default=None, help="Write an example single-banner request JSON and exit")
+    parser.add_argument("--print-request", action="store_true", help="Print the resolved single-banner request before generating")
+    parser.add_argument("--list-options", action="store_true", help="Print templates, colors, families, and example tile ids")
 
     parser.add_argument("--batch", type=int, default=None)
     parser.add_argument("--energy-mix", type=str, default=None)
@@ -1562,8 +2773,34 @@ def main():
 
     args = parser.parse_args()
 
+    if args.write_spec_template:
+        args.write_spec_template.parent.mkdir(parents=True, exist_ok=True)
+        with open(args.write_spec_template, "w") as handle:
+            json.dump(request_template(), handle, indent=2)
+        print(f"Spec template written to: {args.write_spec_template}")
+        return
+
+    manifest = load_manifest(args.manifest)
+
+    if args.list_options:
+        print_generator_options(manifest)
+        return
+
+    if args.batch and args.spec:
+        parser.error("--spec is only supported for single-banner generation")
+    if args.batch and args.name:
+        parser.error("--name is only supported for single-banner generation")
+
     if args.batch:
-        energy_mix = json.loads(args.energy_mix) if args.energy_mix else None
+        try:
+            energy_mix = json.loads(args.energy_mix) if args.energy_mix else None
+        except json.JSONDecodeError as exc:
+            parser.error(f"Invalid --energy-mix JSON: {exc}")
+        dimensions = normalize_dimensions(args.dimensions or [1920, 960])
+        continuity_strength = 0.7 if args.continuity_strength is None else float(args.continuity_strength)
+        symmetry_strength = 0.85 if args.symmetry_strength is None else float(args.symmetry_strength)
+        rhythm_strength = 0.75 if args.rhythm_strength is None else float(args.rhythm_strength)
+        candidate_count = 24 if args.candidate_count is None else int(args.candidate_count)
         print(f"Generating {args.batch} banners...")
         results = generate_batch(
             n=args.batch,
@@ -1571,11 +2808,13 @@ def main():
             tiles_dir=args.tiles_dir,
             output_dir=args.output_dir,
             energy_mix=energy_mix,
-            dimensions=tuple(args.dimensions),
+            dimensions=dimensions,
             starting_seed=args.starting_seed,
-            continuity_strength=args.continuity_strength,
+            continuity_strength=continuity_strength,
+            symmetry_strength=symmetry_strength,
+            rhythm_strength=rhythm_strength,
             template=args.template,
-            candidate_count=args.candidate_count,
+            candidate_count=candidate_count,
         )
         print(f"\nBatch complete -> {args.output_dir}")
         template_counts = Counter(result.template for result in results)
@@ -1585,33 +2824,57 @@ def main():
         print("Primary families:", dict(sorted(family_counts.items(), key=lambda item: (-item[1], item[0]))[:8]))
         return
 
-    print(f"Generating banner (energy={args.energy}, seed={args.seed})...")
-    result, banner_root = generate_banner(
-        manifest_path=args.manifest,
-        tiles_dir=args.tiles_dir,
+    try:
+        spec_data = load_request_spec(args.spec)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        parser.error(str(exc))
+
+    request = build_banner_request(
         energy=args.energy,
         seed=args.seed,
-        dimensions=tuple(args.dimensions),
+        dimensions=args.dimensions,
         color_bias=args.color_bias,
+        topic_description=args.topic_description,
         continuity_strength=args.continuity_strength,
+        symmetry_strength=args.symmetry_strength,
+        rhythm_strength=args.rhythm_strength,
         template=args.template,
         candidate_count=args.candidate_count,
+        primary_families=args.primary_families,
+        accent_families=args.accent_families,
+        tile_ids=args.tile_ids,
+        name=args.name,
+        spec_data=spec_data,
+    )
+    try:
+        validate_request(manifest, request)
+    except ValueError as exc:
+        parser.error(str(exc))
+
+    if args.print_request:
+        print(json.dumps(request_payload(request), indent=2))
+
+    print(f"Generating banner (energy={request.energy}, seed={request.seed})...")
+    result, banner_root = generate_banner(
+        request=request,
+        manifest_path=args.manifest,
+        tiles_dir=args.tiles_dir,
     )
 
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
-    svg_path = Path(args.output) if args.output else output_dir / f"banner-{args.energy}-{result.template}-s{result.seed}.svg"
-    svg_path.write_bytes(etree.tostring(banner_root, xml_declaration=True, encoding="UTF-8", pretty_print=True))
-    result.output_path = str(svg_path)
-
-    with open(svg_path.with_suffix(".json"), "w") as handle:
-        json.dump(asdict(result), handle, indent=2)
+    svg_path = Path(args.output) if args.output else default_single_output_path(output_dir, request, result)
+    write_banner_artifacts(result, banner_root, svg_path)
 
     print(f"Banner:    {svg_path}")
+    if result.request["name"]:
+        print(f"Label:     {result.request['name']}")
     print(f"Template:  {result.template}  ({result.rotation_pattern} rotation)")
     print(f"Families:  primary={result.primary_families}  accent={result.accent_families}")
     print(f"Seed:      {result.seed}")
     print(f"Score:     {result.score:.3f}")
+    if result.request["tile_ids"]:
+        print(f"Tiles:     {result.request['tile_ids']}")
     rotation_counts = Counter(cell["rotation"] for cell in result.cells)
     print(f"Rotations: {dict(sorted(rotation_counts.items()))}")
     fg_counts = Counter(cell["fg_name"] for cell in result.cells)

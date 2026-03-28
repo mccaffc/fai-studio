@@ -1,13 +1,12 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-<g clip-path="url(#clip0_81_2190)">
-<rect width="200" height="200" transform="translate(200 8.74228e-06) rotate(90)" fill="#F3F3F3"/>
-<path d="M200 200C117.157 200 50 200 50 200C50 117.157 117.157 50 200 50C200 50 200 117.157 200 200Z" fill="#121212"/>
-<path d="M200 200C158.579 200 125 200 125 200C125 158.579 158.579 125 200 125C200 125 200 158.579 200 200Z" fill="#F3F3F3"/>
-</g>
-<defs>
-<clipPath id="clip0_81_2190">
-<rect width="200" height="200" fill="#FFFFFF" transform="translate(200 8.74228e-06) rotate(90)"/>
-</clipPath>
-</defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 200 200">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #121212;
+      }
+    </style>
+  </defs>
+  <path class="st0" d="M50,200h75c0-41.42,33.58-75,75-75V50c-82.84,0-150,67.16-150,150Z"/>
 </svg>

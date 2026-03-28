@@ -1,92 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1920 960">
-  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
-  <defs>
-    <style>
-      .st0 {
-        fill: none;
-      }
-
-      .st1 {
-        fill: #ff4f00;
-      }
-
-      .st2, .st3 {
-        fill: #121212;
-      }
-
-      .st2, .st4 {
-        fill-rule: evenodd;
-      }
-
-      .st5 {
-        fill: #d9d9d6;
-      }
-
-      .st6, .st4 {
-        fill: #ffa300;
-      }
-
-      .st7 {
-        fill: #4997d0;
-      }
-
-      .st8 {
-        fill: #f3f3f3;
-      }
-    </style>
-  </defs>
-  <rect class="st0" width="1920" height="960"/>
-  <rect class="st8" width="1920" height="960"/>
-  <rect class="st0" x="1280" width="320" height="320"/>
-  <rect class="st5" x="1280" y="0" width="320" height="320"/>
-  <path class="st3" d="M1600,0h-80l-80,320h160V0Z"/>
-  <rect class="st0" x="640" width="320" height="320"/>
-  <rect class="st1" x="640" y="0" width="320" height="320"/>
-  <path class="st5" d="M960,0h-80l-80,320h160V0Z"/>
-  <rect class="st0" x="960" y="640" width="320" height="320"/>
-  <rect class="st3" x="960" y="640" width="320" height="320"/>
-  <path class="st4" d="M1120,800l160-160h-320v320h80l80-160Z"/>
-  <rect class="st0" x="1280" y="640" width="320" height="320"/>
-  <rect class="st7" x="1280" y="640" width="320" height="320"/>
-  <path class="st3" d="M1280,960h80s80-320,80-320h-160s0,320,0,320Z"/>
-  <path class="st3" d="M1280,960h80s80-320,80-320h-160s0,320,0,320Z"/>
-  <path class="st3" d="M1600,640l-80,320h80s0-320,0-320Z"/>
-  <rect class="st1" x="640" y="320" width="320" height="320"/>
-  <rect class="st1" x="640" y="320" width="320" height="320"/>
-  <rect class="st0" x="320" width="320" height="320"/>
-  <rect class="st1" x="320" width="320" height="320"/>
-  <path class="st2" d="M480,22l-80,.07V.07l-80-.07v320h80c.04-147.27,0-218,80-298Z"/>
-  <rect class="st0" x="0" width="320" height="320"/>
-  <rect class="st7" x="0" y="0" width="320" height="320"/>
-  <path class="st2" d="M160,22l80,.07V.07L320,0v320h-80c-.04-147.27,0-218-80-298Z"/>
-  <rect class="st0" x="320" y="320" width="320" height="320"/>
-  <rect class="st1" x="320" y="320" width="320" height="320"/>
-  <path class="st3" d="M320,320h80l80,320h-160v-320Z"/>
-  <rect class="st0" y="640" width="320" height="320"/>
-  <rect class="st1" y="640" width="320" height="320"/>
-  <path class="st3" d="M320,640h-80l-80,320h160v-320Z"/>
-  <rect class="st0" x="320" y="640" width="320" height="320"/>
-  <rect class="st6" x="320" y="640" width="320" height="320"/>
-  <path class="st3" d="M320,640h80l80,320h-160v-320Z"/>
-  <rect class="st0" y="320" width="320" height="320"/>
-  <rect class="st7" y="320" width="320" height="320"/>
-  <path class="st3" d="M320,320h-80l-80,320h160v-320Z"/>
-  <rect class="st0" x="640" y="640" width="320" height="320"/>
-  <rect class="st6" x="640" y="640" width="320" height="320"/>
-  <path class="st3" d="M920,960h-240c0-66.27,53.73-120,120-120s120,53.73,120,120Z"/>
-  <rect class="st8" x="1600" y="640" width="320" height="320"/>
-  <rect class="st3" x="1600" y="640" width="320" height="320"/>
-  <rect class="st5" x="1280" y="320" width="320" height="320"/>
-  <path class="st3" d="M1440,640v-160h160v160h-160Z"/>
-  <rect class="st3" x="1600" width="320" height="320"/>
-  <path class="st6" d="M1812.8,186.67h53.33c0-58.91-47.75-106.67-106.66-106.67s-106.67,47.76-106.67,106.67h53.33c0,29.46,23.88,53.33,53.34,53.33s53.33-23.88,53.33-53.33Z"/>
-  <rect class="st0" x="1600" y="320" width="320" height="320"/>
-  <rect class="st3" x="1600" y="320" width="320" height="320"/>
-  <path class="st5" d="M1840,640h-240v-240c0,132.55,107.45,240,240,240Z"/>
-  <rect class="st5" x="960" width="320" height="320"/>
-  <path class="st3" d="M1172.8,186.67h53.33c0-58.91-47.75-106.67-106.66-106.67s-106.67,47.76-106.67,106.67h53.33c0,29.46,23.88,53.33,53.34,53.33s53.33-23.88,53.33-53.33Z"/>
-  <rect class="st0" x="960" y="320" width="320" height="320"/>
-  <rect class="st5" x="960" y="320" width="320" height="320"/>
-  <path class="st1" d="M960,400v240h240c-132.55,0-240-107.45-240-240Z"/>
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="960" viewBox="0 0 1920 960">
+  <rect width="1920" height="960" fill="#F3F3F3"/>
+  <rect width="320" height="320" fill="#D9D9D6" x="1280" y="0"/>
+  <path d="M1600 0L1520 0L1440 320L1600 320L1600 0Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#FF4F00" x="640" y="0"/>
+  <path d="M960 0L880 0L800 320L960 320L960 0Z" fill="#D9D9D6"/>
+  <rect width="320" height="320" fill="#121212" x="960" y="640"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M1120 800L1280 640L960 640L960 960L1040 960L1120 800Z" fill="#FFA300"/>
+  <rect width="320" height="320" fill="#4997D0" x="1280" y="640"/>
+  <path d="M1280 960L1360 960L1440 640L1280 640L1280 960Z" fill="#121212"/>
+  <path d="M1600 640L1520 960L1600 960L1600 640Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#FF4F00" x="640" y="320"/>
+  <rect width="320" height="320" fill="#FF4F00" x="320" y="0"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M480 22L400 22.0746L400 0.0746425L320 0L320 320L400 320C400.043 172.725 400 102 480 22Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#4997D0" x="0" y="0"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M160 22L240 22.0746L240 0.0746425L320 0L320 320L240 320C239.957 172.725 240 102 160 22Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#FF4F00" x="320" y="320"/>
+  <path d="M320 320L400 320L480 640L320 640L320 320Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#FF4F00" x="0" y="640"/>
+  <path d="M320 640L240 640L160 960L320 960L320 640Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#FFA300" x="320" y="640"/>
+  <path d="M320 640L400 640L480 960L320 960L320 640Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#4997D0" x="0" y="320"/>
+  <path d="M320 320L240 320L160 640L320 640L320 320Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#FFA300" x="640" y="640"/>
+  <path d="M920 960C853.726 960 680 960 680 960C680 893.726 733.726 840 800 840C866.274 840 920 893.726 920 960Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="1600" y="640"/>
+  <rect x="1600" y="640" width="320" height="320" fill="#121212"/>
+  <rect width="320" height="320" fill="#D9D9D6" x="1280" y="320"/>
+  <path d="M1440 640L1440 480L1600 480L1600 640L1440 640Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#121212" x="1600" y="0"/>
+  <path d="M1812.8 186.667H1866.13C1866.13 127.757 1818.38 80 1759.47 80C1700.56 80 1652.8 127.757 1652.8 186.667H1706.13C1706.13 216.124 1730.01 240 1759.47 240C1788.92 240 1812.8 216.124 1812.8 186.667Z" fill="#FFA300"/>
+  <rect width="320" height="320" fill="#121212" x="1600" y="320"/>
+  <path d="M1840 640L1600 640L1600 400C1600 532.547 1707.45 640 1840 640Z" fill="#D9D9D6"/>
+  <rect width="320" height="320" fill="#D9D9D6" x="960" y="0"/>
+  <path d="M1172.8 186.667H1226.13C1226.13 127.757 1178.38 80 1119.47 80C1060.56 80 1012.8 127.757 1012.8 186.667H1066.13C1066.13 216.124 1090.01 240 1119.47 240C1148.92 240 1172.8 216.124 1172.8 186.667Z" fill="#121212"/>
+  <rect width="320" height="320" fill="#D9D9D6" x="960" y="320"/>
+  <path d="M960 400L960 640L1200 640C1067.45 640 960 532.547 960 400Z" fill="#FF4F00"/>
 </svg>
