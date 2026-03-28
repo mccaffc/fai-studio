@@ -147,6 +147,18 @@ button { cursor: pointer; }
   color: var(--text-muted-dark);
   border-color: rgba(255, 255, 255, 0.06);
 }
+.btn-stage-orange {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--cod);
+  font-weight: 700;
+  margin-left: auto;
+}
+.btn-stage-orange:hover { opacity: 0.9; }
+.btn-stage-orange:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
 
 /* Inline buttons (inside form) */
 .btn-inline {
