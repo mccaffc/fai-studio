@@ -53,6 +53,7 @@ const els = {
   statusText: document.getElementById("status-text"),
   historyList: document.getElementById("history-list"),
   manualPalette: document.getElementById("manual-palette"),
+  downloadSvgBtn: document.getElementById("download-svg-btn"),
 };
 
 function titleCase(value) {
@@ -349,6 +350,7 @@ function computeBiasUsage(result, request) {
 function renderEmptyPreview() {
   const dims = state.options?.defaults?.dimensions || [1920, 960];
   els.svgStage.innerHTML = '<div class="empty-state"><p>Hit Preview to render a banner.</p></div>';
+  els.downloadSvgBtn.disabled = true;
   els.scoreChip.textContent = "Score \u2014";
   els.templateChip.textContent = "Template \u2014";
   els.dimensionsChip.innerHTML = `${dims[0]} \u00d7 ${dims[1]}`;
@@ -422,6 +424,7 @@ function renderPreview(response) {
   const familySummary = [primary.join(" + "), accent.length ? "/" + accent.join(" + ") : ""].join(" ").trim();
 
   els.svgStage.innerHTML = svg;
+  els.downloadSvgBtn.disabled = false;
   els.scoreChip.textContent = `Score ${result.score.toFixed(3)}`;
   els.templateChip.textContent = titleCase(result.template);
   els.dimensionsChip.innerHTML = `${request.dimensions[0]} \u00d7 ${request.dimensions[1]}`;
@@ -460,6 +463,24 @@ function topicStatusMessage(response) {
 
 function randomSeed() {
   return Math.floor(Math.random() * 2147483647);
+}
+
+function downloadSvg() {
+  const svg = els.svgStage.querySelector("svg");
+  if (!svg) return;
+  const serializer = new XMLSerializer();
+  const svgString = serializer.serializeToString(svg);
+  const blob = new Blob([svgString], { type: "image/svg+xml" });
+  const url = URL.createObjectURL(blob);
+  const name = els.name.value.trim() || "banner";
+  const seed = els.seed.value || "auto";
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${name}-s${seed}.svg`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 async function runAction(path, successMessage) {
@@ -576,6 +597,7 @@ async function init() {
 
   els.clearBtn.addEventListener("click", clearStudio);
   els.rerollSeedBtn.addEventListener("click", () => { els.seed.value = randomSeed(); });
+  els.downloadSvgBtn.addEventListener("click", downloadSvg);
   els.tileFamilyFilter.addEventListener("change", renderTileSuggestions);
   els.focusAccentBtn.addEventListener("click", rotateAccentSelection);
   els.lockPaletteBtn.addEventListener("click", lockPaletteFromSelection);
