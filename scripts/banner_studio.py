@@ -102,6 +102,7 @@ def request_from_payload(payload: dict) -> banner.BannerRequest:
         primary_families=normalize_string_list(payload.get("primary_families")),
         accent_families=normalize_string_list(payload.get("accent_families")),
         tile_ids=normalize_string_list(payload.get("tile_ids")),
+        restrict_colors=normalize_string_list(payload.get("restrict_colors")) or None,
     ).normalized()
 
 

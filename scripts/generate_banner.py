@@ -500,8 +500,12 @@ class BannerRequest:
     accent_families: list[str] = field(default_factory=list)
     tile_ids: list[str] = field(default_factory=list)
     name: Optional[str] = None
+    restrict_colors: Optional[list[str]] = None
 
     def normalized(self) -> "BannerRequest":
+        rc = None
+        if self.restrict_colors:
+            rc = [c.lower() for c in self.restrict_colors if c]
         return BannerRequest(
             energy=str(self.energy).lower(),
             seed=int(self.seed) if self.seed is not None else None,
@@ -517,6 +521,7 @@ class BannerRequest:
             accent_families=normalize_name_list(self.accent_families),
             tile_ids=normalize_name_list(self.tile_ids),
             name=normalize_banner_name(self.name),
+            restrict_colors=rc,
         )
 
 
@@ -594,6 +599,7 @@ def request_payload(request: BannerRequest) -> dict:
         "primary_families": normalize_name_list(request.primary_families),
         "accent_families": normalize_name_list(request.accent_families),
         "tile_ids": normalize_name_list(request.tile_ids),
+        "restrict_colors": request.restrict_colors,
     }
 
 
@@ -1627,7 +1633,19 @@ def build_color_targets(
     energy: str,
     rng: random.Random,
     color_bias: Optional[str] = None,
+    restrict_colors: Optional[list[str]] = None,
 ) -> dict[str, int]:
+    # Hard restriction: only use exactly these colors
+    if restrict_colors and len(restrict_colors) >= 2:
+        allowed = [c for c in restrict_colors if c in COLOR_TOKEN_TO_HEX]
+        if len(allowed) >= 2:
+            targets = {}
+            per_color = TOTAL_SLOTS // len(allowed)
+            remainder = TOTAL_SLOTS % len(allowed)
+            for i, color in enumerate(allowed):
+                targets[color] = per_color + (1 if i < remainder else 0)
+            return targets
+
     if energy == "low":
         if color_bias in {"cod_gray", "white", "smoke_white", "timberwolf"}:
             dominant = color_bias
@@ -1996,9 +2014,15 @@ def background_candidate_score(
     return score
 
 
-def assign_backgrounds(fg_by_pos: dict, template: str, rng: random.Random) -> dict:
+def assign_backgrounds(
+    fg_by_pos: dict,
+    template: str,
+    rng: random.Random,
+    restrict_colors: Optional[list[str]] = None,
+) -> dict:
     backgrounds = {}
     positions = [(row, col) for row in range(GRID_ROWS) for col in range(GRID_COLS)]
+    color_pool = restrict_colors if restrict_colors else ALL_COLOR_TOKENS
 
     if template in MIRROR_TEMPLATES:
         paired_positions = [
@@ -2009,7 +2033,9 @@ def assign_backgrounds(fg_by_pos: dict, template: str, rng: random.Random) -> di
         paired_positions.sort(key=lambda pair: (abs(pair[0][1] - 2.5), abs(pair[0][0] - 1)))
 
         for pair in paired_positions:
-            candidates = [color for color in ALL_COLOR_TOKENS if all(fg_by_pos[pos] != color for pos in pair)]
+            candidates = [color for color in color_pool if all(fg_by_pos[pos] != color for pos in pair)]
+            if not candidates:
+                candidates = list(color_pool)
             scored = [(bg_name, background_candidate_score(bg_name, pair, backgrounds, fg_by_pos, template)) for bg_name in candidates]
             top = sorted(scored, key=lambda item: item[1], reverse=True)[:3]
             chosen = rng.choices([name for name, _ in top], weights=[max(score, 0.01) for _, score in top], k=1)[0]
@@ -2025,7 +2051,9 @@ def assign_backgrounds(fg_by_pos: dict, template: str, rng: random.Random) -> di
         positions.sort(key=lambda pos: (pos[0], abs(pos[1] - 2.5)))
 
     for row, col in positions:
-        candidates = [color for color in ALL_COLOR_TOKENS if fg_by_pos[(row, col)] != color]
+        candidates = [color for color in color_pool if fg_by_pos[(row, col)] != color]
+        if not candidates:
+            candidates = list(color_pool)
         scored = [(bg_name, background_candidate_score(bg_name, [(row, col)], backgrounds, fg_by_pos, template)) for bg_name in candidates]
 
         top = sorted(scored, key=lambda item: item[1], reverse=True)[:3]
@@ -2513,6 +2541,7 @@ def generate_candidate(
     primary_families_override: Optional[list[str]] = None,
     accent_families_override: Optional[list[str]] = None,
     tile_ids_override: Optional[list[str]] = None,
+    restrict_colors: Optional[list[str]] = None,
 ) -> CandidateBanner:
     template = choose_template(energy, rng, template_override)
     tiles = manifest["tiles"]
@@ -2540,13 +2569,13 @@ def generate_candidate(
     groups, pos_to_group = build_continuity_groups(continuity_pairs)
     adjacency = build_group_adjacency(pos_to_group)
 
-    target_counts = build_color_targets(energy, rng, color_bias)
+    target_counts = build_color_targets(energy, rng, color_bias, restrict_colors=restrict_colors)
     group_colors = assign_group_colors(groups, adjacency, target_counts, template, energy, rng, color_bias=color_bias)
 
     fg_by_pos = {}
     for pos, group_id in pos_to_group.items():
         fg_by_pos[pos] = group_colors[group_id]
-    backgrounds = assign_backgrounds(fg_by_pos, template, rng)
+    backgrounds = assign_backgrounds(fg_by_pos, template, rng, restrict_colors=restrict_colors)
 
     placement_map = {(item["row"], item["col"]): item for item in placement}
     cells = []
@@ -2653,6 +2682,7 @@ def generate_banner(
             primary_families_override=request.primary_families,
             accent_families_override=request.accent_families,
             tile_ids_override=request.tile_ids,
+            restrict_colors=request.restrict_colors,
         )
         if best_candidate is None or candidate.score > best_candidate.score:
             best_candidate = candidate

@@ -11,262 +11,246 @@
 </head>
 <body>
   <div class="page-shell">
+
     <header class="masthead">
-      <div class="masthead-top">
-        <div class="brand-mark" aria-hidden="true">
-          <span class="chevron chevron-dark"></span>
-          <span class="chevron chevron-orange"></span>
-        </div>
-        <div class="masthead-kicker">
-          <span class="eyebrow">Generator Interface</span>
-          <span class="subcopy">One banner at a time. Save the request with the result.</span>
-        </div>
-        <div class="masthead-center">FAI — Foundation for American Innovation</div>
-        <div class="masthead-right">
-          <span class="page-chip">Page 01</span>
-          <span class="subcopy">Request-driven workflow</span>
-        </div>
-      </div>
-      <div class="masthead-bottom">
-        <h1>Banner Request Studio</h1>
-        <p>Build Tech. Promote Freedom. · Move fast and build things.</p>
-      </div>
-      <div class="masthead-rule"></div>
+      <img src="/acronym-black.svg" alt="FAI" class="masthead-logo">
+      <span class="masthead-divider"></span>
+      <h1>Banner Studio</h1>
     </header>
 
     <main class="studio-layout">
-      <section class="panel panel-dark controls-panel">
-        <div class="panel-heading">
-          <span class="eyebrow">Request Controls</span>
-          <h2>Specify the banner. Generate exactly one.</h2>
-          <p>This mirrors the new request-first CLI so you can test generation quickly.</p>
-        </div>
 
-        <div class="action-row">
-          <button id="preview-btn" class="btn btn-orange" type="button">Preview</button>
-          <button id="generate-btn" class="btn btn-light" type="button">Generate Files</button>
-          <button id="save-spec-btn" class="btn btn-outline" type="button">Save Spec</button>
+      <!-- LEFT: Controls -->
+      <section class="controls-panel">
+
+        <div class="action-bar">
+          <button id="preview-btn" class="btn btn-primary" type="button">Preview</button>
+          <button id="generate-btn" class="btn btn-secondary" type="button">Generate</button>
+          <button id="save-spec-btn" class="btn btn-ghost" type="button">Save Spec</button>
         </div>
 
         <form id="request-form" class="request-form">
-          <div class="card card-light">
-            <div class="card-title">
-              <h3>Core Request</h3>
-            </div>
+
+          <!-- Intent -->
+          <fieldset class="control-group">
+            <legend class="group-label">Intent</legend>
 
             <label class="field">
               <span class="field-label">Name</span>
               <input id="name" name="name" type="text" placeholder="policy-launch">
+              <span class="field-hint">Slug for the output filename. Lowercase, hyphens OK.</span>
             </label>
 
             <label class="field">
-              <span class="field-label">Topic Description</span>
-              <textarea id="topic-description" name="topic_description" rows="3" placeholder="AI demand surge, energy buildout, state capacity, rare earth supply chains..."></textarea>
+              <span class="field-label">Topic</span>
+              <textarea id="topic-description" name="topic_description" rows="2" placeholder="AI demand surge, energy buildout, state capacity..."></textarea>
+              <span class="field-hint">Describe the subject. Keywords auto-select tile families and color mood via "Apply Topic Style."</span>
             </label>
 
-            <div class="field-action-row">
-              <button id="topic-preview-btn" class="mini-btn mini-btn-ghost" type="button">Preview From Topic</button>
-              <button id="clear-btn" class="mini-btn mini-btn-ghost" type="button">Clear</button>
+            <div class="field">
+              <span class="field-label">Energy</span>
+              <div id="energy-group" class="choice-row"></div>
+              <span class="field-hint">Low = near-monochrome, 1-2 accent tiles. Medium = 4-5 colors, balanced. High = full palette, dense composition.</span>
             </div>
 
-            <div class="field-group split-emphasis">
+            <label class="field">
+              <span class="field-label">Template</span>
+              <select id="template" name="template"></select>
+              <span class="field-hint">Tile arrangement pattern. Auto picks the best-scoring template.</span>
+            </label>
+
+            <div class="field-row-actions">
+              <button id="topic-preview-btn" class="btn-inline" type="button">Apply Topic Style</button>
+              <button id="clear-btn" class="btn-inline btn-inline-muted" type="button">Clear All</button>
+            </div>
+          </fieldset>
+
+          <!-- Color Mode -->
+          <fieldset class="control-group">
+            <legend class="group-label">Color Mode</legend>
+            <span class="field-hint" style="margin-top:-4px">Choose a preset or manually pick families below. Duotone restricts the banner to exactly two colors.</span>
+
+            <div class="color-presets">
+              <button type="button" class="preset-chip" data-preset="auto">Auto</button>
+              <button type="button" class="preset-chip" data-preset="duotone-orange">Cod Gray on Orange</button>
+              <button type="button" class="preset-chip" data-preset="duotone-dark">Orange on Cod Gray</button>
+              <button type="button" class="preset-chip" data-preset="duotone-white">Cod Gray on White</button>
+              <button type="button" class="preset-chip" data-preset="duotone-blue">White on Blue</button>
+              <button type="button" class="preset-chip" data-preset="manual">Manual</button>
+            </div>
+
+            <div id="manual-palette" class="manual-palette" hidden>
               <div class="field">
-                <span class="field-label">Energy</span>
-                <div id="energy-group" class="choice-row compact"></div>
+                <span class="field-label">Primary Families</span>
+                <div id="primary-family-list" class="chip-wrap"></div>
+                <span class="field-hint">Shape families that dominate the composition. Click to toggle.</span>
               </div>
 
-              <label class="field">
-                <span class="field-label">Template</span>
-                <select id="template" name="template"></select>
-              </label>
-            </div>
-
-            <div class="field-group metrics-row">
-              <div class="field field-seed">
-                <span class="field-label">Seed</span>
-                <input id="seed" name="seed" type="number" inputmode="numeric" placeholder="auto">
-                <div class="field-action-row">
-                  <button id="reroll-seed-btn" class="mini-btn mini-btn-ghost" type="button">Reroll Seed</button>
-                </div>
+              <div class="field">
+                <span class="field-label">Accent Families</span>
+                <div id="accent-family-list" class="chip-wrap"></div>
+                <span class="field-hint">Supporting families. A family can't be both primary and accent.</span>
               </div>
-
-              <label class="field">
-                <span class="field-label">Candidates</span>
-                <input id="candidate-count" name="candidate_count" type="number" min="1" max="64">
-              </label>
-
-              <label class="field">
-                <span class="field-label">Continuity</span>
-                <input id="continuity-strength" name="continuity_strength" type="number" min="0" max="1" step="0.05">
-              </label>
-            </div>
-
-            <div class="field-group triple">
-              <label class="field">
-                <span class="field-label">Symmetry</span>
-                <input id="symmetry-strength" name="symmetry_strength" type="number" min="0" max="1" step="0.05">
-              </label>
-
-              <label class="field">
-                <span class="field-label">Rhythm</span>
-                <input id="rhythm-strength" name="rhythm_strength" type="number" min="0" max="1" step="0.05">
-              </label>
 
               <label class="field">
                 <span class="field-label">Color Bias</span>
                 <select id="color-bias" name="color_bias"></select>
+                <span class="field-hint">Pushes the palette toward this color. Doesn't restrict to it alone.</span>
               </label>
             </div>
+          </fieldset>
 
-            <div class="field-group double">
-              <label class="field">
-                <span class="field-label">Width</span>
-                <input id="width" name="width" type="number" min="1">
-              </label>
-
-              <label class="field">
-                <span class="field-label">Height</span>
-                <input id="height" name="height" type="number" min="1">
-              </label>
-            </div>
-          </div>
-
-          <div class="card card-charcoal">
-            <div class="card-title">
-              <h3>Palette Overrides</h3>
-            </div>
+          <!-- Tiles -->
+          <fieldset class="control-group control-group-dark">
+            <legend class="group-label on-dark">Tiles</legend>
+            <span class="field-hint on-dark" style="margin-top:-4px">Browse available tiles by family, or pin specific IDs to force them into the composition.</span>
 
             <div class="field">
-              <span class="field-label on-dark">Primary Families</span>
-              <div id="primary-family-list" class="chip-wrap"></div>
-            </div>
-
-            <div class="field">
-              <span class="field-label on-dark">Accent Families</span>
-              <div id="accent-family-list" class="chip-wrap"></div>
-            </div>
-
-            <div class="field">
-              <span class="field-label on-dark">Tile Suggestions</span>
-              <select id="tile-family-filter" class="dark-select"></select>
+              <div class="tile-filter-row">
+                <select id="tile-family-filter" class="select-dark select-compact"></select>
+                <button id="lock-palette-btn" class="btn-inline btn-inline-on-dark" type="button">Pin First 3</button>
+              </div>
               <div id="tile-suggestions" class="chip-wrap chip-wrap-tiles"></div>
             </div>
 
             <label class="field">
               <span class="field-label on-dark">Pinned Tile IDs</span>
-              <textarea id="tile-ids" name="tile_ids" rows="3" placeholder="circle-02, wave-06, circle-13"></textarea>
+              <textarea id="tile-ids" name="tile_ids" rows="2" class="input-dark" placeholder="circle-02, wave-06, circle-13"></textarea>
+              <span class="field-hint on-dark">Comma-separated. These tiles will always appear in the banner.</span>
             </label>
-          </div>
+          </fieldset>
+
+          <!-- Advanced (collapsed) -->
+          <details class="control-group-collapsible">
+            <summary class="group-label group-label-toggle">Advanced</summary>
+            <div class="control-group-inner">
+
+              <div class="field-grid">
+                <label class="field">
+                  <span class="field-label">Seed</span>
+                  <input id="seed" name="seed" type="number" inputmode="numeric" placeholder="auto">
+                  <span class="field-hint">Fix the random seed for reproducible output. Leave blank for random.</span>
+                </label>
+                <label class="field">
+                  <span class="field-label">Candidates</span>
+                  <input id="candidate-count" name="candidate_count" type="number" min="1" max="64">
+                  <span class="field-hint">How many compositions to generate and score. Higher = slower but better results.</span>
+                </label>
+              </div>
+
+              <div class="field-grid field-grid-3">
+                <label class="field">
+                  <span class="field-label">Continuity</span>
+                  <input id="continuity-strength" name="continuity_strength" type="number" min="0" max="1" step="0.05">
+                  <span class="field-hint">0-1. How much adjacent tiles should share shape families.</span>
+                </label>
+                <label class="field">
+                  <span class="field-label">Symmetry</span>
+                  <input id="symmetry-strength" name="symmetry_strength" type="number" min="0" max="1" step="0.05">
+                  <span class="field-hint">0-1. Mirror balance across the center axis.</span>
+                </label>
+                <label class="field">
+                  <span class="field-label">Rhythm</span>
+                  <input id="rhythm-strength" name="rhythm_strength" type="number" min="0" max="1" step="0.05">
+                  <span class="field-hint">0-1. Variation in rotation/scale across the grid.</span>
+                </label>
+              </div>
+
+              <div class="field-grid">
+                <label class="field">
+                  <span class="field-label">Width</span>
+                  <input id="width" name="width" type="number" min="1">
+                </label>
+                <label class="field">
+                  <span class="field-label">Height</span>
+                  <input id="height" name="height" type="number" min="1">
+                </label>
+              </div>
+
+            </div>
+          </details>
+
         </form>
       </section>
 
+      <!-- RIGHT: Preview + Output -->
       <section class="preview-panel">
-        <div class="panel panel-light preview-card">
-          <div class="preview-header">
-            <div>
-              <span class="eyebrow">Live Composition</span>
-              <h2>See the banner before you commit the files.</h2>
-            </div>
-            <div class="preview-chips">
-              <span id="score-chip" class="stat-chip stat-chip-dark">Score —</span>
-              <span id="template-chip" class="stat-chip">Template —</span>
+
+        <div class="preview-stage">
+          <div class="stage-toolbar">
+            <div class="stage-meta">
+              <span id="dimensions-chip" class="meta-chip">1920 &times; 960</span>
+              <span id="seed-chip" class="meta-chip meta-chip-orange">seed auto</span>
+              <span id="score-chip" class="meta-chip meta-chip-dark">Score &mdash;</span>
+              <span id="template-chip" class="meta-chip">Template &mdash;</span>
             </div>
           </div>
-
-          <div class="panel-rule"></div>
-
-          <div class="preview-stage">
-            <div class="preview-stage-top">
-              <div class="stage-dots" aria-hidden="true">
-                <span class="dot dot-orange"></span>
-                <span class="dot dot-yellow"></span>
-                <span class="dot dot-blue"></span>
-              </div>
-              <div class="preview-stage-meta">
-                <span id="dimensions-chip" class="stat-chip stat-chip-light">1920×960</span>
-                <span id="seed-chip" class="stat-chip stat-chip-orange">seed auto</span>
-              </div>
-            </div>
-            <div id="svg-stage" class="svg-stage">
-              <div class="empty-state">
-                <p>Preview a request to render the banner here.</p>
-              </div>
+          <div id="svg-stage" class="svg-stage">
+            <div class="empty-state">
+              <p>Hit Preview to render a banner.</p>
             </div>
           </div>
-
-          <div class="summary-row">
-            <div class="summary-card summary-card-dark">
-              <span class="summary-label">Primary Mix</span>
-              <strong id="summary-families">circle + wave</strong>
-            </div>
-            <div class="summary-card">
-              <span class="summary-label">Rotation Spread</span>
-              <strong id="summary-rotation">—</strong>
-            </div>
-            <div class="summary-card summary-card-orange">
-              <span class="summary-label">Output Pair</span>
-              <strong id="summary-output">Preview only</strong>
-            </div>
+          <div class="stage-actions">
+            <button class="btn btn-stage" type="button" data-reroll-preview="true">New Seed</button>
+            <button id="focus-accent-btn" class="btn btn-stage" type="button">Swap Accent</button>
+            <button id="reroll-seed-btn" class="btn btn-stage btn-stage-muted" type="button">Set Random Seed</button>
           </div>
         </div>
 
-        <div class="panel panel-dark variation-card">
-          <div>
-            <span class="eyebrow">Variation Controls</span>
-            <h3>Keep the request, spin a new seed.</h3>
+        <!-- Output strip -->
+        <div class="output-strip">
+          <div class="output-cell output-status">
+            <span class="output-label">Status</span>
+            <span id="status-text" class="status-text">Ready</span>
           </div>
-          <div class="variation-actions">
-            <button class="btn btn-light btn-small" type="button" data-reroll-preview="true">Preview New Seed</button>
-            <button id="focus-accent-btn" class="btn btn-blue btn-small" type="button">Swap Accent</button>
-            <button id="lock-palette-btn" class="btn btn-yellow btn-small" type="button">Pin Suggested Tiles</button>
+          <div class="output-cell">
+            <span class="output-label">Families</span>
+            <strong id="summary-families">auto</strong>
+          </div>
+          <div class="output-cell">
+            <span class="output-label">Rotation</span>
+            <strong id="summary-rotation">&mdash;</strong>
+          </div>
+          <div class="output-cell">
+            <span class="output-label">Output</span>
+            <strong id="summary-output">Preview only</strong>
           </div>
         </div>
+
+        <!-- Artifacts + JSON (collapsible) -->
+        <details class="output-details" open>
+          <summary class="group-label group-label-toggle">Artifacts &amp; History</summary>
+          <div class="output-details-inner">
+            <div class="artifacts-section">
+              <div id="saved-artifacts" class="artifact-list">
+                <div class="artifact-item">
+                  <span class="artifact-label">Status</span>
+                  <span class="artifact-value">No saved output yet.</span>
+                </div>
+              </div>
+            </div>
+            <div class="history-section">
+              <span class="output-label">Recent Runs</span>
+              <div id="history-list" class="history-list">
+                <p class="history-empty">No saved banners yet.</p>
+              </div>
+            </div>
+            <details class="json-details">
+              <summary class="group-label group-label-toggle group-label-small">Request JSON</summary>
+              <pre id="request-json" class="json-block">{}</pre>
+            </details>
+          </div>
+        </details>
+
       </section>
-
-      <aside class="panel panel-dark sidebar-panel">
-        <div class="panel-heading">
-          <span class="eyebrow">Resolved Output</span>
-          <h2>Everything needed to rerun or share the banner lives here.</h2>
-        </div>
-
-        <div class="panel-rule"></div>
-
-        <div class="sidebar-card sidebar-card-dark">
-          <span class="field-label on-dark">Request JSON</span>
-          <pre id="request-json" class="json-block">{}</pre>
-        </div>
-
-        <div class="sidebar-card sidebar-card-light">
-          <span class="field-label">Artifacts</span>
-          <div id="saved-artifacts" class="artifact-list">
-            <div class="artifact-item">
-              <span class="artifact-label">Status</span>
-              <span class="artifact-value">No saved output yet.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="sidebar-card sidebar-card-orange">
-          <span class="field-label">Status</span>
-          <p id="status-text" class="status-text">Studio ready. Preview a request to begin.</p>
-        </div>
-
-        <div class="sidebar-card sidebar-card-light">
-          <span class="field-label">Recent Runs</span>
-          <div id="history-list" class="history-list">
-            <p class="history-empty">No saved banners yet.</p>
-          </div>
-        </div>
-
-        <div class="footer-mark">
-          <span class="chevron chevron-light"></span>
-          <span class="chevron chevron-orange"></span>
-          <span>No Innovation without Representation</span>
-        </div>
-      </aside>
     </main>
-  </div>
 
+    <footer class="page-footer">
+      <img src="/logomark-black.svg" alt="" class="footer-logo">
+      <span class="footer-text">No Innovation without Representation</span>
+    </footer>
+
+  </div>
   <script src="/app.js"></script>
 </body>
 </html>
