@@ -49,6 +49,7 @@ BASE_DIR  = Path(__file__).resolve().parent.parent
 INPUT_DIR = BASE_DIR / "output" / "shapes-clean"
 OUT_DIR   = BASE_DIR / "output" / "shapes-simplified"
 REPORT    = BASE_DIR / "reports" / "simplification-report.md"
+VALIDATION_REPORT = BASE_DIR / "reports" / "simplification-validation-report.md"
 
 CLIP_BOX  = (0.0, 0.0, 200.0, 200.0)   # xmin, ymin, xmax, ymax
 CLIP_EPS  = 0.5                          # treat overflow < this as floating-point noise
@@ -606,6 +607,72 @@ def simplify_tile(
         )
 
 
+def validate_existing_output(
+    input_path: Path,
+    output_path: Path,
+    skip_validation: bool = False,
+) -> SimplificationResult:
+    """Validate an already-generated simplified tile without rewriting it."""
+    rel = "/".join(input_path.parts[-2:])
+
+    if not output_path.exists():
+        return SimplificationResult(
+            rel, "ERROR", "validate_existing",
+            0, 0, error="missing_output"
+        )
+
+    try:
+        clf = classify_tile(input_path)
+        simp_tree = etree.parse(str(output_path), etree.XMLParser(remove_comments=True))
+        simp_root = simp_tree.getroot()
+        path_count = len(simp_root.findall(f"{{{SVG_NS}}}path"))
+
+        extra_visible = []
+        for elem in simp_root.iter():
+            tag = _tag(elem)
+            if elem is simp_root:
+                continue
+            if tag == "path":
+                continue
+            if tag in ("defs", "metadata", "title", "desc"):
+                continue
+            extra_visible.append(tag)
+
+        if clf.is_clear:
+            if path_count != 0 or extra_visible:
+                return SimplificationResult(
+                    rel, "ERROR", "validate_existing",
+                    len(clf.fg_elements), path_count,
+                    error="clear_tile_not_empty"
+                )
+        elif path_count != 1 or extra_visible:
+            return SimplificationResult(
+                rel, "ERROR", "validate_existing",
+                len(clf.fg_elements), path_count,
+                error=f"unexpected_structure(paths={path_count}, extra={extra_visible[:4]})"
+            )
+
+        validation = None
+        if not skip_validation and HAS_PILLOW:
+            validation = validate_simplification(input_path, output_path)
+            if not validation.passed:
+                return SimplificationResult(
+                    rel, "VALIDATION_FAILED", "validate_existing",
+                    len(clf.fg_elements), path_count, validation=validation
+                )
+
+        status = "EMPTY" if clf.is_clear and path_count == 0 else "OK"
+        return SimplificationResult(
+            rel, status, "validate_existing",
+            len(clf.fg_elements), path_count, validation=validation
+        )
+    except Exception as e:
+        return SimplificationResult(
+            rel, "ERROR", "validate_existing",
+            0, 0, error=str(e)
+        )
+
+
 # ── Discovery ────────────────────────────────────────────
 def discover_tiles(input_dir: Path) -> list[Path]:
     """Find all SVG tiles, excluding Lines/Lines.svg (reference file)."""
@@ -679,9 +746,14 @@ def main():
                         help='Process single tile, e.g. "Mirror/03.svg"')
     parser.add_argument("--skip-validation", action="store_true",
                         help="Skip raster validation (faster)")
+    parser.add_argument("--validate-only", action="store_true",
+                        help="Validate existing simplified output, do not rewrite files")
     parser.add_argument("--classify-only", action="store_true",
                         help="Classify tiles and print summary, no output")
     args = parser.parse_args()
+
+    if args.validate_only and args.report == REPORT:
+        args.report = VALIDATION_REPORT
 
     tiles = discover_tiles(args.input)
     print(f"Found {len(tiles)} tiles in {args.input}")
@@ -719,6 +791,8 @@ def main():
         return
 
     print(f"Output: {args.output}")
+    mode = "validate-only" if args.validate_only else "rewrite"
+    print(f"Mode: {mode}")
     print(f"Validation: {'off' if args.skip_validation else 'on'}")
     print()
 
@@ -729,10 +803,16 @@ def main():
         rel_from_input = tile_path.relative_to(args.input)
         output_path = args.output / rel_from_input
 
-        result = simplify_tile(
-            tile_path, output_path,
-            skip_validation=args.skip_validation,
-        )
+        if args.validate_only:
+            result = validate_existing_output(
+                tile_path, output_path,
+                skip_validation=args.skip_validation,
+            )
+        else:
+            result = simplify_tile(
+                tile_path, output_path,
+                skip_validation=args.skip_validation,
+            )
         results.append(result)
 
         status_sym = {"OK": "✓", "EMPTY": "○", "VALIDATION_FAILED": "✗", "ERROR": "!"}.get(result.status, "?")

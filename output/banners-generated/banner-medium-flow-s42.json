@@ -4,66 +4,113 @@
   "energy": "medium",
   "template": "flow",
   "primary_families": [
-    "open"
+    "ramp"
   ],
-  "accent_families": [],
+  "accent_families": [
+    "circle"
+  ],
   "rotation_pattern": "flow",
   "continuity_strength": 0.7,
+  "candidate_count": 8,
   "dimensions": [
     1920,
     960
   ],
   "color_bias": null,
+  "score": 0.9331084656084656,
+  "score_breakdown": {
+    "color_adjacency": 0.9914021164021163,
+    "continuity": 1.0,
+    "repetition": 1.0,
+    "weight_balance": 1.0,
+    "rotation": 1.0,
+    "anchors": 0.5,
+    "target_fit": 1.0,
+    "energy": 0.75
+  },
   "cells": [
     {
       "col": 0,
       "row": 0,
-      "tile_id": "open-06",
-      "tile_filename": "Open/06.svg",
+      "tile_id": "ramp-06",
+      "tile_filename": "Ramp/06.svg",
       "rotation": 0,
-      "fg_color": "#4997D0",
-      "bg_color": "#121212",
-      "fg_name": "celestial_blue",
-      "bg_name": "cod_gray"
+      "fg_color": "#D9D9D6",
+      "bg_color": "#FF4F00",
+      "fg_name": "timberwolf",
+      "bg_name": "international_orange"
     },
     {
       "col": 1,
       "row": 0,
-      "tile_id": "open-08",
-      "tile_filename": "Open/08.svg",
+      "tile_id": "ramp-07",
+      "tile_filename": "Ramp/07.svg",
       "rotation": 180,
-      "fg_color": "#121212",
-      "bg_color": "#F3F3F3",
-      "fg_name": "cod_gray",
-      "bg_name": "smoke_white"
+      "fg_color": "#F3F3F3",
+      "bg_color": "#FF4F00",
+      "fg_name": "smoke_white",
+      "bg_name": "international_orange"
     },
     {
       "col": 2,
       "row": 0,
-      "tile_id": "open-08",
-      "tile_filename": "Open/08.svg",
+      "tile_id": "ramp-07",
+      "tile_filename": "Ramp/07.svg",
       "rotation": 0,
-      "fg_color": "#4997D0",
-      "bg_color": "#FFFFFF",
-      "fg_name": "celestial_blue",
-      "bg_name": "white"
+      "fg_color": "#F3F3F3",
+      "bg_color": "#4997D0",
+      "fg_name": "smoke_white",
+      "bg_name": "celestial_blue"
     },
     {
       "col": 3,
       "row": 0,
-      "tile_id": "open-02",
-      "tile_filename": "Open/02.svg",
-      "rotation": 270,
-      "fg_color": "#FFFFFF",
+      "tile_id": "ramp-07",
+      "tile_filename": "Ramp/07.svg",
+      "rotation": 180,
+      "fg_color": "#D9D9D6",
       "bg_color": "#FF4F00",
-      "fg_name": "white",
+      "fg_name": "timberwolf",
       "bg_name": "international_orange"
     },
     {
       "col": 4,
       "row": 0,
-      "tile_id": "open-01",
-      "tile_filename": "Open/01.svg",
+      "tile_id": "ramp-01",
+      "tile_filename": "Ramp/01.svg",
+      "rotation": 0,
+      "fg_color": "#D9D9D6",
+      "bg_color": "#121212",
+      "fg_name": "timberwolf",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 5,
+      "row": 0,
+      "tile_id": "ramp-07",
+      "tile_filename": "Ramp/07.svg",
+      "rotation": 180,
+      "fg_color": "#FF4F00",
+      "bg_color": "#121212",
+      "fg_name": "international_orange",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 0,
+      "row": 1,
+      "tile_id": "ramp-08",
+      "tile_filename": "Ramp/08.svg",
+      "rotation": 180,
+      "fg_color": "#FF4F00",
+      "bg_color": "#FFFFFF",
+      "fg_name": "international_orange",
+      "bg_name": "white"
+    },
+    {
+      "col": 1,
+      "row": 1,
+      "tile_id": "ramp-01",
+      "tile_filename": "Ramp/01.svg",
       "rotation": 0,
       "fg_color": "#FF4F00",
       "bg_color": "#121212",
@@ -71,66 +118,99 @@
       "bg_name": "cod_gray"
     },
     {
-      "col": 5,
-      "row": 0,
-      "tile_id": "open-04",
-      "tile_filename": "Open/04.svg",
-      "rotation": 180,
-      "fg_color": "#4997D0",
-      "bg_color": "#F3F3F3",
-      "fg_name": "celestial_blue",
-      "bg_name": "smoke_white"
-    },
-    {
-      "col": 0,
-      "row": 1,
-      "tile_id": "open-01",
-      "tile_filename": "Open/01.svg",
-      "rotation": 180,
-      "fg_color": "#FFFFFF",
-      "bg_color": "#FF4F00",
-      "fg_name": "white",
-      "bg_name": "international_orange"
-    },
-    {
-      "col": 1,
-      "row": 1,
-      "tile_id": "open-04",
-      "tile_filename": "Open/04.svg",
-      "rotation": 0,
-      "fg_color": "#FFFFFF",
-      "bg_color": "#FF4F00",
-      "fg_name": "white",
-      "bg_name": "international_orange"
-    },
-    {
       "col": 2,
       "row": 1,
-      "tile_id": "open-04",
-      "tile_filename": "Open/04.svg",
+      "tile_id": "circle-15",
+      "tile_filename": "Circle/15.svg",
       "rotation": 180,
-      "fg_color": "#FFFFFF",
-      "bg_color": "#121212",
-      "fg_name": "white",
-      "bg_name": "cod_gray"
+      "fg_color": "#D9D9D6",
+      "bg_color": "#4997D0",
+      "fg_name": "timberwolf",
+      "bg_name": "celestial_blue"
     },
     {
       "col": 3,
       "row": 1,
-      "tile_id": "open-01",
-      "tile_filename": "Open/01.svg",
+      "tile_id": "ramp-06",
+      "tile_filename": "Ramp/06.svg",
       "rotation": 0,
-      "fg_color": "#FFFFFF",
+      "fg_color": "#FF4F00",
       "bg_color": "#121212",
-      "fg_name": "white",
+      "fg_name": "international_orange",
       "bg_name": "cod_gray"
     },
     {
       "col": 4,
       "row": 1,
-      "tile_id": "open-02",
-      "tile_filename": "Open/02.svg",
+      "tile_id": "ramp-06",
+      "tile_filename": "Ramp/06.svg",
       "rotation": 180,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#121212",
+      "fg_name": "smoke_white",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 5,
+      "row": 1,
+      "tile_id": "ramp-06",
+      "tile_filename": "Ramp/06.svg",
+      "rotation": 0,
+      "fg_color": "#D9D9D6",
+      "bg_color": "#121212",
+      "fg_name": "timberwolf",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 0,
+      "row": 2,
+      "tile_id": "ramp-01",
+      "tile_filename": "Ramp/01.svg",
+      "rotation": 0,
+      "fg_color": "#F3F3F3",
+      "bg_color": "#FF4F00",
+      "fg_name": "smoke_white",
+      "bg_name": "international_orange"
+    },
+    {
+      "col": 1,
+      "row": 2,
+      "tile_id": "ramp-07",
+      "tile_filename": "Ramp/07.svg",
+      "rotation": 180,
+      "fg_color": "#D9D9D6",
+      "bg_color": "#121212",
+      "fg_name": "timberwolf",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 2,
+      "row": 2,
+      "tile_id": "ramp-06",
+      "tile_filename": "Ramp/06.svg",
+      "rotation": 0,
+      "fg_color": "#FF4F00",
+      "bg_color": "#121212",
+      "fg_name": "international_orange",
+      "bg_name": "cod_gray"
+    },
+    {
+      "col": 3,
+      "row": 2,
+      "tile_id": "ramp-07",
+      "tile_filename": "Ramp/07.svg",
+      "rotation": 180,
+      "fg_color": "#121212",
+      "bg_color": "#F3F3F3",
+      "fg_name": "cod_gray",
+      "bg_name": "smoke_white"
+    },
+    {
+      "col": 4,
+      "row": 2,
+      "tile_id": "circle-15",
+      "tile_filename": "Circle/15.svg",
+      "rotation": 0,
       "fg_color": "#121212",
       "bg_color": "#FFFFFF",
       "fg_name": "cod_gray",
@@ -138,81 +218,15 @@
     },
     {
       "col": 5,
-      "row": 1,
-      "tile_id": "open-03",
-      "tile_filename": "Open/03.svg",
-      "rotation": 0,
-      "fg_color": "#4997D0",
-      "bg_color": "#F3F3F3",
-      "fg_name": "celestial_blue",
-      "bg_name": "smoke_white"
-    },
-    {
-      "col": 0,
       "row": 2,
-      "tile_id": "open-05",
-      "tile_filename": "Open/05.svg",
-      "rotation": 0,
-      "fg_color": "#FFFFFF",
-      "bg_color": "#121212",
-      "fg_name": "white",
-      "bg_name": "cod_gray"
-    },
-    {
-      "col": 1,
-      "row": 2,
-      "tile_id": "open-06",
-      "tile_filename": "Open/06.svg",
+      "tile_id": "ramp-06",
+      "tile_filename": "Ramp/06.svg",
       "rotation": 180,
-      "fg_color": "#4997D0",
-      "bg_color": "#F3F3F3",
-      "fg_name": "celestial_blue",
-      "bg_name": "smoke_white"
-    },
-    {
-      "col": 2,
-      "row": 2,
-      "tile_id": "open-03",
-      "tile_filename": "Open/03.svg",
-      "rotation": 0,
       "fg_color": "#FF4F00",
-      "bg_color": "#F3F3F3",
-      "fg_name": "international_orange",
-      "bg_name": "smoke_white"
-    },
-    {
-      "col": 3,
-      "row": 2,
-      "tile_id": "open-08",
-      "tile_filename": "Open/08.svg",
-      "rotation": 180,
-      "fg_color": "#4997D0",
-      "bg_color": "#FF4F00",
-      "fg_name": "celestial_blue",
-      "bg_name": "international_orange"
-    },
-    {
-      "col": 4,
-      "row": 2,
-      "tile_id": "open-01",
-      "tile_filename": "Open/01.svg",
-      "rotation": 0,
-      "fg_color": "#4997D0",
-      "bg_color": "#121212",
-      "fg_name": "celestial_blue",
-      "bg_name": "cod_gray"
-    },
-    {
-      "col": 5,
-      "row": 2,
-      "tile_id": "open-08",
-      "tile_filename": "Open/08.svg",
-      "rotation": 180,
-      "fg_color": "#121212",
       "bg_color": "#FFFFFF",
-      "fg_name": "cod_gray",
+      "fg_name": "international_orange",
       "bg_name": "white"
     }
   ],
-  "generated_at": "2026-03-02T11:35:37.189237+00:00"
+  "generated_at": "2026-03-10T22:05:00.963351+00:00"
 }
