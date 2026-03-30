@@ -2,15 +2,15 @@ const state = {
   options: null,
   history: [],
   lastResponse: null,
-  colorMode: "auto", // auto | duotone-orange | duotone-dark | duotone-white | duotone-blue | manual
+  colorMode: "auto", // auto | duotone-orange | duotone-dark | duotone-white | duotone-blue
 };
 
 // Duotone presets: restrict_colors locks the palette to exactly 2 colors
 const DUOTONE_PRESETS = {
-  "duotone-orange": { restrict: ["cod_gray", "international_orange"], hint: "Cod Gray on International Orange — only these two colors" },
-  "duotone-dark":   { restrict: ["international_orange", "cod_gray"],  hint: "International Orange on Cod Gray — only these two colors" },
-  "duotone-white":  { restrict: ["cod_gray", "white"],                 hint: "Cod Gray on White — only these two colors" },
-  "duotone-blue":   { restrict: ["white", "celestial_blue"],           hint: "White on Celestial Blue — only these two colors" },
+  "duotone-orange": { restrict: ["cod_gray", "international_orange"], hint: "Duotone: Cod Gray + International Orange" },
+  "duotone-dark":   { restrict: ["international_orange", "cod_gray"],  hint: "Duotone: International Orange + Cod Gray" },
+  "duotone-white":  { restrict: ["cod_gray", "white"],                 hint: "Duotone: Cod Gray + White" },
+  "duotone-blue":   { restrict: ["white", "celestial_blue"],           hint: "Duotone: White + Celestial Blue" },
 };
 
 const els = {
@@ -52,7 +52,6 @@ const els = {
   savedArtifacts: document.getElementById("saved-artifacts"),
   statusText: document.getElementById("status-text"),
   historyList: document.getElementById("history-list"),
-  manualPalette: document.getElementById("manual-palette"),
   downloadSvgBtn: document.getElementById("download-svg-btn"),
 };
 
@@ -104,7 +103,7 @@ function setStatus(message, isError = false) {
 
 // ---- Color mode / presets ----
 
-function setColorMode(mode) {
+function setColorMode(mode, { autoPreview = false } = {}) {
   state.colorMode = mode;
 
   // Update preset chip active states
@@ -112,18 +111,27 @@ function setColorMode(mode) {
     chip.classList.toggle("is-active", chip.dataset.preset === mode);
   });
 
-  // Show/hide manual palette
-  const isManual = mode === "manual";
-  els.manualPalette.hidden = !isManual;
+  // Show/hide color bias (only relevant in full palette mode)
+  const biasField = els.colorBias.closest(".field");
+  if (biasField) {
+    biasField.style.display = mode === "auto" ? "" : "none";
+  }
 
-  // Apply duotone presets
   const preset = DUOTONE_PRESETS[mode];
   if (preset) {
     setStatus(preset.hint);
   } else if (mode === "auto") {
-    setStatus("Auto mode — full palette, engine picks best composition.");
-  } else if (mode === "manual") {
-    setStatus("Manual — pick families and color bias yourself.");
+    setStatus("Full palette — engine picks colors based on energy and bias.");
+  }
+
+  // If we already have a preview and the user switches palette, re-preview
+  // with the same seed so it feels like recoloring, not a full regeneration.
+  if (autoPreview && state.lastResponse) {
+    const currentSeed = state.lastResponse.request?.seed;
+    if (currentSeed) {
+      els.seed.value = currentSeed;
+    }
+    runAction("/api/preview", "Recolored with new palette.");
   }
 }
 
@@ -602,9 +610,9 @@ async function init() {
   els.focusAccentBtn.addEventListener("click", rotateAccentSelection);
   els.lockPaletteBtn.addEventListener("click", lockPaletteFromSelection);
 
-  // Color mode presets
+  // Color mode presets — auto-preview when switching if we already have a banner
   document.querySelectorAll(".preset-chip").forEach((chip) => {
-    chip.addEventListener("click", () => setColorMode(chip.dataset.preset));
+    chip.addEventListener("click", () => setColorMode(chip.dataset.preset, { autoPreview: true }));
   });
 
   // Reroll preview buttons
