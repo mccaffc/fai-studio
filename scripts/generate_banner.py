@@ -92,196 +92,329 @@ GRADIENT_COLOR_ORDER = [
 ]
 
 TOPIC_STYLE_PROFILES = {
+    # ── AI / Compute ──────────────────────────────────────────────────
+    # Metaphor: data streaming through parallel layers of a network.
+    # Lines evoke data paths and model layers; joints are the connection
+    # points where information converges.  High continuity for end-to-end
+    # flow, low symmetry because networks are directional not balanced,
+    # steady rhythm for the regular pulse of compute cycles.
+    # Celestial blue = digital, precise, technical depth.
     "ai_compute_policy": {
         "label": "AI / Compute Policy",
-        "description": "Sharper systems, model flow, and cool technical energy.",
+        "description": "Parallel data streams converging through network layers.",
         "keywords": {
             "ai": 3.0,
-            "artificial intelligence": 4.0,
+            "artificial intelligence": 5.0,
+            "machine learning": 4.0,
             "model": 2.0,
             "models": 2.0,
-            "compute": 3.0,
-            "inference": 2.0,
-            "training": 2.0,
-            "chip": 2.0,
-            "chips": 2.0,
-            "semiconductor": 2.0,
-            "copyright": 2.0,
-            "open weight": 3.0,
-            "open source": 2.0,
+            "compute": 3.5,
+            "inference": 3.0,
+            "training": 2.5,
+            "gpu": 3.0,
+            "chip": 2.5,
+            "chips": 2.5,
+            "semiconductor": 1.5,
+            "open weight": 4.0,
+            "open source": 2.5,
+            "algorithm": 2.5,
+            "neural": 3.0,
+            "data center": 3.0,
+            "frontier model": 5.0,
+            "llm": 4.0,
+            "generative": 3.0,
+            "alignment": 3.0,
+            "safety": 1.0,
         },
         "energy": "medium",
         "template": "flow",
         "color_bias": "celestial_blue",
-        "primary_families": ["lines", "float"],
+        "primary_families": ["lines", "joint"],
         "accent_families": ["circle"],
-        "continuity_strength": 0.8,
-        "symmetry_strength": 0.68,
+        "continuity_strength": 0.92,
+        "symmetry_strength": 0.42,
         "rhythm_strength": 0.82,
     },
+
+    # ── Energy / Infrastructure ───────────────────────────────────────
+    # Metaphor: scaffolding and transmission towers under construction.
+    # Ramps are the inclines and load-bearing slopes of a buildout;
+    # angles are the structural joints of power lines and pylons.
+    # High continuity for connected infrastructure, very low symmetry
+    # because buildout is directional momentum not balance, high rhythm
+    # for the repetitive structural cadence of a grid being assembled.
+    # International orange = high-vis safety, urgency, construction.
     "energy_infrastructure": {
         "label": "Energy / Infrastructure",
-        "description": "Directional movement, buildout, and load-bearing momentum.",
+        "description": "Structural ramps and angles assembling like a grid under construction.",
         "keywords": {
             "energy": 3.0,
             "grid": 4.0,
             "power": 3.0,
-            "electricity": 3.0,
-            "transmission": 2.5,
-            "permitting": 2.5,
+            "electricity": 3.5,
+            "transmission": 3.0,
+            "permitting": 3.0,
             "load": 2.0,
-            "baseload": 3.0,
-            "demand surge": 3.0,
-            "nuclear": 2.5,
+            "baseload": 3.5,
+            "demand surge": 4.0,
+            "nuclear": 3.0,
             "infrastructure": 3.0,
-            "buildout": 2.0,
+            "buildout": 2.5,
+            "solar": 2.5,
+            "wind": 2.0,
+            "renewable": 2.5,
+            "utility": 2.5,
+            "pipeline": 2.5,
+            "interconnection": 3.0,
+            "capacity": 2.0,
+            "megawatt": 3.0,
+            "generation": 2.0,
+            "clean energy": 3.5,
         },
-        "energy": "medium",
+        "energy": "high",
         "template": "river",
         "color_bias": "international_orange",
-        "primary_families": ["ramp", "open"],
-        "accent_families": ["angle"],
-        "continuity_strength": 0.88,
-        "symmetry_strength": 0.62,
-        "rhythm_strength": 0.84,
+        "primary_families": ["ramp", "angle"],
+        "accent_families": ["open"],
+        "continuity_strength": 0.95,
+        "symmetry_strength": 0.35,
+        "rhythm_strength": 0.88,
     },
+
+    # ── Industry / Supply Chains ──────────────────────────────────────
+    # Metaphor: shipping containers and factory modules on a pallet.
+    # Rectangles and squares are the standardized, interchangeable units
+    # of manufactured goods; composition tiles are assembled multi-part
+    # products.  Low continuity because modules are discrete (not
+    # flowing), very high symmetry for the regularity of standardized
+    # parts, very high rhythm for the repetitive cadence of a factory
+    # line.  Chrome yellow = industrial machinery, caution, manufacturing.
     "industrial_supply_chain": {
         "label": "Industry / Supply Chains",
-        "description": "Modular, manufactured, and more gridlike than organic.",
+        "description": "Standardized blocks arrayed like containers on a factory floor.",
         "keywords": {
             "manufacturing": 3.5,
             "industrial": 3.0,
             "trade": 2.5,
-            "supply chain": 3.5,
-            "supply chains": 3.5,
-            "rare earth": 4.0,
-            "rare earths": 4.0,
-            "minerals": 2.5,
-            "china": 2.0,
-            "factory": 2.0,
+            "tariff": 3.0,
+            "tariffs": 3.0,
+            "supply chain": 4.0,
+            "supply chains": 4.0,
+            "rare earth": 4.5,
+            "rare earths": 4.5,
+            "minerals": 3.0,
+            "critical minerals": 4.0,
+            "china": 2.5,
+            "factory": 2.5,
             "exports": 2.0,
             "imports": 2.0,
-            "border adjustment": 3.0,
+            "border adjustment": 3.5,
+            "reshoring": 3.5,
+            "onshoring": 3.5,
+            "logistics": 2.5,
+            "warehouse": 2.0,
+            "procurement": 2.5,
+            "inventory": 2.0,
         },
         "energy": "medium",
         "template": "checkerboard",
         "color_bias": "chrome_yellow",
-        "primary_families": ["rectangle", "composition"],
-        "accent_families": ["angle"],
-        "continuity_strength": 0.58,
-        "symmetry_strength": 0.82,
-        "rhythm_strength": 0.86,
+        "primary_families": ["rectangle", "square"],
+        "accent_families": ["composition"],
+        "continuity_strength": 0.38,
+        "symmetry_strength": 0.94,
+        "rhythm_strength": 0.92,
     },
+
+    # ── Governance / Institutions ─────────────────────────────────────
+    # Metaphor: the bilateral facade of a government building.
+    # Compositions are the complex institutional structures (agencies,
+    # branches); rectangles are the formal architectural blocks.
+    # Mirror-family accent tiles reinforce the idea of checks and
+    # balances.  Maximum symmetry for balance of power, low continuity
+    # (institutions are discrete bodies), low rhythm (measured, not
+    # dynamic).  Cod gray = authority, stone, formality.
+    # Low energy: governance is restrained and deliberate.
     "governance_institutions": {
         "label": "Governance / Institutions",
-        "description": "Orderly, balanced, and state-capacity oriented.",
+        "description": "Formal bilateral arrangement evoking checks, balances, and institutional architecture.",
         "keywords": {
-            "governance": 3.5,
+            "governance": 4.0,
             "institution": 3.0,
             "institutions": 3.0,
-            "state capacity": 4.0,
+            "state capacity": 4.5,
             "reform": 2.5,
-            "regulation": 2.0,
-            "agency": 2.0,
-            "agencies": 2.0,
-            "federal": 2.0,
-            "congress": 2.0,
-            "policy": 1.6,
-            "commission": 2.0,
+            "regulation": 2.5,
+            "regulatory": 2.5,
+            "agency": 2.5,
+            "agencies": 2.5,
+            "federal": 2.5,
+            "congress": 2.5,
+            "commission": 2.5,
+            "bureaucracy": 3.0,
+            "oversight": 3.0,
+            "executive order": 3.5,
+            "legislation": 3.0,
+            "statute": 2.5,
+            "rulemaking": 3.0,
+            "appropriation": 2.5,
+            "bipartisan": 2.5,
         },
         "energy": "low",
         "template": "symmetric",
         "color_bias": "cod_gray",
         "primary_families": ["composition", "rectangle"],
-        "accent_families": ["square"],
-        "continuity_strength": 0.68,
-        "symmetry_strength": 0.95,
-        "rhythm_strength": 0.72,
+        "accent_families": ["mirror"],
+        "continuity_strength": 0.48,
+        "symmetry_strength": 0.98,
+        "rhythm_strength": 0.52,
     },
+
+    # ── Frontier Science / Deep Tech ──────────────────────────────────
+    # Metaphor: particle tracks spiraling outward from a collision point.
+    # Centric tiles are atomic nuclei and focal points of discovery;
+    # circles are orbits and cellular forms.  Cascade accents evoke
+    # chain reactions and experimental cascades.  Medium continuity for
+    # connected experimental pathways, moderate symmetry (natural symmetry
+    # in physics), low rhythm (irregular discovery, not factory cadence).
+    # Celestial blue = deep space, precision instrumentation, clarity.
     "frontier_science": {
         "label": "Frontier Science / Deep Tech",
-        "description": "Orbital, precise, and slightly more exploratory.",
+        "description": "Concentric forms spiraling outward like particle tracks from a collision.",
         "keywords": {
             "science": 3.0,
             "research": 2.5,
-            "lab": 2.0,
-            "labs": 2.0,
+            "lab": 2.5,
+            "labs": 2.5,
             "innovation": 2.0,
-            "quantum": 4.0,
-            "deep tech": 4.0,
+            "quantum": 4.5,
+            "deep tech": 4.5,
             "frontier": 2.0,
             "materials": 2.0,
-            "biotech": 2.5,
-            "semiconductor": 2.0,
-            "advanced technology": 2.5,
+            "biotech": 3.0,
+            "semiconductor": 2.5,
+            "advanced technology": 3.0,
+            "nanotechnology": 4.0,
+            "fusion": 3.5,
+            "particle": 3.0,
+            "genome": 3.0,
+            "crispr": 4.0,
+            "synthetic biology": 4.0,
+            "photonics": 3.5,
+            "superconductor": 4.0,
         },
         "energy": "medium",
         "template": "spiral",
         "color_bias": "celestial_blue",
         "primary_families": ["centric", "circle"],
-        "accent_families": ["float"],
-        "continuity_strength": 0.64,
-        "symmetry_strength": 0.78,
-        "rhythm_strength": 0.8,
+        "accent_families": ["cascade"],
+        "continuity_strength": 0.68,
+        "symmetry_strength": 0.72,
+        "rhythm_strength": 0.55,
     },
+
+    # ── Speech / Creativity ───────────────────────────────────────────
+    # Metaphor: sound waves and brushstrokes radiating from bright focal
+    # points.  Curves are the organic arcs of a voice or a pen; waves
+    # are cultural movements and sound propagation.  Float accents are
+    # free-floating individual expression.  Low continuity (expression
+    # is diverse, not uniform), low symmetry (creativity breaks
+    # convention), very high rhythm (dynamic variation, call-and-
+    # response).  Chrome yellow = warmth, optimism, creative brightness.
+    # High energy: creativity is exuberant and colorful.
     "speech_creativity": {
         "label": "Speech / Creativity",
-        "description": "Softer arcs, clearer focal accents, and brighter contrast.",
+        "description": "Organic curves and waves radiating from bright focal accents, like a voice carrying outward.",
         "keywords": {
-            "speech": 3.0,
-            "creator": 2.0,
-            "creative": 2.0,
-            "copyright": 4.0,
+            "speech": 3.5,
+            "first amendment": 4.5,
+            "creator": 2.5,
+            "creators": 2.5,
+            "creative": 2.5,
+            "copyright": 3.0,
             "media": 2.0,
-            "culture": 2.0,
-            "expression": 2.5,
-            "publishing": 1.8,
+            "culture": 2.5,
+            "expression": 3.0,
+            "publishing": 2.5,
             "story": 1.5,
-            "art": 1.5,
+            "storytelling": 2.5,
+            "art": 2.0,
+            "artist": 2.5,
+            "music": 2.5,
+            "journalism": 2.5,
+            "platform": 1.5,
+            "content moderation": 3.5,
+            "free speech": 4.0,
+            "censorship": 3.5,
         },
-        "energy": "medium",
-        "template": "mirror",
+        "energy": "high",
+        "template": "focal",
         "color_bias": "chrome_yellow",
-        "primary_families": ["curve", "circle"],
+        "primary_families": ["curve", "wave"],
         "accent_families": ["float"],
-        "continuity_strength": 0.6,
-        "symmetry_strength": 0.86,
-        "rhythm_strength": 0.74,
+        "continuity_strength": 0.42,
+        "symmetry_strength": 0.48,
+        "rhythm_strength": 0.95,
     },
+
+    # ── Defense / National Security ───────────────────────────────────
+    # Metaphor: chevrons in strict bilateral formation — a defensive
+    # perimeter.  Angles are directional force and chevron insignia;
+    # merge tiles are converging alliance formations.  Joint accents are
+    # structural reinforcement nodes.  High continuity for coordinated
+    # forces, very high symmetry (military formation), very low rhythm
+    # (disciplined uniformity, not variation).  Cod gray = steel,
+    # discipline, authority.  Low energy: restrained and controlled.
     "national_security": {
         "label": "Defense / National Security",
-        "description": "Harder edges, stronger contrast, and disciplined symmetry.",
+        "description": "Angular chevrons in strict bilateral formation, evoking a defensive perimeter.",
         "keywords": {
             "defense": 4.0,
-            "security": 3.0,
-            "military": 3.0,
-            "deterrence": 3.0,
-            "arsenal": 2.5,
-            "war": 2.0,
-            "weapon": 2.0,
-            "alliance": 2.0,
-            "national security": 4.0,
+            "military": 3.5,
+            "deterrence": 3.5,
+            "arsenal": 3.0,
+            "war": 2.5,
+            "weapon": 2.5,
+            "weapons": 2.5,
+            "alliance": 2.5,
+            "national security": 5.0,
+            "nato": 3.0,
+            "pentagon": 3.5,
+            "intelligence": 2.5,
+            "cyber": 2.5,
+            "missile": 3.0,
+            "nuclear weapon": 4.0,
+            "drone": 2.5,
+            "surveillance": 2.5,
+            "espionage": 3.0,
+            "threat": 2.0,
+            "adversary": 2.5,
         },
-        "energy": "medium",
+        "energy": "low",
         "template": "mirror",
         "color_bias": "cod_gray",
         "primary_families": ["angle", "merge"],
-        "accent_families": ["rectangle"],
-        "continuity_strength": 0.72,
-        "symmetry_strength": 0.9,
-        "rhythm_strength": 0.8,
+        "accent_families": ["joint"],
+        "continuity_strength": 0.8,
+        "symmetry_strength": 0.96,
+        "rhythm_strength": 0.42,
     },
+
+    # ── General FAI ───────────────────────────────────────────────────
+    # Metaphor: an open, welcoming composition — broad engagement with
+    # no single axis of intensity.  Pinwheel rotation keeps it dynamic
+    # without privileging a direction.
     "general_fai": {
         "label": "General FAI",
-        "description": "Balanced geometric language for broad policy topics.",
+        "description": "Balanced, dynamic composition for broad policy engagement.",
         "keywords": {},
         "energy": "medium",
-        "template": "mirror",
+        "template": "pinwheel",
         "color_bias": "international_orange",
         "primary_families": ["composition", "circle"],
         "accent_families": ["float"],
         "continuity_strength": 0.72,
-        "symmetry_strength": 0.84,
+        "symmetry_strength": 0.78,
         "rhythm_strength": 0.78,
     },
 }
@@ -917,6 +1050,18 @@ def topic_keyword_hits(description: str, keywords: dict[str, float]) -> tuple[fl
         if re.search(pattern, normalized):
             score += weight
             hits.append(keyword)
+
+    # Bonus for multi-word keyword matches (more specific = more signal)
+    multi_word_hits = [h for h in hits if " " in h]
+    if multi_word_hits:
+        score += len(multi_word_hits) * 1.5
+
+    # Density bonus: reward profiles where a higher fraction of their
+    # keywords appear in the description (signals a tighter topic fit)
+    if keywords and hits:
+        hit_fraction = len(hits) / len(keywords)
+        score *= 1.0 + hit_fraction * 0.4
+
     return score, hits
 
 
@@ -934,23 +1079,29 @@ def suggest_topic_style(description: Optional[str], manifest: dict) -> Optional[
         scored.append((score, key, hits, profile))
 
     scored.sort(key=lambda item: item[0], reverse=True)
-    score, key, hits, profile = scored[0]
+    best_score, best_key, best_hits, best_profile = scored[0]
 
-    primary_families = [family for family in profile["primary_families"] if family in available]
-    accent_families = [family for family in profile["accent_families"] if family in available and family not in primary_families]
-    keyword_hits = hits[:5]
+    # If the best real topic scored below a meaningful threshold and only
+    # general_fai won by its floor, skip topic styling entirely so the
+    # user's original request parameters are preserved.
+    if best_key == "general_fai" and best_score <= 0.1:
+        return None
+
+    primary_families = [family for family in best_profile["primary_families"] if family in available]
+    accent_families = [family for family in best_profile["accent_families"] if family in available and family not in primary_families]
+    keyword_hits = best_hits[:5]
     return {
-        "key": key,
-        "label": profile["label"],
-        "description": profile["description"],
+        "key": best_key,
+        "label": best_profile["label"],
+        "description": best_profile["description"],
         "keyword_hits": keyword_hits,
-        "match_score": score,
-        "energy": profile["energy"],
-        "template": profile["template"],
-        "color_bias": profile["color_bias"],
-        "continuity_strength": profile["continuity_strength"],
-        "symmetry_strength": profile["symmetry_strength"],
-        "rhythm_strength": profile["rhythm_strength"],
+        "match_score": best_score,
+        "energy": best_profile["energy"],
+        "template": best_profile["template"],
+        "color_bias": best_profile["color_bias"],
+        "continuity_strength": best_profile["continuity_strength"],
+        "symmetry_strength": best_profile["symmetry_strength"],
+        "rhythm_strength": best_profile["rhythm_strength"],
         "primary_families": primary_families,
         "accent_families": accent_families,
     }
@@ -1714,7 +1865,7 @@ def build_color_targets(
             targets[chosen] += 1
             remaining -= 1
         if color_bias:
-            desired = 7 if color_bias in {"international_orange", "cod_gray"} else 6
+            desired = 8 if color_bias in {"international_orange", "cod_gray"} else 7
             current = targets.get(color_bias, 0)
             targets.setdefault(color_bias, current)
             while targets[color_bias] < desired:

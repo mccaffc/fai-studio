@@ -171,6 +171,13 @@ button { cursor: pointer; }
   min-height: 28px;
 }
 .btn-inline:hover { background: rgba(18, 18, 18, 0.04); }
+.btn-inline-accent {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--cod);
+  font-weight: 700;
+}
+.btn-inline-accent:hover { opacity: 0.85; }
 .btn-inline-muted { color: var(--text-muted); border-color: transparent; }
 .btn-inline-on-dark {
   color: var(--text-on-dark);
@@ -201,7 +208,6 @@ button { cursor: pointer; }
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
-  border: none;
   padding: 0;
 }
 .group-label.on-dark { color: var(--text-muted-dark); }
@@ -349,6 +355,17 @@ textarea {
   padding-bottom: 2px;
 }
 .chip-wrap-tiles { max-height: 100px; }
+
+/* Chips in light panel (Composition families) */
+.chip.is-selected { border-color: transparent; }
+.chip[data-role="primary"].is-selected {
+  background: var(--cod);
+  color: var(--white);
+}
+.chip[data-role="accent"].is-selected {
+  background: var(--blue);
+  color: var(--white);
+}
 
 /* Chips inside dark panel */
 .control-group-dark .chip {
