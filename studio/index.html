@@ -31,9 +31,9 @@
 
         <form id="request-form" class="request-form">
 
-          <!-- Intent -->
+          <!-- Topic -->
           <fieldset class="control-group">
-            <legend class="group-label">Intent</legend>
+            <div class="group-label">Topic</div>
 
             <label class="field">
               <span class="field-label">Name</span>
@@ -42,67 +42,69 @@
             </label>
 
             <label class="field">
-              <span class="field-label">Topic</span>
+              <span class="field-label">Description</span>
               <textarea id="topic-description" name="topic_description" rows="2" placeholder="AI demand surge, energy buildout, state capacity..."></textarea>
-              <span class="field-hint">Describe the subject. Keywords auto-select tile families and color mood via "Apply Topic Style."</span>
+              <span class="field-hint">Describe the subject and press Enter to apply. Keywords auto-select families, template, color, and energy.</span>
             </label>
+
+            <div class="field-row-actions">
+              <button id="topic-preview-btn" class="btn-inline btn-inline-accent" type="button">Apply Topic Style</button>
+              <button id="clear-btn" class="btn-inline btn-inline-muted" type="button">Clear All</button>
+            </div>
+          </fieldset>
+
+          <!-- Composition -->
+          <fieldset class="control-group">
+            <div class="group-label">Composition</div>
 
             <div class="field">
               <span class="field-label">Energy</span>
               <div id="energy-group" class="choice-row"></div>
-              <span class="field-hint">Low = near-monochrome, 1-2 accent tiles. Medium = 4-5 colors, balanced. High = full palette, dense composition.</span>
+              <span class="field-hint">Low = near-monochrome, 1-2 accent tiles. Medium = 4-5 colors. High = full palette, dense.</span>
             </div>
 
             <label class="field">
               <span class="field-label">Template</span>
               <select id="template" name="template"></select>
-              <span class="field-hint">Tile arrangement pattern. Auto picks the best-scoring template.</span>
+              <span class="field-hint">Tile arrangement pattern. Leave on Auto to let the engine choose.</span>
             </label>
 
-            <div class="field-row-actions">
-              <button id="topic-preview-btn" class="btn-inline" type="button">Apply Topic Style</button>
-              <button id="clear-btn" class="btn-inline btn-inline-muted" type="button">Clear All</button>
+            <div class="field">
+              <span class="field-label">Primary Families</span>
+              <div id="primary-family-list" class="chip-wrap"></div>
+              <span class="field-hint">Shape families that dominate the composition. Click to toggle.</span>
+            </div>
+
+            <div class="field">
+              <span class="field-label">Accent Families</span>
+              <div id="accent-family-list" class="chip-wrap"></div>
+              <span class="field-hint">Supporting families. A family can't be both primary and accent.</span>
             </div>
           </fieldset>
 
-          <!-- Color Mode -->
+          <!-- Color -->
           <fieldset class="control-group">
-            <legend class="group-label">Color Mode</legend>
-            <span class="field-hint" style="margin-top:-4px">Choose a preset or manually pick families below. Duotone restricts the banner to exactly two colors.</span>
+            <div class="group-label">Color</div>
+            <span class="field-hint" style="margin-top:-4px">Pick a palette preset or set a color bias. Duotone restricts the banner to exactly two colors.</span>
 
             <div class="color-presets">
-              <button type="button" class="preset-chip" data-preset="auto">Auto</button>
-              <button type="button" class="preset-chip" data-preset="duotone-orange">Cod Gray on Orange</button>
-              <button type="button" class="preset-chip" data-preset="duotone-dark">Orange on Cod Gray</button>
-              <button type="button" class="preset-chip" data-preset="duotone-white">Cod Gray on White</button>
-              <button type="button" class="preset-chip" data-preset="duotone-blue">White on Blue</button>
-              <button type="button" class="preset-chip" data-preset="manual">Manual</button>
+              <button type="button" class="preset-chip" data-preset="auto">Full Palette</button>
+              <button type="button" class="preset-chip" data-preset="duotone-orange">Cod Gray + Orange</button>
+              <button type="button" class="preset-chip" data-preset="duotone-dark">Orange + Cod Gray</button>
+              <button type="button" class="preset-chip" data-preset="duotone-white">Cod Gray + White</button>
+              <button type="button" class="preset-chip" data-preset="duotone-blue">White + Blue</button>
             </div>
 
-            <div id="manual-palette" class="manual-palette" hidden>
-              <div class="field">
-                <span class="field-label">Primary Families</span>
-                <div id="primary-family-list" class="chip-wrap"></div>
-                <span class="field-hint">Shape families that dominate the composition. Click to toggle.</span>
-              </div>
-
-              <div class="field">
-                <span class="field-label">Accent Families</span>
-                <div id="accent-family-list" class="chip-wrap"></div>
-                <span class="field-hint">Supporting families. A family can't be both primary and accent.</span>
-              </div>
-
-              <label class="field">
-                <span class="field-label">Color Bias</span>
-                <select id="color-bias" name="color_bias"></select>
-                <span class="field-hint">Pushes the palette toward this color. Doesn't restrict to it alone.</span>
-              </label>
-            </div>
+            <label class="field">
+              <span class="field-label">Color Bias</span>
+              <select id="color-bias" name="color_bias"></select>
+              <span class="field-hint">Pushes the palette toward this color. Only applies in Full Palette mode.</span>
+            </label>
           </fieldset>
 
           <!-- Tiles -->
           <fieldset class="control-group control-group-dark">
-            <legend class="group-label on-dark">Tiles</legend>
+            <div class="group-label on-dark">Tiles</div>
             <span class="field-hint on-dark" style="margin-top:-4px">Browse available tiles by family, or pin specific IDs to force them into the composition.</span>
 
             <div class="field">
