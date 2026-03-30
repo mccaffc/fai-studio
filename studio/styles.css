@@ -208,7 +208,6 @@ button { cursor: pointer; }
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
-  border: none;
   padding: 0;
 }
 .group-label.on-dark { color: var(--text-muted-dark); }
