@@ -125,6 +125,30 @@ TOPIC_STYLE_PROFILES = {
             "generative": 3.0,
             "alignment": 3.0,
             "safety": 1.0,
+            "foundation model": 5.0,
+            "large language model": 5.0,
+            "autonomous": 2.5,
+            "agent": 2.0,
+            "agents": 2.0,
+            "benchmark": 2.5,
+            "evaluation": 2.0,
+            "capability": 2.0,
+            "capabilities": 2.5,
+            "scale": 2.0,
+            "scaling": 2.5,
+            "reasoning": 2.5,
+            "deployment": 2.0,
+            "regulation": 1.5,
+            "export control": 3.5,
+            "chip export": 4.0,
+            "parameter": 2.0,
+            "weights": 2.5,
+            "diffusion": 2.5,
+            "multimodal": 3.0,
+            "deepseek": 4.0,
+            "openai": 3.5,
+            "anthropic": 3.5,
+            "gemini": 3.0,
         },
         "energy": "medium",
         "template": "flow",
@@ -170,6 +194,24 @@ TOPIC_STYLE_PROFILES = {
             "megawatt": 3.0,
             "generation": 2.0,
             "clean energy": 3.5,
+            "battery": 3.0,
+            "battery storage": 4.0,
+            "storage": 2.5,
+            "ev": 2.5,
+            "electric vehicle": 3.5,
+            "hydrogen": 3.0,
+            "lng": 3.0,
+            "natural gas": 3.0,
+            "coal": 2.5,
+            "carbon capture": 3.5,
+            "offshore wind": 3.5,
+            "data center": 2.5,
+            "cooling": 2.0,
+            "substation": 3.5,
+            "transformer": 2.5,
+            "reliability": 2.5,
+            "blackout": 3.0,
+            "grid modernization": 4.0,
         },
         "energy": "high",
         "template": "river",
@@ -215,6 +257,22 @@ TOPIC_STYLE_PROFILES = {
             "warehouse": 2.0,
             "procurement": 2.5,
             "inventory": 2.0,
+            "nearshoring": 3.5,
+            "friendshoring": 3.5,
+            "IRA": 3.0,
+            "chips act": 4.0,
+            "domestic production": 3.5,
+            "bottleneck": 2.5,
+            "resilience": 2.5,
+            "diversification": 2.5,
+            "semiconductor supply": 4.0,
+            "fab": 3.0,
+            "foundry": 3.0,
+            "export restriction": 3.5,
+            "battery materials": 4.0,
+            "cobalt": 3.0,
+            "lithium": 3.0,
+            "nickel": 2.5,
         },
         "energy": "medium",
         "template": "checkerboard",
@@ -259,6 +317,21 @@ TOPIC_STYLE_PROFILES = {
             "rulemaking": 3.0,
             "appropriation": 2.5,
             "bipartisan": 2.5,
+            "judiciary": 3.0,
+            "court": 2.0,
+            "supreme court": 3.5,
+            "regulatory capture": 4.0,
+            "administrative state": 4.0,
+            "civil service": 3.0,
+            "accountability": 2.5,
+            "transparency": 2.5,
+            "doge": 3.5,
+            "federalism": 3.5,
+            "checks and balances": 4.5,
+            "separation of powers": 4.0,
+            "veto": 2.5,
+            "filibuster": 3.0,
+            "permitting reform": 3.5,
         },
         "energy": "low",
         "template": "symmetric",
@@ -302,6 +375,22 @@ TOPIC_STYLE_PROFILES = {
             "synthetic biology": 4.0,
             "photonics": 3.5,
             "superconductor": 4.0,
+            "space": 2.5,
+            "satellite": 3.0,
+            "rocket": 3.0,
+            "protein folding": 4.5,
+            "alphafold": 4.5,
+            "drug discovery": 4.0,
+            "materials science": 3.5,
+            "battery technology": 3.5,
+            "nuclear fusion": 4.5,
+            "darpa": 3.5,
+            "arpa": 3.0,
+            "r&d": 2.5,
+            "telescope": 3.0,
+            "climate model": 4.0,
+            "exascale": 4.5,
+            "computing": 2.0,
         },
         "energy": "medium",
         "template": "spiral",
@@ -346,6 +435,21 @@ TOPIC_STYLE_PROFILES = {
             "content moderation": 3.5,
             "free speech": 4.0,
             "censorship": 3.5,
+            "social media": 3.0,
+            "misinformation": 3.5,
+            "disinformation": 3.5,
+            "algorithm": 2.0,
+            "recommendation": 2.0,
+            "news": 1.5,
+            "broadcast": 2.0,
+            "hollywood": 2.5,
+            "film": 2.0,
+            "book": 1.5,
+            "library": 2.0,
+            "academic freedom": 3.5,
+            "deepfake": 3.5,
+            "synthetic media": 4.0,
+            "ai content": 3.5,
         },
         "energy": "high",
         "template": "focal",
@@ -389,6 +493,20 @@ TOPIC_STYLE_PROFILES = {
             "espionage": 3.0,
             "threat": 2.0,
             "adversary": 2.5,
+            "space": 2.5,
+            "satellite": 2.5,
+            "hypersonic": 4.0,
+            "autonomous weapon": 4.5,
+            "lethal autonomous": 5.0,
+            "election security": 3.5,
+            "critical infrastructure": 4.0,
+            "counterterrorism": 3.5,
+            "homeland": 3.0,
+            "nuclear deterrence": 5.0,
+            "submarine": 3.0,
+            "aukus": 4.0,
+            "force posture": 3.5,
+            "battlefield": 3.0,
         },
         "energy": "low",
         "template": "mirror",
@@ -398,6 +516,219 @@ TOPIC_STYLE_PROFILES = {
         "continuity_strength": 0.8,
         "symmetry_strength": 0.96,
         "rhythm_strength": 0.42,
+    },
+
+    # ── Economics / Fiscal Policy ─────────────────────────────────────
+    # Metaphor: a capital ledger — columnar bars of revenue and outlay
+    # connected by trend lines of obligation.  Rectangles are budget
+    # line items and balance-sheet columns; lines are the flows of debt,
+    # interest, and spending; joints are the nodes where capital
+    # allocates across programs.  High continuity for capital flowing
+    # through a system, moderate symmetry (balance sheets balance),
+    # high rhythm for the regular cadence of fiscal cycles.
+    # Chrome yellow = gold, value, markets.
+    "economics_fiscal": {
+        "label": "Economics / Fiscal Policy",
+        "description": "Columnar budget lines and capital flows connected through allocation nodes.",
+        "keywords": {
+            "budget": 3.5,
+            "deficit": 3.5,
+            "surplus": 3.0,
+            "debt": 3.0,
+            "fiscal": 4.0,
+            "monetary": 3.5,
+            "federal reserve": 4.0,
+            "fed": 2.5,
+            "inflation": 3.5,
+            "interest rate": 3.5,
+            "bond": 2.5,
+            "treasury": 3.0,
+            "gdp": 3.0,
+            "recession": 3.5,
+            "stimulus": 3.0,
+            "tax": 2.5,
+            "revenue": 2.5,
+            "spending": 2.5,
+            "appropriation": 3.0,
+            "appropriations": 3.0,
+            "subsidy": 2.5,
+            "market": 2.0,
+            "markets": 2.0,
+            "economic growth": 3.5,
+            "productivity": 2.5,
+            "austerity": 3.0,
+            "quantitative easing": 4.0,
+            "tariff revenue": 3.0,
+        },
+        "energy": "medium",
+        "template": "flow",
+        "color_bias": "chrome_yellow",
+        "primary_families": ["rectangle", "lines"],
+        "accent_families": ["joint"],
+        "continuity_strength": 0.78,
+        "symmetry_strength": 0.68,
+        "rhythm_strength": 0.82,
+    },
+
+    # ── Healthcare / Life Sciences ────────────────────────────────────
+    # Metaphor: cellular diagnostics — concentric cell forms with
+    # biometric waveforms reading vital signs.  Circles are cells, pills,
+    # and petri-dish cross-sections; centric tiles are nuclear targets
+    # and diagnostic bulls-eyes; waves are EKG traces and epidemiological
+    # curves.  Moderate continuity (connected biological pathways),
+    # moderate-high symmetry (bilateral biological symmetry), moderate
+    # rhythm (clinical regularity with natural variation).
+    # Celestial blue = clinical precision, care, calm authority.
+    "healthcare_life_sciences": {
+        "label": "Healthcare / Life Sciences",
+        "description": "Concentric cellular forms and biometric wave traces, like a diagnostic field.",
+        "keywords": {
+            "health": 2.5,
+            "healthcare": 3.5,
+            "public health": 4.0,
+            "fda": 4.0,
+            "drug": 2.5,
+            "drugs": 2.5,
+            "vaccine": 3.5,
+            "medicine": 3.0,
+            "clinical": 3.0,
+            "clinical trial": 4.5,
+            "biomedical": 3.5,
+            "pandemic": 3.5,
+            "epidemic": 3.0,
+            "hospital": 2.5,
+            "pharma": 3.0,
+            "pharmaceutical": 3.5,
+            "medicare": 3.5,
+            "medicaid": 3.5,
+            "insurance": 2.0,
+            "coverage": 2.0,
+            "biosimilar": 4.0,
+            "patient": 2.5,
+            "disease": 2.5,
+            "diagnosis": 3.0,
+            "treatment": 2.5,
+            "therapy": 2.5,
+            "drug pricing": 4.5,
+            "prescription": 3.0,
+            "NIH": 3.5,
+            "CDC": 3.5,
+        },
+        "energy": "medium",
+        "template": "focal",
+        "color_bias": "celestial_blue",
+        "primary_families": ["circle", "centric"],
+        "accent_families": ["wave"],
+        "continuity_strength": 0.65,
+        "symmetry_strength": 0.75,
+        "rhythm_strength": 0.70,
+    },
+
+    # ── Climate / Environment ─────────────────────────────────────────
+    # Metaphor: atmospheric and oceanic circulation — cascading feedback
+    # loops cycling heat through the planetary system.  Waves are
+    # atmospheric and oceanic current layers; cascades are tipping-point
+    # chain reactions and runoff sequences; curves are warming arcs and
+    # carbon-concentration trajectories.  High continuity (interconnected
+    # planetary cycles), low symmetry (dynamic, non-equilibrium system),
+    # very high rhythm (seasonal/annual cycles driving the pattern).
+    # Celestial blue = sky, ocean, atmosphere, cryosphere.
+    # High energy: the urgency of a destabilizing system.
+    "climate_environment": {
+        "label": "Climate / Environment",
+        "description": "Cascading wave cycles and atmospheric arcs, like a planetary feedback loop.",
+        "keywords": {
+            "climate": 4.0,
+            "climate change": 5.0,
+            "carbon": 3.5,
+            "emissions": 3.5,
+            "decarbonization": 4.5,
+            "net zero": 4.5,
+            "greenhouse": 3.5,
+            "greenhouse gas": 4.5,
+            "methane": 3.5,
+            "co2": 3.5,
+            "paris agreement": 5.0,
+            "paris accord": 4.5,
+            "adaptation": 3.0,
+            "mitigation": 3.0,
+            "sea level": 4.0,
+            "temperature": 2.5,
+            "wildfire": 3.5,
+            "drought": 3.0,
+            "flood": 2.5,
+            "ipcc": 4.0,
+            "warming": 3.5,
+            "carbon capture": 4.0,
+            "carbon tax": 4.0,
+            "cap and trade": 4.5,
+            "deforestation": 3.5,
+            "biodiversity": 3.5,
+            "ecosystem": 3.0,
+            "epa": 3.5,
+            "environmental": 2.5,
+        },
+        "energy": "high",
+        "template": "spiral",
+        "color_bias": "celestial_blue",
+        "primary_families": ["wave", "cascade"],
+        "accent_families": ["curve"],
+        "continuity_strength": 0.85,
+        "symmetry_strength": 0.52,
+        "rhythm_strength": 0.90,
+    },
+
+    # ── Geopolitics / Economic Security ──────────────────────────────
+    # Metaphor: converging vectors of great-power competition — alliance
+    # formations meeting at contested boundaries.  Merge tiles are
+    # converging forces and multilateral coalitions; angles are vectors
+    # of geopolitical pressure and strategic direction; compositions are
+    # the multi-party arrangements that govern international order.
+    # Moderate continuity (alliance webs connect), high symmetry
+    # (bilateral dynamics, balance of power), moderate rhythm (cycles
+    # of tension and negotiation).
+    # International orange = contested zones, urgency, active competition.
+    "geopolitics_trade": {
+        "label": "Geopolitics / Economic Security",
+        "description": "Converging angular vectors and alliance formations under great-power pressure.",
+        "keywords": {
+            "geopolitics": 4.5,
+            "geopolitical": 4.0,
+            "diplomacy": 3.5,
+            "diplomatic": 3.0,
+            "sanctions": 4.0,
+            "export control": 4.5,
+            "export controls": 4.5,
+            "trade war": 4.5,
+            "de-risking": 4.5,
+            "decoupling": 4.0,
+            "indo-pacific": 4.5,
+            "g7": 3.5,
+            "g20": 3.0,
+            "bilateral": 3.0,
+            "multilateral": 3.0,
+            "foreign policy": 4.0,
+            "allies": 3.0,
+            "alliance": 3.0,
+            "statecraft": 4.0,
+            "strategic competition": 5.0,
+            "great power": 4.5,
+            "influence": 2.5,
+            "belt and road": 4.5,
+            "bri": 3.5,
+            "chip war": 4.5,
+            "technology competition": 4.0,
+            "economic coercion": 4.5,
+            "supply chain security": 4.0,
+        },
+        "energy": "medium",
+        "template": "mirror",
+        "color_bias": "international_orange",
+        "primary_families": ["merge", "angle"],
+        "accent_families": ["composition"],
+        "continuity_strength": 0.68,
+        "symmetry_strength": 0.85,
+        "rhythm_strength": 0.62,
     },
 
     # ── General FAI ───────────────────────────────────────────────────
@@ -1065,6 +1396,46 @@ def topic_keyword_hits(description: str, keywords: dict[str, float]) -> tuple[fl
     return score, hits
 
 
+def _blend_profiles(dominant: dict, secondary: dict, blend_weight: float) -> dict:
+    """Return a parameter dict that interpolates two profiles.
+
+    blend_weight is the secondary profile's fractional contribution (0.0–0.5).
+    The dominant profile always contributes at least 50%, so it determines
+    template, color_bias, and energy.  Numeric strength parameters are
+    interpolated.  Tile families are merged: dominant families lead, then
+    secondary families that don't duplicate the dominant are appended.
+    """
+    w_sec = blend_weight       # secondary weight  (0.0 – 0.5)
+    w_dom = 1.0 - blend_weight # dominant weight   (0.5 – 1.0)
+
+    def lerp(a: float, b: float) -> float:
+        return round(a * w_dom + b * w_sec, 3)
+
+    # Merge tile families without duplicates; dominant families first.
+    def merge_families(dom_fams: list, sec_fams: list) -> list:
+        seen: set = set()
+        merged = []
+        for f in dom_fams + sec_fams:
+            if f not in seen:
+                seen.add(f)
+                merged.append(f)
+        return merged
+
+    return {
+        # Non-numeric params: dominant profile wins
+        "energy": dominant["energy"],
+        "template": dominant["template"],
+        "color_bias": dominant["color_bias"],
+        # Numeric strengths: weighted interpolation
+        "continuity_strength": lerp(dominant["continuity_strength"], secondary["continuity_strength"]),
+        "symmetry_strength": lerp(dominant["symmetry_strength"], secondary["symmetry_strength"]),
+        "rhythm_strength": lerp(dominant["rhythm_strength"], secondary["rhythm_strength"]),
+        # Families: dominant first, then non-overlapping secondary families
+        "primary_families": merge_families(dominant["primary_families"], secondary["primary_families"]),
+        "accent_families": merge_families(dominant["accent_families"], secondary["accent_families"]),
+    }
+
+
 def suggest_topic_style(description: Optional[str], manifest: dict) -> Optional[dict]:
     description = normalize_topic_description(description)
     if not description:
@@ -1087,24 +1458,65 @@ def suggest_topic_style(description: Optional[str], manifest: dict) -> Optional[
     if best_key == "general_fai" and best_score <= 0.1:
         return None
 
-    primary_families = [family for family in best_profile["primary_families"] if family in available]
-    accent_families = [family for family in best_profile["accent_families"] if family in available and family not in primary_families]
+    # ── Cross-domain blending ─────────────────────────────────────────
+    # When a description meaningfully spans two policy domains, blend
+    # the visual parameters rather than snapping hard to one profile.
+    # Conditions:
+    #   • Second-place score is at least 55% of the top score
+    #   • Second-place score exceeds an absolute minimum (not noise)
+    #   • Neither profile is general_fai (that profile intentionally
+    #     has no domain signal and should not contribute to a blend)
+    blend_info = None
+    blended_params: dict = {}
+    if len(scored) >= 2:
+        second_score, second_key, second_hits, second_profile = scored[1]
+        blend_eligible = (
+            second_key != "general_fai"
+            and best_key != "general_fai"
+            and best_score > 0
+            and second_score >= best_score * 0.55
+            and second_score >= 2.5
+        )
+        if blend_eligible:
+            # Blend weight: how much the secondary profile contributes.
+            # Ranges from just above 0 up to 0.45 (never a full 50/50).
+            raw_ratio = second_score / (best_score + second_score)  # 0.0 – 0.5
+            blend_weight = min(0.45, raw_ratio)
+            blended_params = _blend_profiles(best_profile, second_profile, blend_weight)
+            blend_info = {
+                "secondary_key": second_key,
+                "secondary_label": second_profile["label"],
+                "secondary_score": second_score,
+                "blend_weight": round(blend_weight, 3),
+            }
+
+    # Resolve families from whichever param source wins
+    param_source = blended_params if blended_params else best_profile
+    primary_families = [f for f in param_source["primary_families"] if f in available]
+    accent_families = [
+        f for f in param_source["accent_families"]
+        if f in available and f not in primary_families
+    ]
     keyword_hits = best_hits[:5]
-    return {
+
+    result = {
         "key": best_key,
         "label": best_profile["label"],
         "description": best_profile["description"],
         "keyword_hits": keyword_hits,
         "match_score": best_score,
-        "energy": best_profile["energy"],
-        "template": best_profile["template"],
-        "color_bias": best_profile["color_bias"],
-        "continuity_strength": best_profile["continuity_strength"],
-        "symmetry_strength": best_profile["symmetry_strength"],
-        "rhythm_strength": best_profile["rhythm_strength"],
+        "energy": param_source["energy"],
+        "template": param_source["template"],
+        "color_bias": param_source["color_bias"],
+        "continuity_strength": param_source["continuity_strength"],
+        "symmetry_strength": param_source["symmetry_strength"],
+        "rhythm_strength": param_source["rhythm_strength"],
         "primary_families": primary_families,
         "accent_families": accent_families,
     }
+    if blend_info:
+        result["blend"] = blend_info
+    return result
 
 
 def apply_topic_style_to_request(request: BannerRequest, manifest: dict) -> tuple[BannerRequest, Optional[dict]]:
