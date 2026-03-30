@@ -603,6 +603,14 @@ async function init() {
     }
   });
 
+  // Enter in topic textarea triggers Apply Topic Style
+  els.topicDescription.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      els.topicPreviewBtn.click();
+    }
+  });
+
   els.clearBtn.addEventListener("click", clearStudio);
   els.rerollSeedBtn.addEventListener("click", () => { els.seed.value = randomSeed(); });
   els.downloadSvgBtn.addEventListener("click", downloadSvg);
