@@ -332,6 +332,9 @@ TOPIC_STYLE_PROFILES = {
             "veto": 2.5,
             "filibuster": 3.0,
             "permitting reform": 3.5,
+            "bill": 2.5,
+            "bills": 2.5,
+            "sponsor": 2.5,
         },
         "energy": "low",
         "template": "symmetric",
@@ -559,6 +562,10 @@ TOPIC_STYLE_PROFILES = {
             "austerity": 3.0,
             "quantitative easing": 4.0,
             "tariff revenue": 3.0,
+            "economic": 2.0,
+            "economy": 2.0,
+            "economic policy": 4.0,
+            "trade policy": 4.0,
         },
         "energy": "medium",
         "template": "flow",
@@ -729,6 +736,175 @@ TOPIC_STYLE_PROFILES = {
         "continuity_strength": 0.68,
         "symmetry_strength": 0.85,
         "rhythm_strength": 0.62,
+    },
+
+    # ── Events / Convenings ───────────────────────────────────────────
+    # Metaphor: multiple perspectives arriving from different directions
+    # and meeting at a shared center — a pinwheel of stakeholders.
+    # Circles are individual participants and speakers: distinct,
+    # complete, mobile.  Merge tiles are the moments where different
+    # parties converge into shared dialogue.  Centric accents are the
+    # gathering itself — the nucleus around which conversation orbits.
+    # Pinwheel template: no directional hierarchy, every perspective
+    # equally welcomed.  Very high rhythm: many different voices, panels,
+    # sessions — the program varies constantly.  High energy: events are
+    # vibrant.  Chrome yellow = warmth, celebration, illuminated minds.
+    "events_convenings": {
+        "label": "Events / Convenings",
+        "description": "Multiple perspectives converging from different directions into a shared gathering.",
+        "keywords": {
+            "event": 2.5,
+            "events": 2.5,
+            "conference": 4.0,
+            "convening": 5.0,
+            "convenings": 5.0,
+            "workshop": 3.5,
+            "roundtable": 4.5,
+            "roundtables": 4.5,
+            "panel": 3.0,
+            "panels": 3.0,
+            "symposium": 4.0,
+            "summit": 3.5,
+            "forum": 1.5,
+            "seminar": 3.0,
+            "dinner": 2.5,
+            "reception": 3.0,
+            "gathering": 3.0,
+            "annual conference": 5.0,
+            "speaker": 2.5,
+            "speakers": 2.5,
+            "keynote": 4.5,
+            "agenda": 2.5,
+            "attendee": 3.0,
+            "attendees": 3.0,
+            "register": 2.5,
+            "registration": 3.0,
+            "rsvp": 5.0,
+            "invitation": 3.5,
+            "invite": 3.0,
+            "networking": 3.5,
+            "off-site": 4.0,
+            "offsite": 4.0,
+            "retreat": 3.5,
+        },
+        "energy": "high",
+        "template": "pinwheel",
+        "color_bias": "chrome_yellow",
+        "primary_families": ["circle", "merge"],
+        "accent_families": ["centric"],
+        "continuity_strength": 0.65,
+        "symmetry_strength": 0.65,
+        "rhythm_strength": 0.92,
+    },
+
+    # ── Publications / Reports ────────────────────────────────────────
+    # Metaphor: the page grid of a policy argument — structured rows
+    # and columns of evidence arranged for print.  Rectangles are text
+    # blocks, figures, and data tables; lines are the ruled columns and
+    # trend charts of quantitative analysis; compositions are assembled
+    # multi-panel arguments (charts + text + callouts).  Checkerboard
+    # template mirrors the systematic grid of a well-typeset document.
+    # High symmetry for formal column structure, low rhythm and low
+    # energy — measured, deliberate, authoritative.
+    # Cod gray = academic publishing, authority, print quality.
+    # This profile applies to publication PROGRAM content (newsletters,
+    # report series, annual reviews) not individual topic pieces — those
+    # route to whichever policy domain the topic belongs to.
+    "publications_reports": {
+        "label": "Publications / Reports",
+        "description": "Structured grid of rectangles and lines, like the typeset architecture of a policy document.",
+        "keywords": {
+            "newsletter": 5.0,
+            "digest": 4.5,
+            "annual report": 5.0,
+            "annual review": 5.0,
+            "report series": 5.0,
+            "working paper": 5.0,
+            "working paper series": 5.0,
+            "policy brief": 4.5,
+            "reading list": 4.5,
+            "reading room": 4.5,
+            "publication program": 5.0,
+            "new publication": 4.5,
+            "new report": 4.0,
+            "new paper": 4.0,
+            "quarterly": 4.0,
+            "monthly": 3.5,
+            "weekly": 3.0,
+            "issue": 3.0,
+            "volume": 3.0,
+            "forthcoming": 4.0,
+            "published": 3.0,
+            "download": 3.0,
+            "subscribe": 3.5,
+            "subscription": 3.5,
+            "back issues": 4.5,
+        },
+        "energy": "low",
+        "template": "checkerboard",
+        "color_bias": "cod_gray",
+        "primary_families": ["rectangle", "lines"],
+        "accent_families": ["composition"],
+        "continuity_strength": 0.52,
+        "symmetry_strength": 0.84,
+        "rhythm_strength": 0.65,
+    },
+
+    # ── Fundraising / Development ─────────────────────────────────────
+    # Metaphor: concentric waves of impact expanding outward from a
+    # mission nucleus — a gift becoming change becoming a better world.
+    # Waves are the rippling effects of philanthropic investment; circles
+    # are donors and community members; centric accents are the mission
+    # itself, the gravitational center of the giving relationship.
+    # Spiral template: the expanding rings of compounding impact.
+    # Moderate-high continuity (impact flows outward in connected arcs),
+    # moderate symmetry (generous and balanced, not rigid), steady rhythm.
+    # Celestial blue = aspiration, big-sky possibility, the "better
+    # world" horizon that philanthropy reaches toward.
+    "fundraising_development": {
+        "label": "Fundraising / Development",
+        "description": "Concentric waves of impact radiating from a mission nucleus — investment becoming change.",
+        "keywords": {
+            "fundraising": 5.0,
+            "fundraiser": 5.0,
+            "donation": 5.0,
+            "donate": 5.0,
+            "donor": 4.5,
+            "donors": 4.5,
+            "give": 3.0,
+            "giving": 3.5,
+            "gift": 3.5,
+            "gifts": 3.5,
+            "support us": 5.0,
+            "annual fund": 5.0,
+            "annual appeal": 5.0,
+            "philanthropy": 4.5,
+            "philanthropic": 4.5,
+            "endowment": 4.5,
+            "grant": 3.0,
+            "contribution": 4.0,
+            "contributions": 4.0,
+            "matching gift": 5.0,
+            "matching": 3.0,
+            "supporter": 3.5,
+            "sponsor": 1.5,
+            "year-end": 4.5,
+            "end of year": 4.5,
+            "gala": 5.0,
+            "benefit": 3.5,
+            "legacy": 3.5,
+            "foundation": 3.0,
+            "funder": 4.0,
+            "funders": 4.0,
+        },
+        "energy": "medium",
+        "template": "spiral",
+        "color_bias": "celestial_blue",
+        "primary_families": ["wave", "circle"],
+        "accent_families": ["centric"],
+        "continuity_strength": 0.72,
+        "symmetry_strength": 0.62,
+        "rhythm_strength": 0.78,
     },
 
     # ── Hiring / Talent & Fellowship ─────────────────────────────────
