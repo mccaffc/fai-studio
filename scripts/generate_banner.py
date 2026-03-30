@@ -731,6 +731,68 @@ TOPIC_STYLE_PROFILES = {
         "rhythm_strength": 0.62,
     },
 
+    # ── Hiring / Talent & Fellowship ─────────────────────────────────
+    # Metaphor: orbiting circles drawn toward a focal center — diverse
+    # individual contributors finding their place in a growing
+    # organization.  Circles are people: distinct, complete, movable.
+    # Float tiles are candidates in motion, talent not yet placed.
+    # Centric tiles are the role itself — the nucleus that organizes
+    # everything around it.  High energy: opportunity is exciting.
+    # Low continuity (people arrive from different directions, not a
+    # pipeline), moderate symmetry (a good team is balanced, not
+    # uniform), very high rhythm (each new hire is a new beat).
+    # International orange = invitation, warmth, forward momentum.
+    "hiring_talent": {
+        "label": "Hiring / Talent & Fellowship",
+        "description": "Orbiting circles and floating forms converging on a focal center — diverse contributors joining a growing organization.",
+        "keywords": {
+            "hiring": 5.0,
+            "hire": 4.0,
+            "we're hiring": 5.0,
+            "job": 3.0,
+            "jobs": 3.0,
+            "career": 3.5,
+            "careers": 3.5,
+            "talent": 3.5,
+            "recruit": 3.5,
+            "recruitment": 4.0,
+            "open role": 5.0,
+            "open position": 5.0,
+            "job posting": 5.0,
+            "fellowship": 4.5,
+            "fellow": 3.5,
+            "fellows": 3.5,
+            "intern": 3.0,
+            "internship": 4.0,
+            "staff": 2.5,
+            "team": 2.0,
+            "join": 3.0,
+            "join us": 4.5,
+            "join the team": 5.0,
+            "onboarding": 4.0,
+            "culture": 2.5,
+            "employee": 2.5,
+            "employees": 2.5,
+            "interview": 3.5,
+            "apply": 3.0,
+            "application": 3.0,
+            "associate": 2.5,
+            "analyst": 2.5,
+            "researcher": 2.5,
+            "research fellow": 5.0,
+            "policy analyst": 4.5,
+            "policy fellow": 5.0,
+        },
+        "energy": "high",
+        "template": "focal",
+        "color_bias": "international_orange",
+        "primary_families": ["circle", "float"],
+        "accent_families": ["centric"],
+        "continuity_strength": 0.48,
+        "symmetry_strength": 0.62,
+        "rhythm_strength": 0.92,
+    },
+
     # ── General FAI ───────────────────────────────────────────────────
     # Metaphor: an open, welcoming composition — broad engagement with
     # no single axis of intensity.  Pinwheel rotation keeps it dynamic
