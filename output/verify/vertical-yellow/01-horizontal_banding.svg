@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1920" height="960" viewBox="0 0 1920 960">
+<rect x="0.000" y="0.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(0.000,0.000) scale(1.60000) rotate(180,100,100)"><path d="M164.256 27.6135C155.966 50.9277 129.333 61.9603 106.979 51.3361C71.4878 34.4669 34.4629 71.4918 51.3361 106.979C61.9603 129.329 50.9277 155.962 27.6135 164.256C10.4602 170.357 1.257 184.868 0 200H200V0C184.868 1.261 170.357 10.4602 164.256 27.6135Z" fill="#FFFFFF"/></g>
+<rect x="320.000" y="0.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(320.000,0.000) scale(1.60000)"><!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  
+  <path d="M0,50v75c41.42,0,75,33.58,75,75h75C150,117.16,82.84,50,0,50Z" fill="#121212"/>
+  <path d="M0,0c110.46,0,200,89.54,200,200V0H0Z" fill="#121212"/></g>
+<rect x="640.000" y="0.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(640.000,0.000) scale(1.60000) rotate(90,100,100)"><path d="M200 0L200 100L0 150L0 0L200 0Z" fill="#FFA300"/></g>
+<rect x="960.000" y="0.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(960.000,0.000) scale(1.60000)"><!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  
+  <path d="M0,50v75c41.42,0,75,33.58,75,75h75C150,117.16,82.84,50,0,50Z" fill="#FFFFFF"/>
+  <path d="M0,0c110.46,0,200,89.54,200,200V0H0Z" fill="#FFFFFF"/></g>
+<rect x="1280.000" y="0.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(1280.000,0.000) scale(1.60000) rotate(90,100,100)"><!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  
+  <path d="M0,50v75c41.42,0,75,33.58,75,75h75C150,117.16,82.84,50,0,50Z" fill="#FFA300"/>
+  <path d="M0,0c110.46,0,200,89.54,200,200V0H0Z" fill="#FFA300"/></g>
+<rect x="1600.000" y="0.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(1600.000,0.000) scale(1.60000)"><path d="M200 0L200 100L0 150L0 0L200 0Z" fill="#121212"/></g>
+<rect x="0.000" y="320.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(0.000,320.000) scale(1.60000) rotate(270,100,100)"><path d="M200 0L200 100L0 150L0 0L200 0Z" fill="#FFA300"/></g>
+<rect x="320.000" y="320.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(320.000,320.000) scale(1.60000) rotate(180,100,100)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#FFFFFF"/></g>
+<rect x="640.000" y="320.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(640.000,320.000) scale(1.60000) rotate(90,100,100)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#121212"/></g>
+<rect x="960.000" y="320.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(960.000,320.000) scale(1.60000) rotate(270,100,100)"><path d="M200 0L200 100L0 150L0 0L200 0Z" fill="#FFA300"/></g>
+<rect x="1280.000" y="320.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(1280.000,320.000) scale(1.60000) rotate(270,100,100)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#121212"/></g>
+<rect x="1600.000" y="320.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(1600.000,320.000) scale(1.60000) rotate(270,100,100)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#FFFFFF"/></g>
+<rect x="0.000" y="640.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(0.000,640.000) scale(1.60000)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#FFFFFF"/></g>
+<rect x="320.000" y="640.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(320.000,640.000) scale(1.60000)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#FFA300"/></g>
+<rect x="640.000" y="640.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(640.000,640.000) scale(1.60000)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#FFFFFF"/></g>
+<rect x="960.000" y="640.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(960.000,640.000) scale(1.60000) rotate(90,100,100)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#121212"/></g>
+<rect x="1280.000" y="640.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(1280.000,640.000) scale(1.60000) rotate(90,100,100)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#FFA300"/></g>
+<rect x="1600.000" y="640.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(1600.000,640.000) scale(1.60000) rotate(90,100,100)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#121212"/></g>
+</svg>
