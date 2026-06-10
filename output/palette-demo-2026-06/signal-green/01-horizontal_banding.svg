@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1920" height="960" viewBox="0 0 1920 960">
+<rect x="0.000" y="0.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(0.000,0.000) scale(1.60000)"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.0281 100L0 200L200 200L200 0L100.028 0.028C100.012 55.256 55.2406 100.016 0.0281 100Z" fill="#2EA84F"/></g>
+<rect x="320.000" y="0.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(320.000,0.000) scale(1.60000)"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.0281 100L0 200L200 200L200 0L100.028 0.028C100.012 55.256 55.2406 100.016 0.0281 100Z" fill="#FFFFFF"/></g>
+<rect x="640.000" y="0.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(640.000,0.000) scale(1.60000) rotate(270,100,100)"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.0281 100L0 200L200 200L200 0L100.028 0.028C100.012 55.256 55.2406 100.016 0.0281 100Z" fill="#2EA84F"/></g>
+<rect x="960.000" y="0.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(960.000,0.000) scale(1.60000) rotate(90,100,100)"><path d="M190 0L190 190L0 190L0 0L190 0Z" fill="#FFFFFF"/></g>
+<rect x="1280.000" y="0.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(1280.000,0.000) scale(1.60000) rotate(180,100,100)"><path d="M190 0L190 190L0 190L0 0L190 0Z" fill="#2EA84F"/></g>
+<rect x="1600.000" y="0.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(1600.000,0.000) scale(1.60000) rotate(180,100,100)"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.0281 100L0 200L200 200L200 0L100.028 0.028C100.012 55.256 55.2406 100.016 0.0281 100Z" fill="#FFFFFF"/></g>
+<rect x="0.000" y="320.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(0.000,320.000) scale(1.60000) rotate(270,100,100)"><path d="M100 0L100 50L0 100L0 0L100 0Z" fill="#FFFFFF"/></g>
+<rect x="320.000" y="320.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(320.000,320.000) scale(1.60000) rotate(90,100,100)"><path d="M100 0L100 50L0 100L0 0L100 0Z" fill="#121212"/></g>
+<rect x="640.000" y="320.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(640.000,320.000) scale(1.60000) rotate(90,100,100)"><path d="M100 0L100 50L0 100L0 0L100 0Z" fill="#FFFFFF"/></g>
+<rect x="960.000" y="320.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(960.000,320.000) scale(1.60000)"><path d="M100 0L100 50L0 100L0 0L100 0Z" fill="#121212"/></g>
+<rect x="1280.000" y="320.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(1280.000,320.000) scale(1.60000) rotate(270,100,100)"><path d="M100 0L100 50L0 100L0 0L100 0Z" fill="#FFFFFF"/></g>
+<rect x="1600.000" y="320.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(1600.000,320.000) scale(1.60000) rotate(180,100,100)"><path d="M100 0L100 50L0 100L0 0L100 0Z" fill="#121212"/></g>
+<rect x="0.000" y="640.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(0.000,640.000) scale(1.60000) rotate(180,100,100)"><path d="M200 0L200 50L0 100L0 0L200 0Z" fill="#2EA84F"/>
+  <path d="M0 200L200 150L200 200L0 200Z" fill="#2EA84F"/></g>
+<rect x="320.000" y="640.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(320.000,640.000) scale(1.60000)"><path d="M200 0L200 50L0 100L0 0L200 0Z" fill="#FFFFFF"/>
+  <path d="M0 200L200 150L200 200L0 200Z" fill="#FFFFFF"/></g>
+<rect x="640.000" y="640.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(640.000,640.000) scale(1.60000) rotate(90,100,100)"><path d="M125.075 200 C58.3242 200 24.8952 119.295 72.0952 72.0952 C119.295 24.8951 200 58.3242 200 125.075 L200 200 L125.075 200 Z" fill="#2EA84F"/></g>
+<rect x="960.000" y="640.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(960.000,640.000) scale(1.60000) rotate(180,100,100)"><path d="M200 0L200 50L0 100L0 0L200 0Z" fill="#FFFFFF"/>
+  <path d="M0 200L200 150L200 200L0 200Z" fill="#FFFFFF"/></g>
+<rect x="1280.000" y="640.000" width="320.000" height="320.000" fill="#FFFFFF"/>
+<g transform="translate(1280.000,640.000) scale(1.60000) rotate(270,100,100)"><path d="M200 0L200 50L0 100L0 0L200 0Z" fill="#121212"/>
+  <path d="M0 200L200 150L200 200L0 200Z" fill="#121212"/></g>
+<rect x="1600.000" y="640.000" width="320.000" height="320.000" fill="#121212"/>
+<g transform="translate(1600.000,640.000) scale(1.60000) rotate(270,100,100)"><path d="M200 0L200 50L0 100L0 0L200 0Z" fill="#FFFFFF"/>
+  <path d="M0 200L200 150L200 200L0 200Z" fill="#FFFFFF"/></g>
+</svg>

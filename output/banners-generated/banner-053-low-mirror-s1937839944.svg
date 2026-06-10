@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1920 960">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0, .st1 {
+        fill: #ff4f00;
+      }
+
+      .st1, .st2 {
+        fill-rule: evenodd;
+      }
+
+      .st3 {
+        fill: #fff;
+      }
+
+      .st2 {
+        fill: #d9d9d6;
+      }
+
+      .st4 {
+        fill: #131314;
+      }
+
+      .st5 {
+        fill: #f3f3f3;
+      }
+    </style>
+  </defs>
+  <rect class="st5" width="320" height="320"/>
+  <rect class="st3" x="320" width="320" height="320"/>
+  <rect class="st3" x="640" width="320" height="320"/>
+  <rect class="st3" x="960" width="320" height="320"/>
+  <rect class="st3" x="1280" width="320" height="320"/>
+  <rect class="st5" x="1600" width="320" height="320"/>
+  <path class="st2" d="M1760,160L1920,0h-320s0,320,0,320h320l-160-160Z"/>
+  <rect class="st5" y="320" width="320" height="320"/>
+  <path class="st2" d="M160,480l160-160H0s0,320,0,320h320l-160-160Z"/>
+  <rect class="st3" x="320" y="320" width="320" height="320"/>
+  <rect class="st5" x="640" y="320" width="320" height="320"/>
+  <rect class="st5" x="960" y="320" width="320" height="320"/>
+  <rect class="st3" x="1280" y="320" width="320" height="320"/>
+  <rect class="st5" x="1600" y="320" width="320" height="320"/>
+  <rect class="st3" y="640" width="320" height="320"/>
+  <rect class="st3" x="640" y="640" width="320" height="320"/>
+  <rect class="st3" x="960" y="640" width="320" height="320"/>
+  <rect class="st0" x="1280" y="640" width="320" height="320"/>
+  <rect class="st3" x="1600" y="640" width="320" height="320"/>
+  <path class="st2" d="M1760,800l160-160h-320s0,320,0,320h320l-160-160Z"/>
+  <path class="st1" d="M800,480l-160,160h320s0-320,0-320h-320l160,160Z"/>
+  <path class="st1" d="M1200,800l-240,160h320s0-320,0-320h-160l80,160Z"/>
+  <polygon class="st4" points="1120 960 1600 960 1760 800 1760 640 1920 640 1920 320 1840 320 1760 480 1440 800 1280 640 1120 800 1120 960"/>
+  <polygon class="st4" points="0 960 160 800 160 640 320 640 320 320 240 320 160 480 0 640 0 960"/>
+  <polygon class="st4" points="320 960 960 960 960 640 1280 640 1280 320 960 320 800 480 720 640 640 640 480 800 320 640 320 960"/>
+  <polygon class="st4" points="1440 480 1760 160 1760 0 1600 0 1600 240 1440 160 1280 0 1120 160 1440 480"/>
+  <polygon class="st4" points="320 320 480 480 640 320 960 320 960 0 640 0 640 240 480 160 320 0 320 320"/>
+  <polygon class="st4" points="0 320 160 160 160 0 0 0 0 320"/>
+  <path class="st1" d="M480,160l160,160V0S320,0,320,0v320l160-160Z"/>
+  <path class="st1" d="M1440,480l160,160v-320s-320,0-320,0v160h160Z"/>
+  <path class="st1" d="M480,800l160-160v320s-320,0-320,0v-320l160,160Z"/>
+</svg>
