@@ -38,7 +38,10 @@ from fai_colors import BRAND_COLORS, BRAND_HEX_SET, WARM_COLORS, COOL_COLORS, NE
 SVG_NS = "http://www.w3.org/2000/svg"
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_SHAPES_DIR = BASE_DIR / "output" / "shapes-clean"
-DEFAULT_OUTPUT = BASE_DIR / "tiles-manifest.json"
+# Canonical manifest is v2 (the only one the generator/contact/calibrate tools
+# read). After (re)building it here, run scripts/build_dominant_direction.py to
+# enrich it with dominant_direction + raster_fill + quarantine.
+DEFAULT_OUTPUT = BASE_DIR / "tiles-manifest-v2.json"
 
 # Foreground color in cleaned tiles (all shapes use #121212 as foreground)
 FG_COLOR_RGB = (18, 18, 18)  # #121212

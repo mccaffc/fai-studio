@@ -1,9 +1,7 @@
 services:
   - type: web
     name: fai-banner-studio
-    runtime: python
+    env: python
+    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: python3 scripts/banner_studio.py --host 0.0.0.0 --port $PORT --no-browser
-    envVars:
-      - key: PYTHON_VERSION
-        value: "3.11"
+    startCommand: python scripts/fai_studio.py --host 0.0.0.0 --port $PORT

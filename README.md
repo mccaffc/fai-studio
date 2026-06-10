@@ -1,119 +1,100 @@
-# FAI Banner Studio
+# FAI Banner Generator
 
-Automated banner generation system for the Foundation for American Innovation. Creates on-brand vector banner compositions from a modular library of geometric tiles.
+Automated banner generation for the Foundation for American Innovation. Creates
+on-brand Bauhaus/Swiss vector banner compositions from a modular library of
+geometric tiles, using a generate-and-score pipeline faithful to
+`FAI-Composition-Logic-Supplement.md`.
 
-## What It Does
+> **Rebuilt June 2026.** See `BANNER-GENERATOR-REBUILD-NOTES.md` for the full
+> change log, command catalogue, and known limits. The old interactive
+> `http.server` "studio" has been retired (files in `scripts/_retired/` and
+> `studio/_retired/`) in favour of the CLI + static contact sheets below.
 
-Banner Studio generates 6x3 grid banner compositions (1920x960px) from simplified geometric vector tiles. The system:
+## What it does
 
-- **Generates** SVG banners by selecting tiles, placing them on a grid, applying rotation patterns, and assigning colors
-- **Scores** candidates based on continuity (edge matching), symmetry, rhythm, and visual balance
-- **Previews** real-time renders before saving
-- **Exports** final banners as SVG + JSON metadata
+Generates 6×3-grid banners (1920×960) from cleaned geometric tiles. It:
 
-The generator is driven by **topic descriptions** (e.g., "AI demand surge, energy buildout") which auto-select tile families and color moods.
+- **Generates** many candidate compositions per banner (data only, no render),
+- **Scores** each on the supplement's eight aesthetic axes (anchor-triangle,
+  rhythm, directional-flow, weight-balance, negative-space, color-temperature,
+  shape-family-grouping, hero-tile),
+- **Keeps** the top-scoring candidates and renders them to SVG (+ optional PNG).
 
-## Quick Start
+## Quick start
 
-```bash
-pip install -r requirements.txt
-python scripts/banner_studio.py
+```sh
+export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib
+PY="$HOME/.cache/fai-deck-venv/bin/python"
+
+# one best-of-240 banner, full 7-fill palette
+$PY scripts/fai_banner.py --color-mode full --seed 7 --png \
+    --out output/banners-rebuilt/demo
 ```
 
-Opens at `http://127.0.0.1:8765`.
+### Color modes
 
-**Options:**
-
-```bash
-python scripts/banner_studio.py --port 8787 --no-browser
+```sh
+$PY scripts/fai_banner.py --color-mode full      ...   # all 7 ratified FAI fills
+$PY scripts/fai_banner.py --color-mode duotone   ...   # Cod Gray + Orange + White
+$PY scripts/fai_banner.py --color-mode vertical --vertical-hex "#4997D0" ...
+                                                       # Cod Gray + <vertical> + White
 ```
 
-## Tech Stack
+### Contact sheets
 
-| Layer | Tech |
-|-------|------|
-| Backend | Python 3.11+ (`http.server`) |
-| Generator | lxml, custom scoring algorithms |
-| Frontend | Vanilla JS, CSS3 |
-| Fonts | IBM Plex Sans / Mono / Serif / Condensed |
-| Deploy | Render.com |
+```sh
+$PY scripts/fai_contact.py banners --color-mode full --count 12 --png \
+    --out output/contact-banners        # annotated with per-banner scores
+$PY scripts/fai_contact.py tiles --png --out output/contact-tiles   # tile library
+```
 
-## Project Structure
+### Calibration & maintenance
+
+```sh
+$PY scripts/fai_calibrate.py --compare 12     # references vs generated, per axis
+$PY scripts/fai_sanitize_tiles.py             # tile-library hygiene (idempotent)
+$PY scripts/build_dominant_direction.py       # (re)enrich the v2 manifest
+```
+
+## Project structure
 
 ```
 scripts/
-  banner_studio.py          # HTTP server
-  generate_banner.py        # Core generator (tile selection, placement, scoring)
-  build_manifest.py         # Build tile metadata manifest
-  clean_svgs.py             # SVG normalization
-  simplify_tiles.py         # Reduce tile complexity
-  generate_contact_sheet.py # Visual tile reference sheets
-  fai_colors.py             # Brand color definitions
-
-studio/
-  index.html                # UI
-  app.js                    # Frontend logic
-  styles.css                # Styling
+  fai_banner.py              # generator: CLI + generate-and-score core
+  fai_tile_render.py         # robust per-tile foreground extraction + recolour
+  fai_contact.py             # contact/montage sheets (tiles | banners)
+  fai_calibrate.py           # reference-banner calibration loop
+  fai_sanitize_tiles.py      # one-time tile-library hygiene pass
+  build_dominant_direction.py# enrich v2 manifest (direction, raster_fill, quarantine)
+  svg_raster.py              # cairosvg wrapper + Pillow-free PNG decoder
+  build_manifest.py          # upstream manifest builder (qlmanage + Pillow)
+  clean_svgs.py / simplify_tiles.py / fai_colors.py   # upstream tile pipeline
+  _retired/                  # superseded scripts (rollback only)
 
 output/
-  shapes-simplified/        # Processed tile SVGs
-  banners-generated/        # Output banners (SVG + JSON)
-  banner-requests/          # Saved specs
-  contact-sheets/           # Tile reference sheets
+  shapes-clean/<Family>/NN.svg  # the tile library (140 tiles, 17 families)
+  banners-clean/                # 57 hand-made reference banners (calibration)
+  banners-rebuilt/              # generated samples (this rebuild)
 
-tiles-manifest-v2.json      # Master tile metadata
-render.yaml                 # Render.com deploy config
+tiles-manifest-v2.json       # the single canonical tile manifest
+_legacy/                     # retired v1 manifest (rollback only)
 ```
 
-## Key Features
+## Brand colors (the only 7 permitted fills)
 
-### Topic-Driven Generation
-Type a description like "AI demand surge, energy buildout" and the engine maps keywords to tile families and color preferences via pre-configured topic profiles.
+| Color | Hex | | Color | Hex |
+|---|---|---|---|---|
+| International Orange | `#FF4F00` | | Cod Gray | `#121212` |
+| Chrome Yellow | `#FFA300` | | White | `#FFFFFF` |
+| Celestial Blue | `#4997D0` | | Smoke White | `#F3F3F3` |
+| Timberwolf | `#D9D9D6` | | | |
 
-### Color Modes
-- **Auto** - Full 7-color palette, engine picks best composition
-- **Duotone Presets** - Restrict to exactly 2 colors (e.g., Cod Gray on International Orange)
-- **Manual** - Pick families and color bias yourself
-
-### Composition Control
-- **Templates**: pinwheel, spiral, mirror, symmetric, flow, river, checkerboard, auto
-- **Energy levels**: Low (sparse), Medium (balanced), High (dense)
-- **Family selection**: Primary + accent tile families
-- **Tile locking**: Include/exclude specific tiles
-- **Seed**: Reproducible random generation
-- **Tuning**: Continuity, symmetry, and rhythm strength (0-1)
-
-## Brand Colors
-
-| Color | Hex |
-|-------|-----|
-| International Orange | `#FF4F00` |
-| Celestial Blue | `#4997D0` |
-| Chrome Yellow | `#FFA300` |
-| Cod Gray | `#121212` |
-| White | `#FFFFFF` |
-| Smoke White | `#F3F3F3` |
-| Timberwolf | `#D9D9D6` |
-
-## API Endpoints
-
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/options` | GET | Available templates, families, colors, defaults |
-| `/api/preview` | POST | Generate banner without saving |
-| `/api/generate` | POST | Generate + save SVG + JSON |
-| `/api/save-spec` | POST | Save form state as reusable spec |
-| `/api/topic-preview` | POST | Apply topic inference + preview |
-
-## Deployment
-
-Push to Render.com — config is in `render.yaml`:
-
-```yaml
-startCommand: python3 scripts/banner_studio.py --host 0.0.0.0 --port $PORT --no-browser
-```
+No gradients, shadows, opacity, or strokes — solid flat fills only. The FAI
+double-chevron logomark is never generated or redrawn by this tool.
 
 ## Dependencies
 
-- **lxml** - XML/SVG parsing and generation
-- Python stdlib (json, argparse, threading, http.server, pathlib, dataclasses)
+`cairosvg` (PNG render; needs the Homebrew cairo dylibs via
+`DYLD_FALLBACK_LIBRARY_PATH`) plus the Python stdlib. The upstream
+`build_manifest.py` additionally uses `lxml` + `Pillow` + macOS `qlmanage`.
+```
