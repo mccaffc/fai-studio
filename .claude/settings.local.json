@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8765/)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(xxd render.yaml)",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \"import json; data = json.load\\(open\\(''tiles-manifest-v2.json''\\)\\); print\\(json.dumps\\({k: type\\(v\\).__name__ if not isinstance\\(v, \\(str, int, float, bool, type\\(None\\)\\)\\) else v for k, v in list\\(data.items\\(\\)\\)[:10]}, indent=2\\)\\)\")"
+    ]
+  }
+}
