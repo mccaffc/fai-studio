@@ -36,6 +36,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import re
 import sys
 from collections import Counter
 from dataclasses import dataclass, field
@@ -108,6 +109,7 @@ SCORING_WEIGHTS = {
     "family": 0.10,
     "hero": 0.10,
     "template": 0.10,
+    "symmetry": 0.14,
 }
 
 # Directional-flow compatibility lookup (A left of B). Filled out from the
@@ -171,46 +173,18 @@ H_ALIASES = {"up": "neutral", "down": "neutral"}
 V_ALIASES = {"left": "neutral", "right": "neutral"}
 
 # ---------------------------------------------------------------------------
-# Composition templates (weight maps). H=heavy, M=medium, L=light, E=empty.
+# Composition grammar templates.
 # ---------------------------------------------------------------------------
 WEIGHT_LEVEL = {"H": 0.85, "M": 0.50, "L": 0.18, "E": 0.0}
 
 TEMPLATES: dict[str, list[list[str]]] = {
-    "diagonal_sweep": [
-        list("ELMHME"),
-        list("LMHMLE"),
-        list("HMMLEE"),
-    ],
-    "central_burst": [
-        list("ELMMLE"),
-        list("MMHHMM"),
-        list("ELMMLE"),
-    ],
-    "corner_anchor": [
-        list("HHMLME"),
-        list("HMLLMM"),
-        list("MLEEMH"),
-    ],
-    "horizontal_banding": [
-        list("HHHHHE"),
-        list("EEEMLL"),
-        list("MMMMME"),
-    ],
-    "scattered_focal": [
-        list("EMLLHE"),
-        list("MLLELM"),
-        list("EEHLML"),
-    ],
-    "asymmetric_left": [
-        list("HMMEEM"),
-        list("HMLLMM"),
-        list("MMLEEM"),
-    ],
-    "rising_stagger": [
-        list("EELMMH"),
-        list("ELMMHM"),
-        list("LMMHME"),
-    ],
+    "mirror_monument": [list("LHHHHL"), list("EMHHME"), list("LLLLLL")],
+    "frieze_stack": [list("MMMMMM"), list("EEEEEE"), list("MMMMMM")],
+    "ring_field": [list("EHHHHE"), list("EHHHHE"), list("LLLLEE")],
+    "field_split": [list("LLHHLL"), list("MMHHMM"), list("LLHHLL")],
+    "eye_row": [list("EEEEEE"), list("MMMMMM"), list("HHHHHH")],
+    "mini_frieze": [list("MMM")],
+    "mini_panel": [list("HH"), list("MM"), list("HH")],
 }
 
 
@@ -229,6 +203,7 @@ class Tile:
     symmetry: str
     complexity: str
     edge_coverage: dict
+    edge_type: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -245,6 +220,7 @@ class Cell:
     empty: bool = False
     covered_by: Optional[tuple[int, int]] = None
     hero: bool = False
+    flip_x: bool = False
 
     @property
     def pos(self) -> tuple[int, int]:
@@ -274,6 +250,9 @@ class Banner:
     color_mode: str
     seed: int
     scores: dict = field(default_factory=dict)
+    ground: Optional[str] = "#121212"
+    ground_fields: list[tuple[float, float, float, float, str]] = field(default_factory=list)
+    cell_px: int = CELL
 
     @property
     def total(self) -> float:
@@ -317,6 +296,7 @@ def load_tiles(manifest_path: Path) -> tuple[list[Tile], dict]:
                 symmetry=t.get("symmetry", "none"),
                 complexity=t.get("complexity", "simple"),
                 edge_coverage=t.get("edge_coverage", {}),
+                edge_type=t.get("edge_type", {}),
             )
         )
     return tiles, manifest
@@ -661,6 +641,191 @@ def choose_background(fg, grounds, rng) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Grammar candidate generation
+# ---------------------------------------------------------------------------
+SUPERFORM_FAMILIES = {"lines", "centric", "curve", "circle"}
+MINI_FAMILIES = {"angle", "ramp", "square"}
+
+
+def grammar_ground(palette: dict, color_mode: str) -> str:
+    if color_mode in {"full", "extended"} and random.random() < 0.12:
+        return "#FFFFFF"
+    return "#121212"
+
+
+def run_inks(palette: dict, color_mode: str, rng: random.Random) -> dict:
+    accent = palette["accents"][0] if color_mode in {"duotone", "vertical"} else rng.choice(palette["accents"])
+    if color_mode == "full":
+        second = rng.choice([h for h in palette["accents"] if h != accent] or [accent])
+    elif color_mode == "extended":
+        second = rng.choice([h for h in palette["accents"] if h != accent] or [accent])
+    else:
+        second = accent
+    return {"primary": "#FFFFFF", "accent": accent, "accent2": second}
+
+
+def family_tiles(tiles: list[Tile], families: set[str]) -> list[Tile]:
+    pool = [t for t in tiles if t.family.lower() in families]
+    return pool or tiles
+
+
+def edge_rich_tiles(tiles: list[Tile], families: set[str]) -> list[Tile]:
+    pool = family_tiles(tiles, families)
+    rich = [
+        t for t in pool
+        if sum(1 for v in t.edge_coverage.values() if float(v or 0) > 0.45) >= 1
+        or sum(1 for v in t.edge_type.values() if v) >= 1
+    ]
+    return rich or pool
+
+
+def grammar_tile_pool(tiles: list[Tile], families: set[str], min_area: float = 0.42, max_area: float = 0.78) -> list[Tile]:
+    """Tiles dense enough for canonical ink coverage without becoming slabs."""
+    pool = edge_rich_tiles(tiles, families) if families & SUPERFORM_FAMILIES else family_tiles(tiles, families)
+    bounded = [t for t in pool if min_area <= t.area_weight <= max_area]
+    if bounded:
+        return bounded
+    dense = [t for t in pool if t.area_weight >= min_area]
+    return dense or pool
+
+
+def add_cell(cells: list[Cell], col: int, row: int, tile: Tile, rot: int, ink: str, ground: str,
+             level: str = "M", hero: bool = False, flip_x: bool = False) -> None:
+    cells.append(Cell(col=col, row=row, tile=tile, rotation=rot % 360, fg=ink, bg=ground, level=level, hero=hero, flip_x=flip_x))
+
+
+def add_frieze(cells: list[Cell], cols: range, row: int, tile: Tile, rhythm: str, ink: str, ground: str) -> None:
+    for i, col in enumerate(cols):
+        rot = 0
+        flip = False
+        if rhythm == "alternating_rotation":
+            rot = 180 if i % 2 else 0
+        elif rhythm == "mirror_pair":
+            flip = bool(i % 2)
+        add_cell(cells, col, row, tile, rot, ink, ground, level="M", flip_x=flip)
+
+
+def add_superform(cells: list[Cell], region: tuple[int, int, int, int], tile: Tile, ink: str, ground: str,
+                  rng: random.Random, mirror: bool = False) -> None:
+    c0, r0, w, h = region
+    rotations = [0, 90, 180, 270]
+    for rr in range(h):
+        for cc in range(w):
+            col, row = c0 + cc, r0 + rr
+            # Quarter-turn rhythm makes edge-touching arc/line tiles read as a connected field.
+            rot = rotations[(cc + rr) % 4]
+            flip = mirror and col >= GRID_COLS / 2
+            add_cell(cells, col, row, tile, rot, ink, ground, level="H", hero=(cc == w // 2 and rr == h // 2), flip_x=flip)
+
+
+def add_punctuation(cells: list[Cell], occupied: set[tuple[int, int]], tiles: list[Tile], n: int, ink: str, ground: str,
+                    rng: random.Random, cols=GRID_COLS, rows=GRID_ROWS) -> None:
+    pool = sorted(tiles, key=lambda t: t.area_weight)[: max(4, len(tiles) // 4)]
+    positions = [(c, r) for c, r in POWER_POSITIONS if c < cols and r < rows and (c, r) not in occupied]
+    rng.shuffle(positions)
+    for col, row in positions[:n]:
+        add_cell(cells, col, row, rng.choice(pool), rng.choice(ROTATIONS), ink, ground, level="L")
+        occupied.add((col, row))
+
+
+def generate_candidate(
+    tiles: list[Tile],
+    template_name: str,
+    palette: dict,
+    color_mode: str,
+    rng: random.Random,
+) -> list[Cell]:
+    """Build a grammar-valid banner candidate: shared ground, run inks, macro-forms."""
+    ground = "#121212"
+    inks = run_inks(palette, color_mode, rng)
+    cells: list[Cell] = []
+    occupied: set[tuple[int, int]] = set()
+    super_tile = rng.choice(grammar_tile_pool(tiles, SUPERFORM_FAMILIES, 0.46, 0.74))
+    frieze_tile = rng.choice(grammar_tile_pool(tiles, {"pod", "eye", "lines", "circle", "centric"}, 0.40, 0.70))
+    solid_tile = rng.choice(grammar_tile_pool(tiles, {"angle", "ramp", "square", "circle", "lines"}, 0.50, 0.78))
+    rhythm = rng.choice(["identical", "alternating_rotation", "mirror_pair"])
+
+    def mark():
+        occupied.update((c.col, c.row) for c in cells)
+
+    if template_name == "mirror_monument":
+        add_superform(cells, (2, 0, 2, 2), super_tile, inks["primary"], ground, rng, mirror=True)
+        side = rng.choice(grammar_tile_pool(tiles, {"angle", "ramp", "square", "lines"}, 0.40, 0.70))
+        add_frieze(cells, range(0, 2), 0, side, "mirror_pair", inks["primary"], ground)
+        add_frieze(cells, range(4, 6), 0, side, "mirror_pair", inks["primary"], ground)
+        add_frieze(cells, range(0, 2), 2, frieze_tile, "mirror_pair", inks["accent"], ground)
+        add_frieze(cells, range(4, 6), 2, frieze_tile, "mirror_pair", inks["accent"], ground)
+    elif template_name == "frieze_stack":
+        add_frieze(cells, range(0, 6), 0, frieze_tile, rhythm, inks["primary"], ground)
+        mid = rng.choice(grammar_tile_pool(tiles, {"pod", "eye", "circle", "lines"}, 0.36, 0.62))
+        add_frieze(cells, range(1, 5), 1, mid, "mirror_pair", inks["primary"], ground)
+        t2 = rng.choice(grammar_tile_pool(tiles, {"angle", "ramp", "square", "pod"}, 0.42, 0.74))
+        add_frieze(cells, range(1, 5), 2, t2, "alternating_rotation", inks["accent"], ground)
+    elif template_name == "ring_field":
+        add_superform(cells, (1, 0, 4, 2), super_tile, inks["primary"], ground, rng)
+        add_frieze(cells, range(0, 4), 2, frieze_tile, "alternating_rotation", inks["accent"], ground)
+    elif template_name == "field_split":
+        add_superform(cells, (2, 0, 2, 3), super_tile, inks["primary"], ground, rng, mirror=True)
+        wing = rng.choice(grammar_tile_pool(tiles, {"angle", "ramp", "square"}, 0.38, 0.68))
+        add_frieze(cells, range(0, 2), 0, wing, "identical", inks["primary"], ground)
+        add_frieze(cells, range(4, 6), 0, wing, "mirror_pair", inks["primary"], ground)
+        add_frieze(cells, range(0, 2), 1, wing, "identical", inks["accent"], ground)
+        add_frieze(cells, range(4, 6), 1, wing, "mirror_pair", inks["accent"], ground)
+    elif template_name == "eye_row":
+        add_frieze(cells, range(0, 6), 1, frieze_tile, "mirror_pair", inks["primary"], ground)
+        add_frieze(cells, range(1, 5), 2, solid_tile, "identical", inks["accent"], ground)
+    elif template_name == "mini_frieze":
+        add_frieze(cells, range(0, 3), 0, rng.choice(family_tiles(tiles, MINI_FAMILIES)), rhythm, inks["accent"], ground)
+    elif template_name == "mini_panel":
+        add_superform(cells, (0, 0, 2, 3), super_tile, inks["primary"], ground, rng, mirror=True)
+    else:
+        add_superform(cells, (1, 0, 4, 2), super_tile, inks["primary"], ground, rng, mirror=True)
+
+    mark()
+    if template_name not in {"mini_frieze", "mini_panel"}:
+        add_punctuation(cells, occupied, tiles, rng.randint(0, 2), inks["accent2"], ground, rng)
+    return cells
+
+
+def grammar_stats(banner: Banner) -> dict:
+    """Structural QA metrics for the grammar-first generator."""
+    active = active_cells(banner.cells)
+    ink_area = sum(c.tile.area_weight for c in active if c.tile) / TOTAL_SLOTS
+    inked_cells = len({c.pos for c in active})
+    white_cells = sum(1 for c in active if c.fg.upper() == "#FFFFFF")
+    accent_cells = sum(1 for c in active if c.fg.upper() not in {"#FFFFFF", "#121212"})
+    same_ground = sum(1 for c in active if c.fg.upper() == c.bg.upper())
+    cod_bad = sum(
+        1
+        for c in active
+        if c.bg.upper() == "#121212" and c.fg.upper() not in {"#FFFFFF", "#FF4F00", "#FFA300", "#4997D0"}
+    )
+    by_run = Counter((c.row, c.fg) for c in active)
+    accent_run = max((n for (_row, fg), n in by_run.items() if fg.upper() not in {"#FFFFFF", "#121212"}), default=0)
+    return {
+        "coverage_fraction": round(ink_area, 4),
+        "inked_cell_fraction": round(inked_cells / TOTAL_SLOTS, 4),
+        "inked_cells": inked_cells,
+        "white_fraction": round(white_cells / max(1, inked_cells), 4),
+        "accent_cells": accent_cells,
+        "max_accent_run": accent_run,
+        "same_ground_runs": same_ground,
+        "cod_ground_bad_inks": cod_bad,
+    }
+
+
+def grammar_passes(banner: Banner) -> bool:
+    s = grammar_stats(banner)
+    return (
+        0.35 <= s["coverage_fraction"] <= 0.55
+        and s["same_ground_runs"] == 0
+        and s["cod_ground_bad_inks"] == 0
+        and s["max_accent_run"] >= 4
+        and s["white_fraction"] >= 0.60
+    )
+
+
+# ---------------------------------------------------------------------------
 # Scoring — the eight supplement axes
 # ---------------------------------------------------------------------------
 def get_adjacent_pairs(cells_by_pos):
@@ -945,6 +1110,33 @@ def score_template_fidelity(banner: Banner) -> float:
     return score / count if count else 0.0
 
 
+def score_symmetry(cells) -> float:
+    active = active_cells(cells)
+    if not active:
+        return 0.0
+    by_pos = {(c.col, c.row): c for c in active}
+    max_col = max(c.col for c in active)
+    pair_scores = []
+    for cell in active:
+        mirror = by_pos.get((max_col - cell.col, cell.row))
+        if not mirror:
+            pair_scores.append(0.0)
+            continue
+        same_run = 1.0 if mirror.fg == cell.fg else 0.4
+        same_family = 1.0 if mirror.tile and cell.tile and mirror.tile.family == cell.tile.family else 0.5
+        pair_scores.append(0.55 * same_run + 0.45 * same_family)
+    bilateral = sum(pair_scores) / len(pair_scores)
+    translational = 0.0
+    rows = sorted({c.row for c in active})
+    for row in rows:
+        row_cells = [c for c in active if c.row == row]
+        if len(row_cells) >= 3:
+            same_tile = Counter(c.tile.id for c in row_cells).most_common(1)[0][1] / len(row_cells)
+            same_ink = Counter(c.fg for c in row_cells).most_common(1)[0][1] / len(row_cells)
+            translational = max(translational, 0.5 * same_tile + 0.5 * same_ink)
+    return min(1.0, 0.65 * bilateral + 0.35 * translational)
+
+
 def score_banner(banner: Banner, palette: dict, weights: dict) -> dict:
     cells = banner.cells
     by_pos = banner.by_pos()
@@ -958,6 +1150,7 @@ def score_banner(banner: Banner, palette: dict, weights: dict) -> dict:
         "family": score_family_grouping(by_pos),
         "hero": score_hero(by_pos, palette["hero"]),
         "template": score_template_fidelity(banner),
+        "symmetry": score_symmetry(cells),
     }
     total = sum(weights[k] * sub[k] for k in weights)
     sub["total"] = round(total, 4)
@@ -986,14 +1179,21 @@ def generate_banner(
     template_pool = [template] if template else list(TEMPLATES)
 
     best: Optional[Banner] = None
+    fallback: Optional[Banner] = None
     for i in range(n_candidates):
         cand_rng = random.Random(base_seed * 100003 + i)
         tmpl = cand_rng.choice(template_pool)
         cells = generate_candidate(tiles, tmpl, palette, color_mode, cand_rng)
-        banner = Banner(cells=cells, template=tmpl, color_mode=color_mode, seed=base_seed)
+        banner = Banner(cells=cells, template=tmpl, color_mode=color_mode, seed=base_seed, ground="#121212")
         banner.scores = score_banner(banner, palette, weights)
+        banner.scores.update(grammar_stats(banner))
+        if fallback is None or banner.total > fallback.total:
+            fallback = banner
+        if not grammar_passes(banner):
+            continue
         if best is None or banner.total > best.total:
             best = banner
+    best = best or fallback
     best.scores["candidates"] = n_candidates
     best.scores["base_seed"] = base_seed
     return best
@@ -1022,13 +1222,16 @@ def generate_many(
         cand_rng = random.Random(base_seed * 100003 + i)
         tmpl = cand_rng.choice(template_pool)
         cells = generate_candidate(tiles, tmpl, palette, color_mode, cand_rng)
-        banner = Banner(cells=cells, template=tmpl, color_mode=color_mode, seed=base_seed)
+        banner = Banner(cells=cells, template=tmpl, color_mode=color_mode, seed=base_seed, ground="#121212")
         banner.scores = score_banner(banner, palette, weights)
+        banner.scores.update(grammar_stats(banner))
         banner.scores["candidate_index"] = i
         banner.scores["base_seed"] = base_seed
         scored.append(banner)
-    scored.sort(key=lambda b: b.total, reverse=True)
-    return scored[:keep]
+    passing = [b for b in scored if grammar_passes(b)]
+    ranked = passing or scored
+    ranked.sort(key=lambda b: b.total, reverse=True)
+    return ranked[:keep]
 
 
 # ---------------------------------------------------------------------------
@@ -1037,13 +1240,63 @@ def generate_many(
 from fai_tile_render import render_tile_group  # noqa: E402
 
 
+def compose(cells=(GRID_COLS, GRID_ROWS), ground="#121212", inks=None, layout="mirror_monument", seed=None, cell_px=CELL) -> str:
+    """Reusable grammar API for banner, deck strip, and panel compositions."""
+    cols, rows = cells
+    rng = random.Random(seed if seed is not None else random.randint(0, 2**31 - 1))
+    tiles, _ = load_tiles(DEFAULT_MANIFEST)
+    inks = inks or {"primary": "#FFFFFF", "accent": "#FF4F00", "accent2": "#FFA300"}
+    if isinstance(inks, dict):
+        primary = inks.get("primary", "#FFFFFF")
+        accent = inks.get("accent", primary)
+    else:
+        primary = inks[0] if inks else "#FFFFFF"
+        accent = inks[1] if len(inks) > 1 else primary
+    w, h = cols * cell_px, rows * cell_px
+    parts = [
+        "<?xml version='1.0' encoding='UTF-8'?>",
+        f'<svg xmlns="{SVG_NS}" version="1.1" width="{w}" height="{h}" viewBox="0 0 {w} {h}">',
+    ]
+    if ground is not None:
+        parts.append(f'<rect width="{w}" height="{h}" fill="{ground}"/>')
+
+    def emit(col, row, tile, ink, rot=0, flip=False):
+        x, y = col * cell_px, row * cell_px
+        bg = ground or "#FFFFFF"
+        fg_markup = render_tile_group(DEFAULT_TILES_DIR / tile.filename, ink, bg)
+        scale = cell_px / TILE_VB
+        transform = f"translate({x + cell_px if flip else x:.3f},{y:.3f}) scale({-scale if flip else scale:.5f},{scale:.5f})"
+        if rot:
+            transform += f" rotate({rot},100,100)"
+        parts.append(f'<g transform="{transform}">{fg_markup}</g>')
+
+    if layout == "mini_frieze" or rows == 1:
+        tile = rng.choice(family_tiles(tiles, MINI_FAMILIES))
+        rhythm = rng.choice(["identical", "alternating_rotation", "mirror_pair"])
+        for col in range(cols):
+            emit(col, 0, tile, accent, 180 if rhythm == "alternating_rotation" and col % 2 else 0, rhythm == "mirror_pair" and col % 2)
+    else:
+        tile = rng.choice(edge_rich_tiles(tiles, SUPERFORM_FAMILIES))
+        for row in range(rows):
+            for col in range(cols):
+                emit(col, row, tile, primary, [0, 90, 180, 270][(col + row) % 4], flip=(layout == "mini_panel" and col >= cols / 2))
+        if cols * rows >= 6:
+            dot = min(tiles, key=lambda t: t.area_weight)
+            emit(cols - 1, rows - 1, dot, accent, rng.choice(ROTATIONS))
+    parts.append("</svg>")
+    return "\n".join(parts) + "\n"
+
+
 def render_svg(banner: Banner, tiles_dir: Path, dimensions=(1920, 960)) -> str:
     w, h = dimensions
     parts = [
         "<?xml version='1.0' encoding='UTF-8'?>",
         f'<svg xmlns="{SVG_NS}" version="1.1" width="{w}" height="{h}" viewBox="0 0 {w} {h}">',
-        f'<rect width="{w}" height="{h}" fill="#FFFFFF"/>',
     ]
+    if banner.ground is not None:
+        parts.append(f'<rect width="{w}" height="{h}" fill="{banner.ground}"/>')
+    for x, y, fw, fh, fill in banner.ground_fields:
+        parts.append(f'<rect x="{x*w:.3f}" y="{y*h:.3f}" width="{fw*w:.3f}" height="{fh*h:.3f}" fill="{fill}"/>')
     # scale: the 6x3 grid is 6*CELL x 3*CELL; scale to the requested size.
     grid_w, grid_h = GRID_COLS * CELL, GRID_ROWS * CELL
     sx, sy = w / grid_w, h / grid_h
@@ -1054,8 +1307,6 @@ def render_svg(banner: Banner, tiles_dir: Path, dimensions=(1920, 960)) -> str:
         y = cell.row * CELL * sy
         cw = CELL * sx * cell.span_w
         ch = CELL * sy * cell.span_h
-        # Per-cell background rect.
-        parts.append(f'<rect x="{x:.3f}" y="{y:.3f}" width="{cw:.3f}" height="{ch:.3f}" fill="{cell.bg}"/>')
         # Recoloured foreground (handles every tile construction: multi-element,
         # circles/ellipses/polygons, figure-on-ground cut-outs, CSS-class fills).
         try:
@@ -1065,7 +1316,10 @@ def render_svg(banner: Banner, tiles_dir: Path, dimensions=(1920, 960)) -> str:
         if not fg_markup.strip():
             continue
         scale = cw / TILE_VB
-        transform = f"translate({x:.3f},{y:.3f}) scale({scale:.5f})"
+        if cell.flip_x:
+            transform = f"translate({x + cw:.3f},{y:.3f}) scale({-scale:.5f},{scale:.5f})"
+        else:
+            transform = f"translate({x:.3f},{y:.3f}) scale({scale:.5f})"
         if cell.rotation:
             transform += f" rotate({cell.rotation},100,100)"
         parts.append(f'<g transform="{transform}">{fg_markup}</g>')
@@ -1089,7 +1343,7 @@ def write_png(svg_text: str, png_path: Path, dimensions=(1920, 960)) -> None:
 # ---------------------------------------------------------------------------
 def score_line(banner: Banner) -> str:
     s = banner.scores
-    keys = ["anchor", "rhythm", "direction", "weight", "negative", "temperature", "family", "hero", "template"]
+    keys = ["anchor", "rhythm", "direction", "weight", "negative", "temperature", "family", "hero", "template", "symmetry"]
     labels = {"template": "tmp", "temperature": "tem"}
     parts = " ".join(f"{labels.get(k, k[:3])}={s[k]:.2f}" for k in keys)
     return f"total={s['total']:.3f} [{banner.template}] {parts}"

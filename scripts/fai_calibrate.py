@@ -42,7 +42,7 @@ BASE = Path(__file__).resolve().parent.parent
 REF_DIR = BASE / "output" / "banners-clean"
 MANIFEST = BASE / "tiles-manifest-v2.json"
 
-AXES = ["anchor", "rhythm", "direction", "weight", "negative", "temperature", "family", "hero", "template", "total"]
+AXES = ["anchor", "rhythm", "direction", "weight", "negative", "temperature", "family", "hero", "template", "symmetry", "total"]
 
 
 def cell_region_geometry(svg_text: str, col: int, row: int, banner_w=1920, banner_h=960, n=72) -> dict:
@@ -153,6 +153,7 @@ def build_reference_banner(svg_path: Path, tiles: list) -> fb.Banner:
                 symmetry="none",
                 complexity="simple",
                 edge_coverage={},
+                edge_type={},
             )
             cells.append(fb.Cell(col=col, row=row, tile=tile, rotation=0, fg=fg_hex, bg=bg_hex))
     return fb.Banner(cells=cells, template="reference", color_mode="reference", seed=0)

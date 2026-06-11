@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="960" height="480" viewBox="0 0 960 480">
+<rect width="960" height="480" fill="#121212"/>
+<g transform="translate(0.000,0.000) scale(0.80000)"><path d="M150 0L0.042 0L0 150C82.8188 150.024 149.976 82.842 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(160.000,0.000) scale(0.80000)"><path d="M150 0L0.042 0L0 150C82.8188 150.024 149.976 82.842 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(320.000,0.000) scale(0.80000)"><path d="M150 0L0.042 0L0 150C82.8188 150.024 149.976 82.842 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(480.000,0.000) scale(0.80000)"><path d="M150 0L0.042 0L0 150C82.8188 150.024 149.976 82.842 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(640.000,0.000) scale(0.80000)"><path d="M150 0L0.042 0L0 150C82.8188 150.024 149.976 82.842 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(800.000,0.000) scale(0.80000)"><path d="M150 0L0.042 0L0 150C82.8188 150.024 149.976 82.842 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(160.000,160.000) scale(0.80000)"><path d="M60 200H80L80 0H60L60 200Z" fill="#FFFFFF"/>
+  <path d="M100 200H120L120 0H100L100 200Z" fill="#FFFFFF"/>
+  <path d="M140 200H160L160 0H140L140 200Z" fill="#FFFFFF"/>
+  <path d="M20 200H40L40 0H20L20 200Z" fill="#FFFFFF"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#FFFFFF"/></g>
+<g transform="translate(480.000,160.000) scale(-0.80000,0.80000)"><path d="M60 200H80L80 0H60L60 200Z" fill="#FFFFFF"/>
+  <path d="M100 200H120L120 0H100L100 200Z" fill="#FFFFFF"/>
+  <path d="M140 200H160L160 0H140L140 200Z" fill="#FFFFFF"/>
+  <path d="M20 200H40L40 0H20L20 200Z" fill="#FFFFFF"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#FFFFFF"/></g>
+<g transform="translate(480.000,160.000) scale(0.80000)"><path d="M60 200H80L80 0H60L60 200Z" fill="#FFFFFF"/>
+  <path d="M100 200H120L120 0H100L100 200Z" fill="#FFFFFF"/>
+  <path d="M140 200H160L160 0H140L140 200Z" fill="#FFFFFF"/>
+  <path d="M20 200H40L40 0H20L20 200Z" fill="#FFFFFF"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#FFFFFF"/></g>
+<g transform="translate(800.000,160.000) scale(-0.80000,0.80000)"><path d="M60 200H80L80 0H60L60 200Z" fill="#FFFFFF"/>
+  <path d="M100 200H120L120 0H100L100 200Z" fill="#FFFFFF"/>
+  <path d="M140 200H160L160 0H140L140 200Z" fill="#FFFFFF"/>
+  <path d="M20 200H40L40 0H20L20 200Z" fill="#FFFFFF"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#FFFFFF"/></g>
+<g transform="translate(160.000,320.000) scale(0.80000)"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100L200 0L0 0L0 200L100 200L50 100Z" fill="#4997D0"/></g>
+<g transform="translate(320.000,320.000) scale(0.80000) rotate(180,100,100)"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100L200 0L0 0L0 200L100 200L50 100Z" fill="#4997D0"/></g>
+<g transform="translate(480.000,320.000) scale(0.80000)"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100L200 0L0 0L0 200L100 200L50 100Z" fill="#4997D0"/></g>
+<g transform="translate(640.000,320.000) scale(0.80000) rotate(180,100,100)"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100L200 0L0 0L0 200L100 200L50 100Z" fill="#4997D0"/></g>
+<g transform="translate(800.000,320.000) scale(0.80000)"><path d="M200 0 C200 5.5229 195.523 10 190 10 L0 10 L0 0 L200 0 Z" fill="#FF4F00"/></g>
+</svg>

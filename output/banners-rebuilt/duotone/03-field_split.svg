@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1920" height="960" viewBox="0 0 1920 960">
+<rect width="1920" height="960" fill="#121212"/>
+<g transform="translate(640.000,0.000) scale(1.60000)"><path d="M150 0H0V150C0 67.158 67.158 0 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(1280.000,0.000) scale(-1.60000,1.60000) rotate(90,100,100)"><path d="M150 0H0V150C0 67.158 67.158 0 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(1280.000,0.000) scale(1.60000) rotate(270,100,100)"><path d="M150.05 200 C105.549 200 83.2634 146.197 114.73 114.73 C146.197 83.2634 200 105.549 200 150.05 L200 200 L150.05 200 Z" fill="#FF4F00"/></g>
+<g transform="translate(0.000,320.000) scale(1.60000)"><path d="M125 75L125 125L75 125L75 75L125 75Z" fill="#FF4F00"/></g>
+<g transform="translate(320.000,320.000) scale(1.60000)"><path d="M125 75L125 125L75 125L75 75L125 75Z" fill="#FF4F00"/></g>
+<g transform="translate(640.000,320.000) scale(1.60000) rotate(90,100,100)"><path d="M150 0H0V150C0 67.158 67.158 0 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(1280.000,320.000) scale(-1.60000,1.60000) rotate(180,100,100)"><path d="M150 0H0V150C0 67.158 67.158 0 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(1280.000,320.000) scale(1.60000)"><path d="M125 75L125 125L75 125L75 75L125 75Z" fill="#FF4F00"/></g>
+<g transform="translate(1920.000,320.000) scale(-1.60000,1.60000)"><path d="M125 75L125 125L75 125L75 75L125 75Z" fill="#FF4F00"/></g>
+<g transform="translate(0.000,640.000) scale(1.60000) rotate(90,100,100)"><path d="M99.972 100L100 199.972L0 200C-0.016 144.787 44.744 100.016 99.972 100Z" fill="#FF4F00"/></g>
+<g transform="translate(640.000,640.000) scale(1.60000) rotate(180,100,100)"><path d="M150 0H0V150C0 67.158 67.158 0 150 0Z" fill="#FFFFFF"/></g>
+<g transform="translate(1280.000,640.000) scale(-1.60000,1.60000) rotate(270,100,100)"><path d="M150 0H0V150C0 67.158 67.158 0 150 0Z" fill="#FFFFFF"/></g>
+</svg>
