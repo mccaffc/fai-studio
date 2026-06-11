@@ -1431,6 +1431,8 @@ def generate_many(
         banner.scores["base_seed"] = base_seed
         if chosen:
             banner.scores["chosen_accent"] = chosen
+            banner.scores["chosen_accent_cells"] = sum(
+                1 for c in banner.cells if c.tile and c.fg.upper() == chosen.upper())
         scored.append(banner)
     passing = [b for b in scored if grammar_passes(b, chosen_accent=chosen)]
     ranked = sorted(passing or scored, key=lambda b: b.total, reverse=True)
