@@ -37,9 +37,9 @@ RATIFIED = [
     ("Chrome Yellow", "#FFA300", False),
     ("Celestial Blue", "#4997D0", False),
     ("Timberwolf", "#D9D9D6", False),
-    ("Iris Violet", "#7150D6", True),
+    ("Iris Violet", "#8265DB", True),
     ("Telemagenta", "#D63A8C", True),
-    ("Signal Green", "#2EA84F", True),
+    ("Signal Green", "#268B41", True),
     ("Slate Indigo", "#3A4A6B", True),
 ]
 
@@ -92,8 +92,8 @@ HTML = """<!doctype html>
       <label>Color mode<select name="color_mode" id="mode">
         <option value="full">full</option><option value="duotone">duotone</option><option value="vertical">vertical</option><option value="extended">extended</option>
       </select><span class="help" id="mode_help">all seven ratified fills</span></label>
-      <label class="wide">Vertical hex<select id="vertical_select"></select><span id="proposal" class="tag">PROPOSAL</span><span class="help">Cod Gray ground + White + ONE accent — choose a ratified fill or a proposal hue</span></label>
-      <label class="wide">Free hex<input name="vertical_hex" id="vertical_hex" placeholder="#4997D0"><span class="help">any hex, proposal-work only (unratified colors never ship on master surfaces)</span></label>
+      <label class="wide">Accent<select id="vertical_select"></select><span id="proposal" class="tag">PROPOSAL</span><span class="help">Used by vertical (the ONE accent) and extended (guaranteed to appear). Ignored by duotone/full.</span></label>
+      <label class="wide">Custom accent hex<input name="vertical_hex" id="vertical_hex" placeholder="#4997D0"><span class="help">Overrides the dropdown. Unratified hexes are proposal-work only — they never ship on master surfaces.</span></label>
       <label>Template<select name="template"><option value="">any</option></select></label>
       <label>Seed<input name="seed" inputmode="numeric" placeholder="random"></label>
       <label>Candidates<input name="candidates" type="number" min="1" max="600" value="240"></label>
@@ -107,7 +107,7 @@ HTML = """<!doctype html>
 const ratified = __RATIFIED__;
 const templates = __TEMPLATES__;
 const hasPng = __HAS_PNG__;
-const extras = ["#7150D6", "#D63A8C", "#2EA84F", "#3A4A6B"];
+const extras = ["#8265DB", "#D63A8C", "#268B41", "#3A4A6B"];
 const sel = document.querySelector("#vertical_select");
 for (const [name, hex, proposal] of ratified) {
   const opt = document.createElement("option");
@@ -124,8 +124,8 @@ for (const t of templates) { const opt = document.createElement("option"); opt.v
 const modeHelp = document.querySelector("#mode_help");
 document.querySelector("#mode").addEventListener("change", (e) => {
   modeHelp.textContent = {
-    vertical: "Cod Gray ground + White + ONE accent — choose a ratified fill or a proposal hue",
-    extended: "any hex, proposal-work only (unratified colors never ship on master surfaces)",
+    vertical: "one ground + White + your chosen accent only",
+    extended: "all seven fills + the proposal hues — your chosen accent is guaranteed a full run",
     duotone: "Cod Gray + White + International Orange only",
     full: "all seven ratified fills"
   }[e.target.value];
@@ -176,7 +176,7 @@ PNG_CACHE: dict[str, str] = {}
 def index():
     html = (
         HTML.replace("__RATIFIED__", json.dumps(RATIFIED))
-        .replace("__TEMPLATES__", json.dumps(sorted(fb.TEMPLATES)))
+        .replace("__TEMPLATES__", json.dumps(fb.BANNER_TEMPLATES))
         .replace("__HAS_PNG__", "true" if HAS_CAIROSVG else "false")
     )
     return html
