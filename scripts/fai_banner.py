@@ -353,16 +353,20 @@ def build_palette(color_mode: str, vertical_hex: Optional[str], extra_hexes: Opt
     org, yel, blu = "#FF4F00", "#FFA300", "#4997D0"
 
     if color_mode == "full":
+        chosen = _register_extra_hex(vertical_hex) if vertical_hex else None
+        accents = [org, blu, yel]
+        if chosen and chosen not in accents:
+            accents.insert(0, chosen)
         return {
-            "fills": [cg, wh, sw, tw, org, yel, blu],
-            "accents": [org, blu, yel],
-            "grounds": [sw, wh, tw, cg],
-            "bridges": [tw, sw, wh, cg],
-            "hero": org,
+            "fills": [cg, sw, tw, org, yel, blu],
+            "accents": accents,
+            "grounds": [sw, tw, cg],
+            "bridges": [tw, sw, cg],
+            "hero": chosen or None,
         }
     if color_mode == "duotone":
         return {
-            "fills": [cg, org, wh],
+            "fills": [cg, org, sw],
             "accents": [org],
             "grounds": [wh, cg],
             "bridges": [wh, cg],
@@ -374,7 +378,7 @@ def build_palette(color_mode: str, vertical_hex: Optional[str], extra_hexes: Opt
         # tables; register them so scoring works. Hue ≤90° or ≥330° reads warm.
         _register_extra_hex(v)
         return {
-            "fills": [cg, v, wh],
+            "fills": [cg, v, sw],
             "accents": [v],
             "grounds": [wh, cg],
             "bridges": [wh, cg],
@@ -691,8 +695,9 @@ def ink_legal(ink: str, ground: str) -> bool:
 
 
 def primary_ink(ground: str) -> str:
-    """The references' workhorse ink: White on dark grounds, Cod Gray on light."""
-    return "#FFFFFF" if _rel_lum(ground) < 0.4 else "#121212"
+    """The workhorse ink: Smoke White on dark grounds, Cod Gray on light.
+    Composed designs never use pure #FFFFFF (house rule, June 2026)."""
+    return "#F3F3F3" if _rel_lum(ground) < 0.4 else "#121212"
 
 
 def sample_ground_plan(color_mode: str, rng: random.Random) -> dict:
@@ -701,9 +706,9 @@ def sample_ground_plan(color_mode: str, rng: random.Random) -> dict:
     if r < 0.62:
         return {"base": "#121212", "fields": [], "split_col": None}
     if r < 0.84:
-        return {"base": "#FFFFFF", "fields": [], "split_col": None}
+        return {"base": "#F3F3F3", "fields": [], "split_col": None}
     split_col = rng.choice([2, 3, 4])
-    g1, g2 = rng.choice([("#121212", "#FFFFFF"), ("#FFFFFF", "#121212")])
+    g1, g2 = rng.choice([("#121212", "#F3F3F3"), ("#F3F3F3", "#121212")])
     frac = split_col / GRID_COLS
     return {"base": g1, "fields": [(frac, 0.0, 1 - frac, 1.0, g2)], "split_col": split_col}
 
@@ -809,7 +814,7 @@ def generate_candidate(
     instead of refilling one frozen skeleton."""
     if template_name == "field_split":
         split_col = rng.choice([2, 3, 4])
-        g1, g2 = rng.choice([("#121212", "#FFFFFF"), ("#FFFFFF", "#121212")])
+        g1, g2 = rng.choice([("#121212", "#F3F3F3"), ("#F3F3F3", "#121212")])
         plan = {"base": g1, "fields": [(split_col / GRID_COLS, 0.0, 1 - split_col / GRID_COLS, 1.0, g2)],
                 "split_col": split_col}
     elif template_name in {"mini_frieze", "mini_panel"}:
@@ -990,12 +995,12 @@ def grammar_stats(banner: Banner) -> dict:
     # Cod Gray on light) — generalises the old white-dominance rule to white-
     # ground and split-ground banners.
     primary_cells = sum(1 for c in active if c.fg.upper() == primary_ink(c.bg).upper())
-    accent_cells = sum(1 for c in active if c.fg.upper() not in {"#FFFFFF", "#121212"})
+    accent_cells = sum(1 for c in active if c.fg.upper() not in {"#FFFFFF", "#F3F3F3", "#121212"})
     # contrast legality replaces the hard-coded ratified-only whitelist, so any
     # registered proposal hue is judged by whether it actually reads.
     contrast_bad = sum(1 for c in active if not ink_legal(c.fg, c.bg))
     by_run = Counter((c.row, c.fg) for c in active)
-    accent_run = max((n for (_row, fg), n in by_run.items() if fg.upper() not in {"#FFFFFF", "#121212"}), default=0)
+    accent_run = max((n for (_row, fg), n in by_run.items() if fg.upper() not in {"#FFFFFF", "#F3F3F3", "#121212"}), default=0)
     hero_hex = (banner.scores or {}).get("chosen_accent") or getattr(banner, "chosen_accent", None)
     chosen_cells = sum(1 for c in active if hero_hex and c.fg.upper() == hero_hex.upper())
     cols = sorted({cc for c in active for cc in range(c.col, c.col + getattr(c, "span_w", 1))})
@@ -1523,8 +1528,151 @@ def compose(cells=(GRID_COLS, GRID_ROWS), ground="#121212", inks=None, layout="m
     return "\n".join(parts) + "\n"
 
 
-def render_svg(banner: Banner, tiles_dir: Path, dimensions=(1920, 960)) -> str:
+
+# ---------------------------------------------------------------------------
+# Piece generation — deck-scale compositions (strip 3x1, panel 2x3, square 3x3)
+# built with the same grammar: sampled structure, run inks, diversity keeps.
+# ---------------------------------------------------------------------------
+PIECE_GRIDS = {"strip": (3, 1), "panel": (2, 3), "square": (3, 3)}
+
+
+def generate_pieces(
+    tiles: list[Tile],
+    grid_name: str,
+    color_mode: str = "duotone",
+    vertical_hex: Optional[str] = None,
+    seed: Optional[int] = None,
+    n_candidates: int = 160,
+    keep: int = 4,
+    extra_hexes: Optional[list[str]] = None,
+    ground: Optional[str] = None,
+    placement_ground: Optional[str] = None,
+) -> list[Banner]:
+    """Compose small-format pieces. ground: hex, or None to sample, or
+    "transparent" for shapes-only assets (deck art on any slide ground —
+    pass placement_ground so ink legality is judged against the slide)."""
+    if grid_name not in PIECE_GRIDS:
+        raise ValueError(f"grid must be one of {sorted(PIECE_GRIDS)} (banners use generate_many)")
+    cols, rows = PIECE_GRIDS[grid_name]
+    base_seed = seed if seed is not None else random.randint(0, 2**31 - 1)
+    palette = build_palette(color_mode, vertical_hex, extra_hexes)
+    chosen = palette.get("hero")
+    FR = {"float", "joint", "open", "circle", "wave"}
+    ANG = {"angle", "ramp", "square", "rectangle"}
+    LIN = {"lines", "centric"}
+
+    scored: list[Banner] = []
+    for i in range(n_candidates):
+        rng = random.Random(base_seed * 99991 + i)
+        if ground == "transparent":
+            g = None
+        elif ground:
+            g = ground.upper()
+        else:
+            g = "#121212" if rng.random() < 0.7 else "#F3F3F3"
+        ink_ground = g or (placement_ground or "#F3F3F3").upper()
+        inks = run_inks(palette, color_mode, rng)
+
+        def legal(order):
+            for ink in order:
+                if ink_legal(ink, ink_ground):
+                    return ink
+            return primary_ink(ink_ground)
+
+        cells: list[Cell] = []
+
+        def frieze_row(row, fams, ink, rhythm=None, span=None):
+            c0, c1 = span or (0, cols)
+            tile = rng.choice(grammar_tile_pool(tiles, fams, 0.34, 0.74))
+            rhy = rhythm or rng.choice(["identical", "alternating_rotation", "mirror_pair"])
+            for j, col in enumerate(range(c0, c1)):
+                rot = 180 if (rhy == "alternating_rotation" and j % 2) else 0
+                flip = bool(j % 2) if rhy == "mirror_pair" else False
+                add_cell(cells, col, row, tile, rot, ink, ink_ground, flip_x=flip)
+
+        def col_run(col, fams, ink):
+            tile = rng.choice(grammar_tile_pool(tiles, fams, 0.34, 0.74))
+            for r in range(rows):
+                add_cell(cells, col, r, tile, rng.choice([90, 270]) if r % 2 else 0, ink, ink_ground)
+
+        def mirror_block(w, h, c0, r0, fams, ink):
+            tile = rng.choice(grammar_tile_pool(tiles, fams, 0.42, 0.74))
+            for rr in range(h):
+                for cc in range(w):
+                    add_cell(cells, c0 + cc, r0 + rr, tile, [0, 90, 180, 270][(cc + rr) % 4],
+                             ink, ink_ground, flip_x=cc >= w / 2)
+
+        accent = legal([inks["accent"], inks["accent2"]])
+        prim = legal([primary_ink(ink_ground), inks["accent"]])
+        if grid_name == "strip":
+            frieze_row(0, rng.choice([ANG, FR, LIN]), accent if rng.random() < 0.75 else prim)
+        elif grid_name == "panel":
+            mode_pick = rng.random()
+            if mode_pick < 0.45:
+                mirror_block(2, rows, 0, 0, rng.choice([LIN, FR, {"curve", "circle"}]), prim)
+            elif mode_pick < 0.8:
+                col_run(0, rng.choice([ANG, FR]), prim)
+                col_run(1, rng.choice([ANG, FR, LIN]), accent)
+            else:
+                for r in range(rows):
+                    frieze_row(r, rng.choice([ANG, FR]), accent if r == rows - 1 else prim)
+        else:  # square
+            mode_pick = rng.random()
+            if mode_pick < 0.4:
+                mirror_block(2, 2, rng.choice([0, 1]), 0, rng.choice([LIN, FR]), prim)
+                frieze_row(2, rng.choice([ANG, FR]), accent)
+            elif mode_pick < 0.75:
+                for r in range(rows):
+                    frieze_row(r, rng.choice([ANG, FR, LIN]),
+                               accent if r == rng.randrange(rows) else prim)
+            else:
+                mirror_block(3, 3, 0, 0, rng.choice([LIN, {"curve", "circle"}]), prim)
+
+        b = Banner(cells=cells, template=f"{grid_name}", color_mode=color_mode,
+                   seed=base_seed, ground=g)
+        b.scores = {"total": 0.0, "candidate_index": i, "base_seed": base_seed,
+                    "grid_cols": cols, "grid_rows": rows}
+        # light QA: legality + occupancy + chosen-accent presence
+        act = [c for c in cells if c.tile]
+        occ = {(c.col, c.row) for c in act}
+        bad = any(not ink_legal(c.fg, c.bg) for c in act)
+        spans = occ and max(o[0] for o in occ) - min(o[0] for o in occ) + 1 == cols
+        chosen_ok = (not chosen) or sum(1 for c in act if c.fg.upper() == chosen.upper()) >= min(2, cols)
+        if bad or not spans or not chosen_ok or len(occ) < cols * rows * 0.5:
+            continue
+        # variety score: prefer mixed weights + symmetry-ish structures
+        b.scores["total"] = round(0.5 + 0.5 * len({c.tile.id for c in act}) / max(1, len(act)), 3)
+        if chosen:
+            b.scores["chosen_accent"] = chosen
+            b.scores["chosen_accent_cells"] = sum(1 for c in act if c.fg.upper() == chosen.upper())
+        scored.append(b)
+
+    def sig(b):
+        act = [c for c in b.cells if c.tile]
+        return (b.ground, frozenset((c.col, c.row) for c in act),
+                frozenset(c.tile.id for c in act), frozenset(c.fg.upper() for c in act))
+
+    kept, ksigs = [], []
+    for threshold in (3.0, 1.0, 0.0):
+        for b in sorted(scored, key=lambda x: x.total, reverse=True):
+            if len(kept) >= keep:
+                break
+            if b in kept:
+                continue
+            sg = sig(b)
+            d = min((float(sg[0] != k[0]) * 2 + 0.5 * len(sg[1] ^ k[1]) +
+                     float(sg[2] != k[2]) * 2 + float(sg[3] != k[3]) for k in ksigs),
+                    default=99)
+            if d >= threshold:
+                kept.append(b); ksigs.append(sg)
+        if len(kept) >= keep:
+            break
+    return kept[:keep]
+
+
+def render_svg(banner: Banner, tiles_dir: Path, dimensions=(1920, 960), grid=None) -> str:
     w, h = dimensions
+    gcols, grows = grid or (GRID_COLS, GRID_ROWS)
     parts = [
         "<?xml version='1.0' encoding='UTF-8'?>",
         f'<svg xmlns="{SVG_NS}" version="1.1" width="{w}" height="{h}" viewBox="0 0 {w} {h}">',
@@ -1533,8 +1681,8 @@ def render_svg(banner: Banner, tiles_dir: Path, dimensions=(1920, 960)) -> str:
         parts.append(f'<rect width="{w}" height="{h}" fill="{banner.ground}"/>')
     for x, y, fw, fh, fill in banner.ground_fields:
         parts.append(f'<rect x="{x*w:.3f}" y="{y*h:.3f}" width="{fw*w:.3f}" height="{fh*h:.3f}" fill="{fill}"/>')
-    # scale: the 6x3 grid is 6*CELL x 3*CELL; scale to the requested size.
-    grid_w, grid_h = GRID_COLS * CELL, GRID_ROWS * CELL
+    # scale: the composition grid is gcols*CELL x grows*CELL; scale to size.
+    grid_w, grid_h = gcols * CELL, grows * CELL
     sx, sy = w / grid_w, h / grid_h
     for cell in sorted(banner.cells, key=lambda c: (c.row, c.col)):
         if cell.empty or cell.covered_by is not None or cell.tile is None:
@@ -1546,7 +1694,10 @@ def render_svg(banner: Banner, tiles_dir: Path, dimensions=(1920, 960)) -> str:
         # Recoloured foreground (handles every tile construction: multi-element,
         # circles/ellipses/polygons, figure-on-ground cut-outs, CSS-class fills).
         try:
-            fg_markup = render_tile_group(tiles_dir / cell.tile.filename, cell.fg, cell.bg)
+            # Transparent compositions (ground=None) must not paint tile-ground
+            # fills as opaque patches — drop them so only the shapes render.
+            bg_for_tile = cell.bg if banner.ground is not None else "none"
+            fg_markup = render_tile_group(tiles_dir / cell.tile.filename, cell.fg, bg_for_tile)
         except Exception:
             fg_markup = ""
         if not fg_markup.strip():
