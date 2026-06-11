@@ -178,14 +178,31 @@ V_ALIASES = {"left": "neutral", "right": "neutral"}
 WEIGHT_LEVEL = {"H": 0.85, "M": 0.50, "L": 0.18, "E": 0.0}
 
 TEMPLATES: dict[str, list[list[str]]] = {
-    "mirror_monument": [list("LHHHHL"), list("EMHHME"), list("LLLLLL")],
+    # Loose macro-intent maps. Structure is SAMPLED at generation time, so these
+    # are advisory for the fidelity axis, not skeletons to refill.
+    "monument": [list("LHHHHL"), list("EMHHME"), list("LLLLLL")],
+    "mirror_monument": [list("LHHHHL"), list("EMHHME"), list("LLLLLL")],  # legacy alias
     "frieze_stack": [list("MMMMMM"), list("EEEEEE"), list("MMMMMM")],
     "ring_field": [list("EHHHHE"), list("EHHHHE"), list("LLLLEE")],
     "field_split": [list("LLHHLL"), list("MMHHMM"), list("LLHHLL")],
     "eye_row": [list("EEEEEE"), list("MMMMMM"), list("HHHHHH")],
+    "asymmetric_field": [list("HHHMLE"), list("HHHMME"), list("HHHLEE")],
     "mini_frieze": [list("MMM")],
     "mini_panel": [list("HH"), list("MM"), list("HH")],
 }
+
+# Banner archetypes (full-canvas grammar layouts). These — and ONLY these — are
+# eligible for banner generation; mini_* layouts are deck-art compositions
+# available through compose() but never produce partial-fill "banners".
+BANNER_TEMPLATES = [
+    "monument",
+    "frieze_stack",
+    "ring_field",
+    "field_split",
+    "eye_row",
+    "asymmetric_field",
+]
+DECK_LAYOUTS = ["mini_frieze", "mini_panel"]
 
 
 # ---------------------------------------------------------------------------
@@ -367,12 +384,17 @@ def build_palette(color_mode: str, vertical_hex: Optional[str], extra_hexes: Opt
         extras = [_register_extra_hex(h) for h in (extra_hexes or [])]
         fills = [cg, wh, sw, tw, org, yel, blu] + extras
         accents = [org, blu, yel] + extras
+        # The caller's chosen accent (the studio's ACCENT control / --vertical-hex)
+        # is the GUARANTEED hero in extended mode — it must appear in a real run.
+        chosen = _register_extra_hex(vertical_hex) if vertical_hex else None
+        if chosen and chosen not in accents:
+            accents.insert(0, chosen)
         return {
             "fills": fills,
             "accents": accents,
             "grounds": [sw, wh, tw, cg],
             "bridges": [tw, sw, wh, cg],
-            "hero": None,
+            "hero": chosen,
         }
     raise ValueError(f"unknown color_mode: {color_mode}")
 
@@ -647,21 +669,67 @@ SUPERFORM_FAMILIES = {"lines", "centric", "curve", "circle"}
 MINI_FAMILIES = {"angle", "ramp", "square"}
 
 
-def grammar_ground(palette: dict, color_mode: str) -> str:
-    if color_mode in {"full", "extended"} and random.random() < 0.12:
-        return "#FFFFFF"
-    return "#121212"
+def _rel_lum(hexv: str) -> float:
+    r, g, b = (int(hexv.lstrip("#")[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    f = lambda c: c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4  # noqa: E731
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
+
+
+def _contrast(a: str, b: str) -> float:
+    l1, l2 = sorted((_rel_lum(a), _rel_lum(b)), reverse=True)
+    return (l1 + 0.05) / (l2 + 0.05)
+
+
+# Minimum shape-on-ground contrast. Encodes ink legality generically (so any
+# registered proposal hue works on the grounds where it actually reads — e.g.
+# Slate Indigo passes on White but not on Cod Gray, matching its usage rule).
+CONTRAST_MIN = 2.4
+
+
+def ink_legal(ink: str, ground: str) -> bool:
+    return ink.upper() != ground.upper() and _contrast(ink, ground) >= CONTRAST_MIN
+
+
+def primary_ink(ground: str) -> str:
+    """The references' workhorse ink: White on dark grounds, Cod Gray on light."""
+    return "#FFFFFF" if _rel_lum(ground) < 0.4 else "#121212"
+
+
+def sample_ground_plan(color_mode: str, rng: random.Random) -> dict:
+    """One shared ground — Cod Gray dominant, White sometimes, split rarely."""
+    r = rng.random()
+    if r < 0.62:
+        return {"base": "#121212", "fields": [], "split_col": None}
+    if r < 0.84:
+        return {"base": "#FFFFFF", "fields": [], "split_col": None}
+    split_col = rng.choice([2, 3, 4])
+    g1, g2 = rng.choice([("#121212", "#FFFFFF"), ("#FFFFFF", "#121212")])
+    frac = split_col / GRID_COLS
+    return {"base": g1, "fields": [(frac, 0.0, 1 - frac, 1.0, g2)], "split_col": split_col}
+
+
+def ground_at(plan: dict, col: int) -> str:
+    sc = plan.get("split_col")
+    if sc is not None and col >= sc:
+        return plan["fields"][0][4]
+    return plan["base"]
 
 
 def run_inks(palette: dict, color_mode: str, rng: random.Random) -> dict:
-    accent = palette["accents"][0] if color_mode in {"duotone", "vertical"} else rng.choice(palette["accents"])
-    if color_mode == "full":
-        second = rng.choice([h for h in palette["accents"] if h != accent] or [accent])
-    elif color_mode == "extended":
-        second = rng.choice([h for h in palette["accents"] if h != accent] or [accent])
+    """Pick the banner's accent run inks. The caller's chosen accent (palette
+    'hero') is GUARANTEED to be the primary accent when provided."""
+    accents = palette["accents"]
+    chosen = palette.get("hero")
+    if color_mode in {"duotone", "vertical"}:
+        accent = accents[0]
+    elif chosen:
+        accent = chosen
     else:
-        second = accent
-    return {"primary": "#FFFFFF", "accent": accent, "accent2": second}
+        accent = rng.choice(accents)
+    others = [a for a in accents if a != accent]
+    use_second = color_mode in {"full", "extended"} and others and rng.random() < 0.7
+    second = rng.choice(others) if use_second else accent
+    return {"accent": accent, "accent2": second}
 
 
 def family_tiles(tiles: list[Tile], families: set[str]) -> list[Tile]:
@@ -735,55 +803,181 @@ def generate_candidate(
     color_mode: str,
     rng: random.Random,
 ) -> list[Cell]:
-    """Build a grammar-valid banner candidate: shared ground, run inks, macro-forms."""
-    ground = "#121212"
+    """Build a grammar-valid candidate. STRUCTURE IS SAMPLED per candidate —
+    region sizes/positions, row choices, extents, rhythms, grounds, and ink
+    placement all vary — so candidates explore a wide compositional space
+    instead of refilling one frozen skeleton."""
+    if template_name == "field_split":
+        split_col = rng.choice([2, 3, 4])
+        g1, g2 = rng.choice([("#121212", "#FFFFFF"), ("#FFFFFF", "#121212")])
+        plan = {"base": g1, "fields": [(split_col / GRID_COLS, 0.0, 1 - split_col / GRID_COLS, 1.0, g2)],
+                "split_col": split_col}
+    elif template_name in {"mini_frieze", "mini_panel"}:
+        plan = {"base": "#121212", "fields": [], "split_col": None}
+    else:
+        plan = sample_ground_plan(color_mode, rng)
+        plan["split_col"] = None
+        plan["fields"] = []
     inks = run_inks(palette, color_mode, rng)
     cells: list[Cell] = []
     occupied: set[tuple[int, int]] = set()
-    super_tile = rng.choice(grammar_tile_pool(tiles, SUPERFORM_FAMILIES, 0.46, 0.74))
-    frieze_tile = rng.choice(grammar_tile_pool(tiles, {"pod", "eye", "lines", "circle", "centric"}, 0.40, 0.70))
-    solid_tile = rng.choice(grammar_tile_pool(tiles, {"angle", "ramp", "square", "circle", "lines"}, 0.50, 0.78))
-    rhythm = rng.choice(["identical", "alternating_rotation", "mirror_pair"])
+
+    FRIEZE_FAMS = {"float", "joint", "open", "circle", "wave"}
+    ANGULAR_FAMS = {"angle", "ramp", "square", "rectangle"}
+
+    def g(col: int) -> str:
+        return ground_at(plan, col)
+
+    def run_ink(cols, prefer: str) -> Optional[str]:
+        """Ink for a run spanning `cols`: must be legal on every ground crossed."""
+        grounds = {g(c) for c in cols}
+        order = {
+            "accent": [inks["accent"], inks["accent2"], primary_ink(next(iter(grounds)))],
+            "primary": [primary_ink(next(iter(grounds))), inks["accent"], inks["accent2"]],
+            "accent2": [inks["accent2"], inks["accent"], primary_ink(next(iter(grounds)))],
+        }[prefer]
+        for ink in order:
+            if all(ink_legal(ink, gr) for gr in grounds):
+                return ink
+        return None
+
+    def frieze(cols, row, pool_fams, prefer, min_a=0.36, max_a=0.72, rhythm=None):
+        ink = run_ink(cols, prefer)
+        if ink is None:
+            return
+        tile = rng.choice(grammar_tile_pool(tiles, pool_fams, min_a, max_a))
+        rhy = rhythm or rng.choice(["identical", "alternating_rotation", "mirror_pair"])
+        # per-cell ground so split plans stay legal
+        for i, col in enumerate(cols):
+            rot = 180 if (rhy == "alternating_rotation" and i % 2) else 0
+            flip = bool(i % 2) if rhy == "mirror_pair" else False
+            add_cell(cells, col, row, tile, rot, ink, g(col), level="M", flip_x=flip)
+
+    def superform(region, prefer="primary", mirror=True):
+        c0, r0, w, h = region
+        cols = range(c0, c0 + w)
+        ink = run_ink(cols, prefer)
+        if ink is None:
+            return
+        tile = rng.choice(grammar_tile_pool(tiles, SUPERFORM_FAMILIES, 0.46, 0.74))
+        rotations = [0, 90, 180, 270]
+        for rr in range(h):
+            for cc in range(w):
+                col, row = c0 + cc, r0 + rr
+                rot = rotations[(cc + rr) % 4]
+                flip = mirror and cc >= w / 2
+                add_cell(cells, col, row, tile, rot, ink, g(col), level="H",
+                         hero=(cc == w // 2 and rr == h // 2), flip_x=flip)
 
     def mark():
         occupied.update((c.col, c.row) for c in cells)
 
-    if template_name == "mirror_monument":
-        add_superform(cells, (2, 0, 2, 2), super_tile, inks["primary"], ground, rng, mirror=True)
-        side = rng.choice(grammar_tile_pool(tiles, {"angle", "ramp", "square", "lines"}, 0.40, 0.70))
-        add_frieze(cells, range(0, 2), 0, side, "mirror_pair", inks["primary"], ground)
-        add_frieze(cells, range(4, 6), 0, side, "mirror_pair", inks["primary"], ground)
-        add_frieze(cells, range(0, 2), 2, frieze_tile, "mirror_pair", inks["accent"], ground)
-        add_frieze(cells, range(4, 6), 2, frieze_tile, "mirror_pair", inks["accent"], ground)
+    def flank_pair(c0, w, rows_free):
+        """Treat the zones left/right of a centered region: mirrored friezes,
+        independent friezes, or deliberate emptiness — sampled per row."""
+        left, right = range(0, c0), range(c0 + w, GRID_COLS)
+        if not left or not right:
+            return
+        mirror_sides = rng.random() < 0.6
+        for row in rows_free:
+            r = rng.random()
+            if r < 0.42:
+                continue  # negative space
+            prefer = "accent" if rng.random() < 0.45 else "primary"
+            fams = rng.choice([FRIEZE_FAMS, ANGULAR_FAMS, {"lines", "centric"}])
+            if mirror_sides:
+                tile = rng.choice(grammar_tile_pool(tiles, fams, 0.36, 0.70))
+                ink_l = run_ink(left, prefer)
+                ink_r = run_ink(right, prefer)
+                for i, col in enumerate(left):
+                    add_cell(cells, col, row, tile, 0, ink_l or primary_ink(g(col)), g(col), flip_x=bool(i % 2))
+                for i, col in enumerate(right):
+                    add_cell(cells, col, row, tile, 0, ink_r or primary_ink(g(col)), g(col), flip_x=not bool(i % 2))
+            else:
+                frieze(left, row, fams, prefer)
+                frieze(right, row, rng.choice([FRIEZE_FAMS, ANGULAR_FAMS]), "primary")
+
+    if template_name in {"monument", "mirror_monument"}:
+        w = rng.choice([2, 2, 3])
+        h = rng.choice([2, 3])
+        c0 = rng.choice([c for c in range(0, GRID_COLS - w + 1)][1:-1] or [2])
+        r0 = 0 if h == 3 else rng.choice([0, 1])
+        superform((c0, r0, w, h), prefer="accent" if rng.random() < 0.3 else "primary", mirror=True)
+        rows_free = [r for r in range(GRID_ROWS)]
+        flank_pair(c0, w, rows_free)
     elif template_name == "frieze_stack":
-        add_frieze(cells, range(0, 6), 0, frieze_tile, rhythm, inks["primary"], ground)
-        mid = rng.choice(grammar_tile_pool(tiles, {"pod", "eye", "circle", "lines"}, 0.36, 0.62))
-        add_frieze(cells, range(1, 5), 1, mid, "mirror_pair", inks["primary"], ground)
-        t2 = rng.choice(grammar_tile_pool(tiles, {"angle", "ramp", "square", "pod"}, 0.42, 0.74))
-        add_frieze(cells, range(1, 5), 2, t2, "alternating_rotation", inks["accent"], ground)
+        accent_row = rng.randrange(GRID_ROWS)
+        extents = [(0, 6), (1, 5), (0, 4), (2, 6), (0, 3), (3, 6)]
+        made = 0
+        for row in range(GRID_ROWS):
+            if row != accent_row and rng.random() < 0.22 and made >= 1:
+                continue
+            e0, e1 = rng.choice(extents)
+            fams = rng.choice([FRIEZE_FAMS, ANGULAR_FAMS, {"lines", "centric"}, {"circle", "curve"}])
+            frieze(range(e0, e1), row, fams, "accent" if row == accent_row else
+                   ("accent2" if rng.random() < 0.2 else "primary"))
+            made += 1
     elif template_name == "ring_field":
-        add_superform(cells, (1, 0, 4, 2), super_tile, inks["primary"], ground, rng)
-        add_frieze(cells, range(0, 4), 2, frieze_tile, "alternating_rotation", inks["accent"], ground)
+        w = rng.choice([3, 4])
+        r0 = rng.choice([0, 1])
+        c0 = rng.randint(0, GRID_COLS - w)
+        superform((c0, r0, w, 2), prefer="primary")
+        other_row = 2 if r0 == 0 else 0
+        if rng.random() < 0.8:
+            e0, e1 = rng.choice([(0, 6), (0, 4), (2, 6), (1, 5)])
+            frieze(range(e0, e1), other_row, FRIEZE_FAMS, "accent")
     elif template_name == "field_split":
-        add_superform(cells, (2, 0, 2, 3), super_tile, inks["primary"], ground, rng, mirror=True)
-        wing = rng.choice(grammar_tile_pool(tiles, {"angle", "ramp", "square"}, 0.38, 0.68))
-        add_frieze(cells, range(0, 2), 0, wing, "identical", inks["primary"], ground)
-        add_frieze(cells, range(4, 6), 0, wing, "mirror_pair", inks["primary"], ground)
-        add_frieze(cells, range(0, 2), 1, wing, "identical", inks["accent"], ground)
-        add_frieze(cells, range(4, 6), 1, wing, "mirror_pair", inks["accent"], ground)
+        sc = plan["split_col"]
+        left, right = range(0, sc), range(sc, GRID_COLS)
+        big, small = (left, right) if rng.random() < 0.5 else (right, left)
+        if len(big) >= 2:
+            superform((big[0], 0, min(len(big), 3), rng.choice([2, 3])),
+                      prefer="primary", mirror=True)
+        for row in range(GRID_ROWS):
+            if rng.random() < 0.55:
+                frieze(small, row, rng.choice([FRIEZE_FAMS, ANGULAR_FAMS]),
+                       "accent" if rng.random() < 0.5 else "primary")
     elif template_name == "eye_row":
-        add_frieze(cells, range(0, 6), 1, frieze_tile, "mirror_pair", inks["primary"], ground)
-        add_frieze(cells, range(1, 5), 2, solid_tile, "identical", inks["accent"], ground)
+        row = rng.randrange(GRID_ROWS)
+        e0, e1 = rng.choice([(0, 6), (1, 5)])
+        frieze(range(e0, e1), row, {"open", "float", "joint", "circle"}, "primary",
+               rhythm="mirror_pair")
+        others = [r for r in range(GRID_ROWS) if r != row]
+        rng.shuffle(others)
+        frieze(range(*rng.choice([(0, 6), (1, 5), (0, 4), (2, 6)])), others[0],
+               ANGULAR_FAMS, "accent", rhythm=rng.choice(["identical", "alternating_rotation"]))
+        if rng.random() < 0.8:  # third row keeps the composition full-canvas
+            frieze(range(*rng.choice([(0, 6), (1, 5), (2, 6)])), others[1],
+                   rng.choice([FRIEZE_FAMS, {"lines", "centric"}]), "primary")
+    elif template_name == "asymmetric_field":
+        w, h = 3, rng.choice([2, 3])
+        on_left = rng.random() < 0.5
+        c0 = 0 if on_left else GRID_COLS - w
+        superform((c0, 0 if h == 3 else rng.choice([0, 1]), w, h),
+                  prefer="accent" if rng.random() < 0.35 else "primary", mirror=rng.random() < 0.5)
+        opp = range(w, GRID_COLS) if on_left else range(0, GRID_COLS - w)
+        for row in rng.sample(range(GRID_ROWS), k=rng.choice([1, 2])):
+            frieze(opp, row, rng.choice([FRIEZE_FAMS, ANGULAR_FAMS, {"lines", "centric"}]),
+                   "accent" if rng.random() < 0.5 else "primary")
     elif template_name == "mini_frieze":
-        add_frieze(cells, range(0, 3), 0, rng.choice(family_tiles(tiles, MINI_FAMILIES)), rhythm, inks["accent"], ground)
+        tile = rng.choice(family_tiles(tiles, MINI_FAMILIES))
+        rhy = rng.choice(["identical", "alternating_rotation", "mirror_pair"])
+        for i, col in enumerate(range(0, 3)):
+            rot = 180 if (rhy == "alternating_rotation" and i % 2) else 0
+            add_cell(cells, col, 0, tile, rot, inks["accent"], plan["base"], level="M",
+                     flip_x=bool(i % 2) if rhy == "mirror_pair" else False)
     elif template_name == "mini_panel":
-        add_superform(cells, (0, 0, 2, 3), super_tile, inks["primary"], ground, rng, mirror=True)
+        superform((0, 0, 2, 3), prefer="primary", mirror=True)
     else:
-        add_superform(cells, (1, 0, 4, 2), super_tile, inks["primary"], ground, rng, mirror=True)
+        superform((1, 0, 4, 2), prefer="primary", mirror=True)
 
     mark()
     if template_name not in {"mini_frieze", "mini_panel"}:
-        add_punctuation(cells, occupied, tiles, rng.randint(0, 2), inks["accent2"], ground, rng)
+        punct_ink = inks["accent2"] if ink_legal(inks["accent2"], plan["base"]) else None
+        if punct_ink:
+            add_punctuation(cells, occupied, tiles, rng.randint(0, 2), punct_ink, plan["base"], rng)
+    cells_plan = plan
+    generate_candidate.last_plan = cells_plan  # consumed by callers to set Banner ground
     return cells
 
 
@@ -792,36 +986,50 @@ def grammar_stats(banner: Banner) -> dict:
     active = active_cells(banner.cells)
     ink_area = sum(c.tile.area_weight for c in active if c.tile) / TOTAL_SLOTS
     inked_cells = len({c.pos for c in active})
-    white_cells = sum(1 for c in active if c.fg.upper() == "#FFFFFF")
+    # primary = the workhorse ink for each cell's LOCAL ground (White on dark,
+    # Cod Gray on light) — generalises the old white-dominance rule to white-
+    # ground and split-ground banners.
+    primary_cells = sum(1 for c in active if c.fg.upper() == primary_ink(c.bg).upper())
     accent_cells = sum(1 for c in active if c.fg.upper() not in {"#FFFFFF", "#121212"})
-    same_ground = sum(1 for c in active if c.fg.upper() == c.bg.upper())
-    cod_bad = sum(
-        1
-        for c in active
-        if c.bg.upper() == "#121212" and c.fg.upper() not in {"#FFFFFF", "#FF4F00", "#FFA300", "#4997D0"}
-    )
+    # contrast legality replaces the hard-coded ratified-only whitelist, so any
+    # registered proposal hue is judged by whether it actually reads.
+    contrast_bad = sum(1 for c in active if not ink_legal(c.fg, c.bg))
     by_run = Counter((c.row, c.fg) for c in active)
     accent_run = max((n for (_row, fg), n in by_run.items() if fg.upper() not in {"#FFFFFF", "#121212"}), default=0)
+    hero_hex = (banner.scores or {}).get("chosen_accent") or getattr(banner, "chosen_accent", None)
+    chosen_cells = sum(1 for c in active if hero_hex and c.fg.upper() == hero_hex.upper())
+    cols = sorted({cc for c in active for cc in range(c.col, c.col + getattr(c, "span_w", 1))})
+    rows = sorted({c.row for c in active})
     return {
         "coverage_fraction": round(ink_area, 4),
         "inked_cell_fraction": round(inked_cells / TOTAL_SLOTS, 4),
         "inked_cells": inked_cells,
-        "white_fraction": round(white_cells / max(1, inked_cells), 4),
+        "white_fraction": round(primary_cells / max(1, inked_cells), 4),
         "accent_cells": accent_cells,
         "max_accent_run": accent_run,
-        "same_ground_runs": same_ground,
-        "cod_ground_bad_inks": cod_bad,
+        "chosen_accent_cells": chosen_cells,
+        "col_span": (max(cols) - min(cols) + 1) if cols else 0,
+        "row_span": (max(rows) - min(rows) + 1) if rows else 0,
+        "contrast_bad_inks": contrast_bad,
+        "same_ground_runs": contrast_bad,
+        "cod_ground_bad_inks": contrast_bad,
     }
 
 
-def grammar_passes(banner: Banner) -> bool:
+def grammar_passes(banner: Banner, chosen_accent: Optional[str] = None) -> bool:
     s = grammar_stats(banner)
+    full_canvas = s["col_span"] >= 5 and s["row_span"] == GRID_ROWS
+    chosen_ok = True
+    if chosen_accent:
+        active = active_cells(banner.cells)
+        chosen_ok = sum(1 for c in active if c.fg.upper() == chosen_accent.upper()) >= 3
     return (
-        0.35 <= s["coverage_fraction"] <= 0.55
-        and s["same_ground_runs"] == 0
-        and s["cod_ground_bad_inks"] == 0
-        and s["max_accent_run"] >= 4
-        and s["white_fraction"] >= 0.60
+        0.30 <= s["coverage_fraction"] <= 0.58
+        and s["contrast_bad_inks"] == 0
+        and s["max_accent_run"] >= 3
+        and s["white_fraction"] >= 0.50
+        and full_canvas
+        and chosen_ok
     )
 
 
@@ -1172,30 +1380,10 @@ def generate_banner(
     weights: Optional[dict] = None,
     extra_hexes: Optional[list[str]] = None,
 ) -> Banner:
-    weights = weights or SCORING_WEIGHTS
-    base_seed = seed if seed is not None else random.randint(0, 2**31 - 1)
-    rng = random.Random(base_seed)
-    palette = build_palette(color_mode, vertical_hex, extra_hexes)
-    template_pool = [template] if template else list(TEMPLATES)
-
-    best: Optional[Banner] = None
-    fallback: Optional[Banner] = None
-    for i in range(n_candidates):
-        cand_rng = random.Random(base_seed * 100003 + i)
-        tmpl = cand_rng.choice(template_pool)
-        cells = generate_candidate(tiles, tmpl, palette, color_mode, cand_rng)
-        banner = Banner(cells=cells, template=tmpl, color_mode=color_mode, seed=base_seed, ground="#121212")
-        banner.scores = score_banner(banner, palette, weights)
-        banner.scores.update(grammar_stats(banner))
-        if fallback is None or banner.total > fallback.total:
-            fallback = banner
-        if not grammar_passes(banner):
-            continue
-        if best is None or banner.total > best.total:
-            best = banner
-    best = best or fallback
+    banners = generate_many(tiles, color_mode, vertical_hex, template, seed,
+                            n_candidates, keep=1, weights=weights, extra_hexes=extra_hexes)
+    best = banners[0]
     best.scores["candidates"] = n_candidates
-    best.scores["base_seed"] = base_seed
     return best
 
 
@@ -1210,28 +1398,74 @@ def generate_many(
     weights: Optional[dict] = None,
     extra_hexes: Optional[list[str]] = None,
 ) -> list[Banner]:
-    """Score n_candidates and return the top `keep`, de-duplicated by layout."""
+    """Score n_candidates and return the top `keep`, DIVERSITY-SELECTED: the
+    keeps must differ structurally (template, occupancy, tiles, inks), not just
+    be the best clone and its siblings."""
     weights = weights or SCORING_WEIGHTS
     base_seed = seed if seed is not None else random.randint(0, 2**31 - 1)
-    rng = random.Random(base_seed)
     palette = build_palette(color_mode, vertical_hex, extra_hexes)
-    template_pool = [template] if template else list(TEMPLATES)
+    chosen = palette.get("hero")
+    alias = {"mirror_monument": "monument"}
+    if template in DECK_LAYOUTS:
+        raise ValueError(f"{template} is a deck-art layout — use compose(), not banner generation")
+    if template:
+        template_pool = [alias.get(template, template)]
+    else:
+        template_pool = list(BANNER_TEMPLATES)
 
     scored: list[Banner] = []
     for i in range(n_candidates):
         cand_rng = random.Random(base_seed * 100003 + i)
         tmpl = cand_rng.choice(template_pool)
         cells = generate_candidate(tiles, tmpl, palette, color_mode, cand_rng)
-        banner = Banner(cells=cells, template=tmpl, color_mode=color_mode, seed=base_seed, ground="#121212")
+        plan = getattr(generate_candidate, "last_plan", {"base": "#121212", "fields": []})
+        banner = Banner(cells=cells, template=tmpl, color_mode=color_mode, seed=base_seed,
+                        ground=plan["base"])
+        try:
+            banner.ground_fields = list(plan.get("fields") or [])
+        except Exception:
+            pass
         banner.scores = score_banner(banner, palette, weights)
         banner.scores.update(grammar_stats(banner))
         banner.scores["candidate_index"] = i
         banner.scores["base_seed"] = base_seed
+        if chosen:
+            banner.scores["chosen_accent"] = chosen
         scored.append(banner)
-    passing = [b for b in scored if grammar_passes(b)]
-    ranked = passing or scored
-    ranked.sort(key=lambda b: b.total, reverse=True)
-    return ranked[:keep]
+    passing = [b for b in scored if grammar_passes(b, chosen_accent=chosen)]
+    ranked = sorted(passing or scored, key=lambda b: b.total, reverse=True)
+
+    def sig(b: Banner):
+        act = [c for c in b.cells if c.tile is not None]
+        occ = frozenset((c.col, c.row) for c in act)
+        fams = frozenset(c.tile.family for c in act)
+        inks = frozenset(c.fg.upper() for c in act)
+        return (b.template, b.ground, occ, fams, inks)
+
+    def dist(a, b) -> float:
+        d = 0.0
+        d += 6.0 if a[0] != b[0] else 0.0          # different archetype
+        d += 3.0 if a[1] != b[1] else 0.0          # different ground
+        d += 0.6 * len(a[2] ^ b[2])                # occupancy difference
+        d += 2.0 if a[3] != b[3] else 0.0          # tile families
+        d += 2.0 if a[4] != b[4] else 0.0          # ink set
+        return d
+
+    kept: list[Banner] = []
+    kept_sigs = []
+    for threshold in (6.0, 3.0, 0.0):
+        for b in ranked:
+            if len(kept) >= keep:
+                break
+            if b in kept:
+                continue
+            s = sig(b)
+            if all(dist(s, ks) >= threshold for ks in kept_sigs):
+                kept.append(b)
+                kept_sigs.append(s)
+        if len(kept) >= keep:
+            break
+    return kept[:keep]
 
 
 # ---------------------------------------------------------------------------
@@ -1360,7 +1594,7 @@ def main(argv=None) -> int:
     p.add_argument("--allow-unratified-hex", action="store_true",
                    help="permit a --vertical-hex outside the 7 ratified fills "
                         "(PROPOSAL WORK ONLY — e.g. demoing candidate pillar hues)")
-    p.add_argument("--template", choices=sorted(TEMPLATES), default=None, help="force a composition template (default: best across all)")
+    p.add_argument("--template", choices=BANNER_TEMPLATES + ["mirror_monument"], default=None, help="force a banner archetype (default: best across all)")
     p.add_argument("--seed", type=int, default=None)
     p.add_argument("--candidates", type=int, default=240, help="candidates scored per banner")
     p.add_argument("--keep", type=int, default=1, help="how many top banners to write")
@@ -1373,7 +1607,7 @@ def main(argv=None) -> int:
     args = p.parse_args(argv)
 
     if args.list_templates:
-        for name, wm in TEMPLATES.items():
+        for name, wm in ((k, TEMPLATES[k]) for k in BANNER_TEMPLATES):
             print(name)
             for row in wm:
                 print("   " + " ".join(row))
