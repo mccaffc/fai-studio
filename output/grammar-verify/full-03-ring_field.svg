@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="960" height="480" viewBox="0 0 960 480">
+<rect width="960" height="480" fill="#121212"/>
+<g transform="translate(160.000,0.000) scale(0.80000)"><path d="M0 150L0 200L200 200L200 0L150 0.0373C150 91.5 75 150 0 150Z" fill="#FFFFFF"/></g>
+<g transform="translate(320.000,0.000) scale(0.80000) rotate(90,100,100)"><path d="M0 150L0 200L200 200L200 0L150 0.0373C150 91.5 75 150 0 150Z" fill="#FFFFFF"/></g>
+<g transform="translate(480.000,0.000) scale(0.80000) rotate(180,100,100)"><path d="M0 150L0 200L200 200L200 0L150 0.0373C150 91.5 75 150 0 150Z" fill="#FFFFFF"/></g>
+<g transform="translate(640.000,0.000) scale(0.80000) rotate(270,100,100)"><path d="M0 150L0 200L200 200L200 0L150 0.0373C150 91.5 75 150 0 150Z" fill="#FFFFFF"/></g>
+<g transform="translate(160.000,160.000) scale(0.80000) rotate(90,100,100)"><path d="M0 150L0 200L200 200L200 0L150 0.0373C150 91.5 75 150 0 150Z" fill="#FFFFFF"/></g>
+<g transform="translate(320.000,160.000) scale(0.80000) rotate(180,100,100)"><path d="M0 150L0 200L200 200L200 0L150 0.0373C150 91.5 75 150 0 150Z" fill="#FFFFFF"/></g>
+<g transform="translate(480.000,160.000) scale(0.80000) rotate(270,100,100)"><path d="M0 150L0 200L200 200L200 0L150 0.0373C150 91.5 75 150 0 150Z" fill="#FFFFFF"/></g>
+<g transform="translate(640.000,160.000) scale(0.80000)"><path d="M0 150L0 200L200 200L200 0L150 0.0373C150 91.5 75 150 0 150Z" fill="#FFFFFF"/></g>
+<g transform="translate(0.000,320.000) scale(0.80000)"><path d="M45 200H65L65 0H45L45 200Z" fill="#FFA300"/>
+  <path d="M90 200H110L110 0H90L90 200Z" fill="#FFA300"/>
+  <path d="M135 200H155L155 0H135L135 200Z" fill="#FFA300"/>
+  <path d="M0 200H20L20 0H0L0 200Z" fill="#FFA300"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#FFA300"/></g>
+<g transform="translate(160.000,320.000) scale(0.80000) rotate(180,100,100)"><path d="M45 200H65L65 0H45L45 200Z" fill="#FFA300"/>
+  <path d="M90 200H110L110 0H90L90 200Z" fill="#FFA300"/>
+  <path d="M135 200H155L155 0H135L135 200Z" fill="#FFA300"/>
+  <path d="M0 200H20L20 0H0L0 200Z" fill="#FFA300"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#FFA300"/></g>
+<g transform="translate(320.000,320.000) scale(0.80000)"><path d="M45 200H65L65 0H45L45 200Z" fill="#FFA300"/>
+  <path d="M90 200H110L110 0H90L90 200Z" fill="#FFA300"/>
+  <path d="M135 200H155L155 0H135L135 200Z" fill="#FFA300"/>
+  <path d="M0 200H20L20 0H0L0 200Z" fill="#FFA300"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#FFA300"/></g>
+<g transform="translate(480.000,320.000) scale(0.80000) rotate(180,100,100)"><path d="M45 200H65L65 0H45L45 200Z" fill="#FFA300"/>
+  <path d="M90 200H110L110 0H90L90 200Z" fill="#FFA300"/>
+  <path d="M135 200H155L155 0H135L135 200Z" fill="#FFA300"/>
+  <path d="M0 200H20L20 0H0L0 200Z" fill="#FFA300"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#FFA300"/></g>
+</svg>

@@ -10,7 +10,7 @@ import random
 import sys
 from pathlib import Path
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fai_banner as fb  # noqa: E402
@@ -56,9 +56,10 @@ HTML = """<!doctype html>
     :root { --ink:#121212; --accent:#FF4F00; --line:#d9d9d6; --soft:#f3f3f3; }
     * { box-sizing: border-box; }
     body { margin:0; font-family:"IBM Plex Sans", Arial, sans-serif; color:var(--ink); background:#fff; }
-    header { padding:28px 34px 18px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:end; gap:24px; }
-    .mark { font-family:"IBM Plex Serif", Georgia, serif; font-size:24px; letter-spacing:.02em; }
-    .sub { font-family:"IBM Plex Mono", monospace; font-size:12px; color:#666; }
+    header { padding:18px 34px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:end; gap:24px; background:#121212; color:#fff; }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .mark { width:34px; height:auto; display:block; }
+    .sub { font-family:"IBM Plex Mono", monospace; font-size:12px; color:#f3f3f3; }
     main { padding:30px 34px 46px; max-width:1500px; margin:0 auto; }
     form { display:grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap:18px; align-items:end; }
     label { display:grid; gap:7px; font-size:12px; font-family:"IBM Plex Mono", monospace; text-transform:uppercase; letter-spacing:.04em; }
@@ -66,6 +67,7 @@ HTML = """<!doctype html>
     button { background:var(--accent); border-color:var(--accent); color:#fff; cursor:pointer; }
     button:disabled { background:#aaa; border-color:#aaa; cursor:wait; }
     .wide { grid-column: span 2; }
+    .help { display:block; font:400 11px/1.35 "IBM Plex Sans", Arial, sans-serif; text-transform:none; letter-spacing:0; color:#666; }
     .tag { display:none; margin-top:4px; width:max-content; border:1px solid var(--accent); color:var(--accent); padding:2px 5px; font:500 10px "IBM Plex Mono", monospace; }
     .tag.show { display:inline-block; }
     #status { margin:22px 0; min-height:22px; font-family:"IBM Plex Mono", monospace; color:#666; font-size:12px; }
@@ -84,14 +86,14 @@ HTML = """<!doctype html>
   </style>
 </head>
 <body>
-  <header><div class="mark">FAI</div><div class="sub">Banner composition studio</div></header>
+  <header><div class="brand"><img class="mark" src="/studio-assets/Logomark-White.svg" alt="FAI"></div><div class="sub">Banner composition studio</div></header>
   <main>
     <form id="controls">
       <label>Color mode<select name="color_mode" id="mode">
         <option value="full">full</option><option value="duotone">duotone</option><option value="vertical">vertical</option><option value="extended">extended</option>
-      </select></label>
-      <label class="wide">Vertical hex<select id="vertical_select"></select><span id="proposal" class="tag">PROPOSAL</span></label>
-      <label class="wide">Free hex<input name="vertical_hex" id="vertical_hex" placeholder="#4997D0"></label>
+      </select><span class="help" id="mode_help">all seven ratified fills</span></label>
+      <label class="wide">Vertical hex<select id="vertical_select"></select><span id="proposal" class="tag">PROPOSAL</span><span class="help">Cod Gray ground + White + ONE accent — choose a ratified fill or a proposal hue</span></label>
+      <label class="wide">Free hex<input name="vertical_hex" id="vertical_hex" placeholder="#4997D0"><span class="help">any hex, proposal-work only (unratified colors never ship on master surfaces)</span></label>
       <label>Template<select name="template"><option value="">any</option></select></label>
       <label>Seed<input name="seed" inputmode="numeric" placeholder="random"></label>
       <label>Candidates<input name="candidates" type="number" min="1" max="600" value="240"></label>
@@ -119,6 +121,15 @@ sel.addEventListener("change", () => { free.value = sel.value; tag.classList.tog
 free.addEventListener("input", () => { const v = free.value.trim().toUpperCase(); tag.classList.toggle("show", !ratified.some(x => x[1] === v && !x[2])); });
 const tmpl = document.querySelector("[name=template]");
 for (const t of templates) { const opt = document.createElement("option"); opt.value = t; opt.textContent = t; tmpl.appendChild(opt); }
+const modeHelp = document.querySelector("#mode_help");
+document.querySelector("#mode").addEventListener("change", (e) => {
+  modeHelp.textContent = {
+    vertical: "Cod Gray ground + White + ONE accent — choose a ratified fill or a proposal hue",
+    extended: "any hex, proposal-work only (unratified colors never ship on master surfaces)",
+    duotone: "Cod Gray + White + International Orange only",
+    full: "all seven ratified fills"
+  }[e.target.value];
+});
 function dl(svg, name) {
   return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svg)));
 }
@@ -169,6 +180,11 @@ def index():
         .replace("__HAS_PNG__", "true" if HAS_CAIROSVG else "false")
     )
     return html
+
+
+@app.get("/studio-assets/<path:name>")
+def studio_assets(name: str):
+    return send_from_directory(BASE / "studio-assets", name)
 
 
 @app.post("/generate")
