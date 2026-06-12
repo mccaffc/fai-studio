@@ -8,9 +8,14 @@ Ground-up rebuild (June 2026) of the legacy Flask banner studio.
   ESM bundle (`dist-engine/index.js`) you can drop into any site or workflow.
   API: `generate(config)`, `reroll`, `variations`, `recolor(scene, color)`, `renderSvg`, `describe`.
 - **Studio** (`src/studio/` + `index.html`) — static client-side UI: live canvas
-  (spacebar rerolls), variations tray, save tray, post-generation recolor bar,
-  SVG/PNG/clipboard export. `npm run dev` to run; `npx vite build` → `dist-site/`
-  (opens from file://, deploys to Render as a static site).
+  (spacebar rerolls), variations tray, save tray, in-place recolor (color
+  changes never re-roll geometry), SVG/PNG/clipboard export with print-safe
+  flatten. `npm run dev` to run; `npx vite build` → `dist-site/` (opens from
+  file://).
+
+- **Deployment** — GitHub Pages: https://mccaffc.github.io/FAI-Brand-Illustrations-Cleanup/
+  auto-deploys from `main` via `.github/workflows/pages.yml` whenever
+  `fai-pattern-studio/**` changes. (The old Render services are retired.)
 - **Shape system** — 7 families (~44 procedural primitives) refactored from the
   140 legacy tiles per the audit in `../output/audit/tile-coverage.md`.
   Super-form recipes (`src/engine/compose/superforms.ts`) encode the proven
