@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: fai-banner-studio
-    env: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: python scripts/fai_studio.py --host 0.0.0.0 --port $PORT
