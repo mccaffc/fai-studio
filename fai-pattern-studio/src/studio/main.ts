@@ -43,6 +43,8 @@ const state = {
   vars: [] as GenResult[],
   saved: [] as SavedItem[],
   lockSeed: false,
+  /** print-safe export: boolean-merge to interlocking one-path-per-color */
+  flatten: true,
 };
 state.config.seed = (Math.random() * 0xffffffff) >>> 0;
 
@@ -104,9 +106,23 @@ function renderCanvas(): void {
     persist();
     renderSaved();
   });
-  mkBtn("SVG", "ghost", () => downloadSvg(state.current!));
-  mkBtn("PNG 2×", "ghost", () => downloadPng(state.current!));
-  mkBtn("Copy SVG", "ghost", () => copySvg(state.current!));
+  mkBtn("SVG", "ghost", () => void downloadSvg(state.current!, state.flatten));
+  mkBtn("PNG 2×", "ghost", () => void downloadPng(state.current!, state.flatten));
+  mkBtn("Copy SVG", "ghost", () => void copySvg(state.current!, state.flatten));
+  const flat = el(
+    "button",
+    {
+      class: `chip${state.flatten ? " on" : ""}`,
+      title: "merge shapes into interlocking one-path-per-color (no seams in PDF/print)",
+      style: "width:auto",
+    },
+    "flatten: print-safe",
+  );
+  flat.addEventListener("click", () => {
+    state.flatten = !state.flatten;
+    renderCanvas();
+  });
+  acts.appendChild(flat);
 }
 
 // ── variations tray ──
