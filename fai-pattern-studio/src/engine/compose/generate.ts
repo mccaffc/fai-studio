@@ -17,7 +17,7 @@ import { TUNING } from "../tuning";
 import { mulberry32 } from "../rng";
 import { layoutGrid, type Cell } from "../grid/layout";
 import { resolvePalette } from "../color/modes";
-import { resolveRole } from "../color/roles";
+import { resolveColor } from "../color/roles";
 import { byCategory } from "../primitives/registry";
 import "../primitives/index";
 import { recipesFor, type Recipe } from "./superforms";
@@ -89,6 +89,25 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
   const px = TUNING.cellPx;
   const features: string[] = [];
 
+  // warm accents live on even palette slots, cool on odd (see ALL_ACCENTS)
+  const pickIndex = (warm: boolean): number => {
+    const slots = warm ? [0, 2, 4] : [1, 3, 5];
+    return rng.chance(0.55) ? slots[0]! : rng.pick(slots);
+  };
+
+  type GroundSpec = { role: "canvas" | "accent" | "ink"; index?: number };
+  const CANVAS: GroundSpec = { role: "canvas" };
+
+  /** Canonical ground-block treatment (banners 003/008/020): colored block
+   *  under the cell, shapes in canvas-black (or ink) on top. */
+  const pickGround = (warm: boolean): GroundSpec =>
+    rng.chance(TUNING.groundBlockChance)
+      ? { role: "accent", index: pickIndex(warm) }
+      : CANVAS;
+
+  /** fg role that reads on a colored block: canvas-black mostly, ink sometimes */
+  const blockFg = (): ColorRole => (rng.chance(0.7) ? "canvas" : "ink");
+
   const makeNode = (
     col: number,
     row: number,
@@ -99,6 +118,8 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
     flip: boolean,
     role: ColorRole,
     form: string,
+    accentIndex?: number,
+    g: GroundSpec = CANVAS,
   ): SceneNode => ({
     id: `n${nid++}`,
     primitive,
@@ -107,7 +128,11 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
     rot,
     flip,
     role,
-    color: resolveRole(role, palette),
+    ...(role === "accent" ? { accentIndex: accentIndex ?? 0 } : {}),
+    color: resolveColor(role, accentIndex, palette),
+    groundRole: g.role,
+    ...(g.role === "accent" ? { groundIndex: g.index ?? 0 } : {}),
+    ground: g.role === "canvas" ? palette.ground : resolveColor(g.role === "ink" ? "ink" : "accent", g.index, palette),
     form,
   });
 
@@ -116,9 +141,12 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
     const cat = rng.chance(0.6) ? dominant : accentCat;
     const def = weightedPrimitive(cat, rng);
     const rot: Rotation = def.rotates ? rng.pick([0, 90, 180, 270] as const) : 0;
-    const role: ColorRole = rng.chance(0.5) ? "accent" : "ink";
+    const gnd = pickGround(rng.chance(0.5));
+    const role: ColorRole =
+      gnd.role !== "canvas" ? blockFg() : rng.chance(0.5) ? "accent" : "ink";
+    const gIdx = role === "accent" ? pickIndex(rng.chance(0.5)) : undefined;
     nodes.push(
-      makeNode(cell.col, cell.row, 2, def.key, cat, rot, rng.chance(0.3), role, `giant${nid}`),
+      makeNode(cell.col, cell.row, 2, def.key, cat, rot, rng.chance(0.3), role, `giant${nid}`, gIdx, gnd),
     );
     features.push(`giant:${def.key}`);
   }
@@ -146,13 +174,20 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
     const c0 = rng.int(0, Math.max(0, workCols - w));
     const r0 = rng.int(0, Math.max(0, rows - recipe.h));
     if (!regionFree(c0, r0, w, recipe.h)) continue;
+    const gnd = pickGround(rng.chance(0.5));
     const role: ColorRole =
-      placedFeatures === 0 ? "accent" : rng.chance(0.4) ? "accent2" : "ink";
+      gnd.role !== "canvas"
+        ? blockFg()
+        : placedFeatures === 0 || rng.chance(0.4)
+          ? "accent"
+          : "ink";
+    const fIdx =
+      role === "accent" ? (placedFeatures === 0 ? 0 : pickIndex(rng.chance(0.5))) : undefined;
     const form = `form${placedFeatures}:${recipe.key}`;
     for (const p of recipe.place(w)) {
       occupied.add(keyOf(c0 + p.dc, r0 + p.dr));
       nodes.push(
-        makeNode(c0 + p.dc, r0 + p.dr, 1, p.primitive, recipe.category, p.rot, p.flip, role, form),
+        makeNode(c0 + p.dc, r0 + p.dr, 1, p.primitive, recipe.category, p.rot, p.flip, role, form, fIdx, gnd),
       );
     }
     features.push(recipe.key);
@@ -169,10 +204,12 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
       const cat = rng.chance(0.6) ? dominant : accentCat;
       const def = weightedPrimitive(cat, rng, true);
       const alternate = rng.chance(0.5);
+      const gnd = pickGround(rng.chance(0.5));
+      const fgRole: ColorRole = gnd.role !== "canvas" ? blockFg() : "ink";
       for (const c of free) {
         occupied.add(keyOf(c, friezeRow));
         nodes.push(
-          makeNode(c, friezeRow, 1, def.key, cat, 0, alternate && c % 2 === 1, "ink", "frieze"),
+          makeNode(c, friezeRow, 1, def.key, cat, 0, alternate && c % 2 === 1, fgRole, "frieze", undefined, gnd),
         );
       }
       features.push(`frieze:${def.key}`);
@@ -197,14 +234,17 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
         const flip = rng.chance(0.3);
         // zoning: warm accent on its half, cool on the other
         const onWarmSide = warmLeft ? c < workCols / 2 : c >= workCols / 2;
+        const gnd = pickGround(onWarmSide);
         let role: ColorRole = "ink";
-        if (accentBudget > 0 && rng.chance(0.28)) {
-          role = onWarmSide ? "accent" : "accent2";
-        } else if (palette.accents.length >= 3 && rng.chance(0.15)) {
-          role = "neutral"; // third hue — keeps full/extended genuinely multi-color
+        let idx: number | undefined;
+        if (gnd.role !== "canvas") {
+          role = blockFg();
+        } else if (accentBudget > 0 && rng.chance(0.34)) {
+          role = "accent";
+          idx = pickIndex(onWarmSide);
         }
-        const node = makeNode(c, r, 1, def.key, cat, rot, flip, role, `fill${nid}`);
-        if (!contrastOK(node.color, palette.ground)) {
+        const node = makeNode(c, r, 1, def.key, cat, rot, flip, role, `fill${nid}`, idx, gnd);
+        if (!contrastOK(node.color, node.ground)) {
           rejects++;
           continue;
         }
@@ -234,7 +274,7 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
             const cc = c + k;
             if (cc >= workCols || occupied.has(keyOf(cc, r))) break;
             const runNode = makeNode(
-              cc, r, 1, def.key, cat, rot, k % 2 === 1 ? !flip : flip, role, form,
+              cc, r, 1, def.key, cat, rot, k % 2 === 1 ? !flip : flip, role, form, idx, gnd,
             );
             runNode.form = form;
             nodes.push(runNode);
@@ -248,17 +288,16 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
   // ── 4b. Guarantee palette breadth: when the mode offers multiple accents,
   // full/extended must genuinely use them (the legacy tool's failure mode). ──
   if (palette.accents.length >= 2) {
-    const wants: ColorRole[] =
-      palette.accents.length >= 3 ? ["accent", "accent2", "neutral"] : ["accent", "accent2"];
+    const wants = [0, 1, 2].filter((i) => i < palette.accents.length);
     for (const want of wants) {
-      if (nodes.some((n) => n.role === want)) continue;
-      const color = resolveRole(want, palette);
+      if (nodes.some((n) => n.role === "accent" && (n.accentIndex ?? 0) % palette.accents.length === want)) continue;
+      const color = resolveColor("accent", want, palette);
       if (!contrastOK(color, palette.ground)) continue;
       // recolor a whole ink form (run-color economy: one form = one ink) —
       // prefer single fill cells, else the smallest ink form
       const inkForms = new Map<string, SceneNode[]>();
       for (const n of nodes) {
-        if (n.role !== "ink") continue;
+        if (n.role !== "ink" || n.groundRole !== "canvas") continue;
         (inkForms.get(n.form) ?? inkForms.set(n.form, []).get(n.form)!).push(n);
       }
       if (inkForms.size === 0) continue;
@@ -269,7 +308,8 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
       );
       const pick = groups[rng.int(0, Math.max(0, Math.min(2, groups.length - 1)))]!;
       for (const n of pick) {
-        n.role = want;
+        n.role = "accent";
+        n.accentIndex = want;
         n.color = color;
       }
     }

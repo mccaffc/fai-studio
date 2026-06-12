@@ -1,6 +1,6 @@
 /** The engine contract. Everything else is internal. */
 
-export type ColorMode = "duotone" | "vertical" | "full" | "extended";
+export type ColorMode = "duotone" | "vertical" | "full";
 
 export type Arrangement =
   | "banner" // 6×3
@@ -22,15 +22,14 @@ export type CategoryId =
 
 export type Rotation = 0 | 90 | 180 | 270;
 
-/** Semantic color roles; recolor() re-resolves roles without moving geometry. */
-export type ColorRole = "ink" | "accent" | "accent2" | "neutral";
+/** Semantic color roles; recolor() re-resolves roles without moving geometry.
+ *  "canvas" paints with the canvas ground hex — black shapes on colored blocks. */
+export type ColorRole = "ink" | "accent" | "canvas";
 
 export interface ColorConfig {
   mode: ColorMode;
-  /** duotone/vertical only — the single accent. Nulled by normalizeConfig in full/extended. */
+  /** vertical only — the single accent hex. Nulled by normalizeConfig elsewhere. */
   accent?: string | null;
-  /** gates proposal hues (extended mode, custom vertical hexes) */
-  allowProposal?: boolean;
 }
 
 export interface Config {
@@ -63,8 +62,15 @@ export interface SceneNode {
   rot: Rotation;
   flip: boolean;
   role: ColorRole;
+  /** which accent slot an accent node draws from (mod palette size at resolve) */
+  accentIndex?: number;
   /** resolved fg hex (so render targets need no palette) */
   color: string;
+  /** colored ground block under this cell ("canvas" = the shared field) */
+  groundRole: "canvas" | "accent" | "ink";
+  groundIndex?: number;
+  /** resolved ground hex for this cell */
+  ground: string;
   /** which feature/run produced it (debugging + run identity) */
   form: string;
 }
@@ -72,9 +78,10 @@ export interface SceneNode {
 export interface ResolvedPalette {
   ground: string;
   ink: string;
+  /** empty in duotone (pure b&w); one hex in vertical; all fills in full */
   accents: string[];
-  /** UI hints — which controls the active mode owns */
-  ui: { accentPicker: boolean; customHex: boolean };
+  /** UI hint — vertical owns the accent picker */
+  ui: { accentPicker: boolean };
 }
 
 export interface Scene {

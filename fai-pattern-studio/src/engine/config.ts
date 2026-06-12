@@ -17,7 +17,7 @@ export function defaultConfig(): Config {
     arrangement: "banner",
     grid: null,
     varied: true,
-    color: { mode: "full", accent: null, allowProposal: false },
+    color: { mode: "full", accent: null },
     categories: [...ALL_CATEGORIES],
     density: 0.55,
     symmetry: "auto",

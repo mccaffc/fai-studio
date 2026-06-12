@@ -18,9 +18,11 @@ export function renderSvg(scene: Scene): string {
     const frag = def
       .draw({ rng: mulberry32(h >>> 0) })
       .replaceAll('"INK"', `"${node.color}"`)
-      .replaceAll('"GROUND"', `"${scene.ground}"`)
-      .replaceAll('stroke="INK"', `stroke="${node.color}"`);
+      .replaceAll('"GROUND"', `"${node.ground}"`);
     const { x, y, w, h: ch } = node.cell;
+    if (node.ground !== scene.ground) {
+      parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${ch}" fill="${node.ground}"/>`);
+    }
     const ops = [`translate(${x},${y})`, `scale(${w / 200},${ch / 200})`];
     if (node.rot) ops.push(`rotate(${node.rot},100,100)`);
     if (node.flip) ops.push(`translate(200,0) scale(-1,1)`);

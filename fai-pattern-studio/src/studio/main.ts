@@ -16,15 +16,21 @@ import type {
 import { downloadPng, downloadSvg, copySvg } from "./export";
 
 const info = describe();
-const BRAND_SWATCHES: Array<[string, string]> = [
+const SWATCHES: Array<[string, string]> = [
   ["International Orange", "#FF4F00"],
-  ["Chrome Yellow", "#FFA300"],
   ["Celestial Blue", "#4997D0"],
+  ["Chrome Yellow", "#FFA300"],
+  ["Iris Violet", "#8265DB"],
+  ["Telemagenta", "#D63A8C"],
+  ["Signal Green", "#268B41"],
+  ["Slate Indigo", "#3A4A6B"],
   ["Timberwolf", "#D9D9D6"],
-  ["Smoke White", "#F3F3F3"],
-  ["White", "#FFFFFF"],
-  ["Cod Gray", "#121212"],
 ];
+const MODE_LABELS: Record<ColorMode, string> = {
+  duotone: "B&W",
+  vertical: "One accent",
+  full: "Full color",
+};
 
 interface SavedItem {
   config: Config;
@@ -49,7 +55,7 @@ function el(tag: string, attrs: Record<string, string> = {}, html = ""): HTMLEle
   return e;
 }
 
-// ── generation ──
+// ── generation (geometry changes) ──
 function regen(newSeed = false): void {
   if (newSeed && !state.lockSeed) {
     state.config.seed = (Math.random() * 0xffffffff) >>> 0;
@@ -63,19 +69,21 @@ function regen(newSeed = false): void {
   }
   renderCanvas();
   renderVariations();
-  renderControls(); // visibility may change with mode
+  renderControls();
 }
 
-function applyRecolor(mode: ColorMode, accent: string | null): void {
+// ── recolor in place (color changes never re-roll geometry) ──
+function recolorInPlace(): void {
   if (!state.current) return;
-  state.config.color = { mode, accent, allowProposal: mode === "extended" };
   try {
     state.current = recolor(state.current.scene, state.config.color);
+    state.vars = state.vars.map((v) => recolor(v.scene, state.config.color));
   } catch (err) {
     alert(String(err));
     return;
   }
   renderCanvas();
+  renderVariations();
   renderControls();
 }
 
@@ -90,7 +98,7 @@ function renderCanvas(): void {
     b.addEventListener("click", fn);
     acts.appendChild(b);
   };
-  mkBtn("Randomize (space)", "primary", () => regen(true));
+  mkBtn("Randomize", "primary", () => regen(true));
   mkBtn("Save", "", () => {
     state.saved.push({ config: state.current!.config, seed: state.current!.seed });
     persist();
@@ -99,35 +107,6 @@ function renderCanvas(): void {
   mkBtn("SVG", "ghost", () => downloadSvg(state.current!));
   mkBtn("PNG 2×", "ghost", () => downloadPng(state.current!));
   mkBtn("Copy SVG", "ghost", () => copySvg(state.current!));
-  renderRecolorBar();
-}
-
-// ── recolor bar (post-generation re-skin; geometry untouched) ──
-function renderRecolorBar(): void {
-  const bar = $("#recolor-bar");
-  bar.innerHTML = `<span class="label">Recolor</span>`;
-  for (const mode of ["duotone", "vertical", "full", "extended"] as ColorMode[]) {
-    const b = el(
-      "button",
-      { class: `chip${state.config.color.mode === mode ? " on" : ""}`, style: "width:auto" },
-      mode,
-    );
-    b.addEventListener("click", () =>
-      applyRecolor(mode, mode === "duotone" || mode === "vertical" ? "#FF4F00" : null),
-    );
-    bar.appendChild(b);
-  }
-  if (state.current && state.current.scene.palette.ui.accentPicker) {
-    for (const [name, hex] of BRAND_SWATCHES.slice(0, 4)) {
-      const s = el("button", {
-        class: `swatch${state.config.color.accent === hex ? " on" : ""}`,
-        style: `background:${hex}`,
-        title: name,
-      });
-      s.addEventListener("click", () => applyRecolor(state.config.color.mode, hex));
-      bar.appendChild(s);
-    }
-  }
 }
 
 // ── variations tray ──
@@ -135,7 +114,11 @@ function renderVariations(): void {
   const tray = $("#variations");
   tray.innerHTML = "";
   for (const v of state.vars) {
-    const t = el("div", { class: "thumb" }, v.svg + `<div class="meta"><span>seed ${v.seed}</span></div>`);
+    const t = el(
+      "div",
+      { class: "thumb" },
+      v.svg + `<div class="meta"><span>seed ${v.seed}</span></div>`,
+    );
     t.addEventListener("click", () => {
       state.config.seed = v.seed;
       state.current = v;
@@ -166,7 +149,7 @@ function renderSaved(): void {
       "div",
       { class: "thumb" },
       r.svg +
-        `<div class="meta"><span>seed ${item.seed}</span><span>${item.config.color.mode}</span></div>` +
+        `<div class="meta"><span>seed ${item.seed}</span><span>${MODE_LABELS[r.config.color.mode] ?? r.config.color.mode}</span></div>` +
         `<button class="x" title="remove">×</button>`,
     );
     (t.querySelector(".x") as HTMLElement).addEventListener("click", (e) => {
@@ -176,7 +159,7 @@ function renderSaved(): void {
       renderSaved();
     });
     t.addEventListener("click", () => {
-      state.config = { ...item.config };
+      state.config = { ...r.config };
       state.current = r;
       renderCanvas();
       state.vars = variations(state.config, 6);
@@ -228,27 +211,27 @@ function renderControls(): void {
     g.appendChild(varied);
   }
 
-  // color mode
+  // color — the ONE color menu; changes recolor the current design in place
   {
-    const g = group("Color mode");
+    const g = group("Color");
     const chips = el("div", { class: "chips" });
-    for (const mode of ["duotone", "vertical", "full", "extended"] as ColorMode[]) {
-      const chip = el("button", { class: `chip${c.color.mode === mode ? " on" : ""}` }, mode);
+    for (const mode of ["duotone", "vertical", "full"] as ColorMode[]) {
+      const chip = el(
+        "button",
+        { class: `chip${c.color.mode === mode ? " on" : ""}` },
+        MODE_LABELS[mode],
+      );
       chip.addEventListener("click", () => {
         // mode switch fully resets color state — nothing leaks
-        c.color = {
-          mode,
-          accent: mode === "duotone" || mode === "vertical" ? "#FF4F00" : null,
-          allowProposal: mode === "extended",
-        };
-        regen();
+        c.color = { mode, accent: mode === "vertical" ? "#FF4F00" : null };
+        recolorInPlace();
       });
       chips.appendChild(chip);
     }
     g.appendChild(chips);
-    if (state.current?.scene.palette.ui.accentPicker) {
+    if (c.color.mode === "vertical") {
       const sw = el("div", { class: "swatches", style: "margin-top:8px" });
-      for (const [name, hex] of BRAND_SWATCHES.slice(0, 4)) {
+      for (const [name, hex] of SWATCHES) {
         const s = el("button", {
           class: `swatch${c.color.accent === hex ? " on" : ""}`,
           style: `background:${hex}`,
@@ -256,27 +239,28 @@ function renderControls(): void {
         });
         s.addEventListener("click", () => {
           c.color.accent = hex;
-          regen();
+          recolorInPlace();
         });
         sw.appendChild(s);
       }
       g.appendChild(sw);
-      if (state.current.scene.palette.ui.customHex) {
-        const inp = el("input", {
-          type: "text",
-          placeholder: "#268B41 (proposal hex)",
-          style: "margin-top:8px",
-        }) as HTMLInputElement;
-        inp.value = c.color.accent && !BRAND_SWATCHES.some(([, h]) => h === c.color.accent) ? c.color.accent : "";
-        inp.addEventListener("change", () => {
-          const v = inp.value.trim().toUpperCase();
-          if (/^#[0-9A-F]{6}$/.test(v)) {
-            c.color = { mode: "vertical", accent: v, allowProposal: true };
-            regen();
-          }
-        });
-        g.appendChild(inp);
-      }
+      const inp = el("input", {
+        type: "text",
+        placeholder: "custom hex #268B41",
+        style: "margin-top:8px",
+      }) as HTMLInputElement;
+      inp.value =
+        c.color.accent && !SWATCHES.some(([, h]) => h === c.color.accent)
+          ? c.color.accent
+          : "";
+      inp.addEventListener("change", () => {
+        const v = inp.value.trim().toUpperCase();
+        if (/^#[0-9A-F]{6}$/.test(v)) {
+          c.color.accent = v;
+          recolorInPlace();
+        }
+      });
+      g.appendChild(inp);
     }
   }
 
@@ -365,7 +349,15 @@ document.addEventListener("keydown", (e) => {
 });
 
 try {
-  state.saved = JSON.parse(localStorage.getItem("fai-pattern-saved") ?? "[]");
+  const raw = JSON.parse(localStorage.getItem("fai-pattern-saved") ?? "[]") as SavedItem[];
+  // migrate saved items from retired modes; engine normalization handles the rest
+  for (const item of raw) {
+    const m = item.config?.color?.mode as string;
+    if (m !== "duotone" && m !== "vertical" && m !== "full") {
+      item.config.color = { mode: "full", accent: null };
+    }
+  }
+  state.saved = raw;
 } catch {
   state.saved = [];
 }
