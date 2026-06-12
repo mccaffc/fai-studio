@@ -47,5 +47,20 @@ export async function downloadPng(r: GenResult, flatten = true, scale = 2): Prom
 }
 
 export async function copySvg(r: GenResult, flatten = true): Promise<void> {
-  await navigator.clipboard.writeText(await exportable(r, flatten));
+  const svg = await exportable(r, flatten);
+  // navigator.clipboard requires a secure context (https or localhost);
+  // over LAN/Tailscale http it is undefined — fall back to execCommand
+  if (window.isSecureContext && navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(svg);
+    return;
+  }
+  const ta = document.createElement("textarea");
+  ta.value = svg;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  const ok = document.execCommand("copy");
+  ta.remove();
+  if (!ok) throw new Error("clipboard unavailable in this browser context");
 }

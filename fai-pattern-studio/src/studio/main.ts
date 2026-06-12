@@ -89,15 +89,29 @@ function recolorInPlace(): void {
   renderControls();
 }
 
+// ── action feedback ──
+let flashTimer: number | undefined;
+function flash(msg: string, isError = false): void {
+  const s = $("#action-status");
+  s.textContent = msg;
+  s.style.color = isError ? "#c00" : "#666";
+  window.clearTimeout(flashTimer);
+  flashTimer = window.setTimeout(() => {
+    s.textContent = "";
+  }, 4000);
+}
+
 // ── canvas ──
 function renderCanvas(): void {
   if (!state.current) return;
   $("#canvas").innerHTML = state.current.svg;
   const acts = $("#canvas-actions");
   acts.innerHTML = "";
-  const mkBtn = (label: string, cls: string, fn: () => void) => {
+  const mkBtn = (label: string, cls: string, fn: () => void | Promise<void>) => {
     const b = el("button", { class: cls }, label);
-    b.addEventListener("click", fn);
+    b.addEventListener("click", () => {
+      Promise.resolve(fn()).catch((err) => flash(String(err), true));
+    });
     acts.appendChild(b);
   };
   mkBtn("Randomize", "primary", () => regen(true));
@@ -105,10 +119,20 @@ function renderCanvas(): void {
     state.saved.push({ config: state.current!.config, seed: state.current!.seed });
     persist();
     renderSaved();
+    flash("Saved to the tray below.");
   });
-  mkBtn("SVG", "ghost", () => void downloadSvg(state.current!, state.flatten));
-  mkBtn("PNG 2×", "ghost", () => void downloadPng(state.current!, state.flatten));
-  mkBtn("Copy SVG", "ghost", () => void copySvg(state.current!, state.flatten));
+  mkBtn("SVG", "ghost", async () => {
+    await downloadSvg(state.current!, state.flatten);
+    flash(`SVG${state.flatten ? " (flattened)" : ""} saved to your browser's Downloads folder.`);
+  });
+  mkBtn("PNG 2×", "ghost", async () => {
+    await downloadPng(state.current!, state.flatten);
+    flash(`PNG${state.flatten ? " (flattened)" : ""} saved to your browser's Downloads folder.`);
+  });
+  mkBtn("Copy SVG", "ghost", async () => {
+    await copySvg(state.current!, state.flatten);
+    flash(`SVG${state.flatten ? " (flattened)" : ""} copied to clipboard ✓`);
+  });
   const flat = el(
     "button",
     {
