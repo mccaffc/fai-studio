@@ -1,9 +1,9 @@
-name: Deploy Pattern Studio to GitHub Pages
+name: Deploy FAI Studio to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths: ["fai-pattern-studio/**", ".github/workflows/pages.yml"]
+    paths: ["fai-studio/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
@@ -24,14 +24,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: fai-pattern-studio/package-lock.json
+          cache-dependency-path: fai-studio/package-lock.json
       - run: npm ci
-        working-directory: fai-pattern-studio
+        working-directory: fai-studio
       - run: npx vite build
-        working-directory: fai-pattern-studio
+        working-directory: fai-studio
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: fai-pattern-studio/dist-site
+          path: fai-studio/dist-site
 
   deploy:
     needs: build

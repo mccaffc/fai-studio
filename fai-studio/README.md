@@ -1,4 +1,4 @@
-# FAI Pattern Studio
+# FAI Studio
 
 Seeded, deterministic Bauhaus-style pattern/banner generator for the FAI brand.
 Ground-up rebuild (June 2026) of the legacy Flask banner studio.
@@ -13,9 +13,9 @@ Ground-up rebuild (June 2026) of the legacy Flask banner studio.
   flatten. `npm run dev` to run; `npx vite build` → `dist-site/` (opens from
   file://).
 
-- **Deployment** — GitHub Pages: https://mccaffc.github.io/FAI-Brand-Illustrations-Cleanup/
+- **Deployment** — GitHub Pages: https://mccaffc.github.io/fai-studio/
   auto-deploys from `main` via `.github/workflows/pages.yml` whenever
-  `fai-pattern-studio/**` changes. (The old Render services are retired.)
+  `fai-studio/**` changes. (The old Render services are retired.)
 - **Shape system** — 7 families (~44 procedural primitives) refactored from the
   140 legacy tiles per the audit in `../output/audit/tile-coverage.md`.
   Super-form recipes (`src/engine/compose/superforms.ts`) encode the proven
@@ -27,5 +27,5 @@ Ground-up rebuild (June 2026) of the legacy Flask banner studio.
 Tests: `npm test` (determinism, color-mode isolation, constraints, logo-guard).
 Batch render: `npm run batch -- out-dir` (proves Node reuse; emits SVGs).
 
-Heavy work happens in a local clone (`~/Developer/fai-pattern-studio` on the
+Heavy work happens in a local clone (`~/Developer/fai-studio` on the
 laptop); source syncs back here. Don't run npm installs on the Store mount.

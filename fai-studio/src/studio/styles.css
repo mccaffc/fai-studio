@@ -19,9 +19,8 @@ header {
   background: var(--ink);
   color: var(--soft);
 }
-.brand { display: flex; align-items: center; gap: 16px; }
-.mark { width: 32px; display: block; }
-.title { font-weight: 600; letter-spacing: 0.02em; }
+.brand { display: flex; align-items: center; color: var(--soft); }
+.brand svg { height: 30px; width: auto; display: block; }
 .sub { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #999; }
 main {
   display: grid;
