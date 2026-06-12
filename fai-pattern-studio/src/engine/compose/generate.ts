@@ -22,7 +22,7 @@ import { byCategory } from "../primitives/registry";
 import "../primitives/index";
 import { recipesFor, type Recipe } from "./superforms";
 import { adjacent, clashes, contrastOK } from "./constraints";
-import { violatesLogomark } from "../render/logo-guard";
+import { findLogomarkPair, violatesLogomark } from "../render/logo-guard";
 
 interface Slot {
   cell: Cell;
@@ -200,6 +200,8 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
         let role: ColorRole = "ink";
         if (accentBudget > 0 && rng.chance(0.28)) {
           role = onWarmSide ? "accent" : "accent2";
+        } else if (palette.accents.length >= 3 && rng.chance(0.15)) {
+          role = "neutral"; // third hue — keeps full/extended genuinely multi-color
         }
         const node = makeNode(c, r, 1, def.key, cat, rot, flip, role, `fill${nid}`);
         if (!contrastOK(node.color, palette.ground)) {
@@ -220,6 +222,7 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
         }
         if (role !== "ink") accentBudget--;
         nodes.push(node);
+        occupied.add(keyOf(c, r));
         placed = true;
 
         // Robson rhythm: extend into a horizontal run (same primitive, same
@@ -245,13 +248,30 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
   // ── 4b. Guarantee palette breadth: when the mode offers multiple accents,
   // full/extended must genuinely use them (the legacy tool's failure mode). ──
   if (palette.accents.length >= 2) {
-    for (const want of ["accent", "accent2"] as const) {
+    const wants: ColorRole[] =
+      palette.accents.length >= 3 ? ["accent", "accent2", "neutral"] : ["accent", "accent2"];
+    for (const want of wants) {
       if (nodes.some((n) => n.role === want)) continue;
-      const candidates = nodes.filter((n) => n.role === "ink" && n.form.startsWith("fill"));
-      if (candidates.length === 0) continue;
-      const chosen = candidates[rng.int(0, candidates.length - 1)]!;
-      chosen.role = want;
-      chosen.color = resolveRole(want, palette);
+      const color = resolveRole(want, palette);
+      if (!contrastOK(color, palette.ground)) continue;
+      // recolor a whole ink form (run-color economy: one form = one ink) —
+      // prefer single fill cells, else the smallest ink form
+      const inkForms = new Map<string, SceneNode[]>();
+      for (const n of nodes) {
+        if (n.role !== "ink") continue;
+        (inkForms.get(n.form) ?? inkForms.set(n.form, []).get(n.form)!).push(n);
+      }
+      if (inkForms.size === 0) continue;
+      const groups = [...inkForms.values()].sort(
+        (a, b) =>
+          Number(b[0]!.form.startsWith("fill")) - Number(a[0]!.form.startsWith("fill")) ||
+          a.length - b.length,
+      );
+      const pick = groups[rng.int(0, Math.max(0, Math.min(2, groups.length - 1)))]!;
+      for (const n of pick) {
+        n.role = want;
+        n.color = color;
+      }
     }
   }
 
@@ -275,6 +295,20 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
     }
     nodes.push(...reflected);
     features.push("mirror");
+  }
+
+  // ── 6. Logo-guard repair: recipes, runs, friezes and mirror seams place
+  // nodes without per-placement probes, so repair any double-chevron here.
+  // renderSvg's assert stays as the final backstop, but is unreachable. ──
+  for (let tries = 0; tries < 8; tries++) {
+    const pair = findLogomarkPair(nodes);
+    if (!pair) break;
+    const second = pair[1];
+    if (tries < 7) {
+      second.flip = !second.flip; // reverses pointing direction → not the mark
+    } else {
+      nodes.splice(nodes.indexOf(second), 1);
+    }
   }
 
   const scene: Scene = {

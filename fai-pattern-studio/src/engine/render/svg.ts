@@ -12,8 +12,8 @@ export function renderSvg(scene: Scene): string {
   ];
   for (const node of scene.nodes) {
     const def = get(node.primitive);
-    // deterministic per-node rng (id-derived) for primitives with internal variation
-    let h = 2166136261 >>> 0;
+    // deterministic per-node rng (seed+id derived) for primitives with internal variation
+    let h = (2166136261 ^ scene.seed) >>> 0;
     for (const c of node.id) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
     const frag = def
       .draw({ rng: mulberry32(h >>> 0) })

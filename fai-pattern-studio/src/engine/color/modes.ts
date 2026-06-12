@@ -58,22 +58,31 @@ export function resolvePalette(c: ColorConfig): ResolvedPalette {
       if (!c.allowProposal) {
         throw new Error("extended mode uses proposal hues — allowProposal required");
       }
+      // proposal hue in the reachable third role slot so extended is visibly
+      // different from full
+      const [warm, cool, ...rest] = ACCENT_CHOICES;
       return {
         ground,
         ink,
-        accents: [...ACCENT_CHOICES, ...PROPOSAL_HEXES],
+        accents: [warm!, cool!, ...PROPOSAL_HEXES, ...rest],
         ui: { accentPicker: false, customHex: false },
       };
     }
   }
 }
 
-/** Null out color fields the active mode does not own (the leak fix). */
+/** Null out color fields the active mode does not own (the leak fix).
+ *  Duotone additionally drops non-brand accents (e.g. a stale custom vertical
+ *  hex) instead of letting resolvePalette throw on a leak. */
 export function normalizeColor(c: ColorConfig): ColorConfig {
-  const owns = c.mode === "duotone" || c.mode === "vertical";
+  let accent: string | null = null;
+  if (c.mode === "vertical") accent = c.accent ?? null;
+  if (c.mode === "duotone") {
+    accent = c.accent && isBrandHex(c.accent) ? c.accent : null;
+  }
   return {
     mode: c.mode,
-    accent: owns ? (c.accent ?? null) : null,
+    accent,
     allowProposal: c.allowProposal ?? false,
   };
 }
