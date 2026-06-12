@@ -60,15 +60,13 @@ register({
   draw: () => qring("tr", 120, 200),
 });
 
-// Centric replica — round-cornered blob disc at a corner.
+// Centric replica — solid quarter disc (r140) anchored at the br corner.
 register({
   key: "arc/corner-blob",
   category: "arcs",
   rotates: true,
   weight: 0.8,
-  draw: () =>
-    path(`M200 60 A140 140 0 0 0 60 200 L200 200 Z`) +
-    path(`M200 60 A140 140 0 0 1 200 200 Z`, "INK"),
+  draw: () => path(`M200 60 A140 140 0 0 0 60 200 L200 200 Z`),
 });
 
 // Curve/09-ish thin curved sweep sliver.

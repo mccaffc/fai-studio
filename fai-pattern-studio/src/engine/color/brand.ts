@@ -34,11 +34,12 @@ export const NEUTRAL: ReadonlySet<string> = new Set([
   BRAND.timberwolf,
 ]);
 
-/** Accent candidates (non-ground, non-white fills). */
+/** Accent candidates (non-ground, non-white fills). Order is the role order:
+ *  accent = warm lead, accent2 = cool counter, neutral = third hue. */
 export const ACCENT_CHOICES: readonly string[] = [
   BRAND.internationalOrange,
-  BRAND.chromeYellow,
   BRAND.celestialBlue,
+  BRAND.chromeYellow,
   BRAND.timberwolf,
 ];
 

@@ -66,10 +66,30 @@ describe("color modes", () => {
     expect(p.accents.length).toBeGreaterThanOrEqual(8);
   });
 
-  it("full mode genuinely uses more than 3 colors", () => {
+  it("full mode genuinely uses 4+ colors (ink + 3 accents)", () => {
     const r = generate({ seed: 7, color: { mode: "full" }, density: 0.8 });
     const colors = new Set(r.scene.nodes.map((n) => n.color));
-    expect(colors.size).toBeGreaterThanOrEqual(3); // + ground = 4+
+    expect(colors.size).toBeGreaterThanOrEqual(4); // + ground = 5+
+  });
+
+  it("extended mode reaches proposal hues (visibly different from full)", () => {
+    const r = generate({
+      seed: 7,
+      color: { mode: "extended", allowProposal: true },
+      density: 0.8,
+    });
+    const proposals = new Set(["#8265DB", "#D63A8C", "#268B41", "#3A4A6B"]);
+    expect(r.scene.nodes.some((n) => proposals.has(n.color))).toBe(true);
+  });
+
+  it("a stale custom vertical hex cannot crash a duotone switch", () => {
+    // legacy failure shape: custom hex set in vertical mode survives a mode
+    // switch; duotone must drop it, not throw
+    const r = generate({
+      seed: 5,
+      color: { mode: "duotone", accent: "#268B41" },
+    });
+    expect(r.scene.palette.accents).toEqual(["#FF4F00"]);
   });
 });
 
@@ -135,9 +155,37 @@ describe("logo-guard", () => {
     expect(() => renderSvg(evil)).toThrow(/logo-guard/);
   });
 
-  it("generated scenes never violate the mark", () => {
-    for (const seed of [1, 5, 9, 13, 17, 21]) {
-      const r = generate({ seed, categories: ["triangles"] });
+  it("catches the rot180+flip equivalence (y-symmetric chevrons)", () => {
+    const dart = (
+      x: number,
+      rot: 0 | 180,
+      flip: boolean,
+    ): Scene["nodes"][number] => ({
+      id: `e${x}-${rot}`,
+      primitive: "tri/dart",
+      category: "triangles",
+      cell: { x, y: 0, w: 200, h: 200 },
+      rot,
+      flip,
+      role: "accent",
+      color: "#FF4F00",
+      form: `fill-${x}`,
+    });
+    // {rot:180, flip:true} renders identically to {rot:0, flip:false}
+    expect(violatesLogomark({ nodes: [dart(0, 0, false), dart(200, 180, true)] })).toBe(true);
+    // opposite directions are fine
+    expect(violatesLogomark({ nodes: [dart(0, 0, false), dart(200, 180, false)] })).toBe(false);
+    // a run of 3+ is a frieze band, not the mark
+    expect(
+      violatesLogomark({
+        nodes: [dart(0, 0, false), dart(200, 0, false), dart(400, 0, false)],
+      }),
+    ).toBe(false);
+  });
+
+  it("generated scenes never violate the mark (incl. runs/friezes/mirrors)", () => {
+    for (let seed = 1; seed <= 40; seed++) {
+      const r = generate({ seed, categories: ["triangles"], density: 0.9 });
       expect(violatesLogomark(r.scene)).toBe(false);
     }
   });
