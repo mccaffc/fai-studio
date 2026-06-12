@@ -1,8 +1,11 @@
 # FAI Pattern Studio — static site (replaces the Python fai-banner-studio service).
-# Cutover pending Chris's confirmation; the legacy service stays live until then.
+# The app lives in the fai-pattern-studio/ subdirectory of the repo.
+# Static sites are free on Render; the old Python web service can be suspended
+# after cutover.
 services:
   - type: web
     name: fai-pattern-studio
     runtime: static
+    rootDir: fai-pattern-studio
     buildCommand: npm install && npx vite build
     staticPublishPath: dist-site
