@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1624" height="682" viewBox="0 0 1624 682">
+<rect width="1624" height="682" fill="#121212"/><text x="48" y="46" font-family="Helvetica,Arial,sans-serif" font-size="30" font-weight="bold" fill="#EDE6D6" letter-spacing="1">FAI TILE LIBRARY</text><text x="48" y="70" font-family="Helvetica,Arial,sans-serif" font-size="13" fill="#8A8A8A">21 tiles · 2 families · label = id / dominant_direction</text>
+<text x="48" y="92" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="bold" fill="#FF4F00">angle · 13</text>
+<rect x="48" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(48,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M100 100L200 0L0 0L0 200L200 200L100 100Z" fill="#EDE6D6"/></g>
+<text x="48" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-05-1</text>
+<text x="48" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="188" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(188,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M100 100L200 0L0 0L0 200L200 200L100 100Z" fill="#EDE6D6"/></g>
+<text x="188" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-05-2</text>
+<text x="188" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="328" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(328,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M100 100L200 0L0 0L0 200L200 200L100 100Z" fill="#EDE6D6"/></g>
+<text x="328" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-05</text>
+<text x="328" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="468" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(468,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M100 100L200 0L0 0L0 200L100 200L100 100Z" fill="#EDE6D6"/></g>
+<text x="468" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-06</text>
+<text x="468" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="608" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(608,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M100 100L200 0L0 0L0 200L50 200L100 100Z" fill="#EDE6D6"/></g>
+<text x="608" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-07</text>
+<text x="608" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="748" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(748,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 100L200 0L0 0L0 200L200 200L0 100Z" fill="#EDE6D6"/></g>
+<text x="748" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-10</text>
+<text x="748" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="888" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(888,108) scale(0.6400)"><path d="M200 0L0 200L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="888" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-04</text>
+<text x="888" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="1028" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1028,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100L200 0L0 0L0 200L100 200L50 100Z" fill="#EDE6D6"/></g>
+<text x="1028" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-09-1</text>
+<text x="1028" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="1168" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1168,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100L200 0L0 0L0 200L100 200L50 100Z" fill="#EDE6D6"/></g>
+<text x="1168" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-09</text>
+<text x="1168" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="1308" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1308,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 98.5L200 0L0 0L0 200L50 200L50 98.5Z" fill="#EDE6D6"/></g>
+<text x="1308" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-08</text>
+<text x="1308" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="1448" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1448,108) scale(0.6400)"><path d="M200 0L0 150L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="1448" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-03</text>
+<text x="1448" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="48" y="266" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(48,266) scale(0.6400)"><path d="M200 0L0 100L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="48" y="407" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-02</text>
+<text x="48" y="419" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="188" y="266" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(188,266) scale(0.6400)"><path d="M200 0L0 50L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="188" y="407" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">angle-01</text>
+<text x="188" y="419" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<text x="48" y="442" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="bold" fill="#FF4F00">ramp · 8</text>
+<rect x="48" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(48,458) scale(0.6400)"><path d="M200 0L200 100L0 200L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="48" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">ramp-04</text>
+<text x="48" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="188" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(188,458) scale(0.6400)"><path d="M200 0L200 100L0 150L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="188" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">ramp-02</text>
+<text x="188" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="328" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(328,458) scale(0.6400)"><path d="M100 0L100 150L0 200L0 0L100 0Z" fill="#EDE6D6"/></g>
+<text x="328" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">ramp-07</text>
+<text x="328" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="468" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(468,458) scale(0.6400)"><path d="M200 0L200 50L0 100L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="468" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">ramp-01</text>
+<text x="468" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="608" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(608,458) scale(0.6400)"><path d="M100 0L100 100L0 200L0 100L0 0L100 0Z" fill="#EDE6D6"/></g>
+<text x="608" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">ramp-08</text>
+<text x="608" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="748" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(748,458) scale(0.6400)"><path d="M100 0L100 100L0 150L0 0L100 0Z" fill="#EDE6D6"/></g>
+<text x="748" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">ramp-06</text>
+<text x="748" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="888" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(888,458) scale(0.6400)"><path d="M200 0L200 10L0 100L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="888" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">ramp-03</text>
+<text x="888" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="1028" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1028,458) scale(0.6400)"><path d="M100 0L100 50L0 100L0 0L100 0Z" fill="#EDE6D6"/></g>
+<text x="1028" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">ramp-05</text>
+<text x="1028" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+</svg>
