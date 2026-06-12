@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1624" height="682" viewBox="0 0 1624 682">
+<rect width="1624" height="682" fill="#121212"/><text x="48" y="46" font-family="Helvetica,Arial,sans-serif" font-size="30" font-weight="bold" fill="#EDE6D6" letter-spacing="1">FAI TILE LIBRARY</text><text x="48" y="70" font-family="Helvetica,Arial,sans-serif" font-size="13" fill="#8A8A8A">20 tiles · 2 families · label = id / dominant_direction</text>
+<text x="48" y="92" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="bold" fill="#FF4F00">lines · 12</text>
+<rect x="48" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(48,108) scale(0.6400)"><path d="M160 199.99H180C180 188.94 188.95 179.99 200 179.99V159.99C177.91 159.99 160 177.9 160 199.99Z" fill="#EDE6D6"/>
+  <path d="M120 199.99H140C140 166.85 166.86 139.99 200 139.99V119.99C155.82 119.99 120 155.81 120 199.99Z" fill="#EDE6D6"/>
+  <path d="M80 199.99H100C100 144.76 144.77 99.99 200 99.99V79.99C133.73 79.99 80 133.72 80 199.99Z" fill="#EDE6D6"/>
+  <path d="M40 199.99H60C60 122.67 122.68 59.99 200 59.99V39.99C111.63 39.99 40 111.62 40 199.99Z" fill="#EDE6D6"/>
+  <path d="M0 199.99H20C20 100.58 100.59 19.99 200 19.99V0C89.58 0 0 89.87 0 199.99Z" fill="#EDE6D6"/></g>
+<text x="48" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-13</text>
+<text x="48" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="188" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(188,108) scale(0.6400)"><rect x="20" y="32.5" width="15.8333" height="15.8333" fill="#1C1C1C"/>
+  <path d="M20 200H40L40 0H20L20 200Z" fill="#EDE6D6"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M80 200H60V100V0H80V55.9927C80 57.6415 81.9006 58.604 83.2937 57.7221C83.7889 57.4087 84.2899 57.1037 84.7967 56.8074C93.0078 52.0057 100 44.1641 100 34.6521V0H120V34.6521C120 44.1641 126.992 52.0057 135.203 56.8074C135.71 57.1037 136.211 57.4087 136.706 57.7221C138.099 58.604 140 57.6415 140 55.9927V0H160V100V200H140V144.007C140 142.359 138.099 141.396 136.706 142.278C136.211 142.591 135.71 142.896 135.203 143.193C126.992 147.994 120 155.836 120 165.348V200H100V165.348C100 155.836 93.0079 147.994 84.7967 143.193C84.29 142.896 83.7889 142.591 83.2937 142.278C81.9006 141.396 80 142.359 80 144.007V200Z" fill="#EDE6D6"/></g>
+<text x="188" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-01</text>
+<text x="188" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="328" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(328,108) scale(0.6400)"><path d="M0.008 0L0 0L0 200L200 200C89.876 200 0.008 110.417 0.008 0Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M40 0C40 88.3656 111.634 160 200 160V180C100.589 180 20 99.4113 20 0H40Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M80 0C80 66.2742 133.726 120 200 120V140C122.68 140 60 77.3199 60 0H80Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M120 0C120 44.1828 155.817 80 200 80V100C144.772 100 100 55.2285 100 0H120Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M160 0C160 22.0914 177.909 40 200 40V60C166.863 60 140 33.1371 140 0H160Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M180 0H200V20C188.954 20 180 11.0457 180 0Z" fill="#EDE6D6"/></g>
+<text x="328" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-04</text>
+<text x="328" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="468" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(468,108) scale(0.6400)"><path d="M60 200H80L80 0H60L60 200Z" fill="#EDE6D6"/>
+  <path d="M140 200H160L160 0H140L140 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M130.114 114.849C125.388 121.241 120 128.058 120 136.007V200H100V136.007C100 128.058 94.612 121.241 89.8855 114.849C86.8153 110.697 85 105.56 85 100C85 94.4396 86.8153 89.3032 89.8855 85.1511C94.612 78.7593 100 71.9425 100 63.9929V0H120V63.9929C120 71.9424 125.388 78.7593 130.114 85.1511C133.185 89.3032 135 94.4396 135 100C135 105.56 133.185 110.697 130.114 114.849Z" fill="#EDE6D6"/>
+  <path d="M20 200H40L40 0H20L20 200Z" fill="#EDE6D6"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#EDE6D6"/></g>
+<text x="468" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-02</text>
+<text x="468" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="608" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(608,108) scale(0.6400)"><path d="M60 200H80L80 0H60L60 200Z" fill="#EDE6D6"/>
+  <path d="M100 200H120L120 0H100L100 200Z" fill="#EDE6D6"/>
+  <path d="M140 200H160L160 0H140L140 200Z" fill="#EDE6D6"/>
+  <path d="M20 200H40L40 0H20L20 200Z" fill="#EDE6D6"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#EDE6D6"/></g>
+<text x="608" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-03</text>
+<text x="608" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="748" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(748,108) scale(0.6400)"><path d="M45 200H65L65 0H45L45 200Z" fill="#EDE6D6"/>
+  <path d="M90 200H110L110 0H90L90 200Z" fill="#EDE6D6"/>
+  <path d="M135 200H155L155 0H135L135 200Z" fill="#EDE6D6"/>
+  <path d="M0 200H20L20 0H0L0 200Z" fill="#EDE6D6"/>
+  <path d="M180 200H200L200 0H180L180 200Z" fill="#EDE6D6"/></g>
+<text x="748" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-12</text>
+<text x="748" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="888" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(888,108) scale(0.6400)"><path d="M77 67C77 73.0751 72.0751 78 66 78C59.9249 78 55 73.0751 55 67C55 60.9249 59.9249 56 66 56C72.0751 56 77 60.9249 77 67Z" fill="#EDE6D6"/>
+  <path d="M200 109C200 115.075 195.075 120 189 120C182.925 120 178 115.075 178 109C178 102.925 182.925 98 189 98C195.075 98 200 102.925 200 109Z" fill="#EDE6D6"/>
+  <path d="M0.008 0L0 0L0 200L200 200C89.876 200 0.008 110.417 0.008 0Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M179.933 199C85.7297 189.563 10.4137 114.42 1 20.0043C0.344 13.4246 0.008 6.7512 0.008 0L0 0L0 200L200 200C193.229 200 186.535 199.661 179.933 199ZM171.614 199C83.5333 186.485 13.5081 116.612 1 28.3523L1 199L171.614 199Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M35 0C35 91.127 108.873 165 200 165V175C103.35 175 25 96.6498 25 0H35Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M75 0C75 69.0356 130.964 125 200 125V135C125.442 135 65 74.5584 65 0H75Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M115 0C115 46.9442 153.056 85 200 85V95C147.533 95 105 52.4671 105 0H115Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M155 0C155 24.8528 175.147 45 200 45V55C169.624 55 145 30.3757 145 0H155Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M195 0C195 2.7614 197.239 5 200 5V15C191.716 15 185 8.2843 185 0H195Z" fill="#EDE6D6"/></g>
+<text x="888" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-08</text>
+<text x="888" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="1028" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1028,108) scale(0.6400)"><path d="M0.008 0L0 0L0 200L200 200C89.876 200 0.008 110.417 0.008 0Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M179.933 199C85.7297 189.563 10.4137 114.42 1 20.0043C0.344 13.4246 0.008 6.7512 0.008 0L0 0L0 200L200 200C193.229 200 186.535 199.661 179.933 199ZM171.614 199C83.5333 186.485 13.5081 116.612 1 28.3523L1 199L171.614 199Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M35 0C35 91.127 108.873 165 200 165V175C103.35 175 25 96.6498 25 0H35Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M75 0C75 69.0356 130.964 125 200 125V135C125.442 135 65 74.5584 65 0H75Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M115 0C115 46.9442 153.056 85 200 85V95C147.533 95 105 52.4671 105 0H115Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M155 0C155 24.8528 175.147 45 200 45V55C169.624 55 145 30.3757 145 0H155Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M195 0C195 2.7614 197.239 5 200 5V15C191.716 15 185 8.2843 185 0H195Z" fill="#EDE6D6"/></g>
+<text x="1028" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-09</text>
+<text x="1028" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="1168" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1168,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 200L10 0L15 0L15 200L10 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M120 200L120 0L125 0L125 200L120 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M35 200L35 0L40 0L40 200L35 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M140 200L140 0L145 0L145 200L140 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M60 200L60 0L65 0L65 200L60 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M160 200L160 0L165 0L165 200L160 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M80 200L80 0L85 0L85 200L80 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M175 200L175 0L180 0L180 200L175 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M190 200L190 0L195 0L195 200L190 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M100 200L100 0L105 0L105 200L100 200Z" fill="#EDE6D6"/></g>
+<text x="1168" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-10</text>
+<text x="1168" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="1308" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1308,108) scale(0.6400)"><path d="M101 143C101 149.075 96.0751 154 90 154C83.9249 154 79 149.075 79 143C79 136.925 83.9249 132 90 132C96.0751 132 101 136.925 101 143Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M25 200L25 0L35 0L35 200L25 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M65 200L65 0L75 0L75 200L65 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M105 200L105 0L115 0L115 200L105 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M145 200L145 0L155 0L155 200L145 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M185 200L185 0L195 0L195 200L185 200Z" fill="#EDE6D6"/></g>
+<text x="1308" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-07</text>
+<text x="1308" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="1448" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1448,108) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M25 200L25 0L35 0L35 200L25 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M65 200L65 0L75 0L75 200L65 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M105 200L105 0L115 0L115 200L105 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M145 200L145 0L155 0L155 200L145 200Z" fill="#EDE6D6"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M185 200L185 0L195 0L195 200L185 200Z" fill="#EDE6D6"/></g>
+<text x="1448" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-06</text>
+<text x="1448" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="48" y="266" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(48,266) scale(0.6400)"><path fill-rule="evenodd" clip-rule="evenodd" d="M100 171.231C139.34 171.231 171.231 139.34 171.231 100C171.231 60.6601 139.34 28.7688 100 28.7688C60.6601 28.7688 28.7688 60.6601 28.7688 100C28.7688 139.34 60.6601 171.231 100 171.231ZM100 175C141.421 175 175 141.421 175 100C175 58.5786 141.421 25 100 25C58.5786 25 25 58.5786 25 100C25 141.421 58.5786 175 100 175Z" fill="#EDE6D6"/></g>
+<text x="48" y="407" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">lines-11</text>
+<text x="48" y="419" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">neutral</text>
+<text x="48" y="442" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="bold" fill="#FF4F00">rectangle · 8</text>
+<rect x="48" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(48,458) scale(0.6400)"><path d="M200 0L200 150L0 150L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="48" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">rectangle-04</text>
+<text x="48" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="188" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(188,458) scale(0.6400)"><path d="M200 25L200 175L0 175L0 25L200 25Z" fill="#EDE6D6"/></g>
+<text x="188" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">rectangle-08</text>
+<text x="188" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">neutral</text>
+<rect x="328" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(328,458) scale(0.6400)"><path d="M200 0L200 100L0 100L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="328" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">rectangle-03</text>
+<text x="328" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="468" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(468,458) scale(0.6400)"><path d="M200 50L200 150L0 150L0 50L200 50Z" fill="#EDE6D6"/></g>
+<text x="468" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">rectangle-07</text>
+<text x="468" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">neutral</text>
+<rect x="608" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(608,458) scale(0.6400)"><path d="M200 0L200 50L0 50L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="608" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">rectangle-02</text>
+<text x="608" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="748" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(748,458) scale(0.6400)"><path d="M200 75L200 125L0 125L0 75L200 75Z" fill="#EDE6D6"/></g>
+<text x="748" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">rectangle-06</text>
+<text x="748" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">neutral</text>
+<rect x="888" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(888,458) scale(0.6400)"><path d="M200 95L200 105L0 105L0 95L200 95Z" fill="#EDE6D6"/></g>
+<text x="888" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">rectangle-05</text>
+<text x="888" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">neutral</text>
+<rect x="1028" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1028,458) scale(0.6400)"><path d="M200 0L200 10L0 10L0 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="1028" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">rectangle-01</text>
+<text x="1028" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+</svg>

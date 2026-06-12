@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1624" height="682" viewBox="0 0 1624 682">
+<rect width="1624" height="682" fill="#121212"/><text x="48" y="46" font-family="Helvetica,Arial,sans-serif" font-size="30" font-weight="bold" fill="#EDE6D6" letter-spacing="1">FAI TILE LIBRARY</text><text x="48" y="70" font-family="Helvetica,Arial,sans-serif" font-size="13" fill="#8A8A8A">23 tiles · 2 families · label = id / dominant_direction</text>
+<text x="48" y="92" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="bold" fill="#FF4F00">cascade · 8</text>
+<rect x="48" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(48,108) scale(0.6400)"><path d="M200 0 C200 82.8427 132.843 150 50 150 L0 150 L0 0 L200 0 Z" fill="#EDE6D6"/></g>
+<text x="48" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">cascade-04</text>
+<text x="48" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="188" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(188,108) scale(0.6400)"><path d="M200 0 L155.47 66.7949 C120.815 118.777 62.4745 150 0 150 L0 0 L100 0 L200 0 Z" fill="#EDE6D6"/></g>
+<text x="188" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">cascade-08</text>
+<text x="188" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="328" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(328,108) scale(0.6400)"><path d="M200 0 C200 55.2285 155.228 100 100 100 L0 100 L0 0 L200 0 Z" fill="#EDE6D6"/></g>
+<text x="328" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">cascade-03</text>
+<text x="328" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="468" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(468,108) scale(0.6400)"><path d="M200 0 L170.711 29.2893 C125.435 74.5646 64.0289 100 0 100 L0 0 L100 0 L200 0 Z" fill="#EDE6D6"/></g>
+<text x="468" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">cascade-07</text>
+<text x="468" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="608" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(608,108) scale(0.6400)"><path d="M200 0 C200 27.6142 177.614 50 150 50 L0 50 L0 0 L200 0 Z" fill="#EDE6D6"/></g>
+<text x="608" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">cascade-02</text>
+<text x="608" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="748" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(748,108) scale(0.6400)"><path d="M200 0 L189.443 5.2787 C130.623 34.6887 65.7629 50 0 50 L0 0 L100 0 L200 0 Z" fill="#EDE6D6"/></g>
+<text x="748" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">cascade-06</text>
+<text x="748" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="888" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(888,108) scale(0.6400)"><path d="M200 0 C200 5.5229 195.523 10 190 10 L0 10 L0 0 L200 0 Z" fill="#EDE6D6"/></g>
+<text x="888" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">cascade-01</text>
+<text x="888" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<rect x="1028" y="108" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1028,108) scale(0.6400)"><path d="M200 0C200 0 169.709 10 100 10C30.2914 10 69.7086 10 0 10L0 0L100 0L200 0Z" fill="#EDE6D6"/></g>
+<text x="1028" y="249" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">cascade-05</text>
+<text x="1028" y="261" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">up</text>
+<text x="48" y="284" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="bold" fill="#FF4F00">circle · 15</text>
+<rect x="48" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(48,300) scale(0.6400)"><rect x="0" y="0" width="100" height="100" fill="#1C1C1C"/>
+  <rect x="100" y="0" width="100" height="100" fill="#1C1C1C"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M100 0C44.7715 0 0 44.7715 0 100L0 200L200 200L200 100C200 44.7715 155.228 0 100 0Z" fill="#EDE6D6"/></g>
+<text x="48" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-13</text>
+<text x="48" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="188" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(188,300) scale(0.6400)"><circle cx="100" cy="100" r="100" fill="#EDE6D6"/></g>
+<text x="188" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-08</text>
+<text x="188" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">neutral</text>
+<rect x="328" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(328,300) scale(0.6400)"><path d="M200 0L0 0L0 200C110.425 200.032 199.968 110.456 200 0Z" fill="#EDE6D6"/></g>
+<text x="328" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-04</text>
+<text x="328" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">outward</text>
+<rect x="468" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(468,300) scale(0.6400)"><circle cx="100" cy="100" r="75" fill="#EDE6D6"/></g>
+<text x="468" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-07</text>
+<text x="468" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">center</text>
+<rect x="608" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(608,300) scale(0.6400)"><path d="M149.958 50L150 199.958L0 200C-0.024 117.181 67.116 50.024 149.958 50Z" fill="#EDE6D6"/></g>
+<text x="608" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-15</text>
+<text x="608" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="748" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(748,300) scale(0.6400)"><path d="M150 0L0.042 0L0 150C82.8188 150.024 149.976 82.842 150 0Z" fill="#EDE6D6"/></g>
+<text x="748" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-03</text>
+<text x="748" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="888" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(888,300) scale(0.6400)"><path d="M200 200C144.772 200 0 200 0 200C0 144.772 44.7715 100 100 100C155.228 100 200 144.772 200 200Z" fill="#EDE6D6"/></g>
+<text x="888" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-09</text>
+<text x="888" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">down</text>
+<rect x="1028" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1028,300) scale(0.6400)"><path d="M175 200C133.579 200 25 200 25 200C25 158.579 58.5787 125 100 125C141.421 125 175 158.579 175 200Z" fill="#EDE6D6"/></g>
+<text x="1028" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-10</text>
+<text x="1028" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">down</text>
+<rect x="1168" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1168,300) scale(0.6400)"><path d="M175 200C133.579 200 25 200 25 200C25 158.579 58.5787 125 100 125C141.421 125 175 158.579 175 200Z" fill="#EDE6D6"/></g>
+<text x="1168" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-11</text>
+<text x="1168" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">down</text>
+<rect x="1308" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1308,300) scale(0.6400)"><circle cx="100" cy="100" r="50" fill="#EDE6D6"/></g>
+<text x="1308" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-06</text>
+<text x="1308" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">center</text>
+<rect x="1448" y="300" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(1448,300) scale(0.6400)"><path d="M100 0L0.028 0L0 100C55.2126 100.016 99.984 55.228 100 0Z" fill="#EDE6D6"/></g>
+<text x="1448" y="441" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-02</text>
+<text x="1448" y="453" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="48" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(48,458) scale(0.6400)"><path d="M99.972 100L100 199.972L0 200C-0.016 144.787 44.744 100.016 99.972 100Z" fill="#EDE6D6"/></g>
+<text x="48" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-14</text>
+<text x="48" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+<rect x="188" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(188,458) scale(0.6400)"><path d="M166.667 200C129.848 200 33.3333 200 33.3333 200C33.3333 163.181 63.1809 133.333 99.9999 133.333C136.819 133.333 166.667 163.181 166.667 200Z" fill="#EDE6D6"/></g>
+<text x="188" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-12</text>
+<text x="188" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">down</text>
+<rect x="328" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(328,458) scale(0.6400)"><circle cx="100" cy="100" r="25" fill="#EDE6D6"/></g>
+<text x="328" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-05</text>
+<text x="328" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">center</text>
+<rect x="468" y="458" width="128" height="128" fill="#1C1C1C"/>
+<g transform="translate(468,458) scale(0.6400)"><path d="M50 0.014L0.014 0L0 50C27.6063 50.008 49.992 27.628 50 0.014Z" fill="#EDE6D6"/></g>
+<text x="468" y="599" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#EDE6D6">circle-01</text>
+<text x="468" y="611" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#8A8A8A">left</text>
+</svg>
