@@ -12,10 +12,10 @@ import { defaultConfig, normalizeConfig, ALL_CATEGORIES } from "./config";
 import { compose } from "./compose/generate";
 import { renderSvg } from "./render/svg";
 import { resolvePalette, normalizeColor } from "./color/modes";
-import { resolveRole } from "./color/roles";
+import { resolveColor } from "./color/roles";
 import { ARRANGEMENTS } from "./grid/arrangements";
 import { CATEGORY_META } from "./primitives/index";
-import { BRAND, PROPOSAL, ACCENT_CHOICES } from "./color/brand";
+import { ALL_ACCENTS, BRAND, PROPOSAL } from "./color/brand";
 
 export const VERSION = "0.1.0";
 
@@ -45,7 +45,14 @@ export function recolor(scene: Scene, color: ColorConfig): GenResult {
     config,
     ground: palette.ground,
     palette,
-    nodes: scene.nodes.map((n) => ({ ...n, color: resolveRole(n.role, palette) })),
+    nodes: scene.nodes.map((n) => ({
+      ...n,
+      color: resolveColor(n.role, n.accentIndex, palette),
+      ground:
+        n.groundRole === "canvas"
+          ? palette.ground
+          : resolveColor(n.groundRole === "ink" ? "ink" : "accent", n.groundIndex, palette),
+    })),
   };
   return {
     svg: renderSvg(next),
@@ -63,7 +70,7 @@ export function describe() {
     categories: CATEGORY_META,
     brand: BRAND,
     proposal: PROPOSAL,
-    accentChoices: ACCENT_CHOICES,
+    allAccents: ALL_ACCENTS,
     defaults: defaultConfig(),
   };
 }

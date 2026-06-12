@@ -45,4 +45,8 @@ export const TUNING = {
 
   /** punctuation dots: max per canvas */
   dotsMax: 3,
+
+  /** chance a form/run sits on a colored ground block (canonical 003/008/020:
+   *  black shapes on orange/blue blocks, continuous ink across blocks) */
+  groundBlockChance: 0.28,
 } as const;

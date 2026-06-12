@@ -25,8 +25,14 @@ export const PROPOSAL_HEXES: readonly string[] = Object.values(PROPOSAL);
 export const WARM: ReadonlySet<string> = new Set([
   BRAND.internationalOrange,
   BRAND.chromeYellow,
+  PROPOSAL.telemagenta,
 ]);
-export const COOL: ReadonlySet<string> = new Set([BRAND.celestialBlue]);
+export const COOL: ReadonlySet<string> = new Set([
+  BRAND.celestialBlue,
+  PROPOSAL.irisViolet,
+  PROPOSAL.signalGreen,
+  PROPOSAL.slateIndigo,
+]);
 export const NEUTRAL: ReadonlySet<string> = new Set([
   BRAND.codGray,
   BRAND.white,
@@ -34,13 +40,18 @@ export const NEUTRAL: ReadonlySet<string> = new Set([
   BRAND.timberwolf,
 ]);
 
-/** Accent candidates (non-ground, non-white fills). Order is the role order:
- *  accent = warm lead, accent2 = cool counter, neutral = third hue. */
-export const ACCENT_CHOICES: readonly string[] = [
-  BRAND.internationalOrange,
-  BRAND.celestialBlue,
-  BRAND.chromeYellow,
-  BRAND.timberwolf,
+/** The full accent palette — brand fills and proposal hues on the same level.
+ *  Index order matters: it is the accent-slot order nodes reference.
+ *  Even slots warm, odd slots cool (zoning picks by parity). */
+export const ALL_ACCENTS: readonly string[] = [
+  BRAND.internationalOrange, // 0 warm lead
+  BRAND.celestialBlue, // 1 cool lead
+  BRAND.chromeYellow, // 2 warm
+  PROPOSAL.irisViolet, // 3 cool
+  PROPOSAL.telemagenta, // 4 warm
+  PROPOSAL.signalGreen, // 5 cool
+  BRAND.timberwolf, // 6
+  PROPOSAL.slateIndigo, // 7
 ];
 
 function lum(hex: string): number {
