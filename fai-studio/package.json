@@ -8,7 +8,9 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build",
     "build:engine": "esbuild src/engine/index.ts --bundle --format=esm --platform=neutral --outfile=dist-engine/index.js",
     "test": "vitest run",
-    "batch": "npm run build:engine && node scripts/batch.mjs"
+    "batch": "npm run build:engine && node scripts/batch.mjs",
+    "build:flatten": "esbuild src/studio/flatten-core.ts --bundle --format=esm --platform=neutral --outfile=dist-flatten/flatten-core.js",
+    "flatten:dir": "npm run build:flatten && node scripts/flatten-dir.mjs"
   },
   "devDependencies": {
     "canvas": "^3.2.3",
