@@ -87,6 +87,12 @@ input[type="range"] { width: 100%; }
   font: 400 12px "IBM Plex Mono", monospace;
   color: #666;
 }
+.export-note {
+  margin: 8px 0 0;
+  max-width: 64ch;
+  font: 400 11px/1.45 "IBM Plex Sans", Arial, sans-serif;
+  color: #888;
+}
 #recolor-bar {
   display: flex; gap: 8px; align-items: center;
   margin-bottom: 10px; flex-wrap: wrap;

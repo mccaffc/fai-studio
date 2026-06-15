@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" fill="#121212"/>
+  <!-- Official FAI double-chevron logomark (verbatim paths from Logomark-White.svg), centered. Never redrawn. -->
+  <g transform="translate(22.52 17) scale(0.06106)">
+    <path d="M459.238 0.820312L899.028 540.82L459.238 1080.82V0.820312Z" fill="#FFFFFF"/>
+    <path d="M0 0.820312L439.78 540.82L0 1080.82V0.820312Z" fill="#FFFFFF"/>
+  </g>
+</svg>
