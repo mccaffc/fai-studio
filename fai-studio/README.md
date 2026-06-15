@@ -26,6 +26,9 @@ Ground-up rebuild (June 2026) of the legacy Flask banner studio.
 
 Tests: `npm test` (determinism, color-mode isolation, constraints, logo-guard).
 Batch render: `npm run batch -- out-dir` (proves Node reuse; emits SVGs).
+Batch-flatten a folder of existing SVGs the same way the studio export does:
+`npm run flatten:dir -- <inDir> [outDir]` (headless paper.js via jsdom; uses
+the shared `src/studio/flatten-core.ts` so results match the in-app export).
 
 Heavy work happens in a local clone (`~/Developer/fai-studio` on the
 laptop); source syncs back here. Don't run npm installs on the Store mount.
