@@ -22,9 +22,42 @@ interface PaperLike {
   Color: new (hex: string) => any;
 }
 
+/**
+ * Inline CSS-class fills into presentation attributes. paper.js importSVG does
+ * NOT resolve `<style>` class selectors, so Illustrator exports that color via
+ * `.st1 { fill: #121212 }` import as default-black and flatten to a solid
+ * field. Resolve `.class { fill: ... }` onto elements, then drop the <style>.
+ * Engine output has no <style>, so this is a no-op for studio exports.
+ */
+export function resolveCssFills(svg: string): string {
+  const blocks = [...svg.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)];
+  if (blocks.length === 0) return svg;
+  const classFill = new Map<string, string>();
+  for (const b of blocks) {
+    for (const rule of b[1]!.matchAll(/\.([A-Za-z0-9_-]+)\s*\{([^}]*)\}/g)) {
+      const fill = rule[2]!.match(/(?:^|[;{\s])fill\s*:\s*([^;}]+)/i);
+      if (fill) classFill.set(rule[1]!, fill[1]!.trim());
+    }
+  }
+  if (classFill.size === 0) return svg;
+  return svg
+    .replace(
+      /<(path|rect|circle|ellipse|polygon|polyline|line)\b([^>]*?)(\/?)>/g,
+      (m, tag, attrs, close) => {
+        if (/\bfill\s*=/.test(attrs)) return m; // inline fill wins
+        const cm = attrs.match(/\bclass="([^"]+)"/);
+        if (!cm) return m;
+        let fill: string | undefined;
+        for (const c of cm[1].split(/\s+/)) if (classFill.has(c)) fill = classFill.get(c);
+        return fill ? `<${tag} fill="${fill}"${attrs}${close}>` : m;
+      },
+    )
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/g, "");
+}
+
 export function mergeFlat(ps: PaperLike, svg: string): string {
   ps.project.clear();
-  const imported = ps.project.importSVG(svg, { expandShapes: true });
+  const imported = ps.project.importSVG(resolveCssFills(svg), { expandShapes: true });
 
   // leaf items in paint order
   const leaves: any[] = [];
