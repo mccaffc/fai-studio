@@ -13,17 +13,18 @@ import type {
   Config,
   GenResult,
 } from "../engine/types";
-import { downloadPng, downloadSvg, copySvg } from "./export";
+import { downloadPng, downloadSvg, copySvg, finalSvg } from "./export";
+import { PROGRAMS, applyProgram } from "./programs";
 
 const info = describe();
 const SWATCHES: Array<[string, string]> = [
   ["International Orange", "#FF4F00"],
   ["Celestial Blue", "#4997D0"],
   ["Chrome Yellow", "#FFA300"],
-  ["Iris Violet", "#8265DB"],
+  ["Electric Violet", "#8265DB"],
   ["Telemagenta", "#D63A8C"],
   ["Signal Green", "#268B41"],
-  ["Slate Indigo", "#3A4A6B"],
+  ["Frontier Indigo", "#3A4A6B"],
   ["Timberwolf", "#D9D9D6"],
 ];
 const MODE_LABELS: Record<ColorMode, string> = {
@@ -102,9 +103,11 @@ function flash(msg: string, isError = false): void {
 }
 
 // ── canvas ──
+let flatToken = 0;
 function renderCanvas(): void {
   if (!state.current) return;
-  $("#canvas").innerHTML = state.current.svg;
+  const cur = state.current;
+  $("#canvas").innerHTML = cur.svg;
   const acts = $("#canvas-actions");
   acts.innerHTML = "";
   const mkBtn = (label: string, cls: string, fn: () => void | Promise<void>) => {
@@ -147,6 +150,18 @@ function renderCanvas(): void {
     renderCanvas();
   });
   acts.appendChild(flat);
+  // WYSIWYG: with print-safe flatten on, the export re-renders seam-guard-free
+  // and boolean-merges, so it differs slightly from the raw preview. Swap the
+  // canvas to the exact exported SVG (async; guarded so a stale flatten can't
+  // overwrite a newer banner).
+  if (state.flatten) {
+    const token = ++flatToken;
+    finalSvg(cur, true)
+      .then((svg) => {
+        if (token === flatToken && state.current === cur) $("#canvas").innerHTML = svg;
+      })
+      .catch(() => {});
+  }
 }
 
 // ── variations tray ──
@@ -221,6 +236,45 @@ function renderControls(): void {
     root.appendChild(g);
     return g;
   };
+
+  // program quick-select — sets shape family + accent + One-accent mode at once
+  {
+    const g = group("Program");
+    const sel = el("select") as HTMLSelectElement;
+    const ph = document.createElement("option");
+    ph.value = "";
+    ph.textContent = "Pick a program…";
+    sel.appendChild(ph);
+    // reflect the current config as a selected program when it matches a preset
+    let activeId = "";
+    for (const program of PROGRAMS) {
+      const settings = applyProgram(program.id)!;
+      const o = document.createElement("option");
+      o.value = program.id;
+      o.textContent = program.label;
+      const sameCats =
+        settings.categories.length === c.categories.length &&
+        settings.categories.every((x) => c.categories.includes(x));
+      if (
+        sameCats &&
+        c.color.mode === "vertical" &&
+        c.color.accent === settings.color.accent
+      ) {
+        o.selected = true;
+        activeId = program.id;
+      }
+      sel.appendChild(o);
+    }
+    if (!activeId) ph.selected = true;
+    sel.addEventListener("change", () => {
+      const settings = applyProgram(sel.value);
+      if (!settings) return;
+      c.categories = settings.categories;
+      c.color = { mode: settings.color.mode, accent: settings.color.accent };
+      regen();
+    });
+    g.appendChild(sel);
+  }
 
   // arrangement
   {

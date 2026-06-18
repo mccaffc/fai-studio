@@ -16,19 +16,19 @@ function name(r: GenResult, ext: string, flat: boolean): string {
 
 /** Flattened exports start from a clean render (no seam-guard strokes) —
  *  the boolean merge removes the seams for real. */
-async function exportable(r: GenResult, flatten: boolean): Promise<string> {
+export async function finalSvg(r: GenResult, flatten: boolean): Promise<string> {
   if (!flatten) return r.svg;
   return flattenSvg(renderSvg(r.scene, { seamGuard: false }));
 }
 
 export async function downloadSvg(r: GenResult, flatten = true): Promise<void> {
-  const svg = await exportable(r, flatten);
+  const svg = await finalSvg(r, flatten);
   const blob = new Blob([svg], { type: "image/svg+xml" });
   trigger(URL.createObjectURL(blob), name(r, "svg", flatten));
 }
 
 export async function downloadPng(r: GenResult, flatten = true, scale = 2): Promise<void> {
-  const svg = await exportable(r, flatten);
+  const svg = await finalSvg(r, flatten);
   const img = new Image();
   const blob = new Blob([svg], { type: "image/svg+xml" });
   const url = URL.createObjectURL(blob);
@@ -47,7 +47,7 @@ export async function downloadPng(r: GenResult, flatten = true, scale = 2): Prom
 }
 
 export async function copySvg(r: GenResult, flatten = true): Promise<void> {
-  const svg = await exportable(r, flatten);
+  const svg = await finalSvg(r, flatten);
   // navigator.clipboard requires a secure context (https or localhost);
   // over LAN/Tailscale http it is undefined — fall back to execCommand
   if (window.isSecureContext && navigator.clipboard?.writeText) {
