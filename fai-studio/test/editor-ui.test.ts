@@ -75,6 +75,18 @@ describe("editor UI wiring (jsdom)", () => {
     expect(svg.innerHTML).toContain('fill="#3A4A6B"');
   });
 
+  it("switches between Select and Paint tools", async () => {
+    await import("../src/studio/main");
+    findButton("#canvas-actions", /Edit this/).click();
+    // edit mode opens in Select; an "add to selection" toggle is present
+    expect(() => findButton("#controls", /add to selection/)).not.toThrow();
+    findButton("#controls", /^Paint$/).click();
+    const paint = findButton("#controls", /^Paint$/);
+    expect(paint.classList.contains("on")).toBe(true);
+    // paint tool drops the multi-select toggle
+    expect(() => findButton("#controls", /add to selection/)).toThrow();
+  });
+
   it("Edit this forks the current design, then Exit returns to generate", async () => {
     await import("../src/studio/main");
     findButton("#canvas-actions", /Edit this/).click();

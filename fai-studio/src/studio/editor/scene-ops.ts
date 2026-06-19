@@ -375,3 +375,81 @@ export function thumbScene(
 function scene0Palette(ink: string, ground: string): Scene["palette"] {
   return { ground, ink, accents: [], ui: { accentPicker: false } };
 }
+
+// ── bulk edits (apply to a set of selected tiles in one undo step) ──
+
+function groundPatch(scene: Scene, hex: string | null): Partial<SceneNode> {
+  return hex === null
+    ? { groundRole: "canvas", ground: scene.ground, groundIndex: undefined }
+    : { groundRole: "accent", ground: hex, groundIndex: undefined };
+}
+
+function patchMany(
+  scene: Scene,
+  ids: readonly string[],
+  patch: (n: SceneNode) => Partial<SceneNode>,
+): SceneNode[] {
+  const set = new Set(ids);
+  return scene.nodes.map((n) => (set.has(n.id) ? { ...n, ...patch(n) } : n));
+}
+
+export function setColorHexMany(scene: Scene, ids: readonly string[], hex: string): OpResult {
+  return { ok: true, scene: withNodes(scene, patchMany(scene, ids, () => ({ color: hex }))) };
+}
+
+export function setGroundMany(scene: Scene, ids: readonly string[], hex: string | null): OpResult {
+  return { ok: true, scene: withNodes(scene, patchMany(scene, ids, () => groundPatch(scene, hex))) };
+}
+
+export function setPrimitiveMany(
+  scene: Scene,
+  ids: readonly string[],
+  primitive: string,
+  category: CategoryId,
+): OpResult {
+  return commit(scene, patchMany(scene, ids, () => ({ primitive, category })));
+}
+
+export function rotateMany(scene: Scene, ids: readonly string[]): OpResult {
+  return commit(scene, patchMany(scene, ids, (n) => ({ rot: ((n.rot + 90) % 360) as Rotation })));
+}
+
+export function flipMany(scene: Scene, ids: readonly string[]): OpResult {
+  return commit(scene, patchMany(scene, ids, (n) => ({ flip: !n.flip })));
+}
+
+export function removeMany(scene: Scene, ids: readonly string[]): OpResult {
+  const set = new Set(ids);
+  return { ok: true, scene: withNodes(scene, scene.nodes.filter((n) => !set.has(n.id))) };
+}
+
+// ── paint: fill a cell with the active shape + colors (drag-to-fill) ──
+
+/** Paint one cell: fill an empty cell with a new tile, or re-skin a filled one
+ *  (keeps its span/rot/flip). Rejected only if it would form the brand mark. */
+export function paintCell(
+  scene: Scene,
+  col: number,
+  row: number,
+  primitive: string,
+  category: CategoryId,
+  color: string,
+  ground: string | null,
+): OpResult {
+  const { cols, rows } = gridDims(scene);
+  if (col < 0 || row < 0 || col >= cols || row >= rows)
+    return { ok: false, reason: "Out of bounds." };
+  const id = occupancyMap(scene).get(cellKey(col, row));
+  if (id) {
+    return commit(
+      scene,
+      replace(scene, id, { primitive, category, color, ...groundPatch(scene, ground) }),
+    );
+  }
+  const node: SceneNode = {
+    ...defaultNode(scene, col, row, primitive, category),
+    color,
+    ...groundPatch(scene, ground),
+  };
+  return commit(scene, [...scene.nodes, node]);
+}
