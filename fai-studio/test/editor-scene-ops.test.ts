@@ -273,6 +273,43 @@ describe("bulk edits", () => {
   });
 });
 
+describe("supercell move/swap safety", () => {
+  function twoSupercells(): { scene: Scene; a: string; b: string } {
+    let s = emptyScene({ grid: { cols: 4, rows: 2 } });
+    for (const [c, r] of [[0, 0], [1, 0], [0, 1], [1, 1]] as const)
+      s = ok(addNode(s, c, r, "bars/single", "bars"));
+    s = ok(mergeCells(s, 0, 0)); // 2×2 at (0,0)
+    for (const [c, r] of [[2, 0], [3, 0], [2, 1], [3, 1]] as const)
+      s = ok(addNode(s, c, r, "disc/full", "discs"));
+    s = ok(mergeCells(s, 2, 0)); // 2×2 at (2,0)
+    const a = s.nodes.find((n) => n.cell.x === 0)!.id;
+    const b = s.nodes.find((n) => n.cell.x === 400)!.id;
+    return { scene: s, a, b };
+  }
+
+  it("rejects a partial-overlap drop between two 2×2 tiles", () => {
+    const { scene, a } = twoSupercells();
+    expect(moveTile(scene, a, 1, 0).ok).toBe(false); // would overlap the other supercell
+  });
+
+  it("allows a squarely-aligned 2×2 swap with no overlap", () => {
+    const { scene, a, b } = twoSupercells();
+    const r = moveTile(scene, a, 2, 0); // drop exactly onto the other
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.scene.nodes.find((n) => n.id === a)!.cell.x).toBe(400);
+      expect(r.scene.nodes.find((n) => n.id === b)!.cell.x).toBe(0);
+      // 2 supercells × 4 cells each = 8 distinct occupied cells (no overlap)
+      const occupied = new Set<string>();
+      for (const n of r.scene.nodes)
+        for (let dr = 0; dr < 2; dr++)
+          for (let dc = 0; dc < 2; dc++)
+            occupied.add(`${n.cell.x / 200 + dc},${n.cell.y / 200 + dr}`);
+      expect(occupied.size).toBe(8);
+    }
+  });
+});
+
 describe("thumbnails", () => {
   it("renders a single-primitive thumbnail scene", () => {
     const svg = renderSvg(thumbScene("disc/full", "discs", "#F3F3F3", "#121212"));

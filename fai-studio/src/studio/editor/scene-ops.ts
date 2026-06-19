@@ -131,6 +131,9 @@ function neutralizeMark(nodes: SceneNode[]): SceneNode[] {
     const [a] = pair;
     out = out.map((n) => (n.id === a.id ? { ...n, flip: !n.flip } : n));
   }
+  // explicit guarantee: if reorienting somehow can't resolve it, drop an offender
+  const left = findLogomarkPair(out);
+  if (left) out = out.filter((n) => n.id !== left[0].id);
   return out;
 }
 
@@ -267,8 +270,15 @@ export function moveTile(scene: Scene, id: string, col: number, row: number): Op
   }
   if (targetIds.size === 1) {
     const other = scene.nodes.find((n) => n.id === [...targetIds][0])!;
-    if (nodeSpan(other) !== span)
-      return { ok: false, reason: "Can't swap tiles of different sizes." };
+    // a clean swap requires the other tile to occupy EXACTLY the target
+    // footprint — same size AND same origin — else a partial overlap of two
+    // supercells would leave overlapping tiles
+    if (
+      nodeSpan(other) !== span ||
+      other.cell.x !== col * PX ||
+      other.cell.y !== row * PX
+    )
+      return { ok: false, reason: "Drop squarely onto a same-size tile to swap." };
     const oc = Math.round(node.cell.x / PX);
     const or = Math.round(node.cell.y / PX);
     return commit(
