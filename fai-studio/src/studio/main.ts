@@ -177,7 +177,10 @@ function renderCanvas(): void {
     const token = ++flatToken;
     finalSvg(cur, true)
       .then((svg) => {
-        if (token === flatToken && state.current === cur) $("#canvas").innerHTML = svg;
+        // skip if a newer banner rendered, or the editor has since taken over
+        // the canvas (a late flatten must never clobber the editor's DOM)
+        if (token === flatToken && state.current === cur && !editorActive())
+          $("#canvas").innerHTML = svg;
       })
       .catch(() => {});
   }
