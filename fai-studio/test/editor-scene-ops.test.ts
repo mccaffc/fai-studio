@@ -10,7 +10,11 @@ import {
   mintId,
   moveTile,
   nodeSpan,
+  paintCell,
+  removeMany,
+  rotateMany,
   setColorHex,
+  setColorHexMany,
   setPageBackground,
   setPrimitive,
   splitCell,
@@ -188,6 +192,43 @@ describe("renderSvg tagNodes flag", () => {
     expect(renderSvg(s)).not.toContain("data-node-id");
     const tagged = renderSvg(s, { tagNodes: true });
     expect(tagged).toContain(`data-node-id="${s.nodes[0]!.id}"`);
+  });
+});
+
+describe("paint", () => {
+  it("fills an empty cell with the active shape+color, and reskins a filled one", () => {
+    let s = emptyScene({ grid: { cols: 3, rows: 1 } });
+    s = ok(paintCell(s, 0, 0, "disc/full", "discs", "#FF4F00", "#121212"));
+    expect(s.nodes).toHaveLength(1);
+    expect(s.nodes[0]!.primitive).toBe("disc/full");
+    expect(s.nodes[0]!.color).toBe("#FF4F00");
+    expect(s.nodes[0]!.groundRole).toBe("accent");
+    // painting the same cell again reskins in place (no new node)
+    s = ok(paintCell(s, 0, 0, "bars/single", "bars", "#4997D0", null));
+    expect(s.nodes).toHaveLength(1);
+    expect(s.nodes[0]!.primitive).toBe("bars/single");
+    expect(s.nodes[0]!.color).toBe("#4997D0");
+    expect(s.nodes[0]!.groundRole).toBe("canvas");
+  });
+});
+
+describe("bulk edits", () => {
+  function twoTiles(): { scene: Scene; ids: string[] } {
+    let s = emptyScene({ grid: { cols: 3, rows: 1 } });
+    s = ok(addNode(s, 0, 0, "bars/single", "bars"));
+    s = ok(addNode(s, 1, 0, "disc/full", "discs"));
+    return { scene: s, ids: s.nodes.map((n) => n.id) };
+  }
+
+  it("recolors, rotates, and removes a set of tiles in one op each", () => {
+    const { scene, ids } = twoTiles();
+    let s = ok(setColorHexMany(scene, ids, "#FFA300"));
+    expect(s.nodes.every((n) => n.color === "#FFA300")).toBe(true);
+    s = ok(rotateMany(s, ids));
+    expect(s.nodes.every((n) => n.rot === 90)).toBe(true);
+    s = ok(removeMany(s, [ids[0]!]));
+    expect(s.nodes).toHaveLength(1);
+    expect(s.nodes[0]!.id).toBe(ids[1]);
   });
 });
 

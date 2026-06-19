@@ -141,8 +141,10 @@ body.mode-editor #saved { display: none; }
   position: relative;
   display: block;
   touch-action: none;
-  cursor: pointer;
 }
+.ed-canvas.ed-select { cursor: grab; }
+.ed-canvas.ed-paint { cursor: crosshair; }
+.ed-canvas.ed-dragging { cursor: grabbing; }
 .ed-render svg { display: block; width: 100%; height: auto; }
 .ed-overlay { position: absolute; inset: 0; pointer-events: none; }
 .ed-overlay svg { display: block; width: 100%; height: 100%; }
