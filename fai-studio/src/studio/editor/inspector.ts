@@ -84,7 +84,10 @@ export function renderInspector(root: HTMLElement, ctx: InspectorCtx): void {
     for (const t of ["select", "paint"] as Tool[]) {
       const chip = el(
         "button",
-        { class: `chip${ctx.tool === t ? " on" : ""}` },
+        {
+          class: `chip${ctx.tool === t ? " on" : ""}`,
+          title: t === "select" ? "Select tool (V)" : "Paint tool (B)",
+        },
         t === "select" ? "Select" : "Paint",
       );
       chip.addEventListener("click", () => ctx.setTool(t));
@@ -168,27 +171,31 @@ export function renderInspector(root: HTMLElement, ctx: InspectorCtx): void {
   if (ctx.tool === "select" && sel.length) {
     const g = group(one ? `Tile · ${one.primitive}${one.flip ? " ⇄" : ""}` : `${sel.length} tiles`);
     const chips = el("div", { class: "chips" });
-    const rot = el("button", { class: "chip" }, "Rotate 90° ⟳");
+    const rot = el("button", { class: "chip", title: "Rotate 90° (R)" }, "Rotate 90° ⟳");
     rot.addEventListener("click", () => ctx.rotate());
-    const flip = el("button", { class: "chip" }, "Flip ⇄");
+    const flip = el("button", { class: "chip", title: "Flip (F)" }, "Flip ⇄");
     flip.addEventListener("click", () => ctx.flip());
     chips.append(rot, flip);
 
     if (one && nodeSpan(one) === 1) {
-      const merge = el("button", { class: "chip" }, "Merge 2×2 ▦");
+      const merge = el("button", { class: "chip", title: "Merge 2×2 (M)" }, "Merge 2×2 ▦");
       merge.addEventListener("click", () => ctx.merge());
       chips.appendChild(merge);
     } else if (one) {
-      const split = el("button", { class: "chip" }, "Split ▢▢");
+      const split = el("button", { class: "chip", title: "Split (M)" }, "Split ▢▢");
       split.addEventListener("click", () => ctx.split());
       chips.appendChild(split);
     }
     if (one) {
-      const dup = el("button", { class: "chip" }, "Duplicate");
+      const dup = el("button", { class: "chip", title: "Duplicate (D)" }, "Duplicate");
       dup.addEventListener("click", () => ctx.duplicate());
       chips.appendChild(dup);
     }
-    const del = el("button", { class: "chip danger" }, `Delete${sel.length > 1 ? ` ${sel.length}` : ""} ✕`);
+    const del = el(
+      "button",
+      { class: "chip danger", title: "Delete (⌫)" },
+      `Delete${sel.length > 1 ? ` ${sel.length}` : ""} ✕`,
+    );
     del.addEventListener("click", () => ctx.remove());
     chips.appendChild(del);
     g.appendChild(chips);
