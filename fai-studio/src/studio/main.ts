@@ -212,7 +212,8 @@ function persist(): void {
 function renderSaved(): void {
   const tray = $("#saved");
   tray.innerHTML = "";
-  state.saved.forEach((item, i) => {
+  const bad: SavedItem[] = [];
+  state.saved.forEach((item) => {
     let svg: string;
     let metaLeft: string;
     let metaRight: string;
@@ -238,6 +239,7 @@ function renderSaved(): void {
         };
       }
     } catch {
+      bad.push(item); // drop unrenderable/corrupt items so they can't poison the tray
       return;
     }
     const t = el(
@@ -249,13 +251,17 @@ function renderSaved(): void {
     );
     (t.querySelector(".x") as HTMLElement).addEventListener("click", (e) => {
       e.stopPropagation();
-      state.saved.splice(i, 1);
+      state.saved = state.saved.filter((x) => x !== item);
       persist();
       renderSaved();
     });
     t.addEventListener("click", onOpen);
     tray.appendChild(t);
   });
+  if (bad.length) {
+    state.saved = state.saved.filter((x) => !bad.includes(x));
+    persist();
+  }
 }
 
 // ── controls panel ──

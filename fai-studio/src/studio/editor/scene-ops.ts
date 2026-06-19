@@ -117,6 +117,23 @@ function commit(scene: Scene, nodes: SceneNode[]): OpResult {
   return { ok: true, scene: withNodes(scene, nodes) };
 }
 
+/**
+ * Break any stranded double-chevron by reorienting one offender. Structural ops
+ * that must not be blocked (delete, grid resize) can leave exactly two adjacent
+ * same-direction chevrons behind; flipping one changes its pointing direction,
+ * dissolving the mark while keeping every tile. Guarded against cycles.
+ */
+function neutralizeMark(nodes: SceneNode[]): SceneNode[] {
+  let out = nodes;
+  for (let guard = 0; guard < 64; guard++) {
+    const pair = findLogomarkPair(out);
+    if (!pair) break;
+    const [a] = pair;
+    out = out.map((n) => (n.id === a.id ? { ...n, flip: !n.flip } : n));
+  }
+  return out;
+}
+
 function replace(
   scene: Scene,
   id: string,
@@ -192,7 +209,7 @@ export function addNode(
 }
 
 export function removeNode(scene: Scene, id: string): OpResult {
-  return { ok: true, scene: withNodes(scene, scene.nodes.filter((n) => n.id !== id)) };
+  return removeMany(scene, [id]);
 }
 
 export function duplicateNode(scene: Scene, id: string): OpResult {
@@ -326,14 +343,15 @@ export function splitCell(scene: Scene, id: string): OpResult {
 
 // ── grid resize (freeform) ──
 
-/** Resize the grid; tiles falling outside the new bounds are dropped. */
+/** Resize the grid; tiles falling outside the new bounds are dropped. Like
+ *  delete, a resize must not be blocked, so it neutralizes a stranded mark. */
 export function setGrid(scene: Scene, cols: number, rows: number): OpResult {
   const w = cols * PX;
   const h = rows * PX;
   const kept = scene.nodes.filter(
     (n) => n.cell.x + n.cell.w <= w && n.cell.y + n.cell.h <= h,
   );
-  return commit({ ...scene, width: w, height: h }, kept);
+  return { ok: true, scene: withNodes({ ...scene, width: w, height: h }, neutralizeMark(kept)) };
 }
 
 // ── thumbnails ──
@@ -420,7 +438,9 @@ export function flipMany(scene: Scene, ids: readonly string[]): OpResult {
 
 export function removeMany(scene: Scene, ids: readonly string[]): OpResult {
   const set = new Set(ids);
-  return { ok: true, scene: withNodes(scene, scene.nodes.filter((n) => !set.has(n.id))) };
+  // delete always succeeds — but never leave the brand mark stranded behind
+  const remaining = neutralizeMark(scene.nodes.filter((n) => !set.has(n.id)));
+  return { ok: true, scene: withNodes(scene, remaining) };
 }
 
 // ── paint: fill a cell with the active shape + colors (drag-to-fill) ──
