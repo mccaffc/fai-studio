@@ -14,6 +14,8 @@ import { renderSvg } from "./render/svg";
 import { resolvePalette, normalizeColor } from "./color/modes";
 import { resolveColor } from "./color/roles";
 import { ARRANGEMENTS } from "./grid/arrangements";
+import { layoutGrid } from "./grid/layout";
+import { mulberry32 } from "./rng";
 import { CATEGORY_META } from "./primitives/index";
 import { ALL_ACCENTS, BRAND, PROPOSAL } from "./color/brand";
 
@@ -33,6 +35,29 @@ export function variations(config: Config, count: number): GenResult[] {
   return Array.from({ length: count }, (_, i) =>
     generate({ ...config, seed: (config.seed + 1 + i) >>> 0 }),
   );
+}
+
+/**
+ * An empty scene for a given config — the laid-out grid with no shapes.
+ * The freeform editor starts here and adds nodes. `width`/`height` come from
+ * `layoutGrid` so canvas/PNG dimensions are correct; the cells themselves are
+ * the editor's concern (it tracks its own occupancy), so only the dimensions
+ * are kept. The grid is forced uniform (no `varied` supercells) for a clean
+ * blank slate.
+ */
+export function emptyScene(partial: Partial<Config>): Scene {
+  const config = normalizeConfig({ ...partial, varied: false });
+  const palette = resolvePalette(config.color);
+  const layout = layoutGrid(config, mulberry32(config.seed));
+  return {
+    width: layout.width,
+    height: layout.height,
+    ground: palette.ground,
+    palette,
+    nodes: [],
+    seed: config.seed,
+    config,
+  };
 }
 
 /** Re-skin an existing scene without moving geometry. */
@@ -78,4 +103,11 @@ export function describe() {
 export { renderSvg } from "./render/svg";
 export { normalizeConfig, defaultConfig, ALL_CATEGORIES };
 export { resolvePalette } from "./color/modes";
+export { resolveColor } from "./color/roles";
+export { ARRANGEMENTS } from "./grid/arrangements";
+// editor-facing surface: enumerate primitives, validate the brand mark
+export { byCategory, get, CATEGORY_META } from "./primitives/index";
+export type { PrimitiveDef } from "./primitives/index";
+export { findLogomarkPair, violatesLogomark } from "./render/logo-guard";
+export { ALL_ACCENTS, BRAND, PROPOSAL } from "./color/brand";
 export type * from "./types";
