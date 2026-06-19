@@ -175,6 +175,42 @@ body.mode-editor #saved { display: none; }
 .ed-sublabel { margin: 12px 0 6px; font: 500 11px "IBM Plex Mono", monospace; text-transform: uppercase; letter-spacing: 0.04em; }
 .ed-hint { margin: 6px 0 0; font: 400 11px/1.4 "IBM Plex Sans", Arial, sans-serif; color: #888; }
 
+/* keyboard shortcuts overlay */
+.ed-help {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 18, 18, 0.5);
+}
+.ed-help-card {
+  background: #fff;
+  border: 1px solid var(--ink);
+  padding: 20px 22px;
+  width: min(380px, calc(100% - 32px));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+.ed-help-card h3 {
+  margin: 0 0 12px;
+  font: 600 13px "IBM Plex Sans";
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ed-help-row { display: flex; align-items: baseline; gap: 12px; padding: 4px 0; }
+.ed-help-row kbd {
+  flex: 0 0 auto;
+  min-width: 104px;
+  text-align: center;
+  font: 500 11px "IBM Plex Mono", monospace;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  padding: 3px 7px;
+  background: var(--soft);
+}
+.ed-help-row span { font: 400 13px "IBM Plex Sans"; }
+
 /* mobile: canvas first, controls below, comfortable tap targets */
 @media (max-width: 900px) {
   main {

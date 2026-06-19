@@ -16,6 +16,7 @@ import {
   gridDims,
   mergeCells,
   moveTile,
+  nodeSpan,
   OpResult,
   paintCell,
   PX,
@@ -98,6 +99,7 @@ function begin(): void {
 export function exitEditor(force = false): void {
   if (st?.dirty && !force && !confirm("Discard unsaved edits and exit the editor?"))
     return;
+  toggleHelp(false);
   canvas?.destroy();
   canvas = null;
   st = null;
@@ -174,6 +176,84 @@ function doDuplicate(): void {
   host.flash("Duplicated into the next free cell.");
 }
 
+function setTool(t: Tool): void {
+  const s = cur();
+  s.tool = t;
+  if (t === "paint" && !s.pending) s.pending = firstOf(activeFamily);
+  refresh();
+}
+
+function doMergeOrSplit(): void {
+  const n = singleSel();
+  if (!n) return;
+  applyOp(nodeSpan(n) === 1 ? mergeCells(cur().scene, colOf(n), rowOf(n)) : splitCell(cur().scene, n.id));
+}
+
+function selectAll(): void {
+  const s = cur();
+  s.selection = s.scene.nodes.map((n) => n.id);
+  refresh();
+}
+
+/** Move the single selected tile by one cell (arrow keys). */
+function nudge(dc: number, dr: number): void {
+  const s = cur();
+  if (s.selection.length !== 1) return;
+  const n = node(s.selection[0]!);
+  if (!n) return;
+  const { cols, rows } = gridDims(s.scene);
+  const span = nodeSpan(n);
+  const c = Math.min(cols - span, Math.max(0, colOf(n) + dc));
+  const r = Math.min(rows - span, Math.max(0, rowOf(n) + dr));
+  if (c === colOf(n) && r === rowOf(n)) return;
+  applyOp(moveTile(s.scene, n.id, c, r));
+}
+
+function doSave(): void {
+  const s = cur();
+  host.onSaveScene(cloneScene(s.scene));
+  s.dirty = false;
+  renderActions();
+}
+
+// ── shortcuts help ──
+
+const SHORTCUTS: ReadonlyArray<[string, string]> = [
+  ["V", "Select tool"],
+  ["B", "Paint tool"],
+  ["R", "Rotate 90°"],
+  ["F", "Flip"],
+  ["D", "Duplicate"],
+  ["M", "Merge 2×2 / Split"],
+  ["⌫ / Del", "Delete selected"],
+  ["← ↑ ↓ →", "Nudge selected tile"],
+  ["⌘/Ctrl + A", "Select all tiles"],
+  ["Esc", "Deselect / close help"],
+  ["⌘/Ctrl + Z", "Undo"],
+  ["⇧ + ⌘/Ctrl + Z", "Redo"],
+  ["⌘/Ctrl + S", "Save snapshot"],
+  ["?", "Toggle this help"],
+];
+
+let helpEl: HTMLElement | null = null;
+function toggleHelp(force?: boolean): void {
+  const show = force ?? helpEl === null;
+  if (!show) {
+    helpEl?.remove();
+    helpEl = null;
+    return;
+  }
+  if (helpEl) return;
+  const rows = SHORTCUTS.map(
+    ([k, label]) => `<div class="ed-help-row"><kbd>${k}</kbd><span>${label}</span></div>`,
+  ).join("");
+  helpEl = document.createElement("div");
+  helpEl.className = "ed-help";
+  helpEl.innerHTML = `<div class="ed-help-card"><h3>Keyboard shortcuts</h3>${rows}<p class="ed-hint">Click anywhere to close</p></div>`;
+  helpEl.addEventListener("pointerdown", () => toggleHelp(false));
+  document.body.appendChild(helpEl);
+}
+
 // ── canvas wiring ──
 
 function canvasCtx(): CanvasCtx {
@@ -242,11 +322,7 @@ function refresh(): void {
     activeGround: s.paintGround,
     activeFamily,
     multiAdd: s.multiAdd,
-    setTool: (t: Tool) => {
-      s.tool = t;
-      if (t === "paint" && !s.pending) s.pending = firstOf(activeFamily);
-      refresh();
-    },
+    setTool,
     toggleMultiAdd: () => {
       s.multiAdd = !s.multiAdd;
       refresh();
@@ -305,13 +381,7 @@ function renderActions(): void {
   if (!s.redo.length) r.setAttribute("disabled", "");
   acts.append(u, r);
 
-  acts.appendChild(
-    button("Save", "primary", () => {
-      host.onSaveScene(cloneScene(s.scene));
-      s.dirty = false;
-      renderActions();
-    }, onErr),
-  );
+  acts.appendChild(button("Save", "primary", () => doSave(), onErr));
   acts.appendChild(
     button("SVG", "ghost", async () => {
       await downloadSvg(asGenResult(s.scene), flatten);
@@ -341,6 +411,12 @@ function renderActions(): void {
     { style: "width:auto", title: "merge shapes to one-path-per-color for clean PDF/print" },
   );
   acts.appendChild(flat);
+  acts.appendChild(
+    button("⌨ Keys", "ghost", () => toggleHelp(), onErr, {
+      style: "width:auto",
+      title: "keyboard shortcuts (?)",
+    }),
+  );
 }
 
 /** Wrap the working scene so the existing export pipeline can consume it. */
@@ -369,16 +445,55 @@ function onKey(e: KeyboardEvent): void {
   if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
   const s = cur();
   const mod = e.metaKey || e.ctrlKey;
-  if (mod && e.key.toLowerCase() === "z") {
+
+  // help overlay
+  if (e.key === "?") {
     e.preventDefault();
-    if (e.shiftKey ? redo(s) : undo(s)) refresh();
+    toggleHelp();
     return;
   }
-  if (mod && e.key.toLowerCase() === "y") {
-    e.preventDefault();
-    if (redo(s)) refresh();
+  if (e.key === "Escape") {
+    if (helpEl) toggleHelp(false);
+    else if (s.selection.length) {
+      s.selection = [];
+      refresh();
+    }
     return;
   }
+
+  // modifier combos
+  if (mod) {
+    const k = e.key.toLowerCase();
+    if (k === "z") {
+      e.preventDefault();
+      if (e.shiftKey ? redo(s) : undo(s)) refresh();
+    } else if (k === "y") {
+      e.preventDefault();
+      if (redo(s)) refresh();
+    } else if (k === "a") {
+      e.preventDefault();
+      selectAll();
+    } else if (k === "s") {
+      e.preventDefault();
+      doSave();
+    }
+    return; // never hijack other browser combos (Cmd+R, etc.)
+  }
+
+  // arrow nudge
+  const arrows: Record<string, [number, number]> = {
+    ArrowLeft: [-1, 0],
+    ArrowRight: [1, 0],
+    ArrowUp: [0, -1],
+    ArrowDown: [0, 1],
+  };
+  if (arrows[e.key]) {
+    e.preventDefault();
+    nudge(...arrows[e.key]!);
+    return;
+  }
+
+  // single-key actions
   if (e.key === "Delete" || e.key === "Backspace") {
     if (s.selection.length) {
       e.preventDefault();
@@ -386,8 +501,24 @@ function onKey(e: KeyboardEvent): void {
     }
     return;
   }
-  if (e.key === "Escape" && s.selection.length) {
-    s.selection = [];
-    refresh();
+  switch (e.key.toLowerCase()) {
+    case "v":
+      setTool("select");
+      break;
+    case "b":
+      setTool("paint");
+      break;
+    case "r":
+      withSelMany((ids) => rotateMany(s.scene, ids));
+      break;
+    case "f":
+      withSelMany((ids) => flipMany(s.scene, ids));
+      break;
+    case "d":
+      doDuplicate();
+      break;
+    case "m":
+      doMergeOrSplit();
+      break;
   }
 }
