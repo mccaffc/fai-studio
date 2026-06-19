@@ -130,6 +130,87 @@ h2 .hint { font: 400 11px "IBM Plex Mono", monospace; color: #888; text-transfor
 .thumb:hover .x { display: block; }
 .seed-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
 .seed-row .lock { width: 44px; }
+/* ── editor mode ── */
+/* generate-only furniture is hidden while the editor owns the canvas */
+body.mode-editor h2,
+body.mode-editor #variations,
+body.mode-editor #saved { display: none; }
+
+/* canvas becomes a positioning context for the chrome overlay */
+.ed-canvas {
+  position: relative;
+  display: block;
+  touch-action: none;
+}
+.ed-canvas.ed-select { cursor: grab; }
+.ed-canvas.ed-paint { cursor: crosshair; }
+.ed-canvas.ed-dragging { cursor: grabbing; }
+.ed-render svg { display: block; width: 100%; height: auto; }
+.ed-overlay { position: absolute; inset: 0; pointer-events: none; }
+.ed-overlay svg { display: block; width: 100%; height: 100%; }
+
+/* primitive picker */
+.ed-thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+.ed-thumb {
+  padding: 3px;
+  min-height: 0;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.ed-thumb svg { width: 100%; height: 100%; display: block; }
+.ed-thumb.on { outline: 3px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+
+.chip.danger { border-color: #c0392b; color: #c0392b; }
+.chip.danger.on { background: #c0392b; color: #fff; }
+
+.ed-dims { display: flex; gap: 8px; margin-top: 8px; }
+.ed-field { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+.ed-field span { font: 500 10px "IBM Plex Mono", monospace; color: #777; text-transform: uppercase; }
+.ed-sublabel { margin: 12px 0 6px; font: 500 11px "IBM Plex Mono", monospace; text-transform: uppercase; letter-spacing: 0.04em; }
+.ed-hint { margin: 6px 0 0; font: 400 11px/1.4 "IBM Plex Sans", Arial, sans-serif; color: #888; }
+
+/* keyboard shortcuts overlay */
+.ed-help {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 18, 18, 0.5);
+}
+.ed-help-card {
+  background: #fff;
+  border: 1px solid var(--ink);
+  padding: 20px 22px;
+  width: min(380px, calc(100% - 32px));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+.ed-help-card h3 {
+  margin: 0 0 12px;
+  font: 600 13px "IBM Plex Sans";
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ed-help-row { display: flex; align-items: baseline; gap: 12px; padding: 4px 0; }
+.ed-help-row kbd {
+  flex: 0 0 auto;
+  min-width: 104px;
+  text-align: center;
+  font: 500 11px "IBM Plex Mono", monospace;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  padding: 3px 7px;
+  background: var(--soft);
+}
+.ed-help-row span { font: 400 13px "IBM Plex Sans"; }
+
 /* mobile: canvas first, controls below, comfortable tap targets */
 @media (max-width: 900px) {
   main {

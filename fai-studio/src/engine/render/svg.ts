@@ -12,6 +12,13 @@ export interface RenderOpts {
    * the overdraw covers the gap. Default on.
    */
   seamGuard?: boolean;
+  /**
+   * Emit `data-node-id` on each node's `<g>` so an interactive editor can
+   * hit-test and select tiles via the live SVG. Default off — exports and the
+   * flatten path never tag, so downloaded SVGs stay clean and golden output is
+   * unchanged.
+   */
+  tagNodes?: boolean;
 }
 
 /** fill="X" → fill + matching hairline stroke (skips fill="none"). */
@@ -50,7 +57,8 @@ export function renderSvg(scene: Scene, opts: RenderOpts = {}): string {
     const ops = [`translate(${x},${y})`, `scale(${w / 200},${ch / 200})`];
     if (node.rot) ops.push(`rotate(${node.rot},100,100)`);
     if (node.flip) ops.push(`translate(200,0) scale(-1,1)`);
-    parts.push(`<g transform="${ops.join(" ")}">${frag}</g>`);
+    const tag = opts.tagNodes ? ` data-node-id="${node.id}"` : "";
+    parts.push(`<g${tag} transform="${ops.join(" ")}">${frag}</g>`);
   }
   parts.push("</svg>");
   return parts.join("");
