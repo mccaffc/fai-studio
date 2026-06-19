@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { emptyScene, generate, renderSvg } from "../src/engine/index";
+import { emptyScene, findLogomarkPair, generate, renderSvg } from "../src/engine/index";
 import type { OpResult } from "../src/studio/editor/scene-ops";
 import {
   addNode,
@@ -15,13 +15,28 @@ import {
   rotateMany,
   setColorHex,
   setColorHexMany,
+  setGrid,
   setPageBackground,
   setPrimitive,
   splitCell,
   thumbScene,
   toggleFlip,
 } from "../src/studio/editor/scene-ops";
-import type { Scene } from "../src/engine/types";
+import type { Scene, SceneNode } from "../src/engine/types";
+
+const dart = (id: string, col: number): SceneNode => ({
+  id,
+  primitive: "tri/dart",
+  category: "triangles",
+  cell: { x: col * 200, y: 0, w: 200, h: 200 },
+  rot: 0,
+  flip: false,
+  role: "ink",
+  color: "#F3F3F3",
+  groundRole: "canvas",
+  ground: "#121212",
+  form: "test",
+});
 
 /** unwrap a successful op, failing loudly otherwise */
 function ok(r: OpResult): Scene {
@@ -192,6 +207,32 @@ describe("renderSvg tagNodes flag", () => {
     expect(renderSvg(s)).not.toContain("data-node-id");
     const tagged = renderSvg(s, { tagNodes: true });
     expect(tagged).toContain(`data-node-id="${s.nodes[0]!.id}"`);
+  });
+});
+
+describe("delete keeps the scene brand-legal", () => {
+  it("deleting an end of a 3-chevron frieze never strands the FAI mark", () => {
+    const base = emptyScene({ grid: { cols: 3, rows: 1 } });
+    const frieze: Scene = { ...base, nodes: [dart("e0", 0), dart("e1", 1), dart("e2", 2)] };
+    expect(findLogomarkPair(frieze.nodes)).toBeNull(); // 3-in-a-row is a legal frieze
+    const r = removeMany(frieze, ["e2"]); // would strand e0+e1 as the double-chevron
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(findLogomarkPair(r.scene.nodes)).toBeNull(); // neutralized, not stranded
+      expect(r.scene.nodes).toHaveLength(2); // both remaining tiles kept
+      expect(() => renderSvg(r.scene)).not.toThrow(); // canvas can't wedge
+    }
+  });
+
+  it("setGrid that strands a pair also stays legal", () => {
+    const base = emptyScene({ grid: { cols: 3, rows: 1 } });
+    const frieze: Scene = { ...base, nodes: [dart("e0", 0), dart("e1", 1), dart("e2", 2)] };
+    const r = setGrid(frieze, 2, 1); // drops e2 → would strand e0+e1
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(findLogomarkPair(r.scene.nodes)).toBeNull();
+      expect(() => renderSvg(r.scene)).not.toThrow();
+    }
   });
 });
 

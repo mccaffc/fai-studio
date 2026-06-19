@@ -45,7 +45,7 @@ export function mountCanvas(canvasEl: HTMLElement, ctx: CanvasCtx): CanvasHandle
   let selection: string[] = [];
 
   let press:
-    | { id: string; startX: number; startY: number; dragging: boolean }
+    | { id: string; startX: number; startY: number; dragging: boolean; offCol: number; offRow: number }
     | null = null;
   let painting = false;
   let lastPaintKey: string | null = null;
@@ -125,7 +125,13 @@ export function mountCanvas(canvasEl: HTMLElement, ctx: CanvasCtx): CanvasHandle
   }
 
   function renderBanner(): void {
-    renderEl.innerHTML = renderSvg(scene, { seamGuard: true, tagNodes: true });
+    try {
+      renderEl.innerHTML = renderSvg(scene, { seamGuard: true, tagNodes: true });
+    } catch {
+      // defensive: ops keep the scene brand-legal, but never let an unexpected
+      // invalid scene wedge the editor — fall back to the bare field
+      renderEl.innerHTML = `<svg viewBox="0 0 ${scene.width} ${scene.height}" width="${scene.width}" height="${scene.height}" xmlns="http://www.w3.org/2000/svg"><rect width="${scene.width}" height="${scene.height}" fill="${scene.ground}"/></svg>`;
+    }
   }
 
   // ── pointer handling ──
@@ -146,7 +152,15 @@ export function mountCanvas(canvasEl: HTMLElement, ctx: CanvasCtx): CanvasHandle
     const hit = nodeAt(scene, col, row);
     if (hit) {
       ctx.tapTile(hit.id, additive);
-      press = { id: hit.id, startX: e.clientX, startY: e.clientY, dragging: false };
+      // remember where in the tile the grab landed, so multi-cell tiles don't jump
+      press = {
+        id: hit.id,
+        startX: e.clientX,
+        startY: e.clientY,
+        dragging: false,
+        offCol: col - Math.round(hit.cell.x / PX),
+        offRow: row - Math.round(hit.cell.y / PX),
+      };
     } else {
       ctx.tapEmpty(additive);
       press = null;
@@ -177,8 +191,8 @@ export function mountCanvas(canvasEl: HTMLElement, ctx: CanvasCtx): CanvasHandle
     const { col, row } = toCell(e.clientX, e.clientY);
     dragSource = { ...node.cell };
     dragTarget = {
-      col: Math.min(cols - span, Math.max(0, col)),
-      row: Math.min(rows - span, Math.max(0, row)),
+      col: Math.min(cols - span, Math.max(0, col - press.offCol)),
+      row: Math.min(rows - span, Math.max(0, row - press.offRow)),
       span,
     };
     renderChrome();
