@@ -5,6 +5,7 @@ import {
   describe,
   generate,
   recolor,
+  renderSvg,
   variations,
 } from "../engine/index";
 import type {
@@ -12,9 +13,17 @@ import type {
   ColorMode,
   Config,
   GenResult,
+  Scene,
 } from "../engine/types";
 import { downloadPng, downloadSvg, copySvg, finalSvg } from "./export";
 import { PROGRAMS, applyProgram } from "./programs";
+import {
+  editorActive,
+  enterEdit,
+  enterFreeform,
+  initEditor,
+  openScene,
+} from "./editor/index";
 
 const info = describe();
 const SWATCHES: Array<[string, string]> = [
@@ -33,10 +42,11 @@ const MODE_LABELS: Record<ColorMode, string> = {
   full: "Full color",
 };
 
-interface SavedItem {
-  config: Config;
-  seed: number;
-}
+/** Generated items reproduce from config+seed; scene items are hand-edited or
+ *  freeform and carry a full self-contained scene snapshot. */
+type SavedItem =
+  | { kind: "generated"; config: Config; seed: number }
+  | { kind: "scene"; v: 1; scene: Scene };
 
 const state = {
   config: defaultConfig(),
@@ -60,6 +70,7 @@ function el(tag: string, attrs: Record<string, string> = {}, html = ""): HTMLEle
 
 // ── generation (geometry changes) ──
 function regen(newSeed = false): void {
+  if (editorActive()) return; // editor owns the canvas/controls while open
   if (newSeed && !state.lockSeed) {
     state.config.seed = (Math.random() * 0xffffffff) >>> 0;
   }
@@ -118,8 +129,16 @@ function renderCanvas(): void {
     acts.appendChild(b);
   };
   mkBtn("Randomize", "primary", () => regen(true));
+  mkBtn("Edit this ✎", "", () => {
+    if (state.current) enterEdit(state.current.scene);
+  });
+  mkBtn("Freeform ＋", "", () => enterFreeform(state.config));
   mkBtn("Save", "", () => {
-    state.saved.push({ config: state.current!.config, seed: state.current!.seed });
+    state.saved.push({
+      kind: "generated",
+      config: state.current!.config,
+      seed: state.current!.seed,
+    });
     persist();
     renderSaved();
     flash("Saved to the tray below.");
@@ -194,17 +213,38 @@ function renderSaved(): void {
   const tray = $("#saved");
   tray.innerHTML = "";
   state.saved.forEach((item, i) => {
-    let r: GenResult;
+    let svg: string;
+    let metaLeft: string;
+    let metaRight: string;
+    let onOpen: () => void;
     try {
-      r = generate({ ...item.config, seed: item.seed });
+      if (item.kind === "scene") {
+        svg = renderSvg(item.scene);
+        metaLeft = "scene";
+        metaRight = item.scene.nodes.length === 0 ? "empty" : "edited";
+        onOpen = () => openScene(item.scene); // re-opens into the editor (cloned)
+      } else {
+        const r = generate({ ...item.config, seed: item.seed });
+        svg = r.svg;
+        metaLeft = `seed ${item.seed}`;
+        metaRight = MODE_LABELS[r.config.color.mode] ?? r.config.color.mode;
+        onOpen = () => {
+          state.config = { ...r.config };
+          state.current = r;
+          renderCanvas();
+          state.vars = variations(state.config, 6);
+          renderVariations();
+          renderControls();
+        };
+      }
     } catch {
       return;
     }
     const t = el(
       "div",
       { class: "thumb" },
-      r.svg +
-        `<div class="meta"><span>seed ${item.seed}</span><span>${MODE_LABELS[r.config.color.mode] ?? r.config.color.mode}</span></div>` +
+      svg +
+        `<div class="meta"><span>${metaLeft}</span><span>${metaRight}</span></div>` +
         `<button class="x" title="remove">×</button>`,
     );
     (t.querySelector(".x") as HTMLElement).addEventListener("click", (e) => {
@@ -213,14 +253,7 @@ function renderSaved(): void {
       persist();
       renderSaved();
     });
-    t.addEventListener("click", () => {
-      state.config = { ...r.config };
-      state.current = r;
-      renderCanvas();
-      state.vars = variations(state.config, 6);
-      renderVariations();
-      renderControls();
-    });
+    t.addEventListener("click", onOpen);
     tray.appendChild(t);
   });
 }
@@ -436,22 +469,52 @@ function renderControls(): void {
 // ── boot ──
 document.addEventListener("keydown", (e) => {
   if (e.code !== "Space") return;
+  if (editorActive()) return; // spacebar-reroll is disabled while editing
   const tag = (e.target as HTMLElement).tagName;
   if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
   e.preventDefault();
   regen(true);
 });
 
-try {
-  const raw = JSON.parse(localStorage.getItem("fai-pattern-saved") ?? "[]") as SavedItem[];
-  // migrate saved items from retired modes; engine normalization handles the rest
-  for (const item of raw) {
-    const m = item.config?.color?.mode as string;
-    if (m !== "duotone" && m !== "vertical" && m !== "full") {
-      item.config.color = { mode: "full", accent: null };
+// hand off canvas/controls to the editor when it's open; it reports back here
+initEditor({
+  flash,
+  onExit: () => {
+    if (state.current) {
+      renderCanvas();
+      renderControls();
+      renderVariations();
+    } else {
+      regen();
     }
+  },
+  onSaveScene: (scene) => {
+    state.saved.push({ kind: "scene", v: 1, scene });
+    persist();
+    renderSaved();
+    flash("Saved to the tray below.");
+  },
+});
+
+try {
+  const raw = JSON.parse(localStorage.getItem("fai-pattern-saved") ?? "[]") as unknown[];
+  const migrated: SavedItem[] = [];
+  for (const entry of raw) {
+    const item = entry as Record<string, unknown>;
+    if (item?.kind === "scene" && item.scene) {
+      migrated.push({ kind: "scene", v: 1, scene: item.scene as Scene });
+      continue;
+    }
+    // generated or legacy (no kind): normalize retired color modes
+    const config = (item?.config ?? null) as Config | null;
+    if (!config || typeof item?.seed !== "number") continue;
+    const m = config.color?.mode as string;
+    if (m !== "duotone" && m !== "vertical" && m !== "full") {
+      config.color = { mode: "full", accent: null };
+    }
+    migrated.push({ kind: "generated", config, seed: item.seed as number });
   }
-  state.saved = raw;
+  state.saved = migrated;
 } catch {
   state.saved = [];
 }
