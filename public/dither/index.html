@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAI Studio · Chevron Dither</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#121212; --line:#2a2a2a; --ink:#f3f3f3; --mut:#8a8a8a; --far:#5a5a5a; --orange:#ff4f00; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;display:flex;height:100vh;overflow:hidden}
+  h1{font-family:"IBM Plex Sans Condensed","Arial Narrow",sans-serif;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:22px;margin:0 0 2px}
+  .sub{color:var(--mut);font-size:11px;letter-spacing:.04em}
+  #panel{width:404px;flex:0 0 404px;height:100%;overflow-y:auto;overflow-x:hidden;border-right:1px solid var(--line);padding:22px 26px 80px 22px;scrollbar-gutter:stable}
+  .grp{border-top:1px solid var(--line);padding:16px 0 4px;margin-top:6px}
+  .grp:first-of-type{border-top:none}
+  .glabel{color:var(--far);text-transform:uppercase;letter-spacing:.16em;font-size:10px;margin-bottom:12px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:9px 0}
+  .row label{color:var(--mut);flex:0 0 112px;white-space:nowrap}
+  .row .val{color:var(--ink);flex:0 0 52px;text-align:right;font-size:12px}
+  input[type=range]{flex:1;accent-color:var(--orange);height:2px;min-width:0}
+  select,input[type=number],input.hex{background:#0d0d0d;color:var(--ink);border:1px solid var(--line);font-family:inherit;font-size:12px;padding:5px 7px;min-width:0}
+  select,input[type=number]{flex:1}
+  input.hex{flex:1;letter-spacing:.04em;text-transform:lowercase}
+  input[type=color]{background:none;border:1px solid var(--line);width:30px;height:28px;padding:1px;cursor:pointer;flex:0 0 30px}
+  input[type=checkbox]{accent-color:var(--orange);width:15px;height:15px}
+  .presets,.act{display:flex;flex-wrap:wrap;gap:6px}
+  .presets button,.act button,.mini{font-family:inherit;font-size:11px;letter-spacing:.04em;text-transform:uppercase;background:#0d0d0d;color:var(--ink);border:1px solid var(--line);padding:7px 9px;cursor:pointer}
+  .presets button:hover,.act button:hover,.mini:hover{border-color:var(--orange)}
+  .swatches{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+  .chip{width:24px;height:24px;border:1px solid #3a3a3a;cursor:pointer;padding:0}
+  .chip:hover{outline:1px solid var(--orange);outline-offset:1px}
+  .crow{display:flex;align-items:center;gap:8px;margin:7px 0;padding-left:8px;border-left:2px solid transparent}
+  .crow label{color:var(--mut);flex:0 0 92px}
+  .crow.active{border-left-color:var(--orange)}
+  .hint{color:var(--far);font-size:10.5px;line-height:15px;margin:2px 0 10px}
+  #stops{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}
+  .stop{position:relative;display:flex}
+  .stop .x{position:absolute;top:-7px;right:-7px;width:15px;height:15px;line-height:13px;text-align:center;border-radius:50%;background:#000;border:1px solid #444;color:#aaa;font-size:11px;cursor:pointer;padding:0}
+  #stage{flex:1;display:flex;flex-direction:column;min-width:0}
+  #bar{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--line);gap:10px;flex-wrap:wrap}
+  .act .dim{color:var(--far);font-size:11px;margin-right:4px}
+  #view{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:32px;background:repeating-conic-gradient(#171717 0% 25%,#141414 0% 50%) 50%/24px 24px}
+  #cv{max-width:100%;max-height:100%;box-shadow:0 24px 60px rgba(0,0,0,.6);border:1px solid #000}
+  .tag{position:fixed;bottom:9px;left:18px;color:#3a3a3a;font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div id="panel">
+  <h1>Chevron Dither</h1>
+  <div class="sub"><a href="../" style="color:var(--mut);text-decoration:none">‹ FAI Studio</a> · chevron pattern generator</div>
+
+  <div class="grp"><div class="glabel">Presets</div>
+    <div class="presets" id="presets">
+      <button data-p="dissolve">Dissolve</button><button data-p="oblique">Oblique</button>
+      <button data-p="bands">Bands</button><button data-p="spot">Spot</button>
+      <button data-p="noise">Noise</button><button data-p="scatter">Scatter</button>
+      <button data-p="tri">Tri·orange</button><button data-p="gamut">Black ramp</button>
+      <button data-p="duo">Two-colour</button><button data-p="tile">Tile</button>
+    </div>
+  </div>
+
+  <div class="grp"><div class="glabel">Canvas</div>
+    <div class="row"><label>Width</label><input type="number" id="W" value="1240" step="20"></div>
+    <div class="row"><label>Height</label><input type="number" id="H" value="420" step="20"></div>
+    <div class="row"><label>Cell</label><input type="range" id="cell" min="8" max="72" value="28"><span class="val" id="cell_v"></span></div>
+    <div class="row"><label>Symbol size</label><input type="range" id="size" min="20" max="140" value="92"><span class="val" id="size_v"></span></div>
+  </div>
+
+  <div class="grp"><div class="glabel">Fade pattern</div>
+    <div class="row"><label>Pattern</label>
+      <select id="field"><option value="linear">Linear</option><option value="diagonal">Diagonal</option><option value="bands">Bands</option><option value="spot">Spot</option><option value="vignette">Edge vignette</option><option value="radial">Radial</option><option value="noise">Noise / cloud</option><option value="uniform">Uniform</option></select></div>
+    <div class="row"><label>Direction</label>
+      <select id="ramp"><option value="ltr">Left → right</option><option value="rtl">Right → left</option><option value="ttb">Top → bottom</option><option value="btt">Bottom → top</option></select></div>
+    <div class="row"><label>Fade curve</label>
+      <select id="curve"><option value="linear">Linear</option><option value="ein">Ease-in</option><option value="eout">Ease-out</option><option value="smooth">Smoothstep</option><option value="steps">Stepped</option></select></div>
+    <div class="row"><label>Solid start</label><input type="range" id="start" min="0" max="60" value="16"><span class="val" id="start_v"></span></div>
+    <div class="row"><label>Scale / freq</label><input type="range" id="scale" min="2" max="100" value="50"><span class="val" id="scale_v"></span></div>
+    <div class="row"><label>Invert</label><input type="checkbox" id="invert"></div>
+  </div>
+
+  <div class="grp"><div class="glabel">Lattice</div>
+    <div class="row"><label>Row parallax</label><input type="range" id="rowpx" min="-100" max="100" value="0"><span class="val" id="rowpx_v"></span></div>
+    <div class="row"><label>Col parallax</label><input type="range" id="colpx" min="-100" max="100" value="0"><span class="val" id="colpx_v"></span></div>
+    <div class="row"><label>Jitter (rand)</label><input type="range" id="jit" min="0" max="90" value="0"><span class="val" id="jit_v"></span></div>
+  </div>
+
+  <div class="grp"><div class="glabel">Arrow direction</div>
+    <div class="row"><label>Mode</label>
+      <select id="dir"><option value="gradient">Follow fade</option><option value="fixed">Fixed angle</option><option value="scatter">Scatter</option><option value="converge">Converge</option><option value="diverge">Diverge</option></select></div>
+    <div class="row"><label>Fixed angle</label><input type="range" id="ang" min="0" max="360" value="0"><span class="val" id="ang_v"></span></div>
+    <div class="row"><label>Scatter ±°</label><input type="range" id="scat" min="0" max="180" value="60"><span class="val" id="scat_v"></span></div>
+  </div>
+
+  <div class="grp"><div class="glabel">Colour</div>
+    <div class="swatches" id="swatches"></div>
+    <div class="hint">Swatches → highlighted field below.</div>
+    <div class="crow active" data-key="cc" id="row_cc"><label>Chevron</label><input class="hex" data-key="cc" value="#f3f3f3"><input type="color" data-key="cc" value="#f3f3f3"></div>
+    <div class="crow" data-key="cg"><label>Ground</label><input class="hex" data-key="cg" value="#121212"><input type="color" data-key="cg" value="#121212"></div>
+    <div class="crow" data-key="ca"><label>Accent</label><input class="hex" data-key="ca" value="#ff4f00"><input type="color" data-key="ca" value="#ff4f00"></div>
+    <div class="row"><label>Accent amt</label><input type="range" id="acc" min="0" max="50" value="0"><span class="val" id="acc_v"></span></div>
+    <div class="row"><label>Accent side</label>
+      <select id="accmode"><option value="dense">Dense side</option><option value="sparse">Sparse side</option><option value="uniform">Everywhere</option></select></div>
+    <div class="row"><label>Transparent</label><input type="checkbox" id="trans"></div>
+    <div class="row"><label>Seed</label><input type="number" id="seed" value="7" step="1"></div>
+  </div>
+
+  <div class="grp"><div class="glabel">Gradient ramp</div>
+    <div class="row"><label>Use ramp</label><input type="checkbox" id="grad"></div>
+    <div class="row"><label>Blend</label><select id="rampmode"><option value="stepped">Stepped (dither)</option><option value="smooth">Smooth</option></select></div>
+    <div id="stops"></div>
+    <div class="act" style="margin-top:8px"><button class="mini" id="addstop">+ stop</button><button class="mini" id="brandramp">Black ramp</button></div>
+    <div class="hint">Density picks the colour along the ramp. Two stops = a simple A→B fade.</div>
+  </div>
+
+  <div class="grp"><div class="glabel">Tile</div>
+    <div class="row"><label>Seamless tile</label><input type="checkbox" id="tile"></div>
+    <div class="row"><label>Show tiling</label><input type="checkbox" id="showtile"></div>
+    <div class="hint">Uniform / bands / noise tile cleanly; a directional fade only tiles across its non-fading axis.</div>
+  </div>
+</div>
+
+<div id="stage">
+  <div id="bar">
+    <span class="dim" id="dim"></span>
+    <div class="act"><span class="dim">export</span>
+      <select id="escale" style="flex:0 0 56px"><option value="1">1×</option><option value="2" selected>2×</option><option value="3">3×</option></select>
+      <button id="png">PNG</button><button id="svg">SVG</button><button id="copy">Copy SVG</button>
+    </div>
+  </div>
+  <div id="view"><canvas id="cv"></canvas></div>
+</div>
+<div class="tag">FAI Action — outlined double chevron · the angle is canonical</div>
+
+<script>
+const PAIR="M0,0 L118.57,145.6 L0,291.2 Z M28.45,80 L81.87,145.6 L28.45,211.2 Z M123.82,0 L242.4,145.6 L123.82,291.2 Z M152.27,80 L205.70,145.6 L152.27,211.2 Z";
+const PH=291.2,CX0=121.2,CY0=145.6,P2D=new Path2D(PAIR);
+const BAYER=[[0,48,12,60,3,51,15,63],[32,16,44,28,35,19,47,31],[8,56,4,52,11,59,7,55],[40,24,36,20,43,27,39,23],[2,50,14,62,1,49,13,61],[34,18,46,30,33,17,45,29],[10,58,6,54,9,57,5,53],[42,26,38,22,41,25,37,21]];
+const bay=(c,r)=>(BAYER[((r%8)+8)%8][((c%8)+8)%8]+0.5)/64;
+const mul=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const hx=h=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];};
+const lerpC=(a,b,t)=>{const A=hx(a),B=hx(b);return'#'+[0,1,2].map(i=>Math.round(A[i]+(B[i]-A[i])*t).toString(16).padStart(2,'0')).join('');};
+function rnd(x,y,s){let h=(x|0)*374761393+(y|0)*668265263+(s|0)*362437;h=Math.imul(h^(h>>>13),1274126177);return((h^(h>>>16))>>>0)/4294967296;}
+function vnoise(x,y,s){const ix=Math.floor(x),iy=Math.floor(y),fx=x-ix,fy=y-iy,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);const a=rnd(ix,iy,s),b=rnd(ix+1,iy,s),c=rnd(ix,iy+1,s),d=rnd(ix+1,iy+1,s);return a+(b-a)*sx+(c-a)*sy+(a-b-c+d)*sx*sy;}
+function curveFn(f,t){f=clamp(f,0,1);return t==='ein'?f*f:t==='eout'?1-(1-f)*(1-f):t==='smooth'?f*f*(3-2*f):t==='steps'?Math.round(f*4)/4:f;}
+const $=id=>document.getElementById(id);
+const PAL=[["True Black","#000000"],["Cod Gray","#121212"],["Graphite","#1e1e1e"],["Iron","#2a2a2a"],["Ash","#5a5a5a"],["Pewter","#8a8a8a"],["Smoke White","#f3f3f3"],["Int. Orange","#ff4f00"]];
+const BRAND=["#000000","#121212","#1e1e1e","#2a2a2a","#5a5a5a","#8a8a8a","#f3f3f3"];
+
+function getHex(k){return document.querySelector('input.hex[data-key="'+k+'"]').value;}
+function stops(){return[...document.querySelectorAll('#stops input[type=color]')].map(i=>i.value);}
+function P(){const tile=$("tile").checked;return{W:+$("W").value,H:+$("H").value,cell:+$("cell").value,size:+$("size").value/100,
+  field:$("field").value,ramp:$("ramp").value,curve:$("curve").value,start:+$("start").value/100,scale:+$("scale").value,invert:$("invert").checked,
+  rowpx:+$("rowpx").value/100,colpx:+$("colpx").value/100,jit:+$("jit").value/100,
+  dir:$("dir").value,ang:+$("ang").value*Math.PI/180,scat:+$("scat").value*Math.PI/180,
+  cg:getHex('cg'),cc:getHex('cc'),ca:getHex('ca'),acc:+$("acc").value/100,accmode:$("accmode").value,trans:$("trans").checked,seed:+$("seed").value,
+  grad:$("grad").checked,rampmode:$("rampmode").value,stops:stops(),tile:tile,showtile:$("showtile").checked};}
+
+function dens(p,nx,ny){let d;const cv=f=>curveFn(f,p.curve);
+  switch(p.field){
+    case"linear":{const u={ltr:nx,rtl:1-nx,ttb:ny,btt:1-ny}[p.ramp];d=1-cv((u-p.start)/(1-p.start||1));break;}
+    case"diagonal":{let u=p.ramp==="ltr"?(nx+ny)/2:p.ramp==="rtl"?1-(nx+ny)/2:p.ramp==="ttb"?(ny+1-nx)/2:(nx+1-ny)/2;d=1-cv((u-p.start)/(1-p.start||1));break;}
+    case"bands":{const u={ltr:nx,rtl:1-nx,ttb:ny,btt:1-ny}[p.ramp];d=0.5+0.5*Math.cos(2*Math.PI*Math.round(p.scale/10)*u);break;}
+    case"spot":{d=1-cv(Math.hypot(nx-0.5,ny-0.5)/(p.scale/100*0.9||0.4));break;}
+    case"vignette":{d=1-cv(Math.min(nx,1-nx,ny,1-ny)/(p.scale/100*0.5||0.34));break;}
+    case"radial":{d=1-cv(Math.hypot(nx-0.5,ny-0.5)/(p.scale/100*0.7||0.55));break;}
+    case"noise":{d=vnoise(nx*(p.scale/8)+11,ny*(p.scale/8)+11,p.seed);break;}
+    default:d=1;
+  }
+  d=clamp(d,0,1);return p.invert?1-d:d;}
+function gdir(p,cx,cy){const A={ltr:0,rtl:Math.PI,ttb:Math.PI/2,btt:-Math.PI/2}[p.ramp];
+  if(p.field==="linear"||p.field==="bands")return A;
+  if(p.field==="diagonal")return p.ramp==="ltr"?Math.PI/4:p.ramp==="rtl"?-3*Math.PI/4:p.ramp==="ttb"?3*Math.PI/4:-Math.PI/4;
+  if(p.field==="vignette")return Math.atan2(p.H/2-cy,p.W/2-cx);
+  if(p.field==="spot"||p.field==="radial")return Math.atan2(cy-p.H/2,cx-p.W/2);
+  return 0;}
+function ang(p,cx,cy,rng){const g=gdir(p,cx,cy);
+  return p.dir==="fixed"?p.ang:p.dir==="converge"?Math.atan2(p.H/2-cy,p.W/2-cx):p.dir==="diverge"?Math.atan2(cy-p.H/2,cx-p.W/2):p.dir==="scatter"?g+(rng()*2-1)*p.scat:g;}
+function rampColor(p,d,c,r){const s=p.stops;const n=s.length;if(n===1)return s[0];const pos=d*(n-1),b=Math.floor(pos),f=pos-b;
+  if(p.rampmode==="smooth")return lerpC(s[clamp(b,0,n-1)],s[clamp(b+1,0,n-1)],f);
+  return s[clamp(b+(f>bay(c,r)?1:0),0,n-1)];}
+function build(p){const rng=mul(p.seed>>>0);
+  const nx=p.tile?Math.max(1,Math.round(p.W/p.cell)):Math.ceil(p.W/p.cell);
+  const ny=p.tile?Math.max(1,Math.round(p.H/p.cell)):Math.ceil(p.H/p.cell);
+  const cw=p.tile?p.W/nx:p.cell, ch=p.tile?p.H/ny:p.cell, s=p.size*Math.min(cw,ch)/PH;
+  const rs=p.rowpx*cw,cs=p.colpx*ch,out=[],pad=p.tile?0:2;
+  for(let r=-pad;r<ny+pad;r++)for(let c=-pad;c<nx+pad;c++){
+    let cx=(c+0.5)*cw+(((r*rs)%cw)+cw)%cw, cy=(r+0.5)*ch+(((c*cs)%ch)+ch)%ch;
+    if(p.jit){cx+=(rng()*2-1)*p.jit*cw;cy+=(rng()*2-1)*p.jit*ch;}
+    const d=dens(p,cx/p.W,cy/p.H);if(d<=0)continue;
+    const a=ang(p,cx,cy,rng);let color;
+    if(p.grad&&p.stops.length>=1){color=rampColor(p,d,c,r);}
+    else{if(!(d>=1||d>bay(c,r)))continue;color=p.cc;}
+    // emergent (random) accent
+    if(p.acc>0){const w=p.accmode==="dense"?d:p.accmode==="sparse"?1-d:1;if(rnd(c*7+1,r*13+3,p.seed+9991)<p.acc*w)color=p.ca;}
+    const marks=[[cx,cy]];
+    if(p.tile){const X=[0]; if(cx<cw)X.push(p.W); if(cx>p.W-cw)X.push(-p.W); const Y=[0]; if(cy<ch)Y.push(p.H); if(cy>p.H-ch)Y.push(-p.H);
+      marks.length=0; for(const dx of X)for(const dy of Y)marks.push([cx+dx,cy+dy]);}
+    for(const[mx,my]of marks){if(mx<-cw||my<-ch||mx>p.W+cw||my>p.H+ch)continue;out.push({x:mx,y:my,a,s,color});}
+  }return out;}
+function paint(ctx,p,list,scale){ctx.save();ctx.scale(scale,scale);ctx.clearRect(0,0,p.W,p.H);
+  if(!p.trans){ctx.fillStyle=p.cg;ctx.fillRect(0,0,p.W,p.H);}
+  for(const o of list){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.a);ctx.scale(o.s,o.s);ctx.translate(-CX0,-CY0);ctx.fillStyle=o.color;ctx.fill(P2D,"evenodd");ctx.restore();}
+  ctx.restore();}
+function draw(){const p=P(),list=build(p),sc=+$("escale").value||2,cv=$("cv");
+  if(p.tile&&p.showtile){const oc=document.createElement("canvas");oc.width=p.W*sc;oc.height=p.H*sc;paint(oc.getContext("2d"),p,list,sc);
+    cv.width=p.W*2*sc;cv.height=p.H*2*sc;cv.style.width=(p.W*2)+"px";cv.style.height=(p.H*2)+"px";
+    const ctx=cv.getContext("2d");ctx.clearRect(0,0,cv.width,cv.height);ctx.fillStyle=ctx.createPattern(oc,"repeat");ctx.fillRect(0,0,cv.width,cv.height);
+  }else{cv.width=p.W*sc;cv.height=p.H*sc;cv.style.width=p.W+"px";cv.style.height=p.H+"px";paint(cv.getContext("2d"),p,list,sc);}
+  $("dim").textContent=p.W+" × "+p.H+" · "+list.length+" marks"+(p.tile?" · tile":"");
+  const sv=(id,t)=>{const e=$(id);if(e)e.textContent=t;};
+  sv("cell_v",p.cell);sv("size_v",$("size").value+"%");sv("start_v",$("start").value+"%");sv("scale_v",$("scale").value);
+  sv("rowpx_v",$("rowpx").value+"%");sv("colpx_v",$("colpx").value+"%");sv("jit_v",$("jit").value+"%");sv("ang_v",$("ang").value+"°");sv("scat_v","±"+$("scat").value);sv("acc_v",$("acc").value+"%");
+  $("row_cc").style.display=p.grad?"none":"flex";}
+function buildSVG(){const p=P(),list=build(p);
+  let head=`<svg xmlns="http://www.w3.org/2000/svg" width="${p.W}" height="${p.H}" viewBox="0 0 ${p.W} ${p.H}">`;
+  if(!p.trans)head+=`<rect width="${p.W}" height="${p.H}" fill="${p.cg}"/>`;
+  head+=`<clipPath id="cp"><rect width="${p.W}" height="${p.H}"/></clipPath><g clip-path="url(#cp)">`;
+  let body="";for(const o of list){const deg=(o.a*180/Math.PI).toFixed(2);body+=`<path d="${PAIR}" transform="translate(${o.x.toFixed(1)},${o.y.toFixed(1)}) rotate(${deg}) scale(${o.s.toFixed(4)}) translate(${-CX0},${-CY0})" fill="${o.color}" fill-rule="evenodd"/>`;}
+  return head+body+"</g></svg>";}
+function dl(n,b){const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+$("png").onclick=()=>{const p=P(),list=build(p),sc=+$("escale").value||2,oc=document.createElement("canvas");oc.width=p.W*sc;oc.height=p.H*sc;paint(oc.getContext("2d"),p,list,sc);oc.toBlob(b=>dl("faia-dither.png",b));};
+$("svg").onclick=()=>dl("faia-dither.svg",new Blob([buildSVG()],{type:"image/svg+xml"}));
+$("copy").onclick=()=>{navigator.clipboard.writeText(buildSVG());$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy SVG",1000);};
+
+// brand swatches → active fixed field
+let activeKey="cc";
+const sw=$("swatches");PAL.forEach(([n,h])=>{const b=document.createElement("button");b.className="chip";b.style.background=h;b.title=n+" "+h;b.onmousedown=e=>e.preventDefault();b.onclick=()=>{setColor(activeKey,h);draw();};sw.appendChild(b);});
+function setColor(k,h){document.querySelector('input.hex[data-key="'+k+'"]').value=h;document.querySelector('input[type=color][data-key="'+k+'"]').value=h;}
+document.querySelectorAll('input.hex').forEach(inp=>{inp.addEventListener('focus',()=>{activeKey=inp.dataset.key;document.querySelectorAll('.crow').forEach(r=>r.classList.toggle('active',r.dataset.key===activeKey));});
+  inp.addEventListener('input',()=>{const v=inp.value.trim();if(/^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(v)){let h=v[0]==='#'?v:'#'+v;if(h.length===4)h='#'+h.slice(1).split('').map(x=>x+x).join('');document.querySelector('input[type=color][data-key="'+inp.dataset.key+'"]').value=h;draw();}});});
+document.querySelectorAll('input[type=color][data-key]').forEach(pk=>pk.addEventListener('input',()=>{document.querySelector('input.hex[data-key="'+pk.dataset.key+'"]').value=pk.value;draw();}));
+
+// gradient stops
+function addStop(h){const s=document.createElement("span");s.className="stop";const ci=document.createElement("input");ci.type="color";ci.value=h||"#888888";ci.addEventListener("input",draw);const x=document.createElement("button");x.className="x";x.textContent="×";x.onclick=()=>{if(document.querySelectorAll('#stops .stop').length>2){s.remove();draw();}};s.appendChild(ci);s.appendChild(x);$("stops").appendChild(s);}
+function setStops(arr){$("stops").innerHTML="";arr.forEach(addStop);}
+$("addstop").onclick=()=>{addStop("#888888");draw();};
+$("brandramp").onclick=()=>{setStops(BRAND);$("grad").checked=true;draw();};
+setStops(BRAND);
+
+const PRE={
+  dissolve:{field:"linear",ramp:"ltr",curve:"linear",dir:"gradient",cell:28,size:92,start:16,scale:50,rowpx:0,colpx:0,jit:0,acc:0,invert:false,grad:false,tile:false,showtile:false,cc:"#f3f3f3",cg:"#121212"},
+  oblique:{field:"linear",ramp:"ltr",dir:"gradient",cell:30,size:90,start:14,rowpx:50,jit:0,grad:false,cc:"#f3f3f3"},
+  bands:{field:"bands",dir:"gradient",cell:26,size:88,scale:34,grad:false,cc:"#f3f3f3"},
+  spot:{field:"spot",curve:"smooth",dir:"diverge",cell:28,size:90,scale:55,grad:false,cc:"#f3f3f3"},
+  noise:{field:"noise",dir:"fixed",ang:0,cell:24,size:84,scale:36,grad:false,cc:"#f3f3f3"},
+  scatter:{field:"linear",ramp:"ltr",dir:"scatter",scat:120,cell:26,size:80,start:10,jit:25,grad:false,cc:"#f3f3f3"},
+  tri:{field:"linear",ramp:"ltr",dir:"gradient",cell:28,size:92,start:14,acc:18,accmode:"dense",grad:false,ca:"#ff4f00",cc:"#f3f3f3"},
+  gamut:{field:"linear",ramp:"ltr",dir:"gradient",cell:28,size:96,start:0,invert:false,grad:true,rampmode:"stepped",_stops:BRAND},
+  duo:{field:"linear",ramp:"ltr",dir:"gradient",cell:28,size:96,start:0,grad:true,rampmode:"smooth",_stops:["#121212","#ff4f00"]},
+  tile:{field:"uniform",dir:"fixed",ang:0,cell:30,size:78,grad:false,tile:true,showtile:true,cc:"#1e1e1e",cg:"#121212",rowpx:50}
+};
+document.querySelectorAll('#presets button').forEach(b=>b.onclick=()=>{const pr=PRE[b.dataset.p];
+  if(pr._stops)setStops(pr._stops);
+  for(const k in pr){if(k==="_stops")continue;if(["cc","cg","ca"].includes(k)){setColor(k,pr[k]);continue;}const el=$(k);if(!el)continue;if(el.type==="checkbox")el.checked=pr[k];else el.value=pr[k];}
+  draw();});
+
+["W","H","cell","size","field","ramp","curve","start","scale","invert","rowpx","colpx","jit","dir","ang","scat","acc","accmode","trans","seed","grad","rampmode","tile","showtile","escale"].forEach(i=>{const el=$(i);el.addEventListener("input",draw);el.addEventListener("change",draw);});
+draw();
+</script>
+</body>
+</html>
