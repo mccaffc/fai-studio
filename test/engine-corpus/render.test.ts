@@ -21,6 +21,7 @@ import { GRAMMAR as RAW_GRAMMAR } from '../../src/engine/corpus/data/grammar.js'
 import { TILES } from '../../src/engine/corpus/data/tiles.js';
 import { samplePlan } from '../../src/engine/corpus/sample.js';
 import { renderPlanSvg } from '../../src/engine/corpus/render.js';
+import { applyProgramPalette, PROGRAMS } from '../../src/engine/corpus/programs.js';
 import type { BannerPlan, EngineGrammar, CellPlan } from '../../src/engine/corpus/types.js';
 import { renderRecon, loadMergedManifest } from '../../tools/mine/render-recon.js';
 import type { BannerRecon } from '../../tools/mine/schema.js';
@@ -187,6 +188,69 @@ describe('renderPlanSvg — brand fills only', () => {
         // also assert the source hex is already uppercase (deterministic output)
         expect(m[0], `fill/stroke not uppercase in ${template}: ${m[0]}`).toBe(hex);
       }
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Program palette law — brand fill assertion helper extended
+// ---------------------------------------------------------------------------
+
+/**
+ * Assert that every fill/stroke hex in `svg` belongs to the program-restricted
+ * palette: {#121212, #F3F3F3, #D9D9D6} + exactly `hue`.
+ * No #FFFFFF, no #FF4F00, no second accent.
+ */
+function assertProgramPalette(svg: string, hue: string, label: string): void {
+  const allowed = new Set(['#121212', '#F3F3F3', '#D9D9D6', hue.toUpperCase()]);
+  const hexes = svg.match(/(?:fill|stroke)="(#[0-9A-Fa-f]{6})"/g) ?? [];
+  for (const attr of hexes) {
+    const m = attr.match(/#[0-9A-Fa-f]{6}/)!;
+    const hex = m[0].toUpperCase();
+    expect(allowed, `program-law violation: ${hex} in ${label} (allowed: ${[...allowed].join(',')})`).toContain(hex);
+  }
+}
+
+describe('renderPlanSvg — program palette law', () => {
+  const PROGRAM_SEEDS = [1, 7, 42, 999];
+
+  it('6 programs × 4 seeds: SVG fills restricted to 3 neutrals + hue', () => {
+    for (const [id, { hue }] of Object.entries(PROGRAMS)) {
+      for (const seed of PROGRAM_SEEDS) {
+        // Pick a varied template per seed to cover different ground schemes.
+        const template = TEMPLATES[seed % TEMPLATES.length];
+        const plan = samplePlan(GRAMMAR, seed, { template });
+        const transformed = applyProgramPalette(plan, hue);
+        const svg = renderPlanSvg(transformed, TILES);
+        assertProgramPalette(svg, hue, `${id} seed=${seed}`);
+      }
+    }
+  });
+
+  it('Frontier Indigo: no cell has indigo ink on Cod Gray ground (plan-level)', () => {
+    const { hue } = PROGRAMS['frontier-legal-defense'];
+    for (const seed of PROGRAM_SEEDS) {
+      const template = TEMPLATES[seed % TEMPLATES.length];
+      const plan = samplePlan(GRAMMAR, seed, { template });
+      const transformed = applyProgramPalette(plan, hue);
+      for (const cell of transformed.cells) {
+        if (cell.ink === hue && cell.ground === '#121212') {
+          throw new Error(
+            `Frontier Indigo ink on Cod Gray at (${cell.col},${cell.row}) seed=${seed} template=${template}`,
+          );
+        }
+      }
+    }
+  });
+
+  it('program transform is deterministic: same seed+program twice → identical SVG', () => {
+    const { hue } = PROGRAMS['artificial-intelligence'];
+    for (const seed of [3, 17, 100]) {
+      const template = TEMPLATES[seed % TEMPLATES.length];
+      const plan = samplePlan(GRAMMAR, seed, { template });
+      const svg1 = renderPlanSvg(applyProgramPalette(plan, hue), TILES);
+      const svg2 = renderPlanSvg(applyProgramPalette(plan, hue), TILES);
+      expect(svg1, `determinism failure at seed=${seed}`).toBe(svg2);
     }
   });
 });

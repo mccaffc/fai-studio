@@ -19,6 +19,8 @@ import { TILES } from './data/tiles.js';
 import { samplePlan, rezone } from './sample.js';
 import { scorePlan } from './score.js';
 import { renderPlanSvg } from './render.js';
+import { PROGRAMS, applyProgramPalette } from './programs.js';
+import type { ProgramId } from './programs.js';
 
 // The generated grammar module declares `templates: unknown[]` to avoid
 // circularly importing the engine types; cast once at the boundary.
@@ -30,6 +32,8 @@ const GRAMMAR = GRAMMAR_RAW as unknown as EngineGrammar;
 
 export type { BannerPlan } from './types.js';
 export type { RubricScores } from './score.js';
+export type { ProgramId } from './programs.js';
+export { PROGRAMS } from './programs.js';
 
 /** tile-id → shape family, derived once from the baked tile catalog. */
 const FAMILIES: Record<string, string> = Object.fromEntries(
@@ -52,6 +56,12 @@ export interface CorpusConfig {
    * Defaults to 8.
    */
   maxAttempts?: number;
+  /**
+   * Program id — when set, the palette is remapped to the 3 neutrals + that
+   * program's hue (no #FFFFFF, no #FF4F00, no second accent). The accent
+   * config option is ignored when program is set.
+   */
+  program?: import('./programs.js').ProgramId;
 }
 
 export interface CorpusResult {
@@ -92,7 +102,12 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
 
   for (let i = 0; i < maxAttempts; i++) {
     const attemptSeed = seed + i * 1_000_000;
-    const plan = samplePlan(GRAMMAR, attemptSeed, knobs);
+    let plan = samplePlan(GRAMMAR, attemptSeed, knobs);
+    // Apply program palette BEFORE scoring so accentShare counts the hue cells.
+    if (config.program) {
+      const hue = PROGRAMS[config.program].hue;
+      plan = applyProgramPalette(plan, hue);
+    }
     const scores = scorePlan(plan, FAMILIES);
     const svg = renderPlanSvg(plan, TILES);
     attempts.push({ plan, scores, svg, seed: attemptSeed });
@@ -156,9 +171,51 @@ export function variations(prev: CorpusResult, n: number): CorpusResult[] {
  * Freeze the geometry of `prev.plan` and re-zone accents with `accent`.
  * Per-cell tile/rotation/flip are identical to the original; only inks/grounds
  * may change.
+ *
+ * When `prev.config.program` is set, `accent` must be either a corpus accent
+ * (in grammar.palette.accentOrder) or a program hue from PROGRAMS. Passing a
+ * program hue swaps the hue while keeping program-mode palette law.
  */
 export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
-  const newPlan = rezone(prev.plan, GRAMMAR, prev.seed, accent);
+  // Validate: accent must be a corpus accent OR a program hue.
+  const programHues = new Set(Object.values(PROGRAMS).map(p => p.hue));
+  const isCorpusAccent = (GRAMMAR.palette as { accentOrder: string[] }).accentOrder.includes(accent);
+  const isProgramHue = programHues.has(accent);
+  if (!isCorpusAccent && !isProgramHue) {
+    throw new Error(`Unknown accent ink: ${accent}`);
+  }
+
+  // In program mode, if the new accent is a program hue, remap the program id.
+  const newProgramEntry = isProgramHue
+    ? (Object.entries(PROGRAMS) as [ProgramId, { name: string; hue: string }][]).find(([, v]) => v.hue === accent)
+    : undefined;
+
+  let newPlan: BannerPlan;
+  let newConfig: CorpusConfig;
+
+  if (prev.config.program && newProgramEntry) {
+    // Program hue swap: re-run applyProgramPalette on the original geometry.
+    // We need the original sampled (pre-program) plan to re-apply. Since we
+    // only have the transformed plan, rezone first with a neutral to freeze
+    // geometry, then re-apply the new program palette.
+    newPlan = applyProgramPalette(prev.plan, newProgramEntry[1].hue);
+    newConfig = { ...prev.config, accent, program: newProgramEntry[0] };
+  } else if (prev.config.program && !newProgramEntry) {
+    // Switching to a corpus accent while still in program mode is not meaningful;
+    // fall back to standard rezone and drop program mode.
+    newPlan = rezone(prev.plan, GRAMMAR, prev.seed, accent);
+    newConfig = { ...prev.config, accent, program: undefined };
+  } else {
+    // Standard rezone (classic mode or program mode with corpus accent).
+    newPlan = rezone(prev.plan, GRAMMAR, prev.seed, accent);
+    if (prev.config.program) {
+      // Program mode with corpus accent — re-apply program palette after rezone.
+      const hue = PROGRAMS[prev.config.program].hue;
+      newPlan = applyProgramPalette(newPlan, hue);
+    }
+    newConfig = { ...prev.config, accent };
+  }
+
   const scores = scorePlan(newPlan, FAMILIES);
   const svg = renderPlanSvg(newPlan, TILES);
   return {
@@ -167,7 +224,7 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
     scores,
     seed: prev.seed,
     attempts: prev.attempts,
-    config: { ...prev.config, accent },
+    config: newConfig,
   };
 }
 
@@ -179,8 +236,9 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
  * Human-readable one-liner describing the plan's key properties.
  *
  * Format: `{templateId} · {cols}×{rows} · {uniqueTileCount} tiles · runs {runCount} (longest {longestRun}) · accent {accentColor} · conn {connectedness}`
+ * In program mode: appends `· program {name}` when a program is identified from the plan's fills.
  */
-export function describePlan(plan: BannerPlan): string {
+export function describePlan(plan: BannerPlan, config?: Pick<CorpusConfig, 'program'>): string {
   const scores = scorePlan(plan, FAMILIES);
 
   const uniqueTiles = new Set(plan.cells.filter(c => c.kind === 'tile' && c.tile).map(c => c.tile!)).size;
@@ -205,5 +263,12 @@ export function describePlan(plan: BannerPlan): string {
   const templateId = plan.templateId ?? '(auto)';
   const conn = scores.connectedness.toFixed(2);
 
-  return `${templateId} · ${plan.cols}×${plan.rows} · ${uniqueTiles} tiles · runs ${runCount} (longest ${longestRun}) · accent ${accentColor} · conn ${conn}`;
+  let base = `${templateId} · ${plan.cols}×${plan.rows} · ${uniqueTiles} tiles · runs ${runCount} (longest ${longestRun}) · accent ${accentColor} · conn ${conn}`;
+
+  // Append program name when config.program is provided.
+  if (config?.program && PROGRAMS[config.program]) {
+    base += ` · program ${PROGRAMS[config.program].name}`;
+  }
+
+  return base;
 }
