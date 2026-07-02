@@ -208,6 +208,11 @@ function buildCorpusConfig() {
   };
 }
 
+function paintCorpusError(err: unknown): void {
+  const canvas = document.querySelector("#canvas");
+  if (canvas) canvas.innerHTML = `<p style="padding:20px;color:#c00">${String(err)}</p>`;
+}
+
 export function corpusRegen(newSeed = false): void {
   if (newSeed) {
     state.config.seed = (Math.random() * 0xffffffff) >>> 0;
@@ -223,8 +228,7 @@ export function corpusRegen(newSeed = false): void {
     updateSeedDisplay();
     renderCorpusScores();
   } catch (err) {
-    const canvas = document.querySelector("#canvas");
-    if (canvas) canvas.innerHTML = `<p style="padding:20px;color:#c00">${String(err)}</p>`;
+    paintCorpusError(err);
   }
 }
 
@@ -559,22 +563,26 @@ export function generateBannerForTray(
 
 /** Restore a previously saved corpus item — used by the save tray. */
 export function openCorpusItem(config: import("../engine/corpus/index.js").CorpusConfig, seed: number): void {
-  state.config = {
-    template: config.template ?? "",
-    accent: config.accent ?? "",
-    density: config.density ?? 0.5,
-    figures: config.figures ?? true,
-    seed,
-    program: config.program ?? "",
-  };
-  saveCorpusConfig();
-  state.current = generateBanner({ ...config, seed });
-  state.vars = engineVariations(state.current, 6);
-  renderCorpusCanvas();
-  renderCorpusVariations();
-  updateSeedDisplay();
-  renderCorpusScores();
-  renderCorpusControls();
+  try {
+    state.config = {
+      template: config.template ?? "",
+      accent: config.accent ?? "",
+      density: config.density ?? 0.5,
+      figures: config.figures ?? true,
+      seed,
+      program: config.program ?? "",
+    };
+    saveCorpusConfig();
+    state.current = generateBanner({ ...config, seed });
+    state.vars = engineVariations(state.current, 6);
+    renderCorpusCanvas();
+    renderCorpusVariations();
+    updateSeedDisplay();
+    renderCorpusScores();
+    renderCorpusControls();
+  } catch (err) {
+    paintCorpusError(err);
+  }
 }
 
 export function unmountCorpusMode(): void {
@@ -597,4 +605,3 @@ export function corpusSpacebarReroll(): void {
   updateSeedDisplay();
   renderCorpusScores();
 }
-

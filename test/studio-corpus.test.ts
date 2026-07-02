@@ -383,4 +383,35 @@ describe("studio corpus mode (jsdom)", () => {
     expect(corpusItem).toBeTruthy();
     expect(corpusItem!.seed).toBe(originalSeed);
   });
+
+  it("P4-2a. drifted saved tray items show a note while valid items still render", async () => {
+    localStorage.setItem("fai-pattern-saved", JSON.stringify([
+      {
+        kind: "corpus",
+        config: { template: "pipe-field", accent: "#FF4F00", density: 0.5, figures: true },
+        seed: 1234,
+      },
+      {
+        kind: "corpus",
+        config: { template: "retired-template", accent: "#FF4F00", density: 0.5, figures: true },
+        seed: 5678,
+      },
+    ]));
+
+    await import("../src/studio/main");
+
+    expect(document.querySelectorAll("#saved .thumb")).toHaveLength(1);
+    const note = document.querySelector("#saved .tray-note") as HTMLElement | null;
+    expect(note?.textContent).toBe("1 saved item(s) couldn't be restored (engine updated)");
+  });
+
+  it("P4-2b. openCorpusItem paints engine errors into #canvas instead of throwing", async () => {
+    const mod = await import("../src/studio/corpus-mode");
+    mod.mountCorpusMode({ flash: vi.fn() });
+
+    expect(() => {
+      mod.openCorpusItem({ template: "retired-template", accent: "#FF4F00" }, 1234);
+    }).not.toThrow();
+    expect(document.querySelector("#canvas")?.textContent).toMatch(/Unknown template: retired-template/);
+  });
 });

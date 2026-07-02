@@ -163,6 +163,20 @@ export function variations(prev: CorpusResult, n: number): CorpusResult[] {
   return results;
 }
 
+function remapPlanFill(plan: BannerPlan, from: string, to: string): BannerPlan {
+  const out: BannerPlan = JSON.parse(JSON.stringify(plan)) as BannerPlan;
+  if (out.ground === from) out.ground = to;
+  for (const cell of out.cells) {
+    if (cell.ground === from) cell.ground = to;
+    if (cell.ink === from) cell.ink = to;
+    if (cell.inks) cell.inks = cell.inks.map(ink => ink === from ? to : ink);
+  }
+  for (const form of out.forms) {
+    if (form.ink === from) form.ink = to;
+  }
+  return out;
+}
+
 // ---------------------------------------------------------------------------
 // recolorPlan
 // ---------------------------------------------------------------------------
@@ -205,7 +219,9 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
   } else if (prev.config.program && !newProgramEntry) {
     // Switching to a corpus accent while still in program mode is not meaningful;
     // fall back to standard rezone and drop program mode.
-    newPlan = rezone(prev.plan, GRAMMAR, prev.seed, accent);
+    const prevHue = PROGRAMS[prev.config.program].hue;
+    const reclaimedPlan = remapPlanFill(prev.plan, prevHue, accent);
+    newPlan = rezone(reclaimedPlan, GRAMMAR, prev.seed, accent);
     newConfig = { ...prev.config, accent, program: undefined };
   } else {
     // Standard rezone (classic mode or program mode with corpus accent).

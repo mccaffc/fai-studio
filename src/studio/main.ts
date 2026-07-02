@@ -407,6 +407,11 @@ function renderSaved(): void {
   if (bad.length) {
     state.saved = state.saved.filter((x) => !bad.includes(x));
     persist();
+    tray.appendChild(el(
+      "div",
+      { class: "tray-note", role: "status" },
+      `${bad.length} saved item(s) couldn't be restored (engine updated)`,
+    ));
   }
 }
 

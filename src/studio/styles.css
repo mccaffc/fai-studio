@@ -108,6 +108,11 @@ h2 {
 }
 h2 .hint { font: 400 11px "IBM Plex Mono", monospace; color: #888; text-transform: none; margin-left: 8px; }
 .tray { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+.tray-note {
+  grid-column: 1 / -1;
+  font: 400 11px "IBM Plex Mono", monospace;
+  color: #666;
+}
 .thumb {
   background: #fff;
   border: 1px solid var(--line);

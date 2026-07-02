@@ -16,11 +16,13 @@ import { renderPlanSvg } from '../../src/engine/corpus/render.js';
 import { generateBanner, recolorPlan, type CorpusResult } from '../../src/engine/corpus/index.js';
 import { PROGRAMS } from '../../src/engine/corpus/programs.js';
 import type { BannerPlan, CellPlan, EngineGrammar } from '../../src/engine/corpus/types.js';
-import { assertProgramPaletteSvg } from './helpers.js';
+import { allFillsFromPlan, assertProgramPaletteSvg } from './helpers.js';
 
 const GRAMMAR = RAW_GRAMMAR as unknown as EngineGrammar;
 const FIGURE_KNOBS = { template: 'figure-field', figures: true } as const;
 const PROBE_SEEDS = Array.from({ length: 20 }, (_v, i) => 9100 + i);
+const MASTER_FILLS = new Set(['#121212', '#FFFFFF', '#F3F3F3', '#D9D9D6', '#FF4F00', '#4997D0', '#FFA300']);
+const CORPUS_ACCENTS = new Set(['#FF4F00', '#4997D0', '#FFA300']);
 
 function figureAnchors(plan: BannerPlan): CellPlan[] {
   return plan.cells.filter(cell => cell.figureId !== undefined);
@@ -233,6 +235,21 @@ describe('figure program and recolor interplay', () => {
     const { result } = findGeneratedResultWithFigure();
     const recolored = recolorPlan(result, '#FFA300');
     expect(figureSignature(recolored.plan)).toEqual(figureSignature(result.plan));
+  });
+
+  it('recolorPlan reclaims the Artificial Intelligence hue when switching a placed figure to corpus orange', () => {
+    const oldHue = PROGRAMS['artificial-intelligence'].hue;
+    const { result } = findGeneratedResultWithFigure('artificial-intelligence');
+
+    const recolored = recolorPlan(result, '#FF4F00');
+    const svg = recolored.svg.toUpperCase();
+    const fills = allFillsFromPlan(recolored.plan);
+    const accentFamilies = [...fills].filter(fill => CORPUS_ACCENTS.has(fill));
+
+    expect(recolored.config.program).toBeUndefined();
+    expect(svg).not.toContain(oldHue);
+    expect([...fills].filter(fill => !MASTER_FILLS.has(fill))).toEqual([]);
+    expect(new Set(accentFamilies)).toEqual(new Set(['#FF4F00']));
   });
 });
 
