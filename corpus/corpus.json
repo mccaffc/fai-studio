@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "minedAt": "2026-07-02T03:54:42.173Z",
+  "minedAt": "2026-07-02T04:02:30.723Z",
   "banners": [
     {
       "id": "001",
@@ -591,7 +591,72 @@
           "candidates": []
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "001-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "family": "mirror",
+          "ink": "#121212"
+        },
+        {
+          "id": "001-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "family": "ramp",
+          "ink": "#121212"
+        },
+        {
+          "id": "001-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              1
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "square",
+          "ink": "#FFA300"
+        },
+        {
+          "id": "001-form-4",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "ramp",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -1215,7 +1280,92 @@
           "score": 0.9965694682675815
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "002-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "002-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              3,
+              0
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "002-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "002-form-4",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "002-form-5",
+          "kind": "run",
+          "cells": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -1845,7 +1995,120 @@
           "score": 0.9996897300651567
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "003-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "family": "circle",
+          "ink": "#121212"
+        },
+        {
+          "id": "003-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "family": "circle",
+          "ink": "#121212"
+        },
+        {
+          "id": "003-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "circle",
+          "ink": "#4997D0"
+        },
+        {
+          "id": "003-form-4",
+          "kind": "run",
+          "cells": [
+            [
+              3,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "open",
+          "ink": "#FF4F00"
+        },
+        {
+          "id": "003-form-5",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "circle",
+          "ink": "#4997D0"
+        },
+        {
+          "id": "003-form-6",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "circle",
+          "ink": "#FFA300"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -2862,7 +3125,72 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "005-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "005-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -3311,7 +3639,24 @@
           "candidates": []
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "006-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "composition",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -3846,7 +4191,102 @@
           ]
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "007-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "family": "circle",
+          "ink": "#121212"
+        },
+        {
+          "id": "007-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "circle",
+          "ink": "#121212"
+        },
+        {
+          "id": "007-form-3",
+          "kind": "figure",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "ink": "#121212"
+        },
+        {
+          "id": "007-form-4",
+          "kind": "frieze",
+          "cells": [
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "007-form-5",
+          "kind": "figure",
+          "cells": [
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "ink": "#121212"
+        },
+        {
+          "id": "007-form-6",
+          "kind": "frieze",
+          "cells": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.7333
     },
     {
@@ -4412,7 +4852,39 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "008-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "wave",
+          "ink": "#121212"
+        },
+        {
+          "id": "008-form-2",
+          "kind": "figure",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.875
     },
     {
@@ -4981,7 +5453,56 @@
           "score": 0.9978540772532188
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "009-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "009-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "009-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.9375
     },
     {
@@ -5603,7 +6124,40 @@
           "score": 0.9965694682675815
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "010-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "010-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.9444
     },
     {
@@ -6233,7 +6787,40 @@
           "score": 0.9971988795518207
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "011-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "curve",
+          "ink": "#4997D0"
+        },
+        {
+          "id": "011-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "circle",
+          "ink": "#4997D0"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -7492,7 +8079,56 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "013-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              3,
+              0
+            ],
+            [
+              4,
+              0
+            ]
+          ],
+          "family": "shape",
+          "ink": "#121212"
+        },
+        {
+          "id": "013-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "shape",
+          "ink": "#121212"
+        },
+        {
+          "id": "013-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "shape",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -8128,7 +8764,24 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "014-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "square",
+          "ink": "#4997D0"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -8764,7 +9417,72 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "015-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "family": "open",
+          "ink": "#121212"
+        },
+        {
+          "id": "015-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              3,
+              0
+            ],
+            [
+              4,
+              0
+            ]
+          ],
+          "family": "mirror",
+          "ink": "#121212"
+        },
+        {
+          "id": "015-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "mirror",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -9210,7 +9928,40 @@
           "candidates": []
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "016-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "family": "circle",
+          "ink": "#D9D9D6"
+        },
+        {
+          "id": "016-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "circle",
+          "ink": "#D9D9D6"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -10338,7 +11089,39 @@
           ]
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "018-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "angle",
+          "ink": "#FFA300"
+        },
+        {
+          "id": "018-form-2",
+          "kind": "figure",
+          "cells": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "ink": "#FFA300"
+        }
+      ],
       "matchRate": 0.75
     },
     {
@@ -10843,7 +11626,85 @@
           ]
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "019-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "family": "wave",
+          "ink": "#121212"
+        },
+        {
+          "id": "019-form-2",
+          "kind": "figure",
+          "cells": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ]
+          ],
+          "ink": "#121212"
+        },
+        {
+          "id": "019-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "wave",
+          "ink": "#121212"
+        },
+        {
+          "id": "019-form-4",
+          "kind": "figure",
+          "cells": [
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "ink": "#121212"
+        },
+        {
+          "id": "019-form-5",
+          "kind": "figure",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.5385
     },
     {
@@ -12072,7 +12933,72 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "021-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "family": "circle",
+          "ink": "#121212"
+        },
+        {
+          "id": "021-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              3,
+              0
+            ],
+            [
+              4,
+              0
+            ]
+          ],
+          "family": "curve",
+          "ink": "#121212"
+        },
+        {
+          "id": "021-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ]
+          ],
+          "family": "curve",
+          "ink": "#121212"
+        },
+        {
+          "id": "021-form-4",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "curve",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.8235
     },
     {
@@ -13310,7 +14236,72 @@
           "score": 0.880648899188876
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "023-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              3,
+              0
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "023-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "023-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "023-form-4",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "wave",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.6471
     },
     {
@@ -13947,7 +14938,40 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "024-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "family": "circle",
+          "ink": "#F3F3F3"
+        },
+        {
+          "id": "024-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "circle",
+          "ink": "#F3F3F3"
+        }
+      ],
       "matchRate": 0.6667
     },
     {
@@ -15078,7 +16102,24 @@
           "candidates": []
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "026-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "circle",
+          "ink": "#F3F3F3"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -15712,7 +16753,96 @@
           "score": 0.9883470004315926
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "027-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ]
+          ],
+          "family": "open",
+          "ink": "#121212"
+        },
+        {
+          "id": "027-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "open",
+          "ink": "#121212"
+        },
+        {
+          "id": "027-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "open",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -16336,7 +17466,56 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "028-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "family": "circle",
+          "ink": "#121212"
+        },
+        {
+          "id": "028-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "circle",
+          "ink": "#121212"
+        },
+        {
+          "id": "028-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "circle",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.6667
     },
     {
@@ -16652,7 +17831,48 @@
           "candidates": []
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "029-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "circle",
+          "ink": "#F3F3F3"
+        },
+        {
+          "id": "029-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "shape",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -17901,7 +19121,120 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "031-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "family": "angle",
+          "ink": "#121212"
+        },
+        {
+          "id": "031-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "family": "shape",
+          "ink": "#121212"
+        },
+        {
+          "id": "031-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "angle",
+          "ink": "#121212"
+        },
+        {
+          "id": "031-form-4",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "shape",
+          "ink": "#121212"
+        },
+        {
+          "id": "031-form-5",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "angle",
+          "ink": "#121212"
+        },
+        {
+          "id": "031-form-6",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "shape",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -19043,7 +20376,24 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "033-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "float",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -19602,7 +20952,24 @@
           "score": 0.9976204640095181
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "034-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "open",
+          "ink": "#FF4F00"
+        }
+      ],
       "matchRate": 0.3333
     },
     {
@@ -20225,7 +21592,44 @@
           "score": 0.9988558352402745
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "035-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "family": "cascade",
+          "ink": "#121212"
+        },
+        {
+          "id": "035-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "cascade",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.8889
     },
     {
@@ -20672,7 +22076,44 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "036-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "family": "composition",
+          "ink": "#F3F3F3"
+        },
+        {
+          "id": "036-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "rectangle",
+          "ink": "#F3F3F3"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -21100,7 +22541,40 @@
           "score": 0.9983606557377049
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "037-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "family": "angle",
+          "ink": "#4997D0"
+        },
+        {
+          "id": "037-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "rectangle",
+          "ink": "#F3F3F3"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -21724,7 +23198,116 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "038-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "038-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "038-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "038-form-4",
+          "kind": "frieze",
+          "cells": [
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "038-form-5",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "038-form-6",
+          "kind": "frieze",
+          "cells": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -22348,7 +23931,80 @@
           "score": 0.9981447124304267
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "039-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "039-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              3,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "039-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "039-form-4",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -23366,7 +25022,72 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "041-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              3,
+              0
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "square",
+          "ink": "#121212"
+        },
+        {
+          "id": "041-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "family": "square",
+          "ink": "#121212"
+        },
+        {
+          "id": "041-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "square",
+          "ink": "#121212"
+        },
+        {
+          "id": "041-form-4",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "square",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -24004,7 +25725,76 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "042-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "042-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "curve",
+          "ink": "#FF4F00"
+        },
+        {
+          "id": "042-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "mirror",
+          "ink": "#FF4F00"
+        },
+        {
+          "id": "042-form-4",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "float",
+          "ink": "#F3F3F3"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -25264,7 +27054,56 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "044-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "family": "square",
+          "ink": "#121212"
+        },
+        {
+          "id": "044-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "mirror",
+          "ink": "#121212"
+        },
+        {
+          "id": "044-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "float",
+          "ink": "#F3F3F3"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -25903,7 +27742,48 @@
           "score": 0.9896907216494846
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "045-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "lines",
+          "ink": "#FF4F00"
+        },
+        {
+          "id": "045-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "family": "angle",
+          "ink": "#FFA300"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -27132,7 +29012,70 @@
           ]
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "047-form-1",
+          "kind": "figure",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "ink": "#F3F3F3"
+        },
+        {
+          "id": "047-form-2",
+          "kind": "figure",
+          "cells": [
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "ink": "#F3F3F3"
+        },
+        {
+          "id": "047-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "family": "composition",
+          "ink": "#F3F3F3"
+        }
+      ],
       "matchRate": 0.3889
     },
     {
@@ -27684,7 +29627,87 @@
           ]
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "048-form-1",
+          "kind": "figure",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "ink": "#4997D0"
+        }
+      ],
       "matchRate": 0
     },
     {
@@ -28303,7 +30326,40 @@
           "score": 0.9965694682675815
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "049-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        },
+        {
+          "id": "049-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "family": "lines",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 0.8889
     },
     {
@@ -28927,7 +30983,40 @@
           "score": 1
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "050-form-1",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "wave",
+          "ink": "#121212"
+        },
+        {
+          "id": "050-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "ramp",
+          "ink": "#D9D9D6"
+        }
+      ],
       "matchRate": 1
     }
   ]

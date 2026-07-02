@@ -24,6 +24,7 @@ import {
   type CellRecon,
   type Corpus,
 } from './schema.js';
+import { detectForms, type ManifestTile } from './forms.js';
 
 // ---------------------------------------------------------------------------
 // Background rect injector
@@ -130,6 +131,7 @@ async function processBanner(
   svgPath: string,
   library: Awaited<ReturnType<typeof buildTileMaskLibrary>>,
   overrides: OverridesMap,
+  manifestTiles: ManifestTile[],
 ): Promise<BannerRecon> {
   const rawSvg = readFileSync(svgPath, 'utf8');
   const svgText = resolveTransforms(resolveCssClasses(ensureBackgroundRect(rawSvg)));
@@ -196,7 +198,7 @@ async function processBanner(
   const denominator = 18 - plainCells;
   const matchRate = denominator > 0 ? Number((tileCells / denominator).toFixed(4)) : 0;
 
-  return {
+  const banner: BannerRecon = {
     id: bannerId,
     width: 1920,
     height: 960,
@@ -207,6 +209,10 @@ async function processBanner(
     forms: [],
     matchRate,
   };
+
+  banner.forms = detectForms(banner, manifestTiles);
+
+  return banner;
 }
 
 // ---------------------------------------------------------------------------
@@ -303,6 +309,21 @@ function printStats(
   for (const [fam, count] of [...familyCounts.entries()].sort((a, b) => b[1] - a[1])) {
     console.log(`  ${fam}: ${count}`);
   }
+
+  // Forms stats
+  const totalForms = banners.reduce((s, b) => s + b.forms.length, 0);
+  const avgForms = banners.length > 0 ? (totalForms / banners.length).toFixed(2) : '0.00';
+  const formsByKind = { run: 0, figure: 0, frieze: 0 };
+  for (const b of banners) {
+    for (const f of b.forms) {
+      formsByKind[f.kind]++;
+    }
+  }
+  console.log('\n=== Forms stats ===');
+  console.log(`  Total forms : ${totalForms}  avg/banner=${avgForms}`);
+  console.log(`  run         : ${formsByKind.run}`);
+  console.log(`  frieze      : ${formsByKind.frieze}`);
+  console.log(`  figure      : ${formsByKind.figure}`);
 }
 
 function pct(n: number, total: number): string {
@@ -319,6 +340,17 @@ async function main(): Promise<void> {
   console.log('[mine] Building tile-mask library...');
   const library = await buildTileMaskLibrary(TILES_DIR, MANIFEST_PATH);
   console.log(`[mine] Library built: ${library.length} variants`);
+
+  // Load manifest tiles for detectForms
+  let manifestTiles: ManifestTile[] = [];
+  try {
+    const raw = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8')) as
+      | ManifestTile[]
+      | { tiles?: ManifestTile[] };
+    manifestTiles = Array.isArray(raw) ? raw : (raw.tiles ?? []);
+  } catch (err) {
+    console.warn('[mine] Warning: failed to load manifest tiles for form detection:', err);
+  }
 
   const overrides = loadOverrides();
 
@@ -342,7 +374,7 @@ async function main(): Promise<void> {
     const bannerId = file.replace(/\.svg$/, '');
     process.stdout.write(`[mine]   ${bannerId}...`);
     const svgPath = join(BANNERS_DIR, file);
-    const recon = await processBanner(bannerId, svgPath, library, overrides);
+    const recon = await processBanner(bannerId, svgPath, library, overrides, manifestTiles);
     banners.push(recon);
     console.log(` matchRate=${recon.matchRate.toFixed(4)}`);
   }
