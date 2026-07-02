@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 200 200">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  
+  <path d="M0,200h200V.06c-.03,110.46-89.58,199.98-200,199.94Z" fill="#F3F3F3"/>
+  <path d="M0,200c110.42.03,199.97-89.49,200-199.94L.06,0l-.06,200Z" fill="#121212"/>
+  <ellipse cx="70" cy="65" rx="50" ry="25" fill="#F3F3F3"/>
+  <circle cx="70" cy="65" r="25" fill="#121212"/>
+</svg>
