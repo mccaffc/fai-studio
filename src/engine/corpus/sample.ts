@@ -1769,23 +1769,35 @@ function splitInk(target: DraftCell, cells: DraftCell[]): string {
   return neutralForGround(target.ground);
 }
 
-function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar): void {
+export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar): void {
   const accents = new Set(grammar.palette.accentOrder);
   const nonPlain = cells.filter(cell => cell.kind !== 'plain');
   const maxAccent = Math.floor(nonPlain.length * 0.35 + EPS);
+  // Patch-accent cells strip LAST, and all-or-nothing: an iconic patch's accent
+  // group (e.g. the dome's arches) must never be half-recolored. Zoning already
+  // makes over-budget patch plans structurally unreachable (3000-seed probe,
+  // P4 final review); this is the independent second protection.
+  const stripRank = (c: DraftCell): number =>
+    c.patchInkRole === 'accent' ? 2 : c.kind === 'freeform' ? 1 : 0;
   const accentCells = nonPlain
     .filter(cell => cell.ink && accents.has(cell.ink))
-    .sort((a, b) => {
-      const kindA = a.kind === 'freeform' ? 1 : 0;
-      const kindB = b.kind === 'freeform' ? 1 : 0;
-      return kindA - kindB || compareCells(a, b);
-    });
+    .sort((a, b) => stripRank(a) - stripRank(b) || compareCells(a, b));
   const excess = accentCells.length - maxAccent;
+  let patchTouched = false;
   for (let i = 0; i < excess; i += 1) {
     const cell = accentCells[i]!;
+    if (cell.patchInkRole === 'accent') patchTouched = true;
     const ink = neutralForGround(cell.ground);
     cell.ink = ink;
     cell.inks = [ink];
+  }
+  if (patchTouched) {
+    for (const cell of accentCells.slice(Math.max(excess, 0))) {
+      if (cell.patchInkRole !== 'accent' || !cell.ink || !accents.has(cell.ink)) continue;
+      const ink = neutralForGround(cell.ground);
+      cell.ink = ink;
+      cell.inks = [ink];
+    }
   }
 }
 

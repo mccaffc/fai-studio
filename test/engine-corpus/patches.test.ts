@@ -194,3 +194,37 @@ describe('engine corpus patches - sampler stamping', () => {
     assertProgramPaletteSvg(svg, hue, 'patch program svg');
   });
 });
+
+describe('enforceAccentBudget — patch coherence (P4 track-item)', () => {
+  const mk = (col: number, row: number, ink: string, patchAccent = false) => ({
+    col, row, kind: 'tile' as const, tile: 'lines-03', rotation: 0 as const, flip: false,
+    ground: '#F3F3F3', ink, inks: [ink],
+    ...(patchAccent ? { patchInkRole: 'accent' as const } : {}),
+  });
+  it('strips non-patch accents first; patch accents survive when possible', async () => {
+    const { enforceAccentBudget } = await import('../../src/engine/corpus/sample');
+    const { GRAMMAR } = await import('../../src/engine/corpus/data/grammar');
+    // 18 tile cells, 10 accent (budget = floor(18*0.35) = 6, excess 4), 4 of them patch-accent
+    const cells: any[] = [];
+    for (let i = 0; i < 18; i++) {
+      const accent = i < 10 ? '#FF4F00' : '#121212';
+      cells.push(mk(i % 6, Math.floor(i / 6), accent, i >= 6 && i < 10));
+    }
+    enforceAccentBudget(cells, GRAMMAR as any);
+    const patchAccents = cells.filter(c => c.patchInkRole === 'accent' && c.ink === '#FF4F00');
+    expect(patchAccents).toHaveLength(4); // untouched — excess covered by non-patch cells
+    expect(cells.filter(c => c.ink === '#FF4F00')).toHaveLength(6); // budget met
+  });
+  it('all-or-nothing when the budget forces into the patch', async () => {
+    const { enforceAccentBudget } = await import('../../src/engine/corpus/sample');
+    const { GRAMMAR } = await import('../../src/engine/corpus/data/grammar');
+    // 18 cells, ALL accent, 14 of them patch-accent (excess 12 > 4 non-patch):
+    // the loop must eat into the patch → the whole patch group goes
+    const cells: any[] = [];
+    for (let i = 0; i < 18; i++) cells.push(mk(i % 6, Math.floor(i / 6), '#FF4F00', i >= 4));
+    enforceAccentBudget(cells, GRAMMAR as any);
+    const surviving = cells.filter(c => c.patchInkRole === 'accent' && c.ink === '#FF4F00');
+    expect(surviving).toHaveLength(0); // never half a dome
+    expect(cells.filter(c => c.ink === '#FF4F00').length).toBeLessThanOrEqual(6);
+  });
+});
