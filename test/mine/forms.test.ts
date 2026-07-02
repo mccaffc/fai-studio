@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { detectForms, orientEdges } from '../../tools/mine/forms';
-import type { BannerRecon, CellRecon } from '../../tools/mine/schema';
+import type { BannerRecon, CellRecon, Corpus } from '../../tools/mine/schema';
 
 const cell = (col: number, row: number, over: Partial<CellRecon> = {}): CellRecon =>
   ({ col, row, ground: '#121212', kind: 'plain', ...over });
@@ -153,5 +154,50 @@ describe('detectForms', () => {
     const forms = detectForms(banner(cells), manifest);
     expect(forms).toHaveLength(1);
     expect(forms[0]!.kind).toBe('frieze');
+  });
+
+  it('rule (d): adjacent tiles with active edges and inverted ink/ground join as run', () => {
+    // lines-01 has edge_coverage 0.5 on all sides — both sides of the shared edge are active.
+    // Cell A: ink=#121212 on ground=#F3F3F3; Cell B: ink=#F3F3F3 on ground=#121212 — inverted pair.
+    const cells = [
+      cell(0, 0, { kind: 'tile', tile: 'lines-01', rotation: 0, flip: false, ink: '#121212', ground: '#F3F3F3' }),
+      cell(1, 0, { kind: 'tile', tile: 'lines-01', rotation: 0, flip: false, ink: '#F3F3F3', ground: '#121212' }),
+    ];
+    const forms = detectForms(banner(cells), manifest);
+    expect(forms).toHaveLength(1);
+    expect(forms[0]!.cells).toEqual([[0, 0], [1, 0]]);
+    expect(forms[0]!.kind).toBe('run');
+  });
+
+  it('rule (d): non-inverted different-ink tiles do NOT join', () => {
+    // Cell A: ink=#121212 ground=#F3F3F3; Cell B: ink=#FF4F00 ground=#121212.
+    // a.ink (#121212) !== b.ground (#121212) — wait, that IS equal; but a.ground (#F3F3F3) !== b.ink (#FF4F00).
+    // Use a truly non-inverted pair: same ink different ground (neither same-ink nor inverted).
+    const cells = [
+      cell(0, 0, { kind: 'tile', tile: 'lines-01', rotation: 0, flip: false, ink: '#121212', ground: '#F3F3F3' }),
+      cell(1, 0, { kind: 'tile', tile: 'lines-01', rotation: 0, flip: false, ink: '#FF4F00', ground: '#121212' }),
+    ];
+    // a.ink (#121212) === b.ground (#121212) BUT a.ground (#F3F3F3) !== b.ink (#FF4F00) → not inverted
+    // Also not same-ink, not same-tile (could be frieze but different ink breaks rule c)
+    const forms = detectForms(banner(cells), manifest);
+    expect(forms).toHaveLength(0);
+  });
+});
+
+describe('detectForms rule (d) corpus regression', () => {
+  // Banners 042 and 044 are pipe-maze banners whose tiles have alternating ink/ground
+  // inversions with active shared edges — the canonical test cases for rule (d).
+  // Without rule (d) both banners scored near-zero connectedness (max form size 2);
+  // with rule (d) each gains a run of size >= 4.
+  it('banners 042 and 044 each have at least one form of size >= 4 after re-mining', () => {
+    const corpus = JSON.parse(readFileSync('corpus/corpus.json', 'utf8')) as Corpus;
+    const banner042 = corpus.banners.find((b) => b.id === '042');
+    const banner044 = corpus.banners.find((b) => b.id === '044');
+    expect(banner042).toBeDefined();
+    expect(banner044).toBeDefined();
+    const maxSize042 = Math.max(0, ...(banner042!.forms.map((f) => f.cells.length)));
+    const maxSize044 = Math.max(0, ...(banner044!.forms.map((f) => f.cells.length)));
+    expect(maxSize042).toBeGreaterThanOrEqual(4);
+    expect(maxSize044).toBeGreaterThanOrEqual(4);
   });
 });

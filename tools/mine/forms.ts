@@ -2,13 +2,21 @@
  * forms.ts — Multi-cell form detection for banner reconstructions.
  *
  * Runs union-find over the 18 cells of a banner and emits FormGroup records
- * for connected groups of ≥ 2 cells, using three join rules:
+ * for connected groups of ≥ 2 cells, using four join rules:
  *
  *  (a) Both kind==='tile', same ink, and the shared edge has edge_coverage ≥ 0.25
  *      on both sides after applying the cell's rotation/flip.
  *  (b) Both kind==='freeform' and share an ink (same ink value).
  *  (c) Both are the same tile+rotation in a row (frieze): same tile, same rotation,
  *      same ink, same row, adjacent columns.
+ *  (d) Both kind==='tile', the shared edge has edge_coverage ≥ 0.25 on both sides
+ *      (same orientEdges logic as rule a), AND the ink/ground pair is INVERTED:
+ *      a.ink === b.ground && a.ground === b.ink. This captures the FAI figure-ground
+ *      inversion signature: continuous line-work flowing across cells where the line
+ *      alternates roles — white pipes on black in one cell, black pipes on white in
+ *      the next. Without rule (d), these visually-continuous runs are invisible to the
+ *      same-ink join in rule (a). Groups built via rule (d) take 'run' kind (unless
+ *      freeform members are involved via other rules, in which case 'figure' wins).
  *
  * kind precedence: 'figure' if any member is freeform; 'frieze' if built purely by
  * rule (c); 'run' otherwise.
@@ -193,6 +201,44 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
                 joinedOnlyByAorB.add(j);
               }
               // (if ruleC_eligible too, the join came from both — treat as frieze-eligible)
+            }
+          }
+        }
+      }
+
+      // Rule (d): both tile, active shared edge on both sides, INVERTED ink/ground pair.
+      // Captures figure-ground inversion: line-work flowing across cells where the line
+      // alternates roles (white-on-black → black-on-white). Rule (d) joins are 'run' kind,
+      // same as rule (a). Not frieze-eligible (different inks means different tile roles).
+      if (!joined && ci.kind === 'tile' && cj.kind === 'tile') {
+        if (
+          ci.ink && cj.ink && ci.ground && cj.ground &&
+          ci.ink === cj.ground && ci.ground === cj.ink &&
+          ci.tile && cj.tile
+        ) {
+          const mI = manifestById.get(ci.tile);
+          const mJ = manifestById.get(cj.tile);
+
+          if (mI && mJ) {
+            const edgesI = orientEdges(
+              mI.edge_coverage,
+              (ci.rotation ?? 0) as 0 | 90 | 180 | 270,
+              ci.flip ?? false,
+            );
+            const edgesJ = orientEdges(
+              mJ.edge_coverage,
+              (cj.rotation ?? 0) as 0 | 90 | 180 | 270,
+              cj.flip ?? false,
+            );
+
+            const edgeCovI = dir === 'h' ? edgesI.right : edgesI.bottom;
+            const edgeCovJ = dir === 'h' ? edgesJ.left : edgesJ.top;
+
+            if (edgeCovI >= 0.25 && edgeCovJ >= 0.25) {
+              joined = true;
+              // Rule (d) joins are 'run' kind (not frieze-eligible)
+              joinedOnlyByAorB.add(i);
+              joinedOnlyByAorB.add(j);
             }
           }
         }

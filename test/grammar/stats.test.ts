@@ -341,7 +341,7 @@ describe('computeStats real corpus', () => {
     const stats = computeStats(loadCorpus(), loadMergedManifest());
 
     expect(stats.families.lines).toBe(171);
-    expect(stats.forms.kinds).toEqual({ run: 54, frieze: 58, figure: 10 });
+    expect(stats.forms.kinds).toEqual({ run: 60, frieze: 56, figure: 10 });
     expect(stats.globalGrounds['#F3F3F3']).toBe(37);
     expect(stats.plain.byRow).toEqual([39, 39, 18]);
     expect(stats.plain.perBannerHistogram['0']).toBe(29);

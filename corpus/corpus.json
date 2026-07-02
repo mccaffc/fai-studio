@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "minedAt": "2026-07-02T08:01:37.695Z",
+  "minedAt": "2026-07-02T09:06:08.487Z",
   "banners": [
     {
       "id": "001",
@@ -617,6 +617,10 @@
           "cells": [
             [
               4,
+              1
+            ],
+            [
+              5,
               1
             ],
             [
@@ -7409,12 +7413,36 @@
           "kind": "run",
           "cells": [
             [
+              3,
+              0
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "circle",
+          "ink": "#121212"
+        },
+        {
+          "id": "012-form-2",
+          "kind": "run",
+          "cells": [
+            [
               1,
               1
             ],
             [
               2,
               1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
             ]
           ],
           "family": "curve",
@@ -14873,6 +14901,22 @@
           ],
           "family": "circle",
           "ink": "#F3F3F3"
+        },
+        {
+          "id": "024-form-5",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "square",
+          "ink": "#121212"
         }
       ],
       "matchRate": 0.6667
@@ -25708,7 +25752,23 @@
         },
         {
           "id": "042-form-2",
-          "kind": "frieze",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "curve",
+          "ink": "#FFA300"
+        },
+        {
+          "id": "042-form-3",
+          "kind": "run",
           "cells": [
             [
               2,
@@ -25717,13 +25777,21 @@
             [
               3,
               1
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              4,
+              2
             ]
           ],
           "family": "mirror",
           "ink": "#121212"
         },
         {
-          "id": "042-form-3",
+          "id": "042-form-4",
           "kind": "frieze",
           "cells": [
             [
@@ -27074,7 +27142,23 @@
         },
         {
           "id": "044-form-2",
-          "kind": "frieze",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "family": "curve",
+          "ink": "#FFA300"
+        },
+        {
+          "id": "044-form-3",
+          "kind": "run",
           "cells": [
             [
               2,
@@ -27083,13 +27167,21 @@
             [
               3,
               1
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              4,
+              2
             ]
           ],
           "family": "mirror",
           "ink": "#121212"
         },
         {
-          "id": "044-form-3",
+          "id": "044-form-4",
           "kind": "frieze",
           "cells": [
             [
