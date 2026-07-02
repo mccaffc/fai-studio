@@ -52,6 +52,7 @@ function main(): void {
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
   };
+  const longestRuns: number[] = [];
   const accentInks = new Set(grammar.palette.accentOrder);
   let zeroFormPlans = 0;
   let zeroAccentPlans = 0;
@@ -65,6 +66,7 @@ function main(): void {
     diagTotals.adjacencyFallbacks += diag.adjacencyFallbacks;
     diagTotals.fillAdjacencyHits += diag.fillAdjacencyHits;
     diagTotals.friezesPlaced += diag.friezesPlaced;
+    longestRuns.push(diag.longestRun);
 
     if (plan.forms.length === 0) zeroFormPlans += 1;
 
@@ -145,6 +147,8 @@ function main(): void {
     zeroFormPlans,
     zeroAccentPlans,
     diagTotals,
+    longestRunMean: mean(longestRuns),
+    longestRunMax: longestRuns.length > 0 ? Math.max(...longestRuns) : 0,
     acceptances,
   });
 
@@ -284,6 +288,8 @@ function printReport(input: {
   zeroFormPlans: number;
   zeroAccentPlans: number;
   diagTotals: SampleDiagTotals;
+  longestRunMean: number;
+  longestRunMax: number;
   acceptances: Acceptance[];
 }): void {
   console.log('Grammar sampler audit');
@@ -329,6 +335,7 @@ function printReport(input: {
   console.log(`  adjacency hit rate: ${formatPercent(share(input.diagTotals.adjacencyHits, adjacencyAttempts))}`);
   console.log(`  fill adjacency hits: ${input.diagTotals.fillAdjacencyHits}`);
   console.log(`  friezes placed: ${input.diagTotals.friezesPlaced}`);
+  console.log(`  longest run: mean ${input.longestRunMean.toFixed(2)} / max ${input.longestRunMax}`);
   console.log('');
 
   console.log('Acceptance');

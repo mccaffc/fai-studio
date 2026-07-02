@@ -51,6 +51,8 @@ export interface SampleDiagnostics {
   adjacencyFallbacks: number;
   fillAdjacencyHits: number;
   friezesPlaced: number;
+  /** Largest 'run'-form cell count in the final plan (from plan.forms). */
+  longestRun: number;
 }
 
 export interface SampleResult {
@@ -64,6 +66,23 @@ const CELL_COUNT = COLS * ROWS;
 const EPS = 1e-9;
 const DOMINANT_FAMILY_QUOTA = 0.18;
 const LINEWORK_STEERING_STRENGTH = 1;
+
+// --- Serpentine run growth (P2 Task 2) ------------------------------------
+// The connected-surface templates grow canon-length runs that TURN CORNERS
+// (target length drawn from the mined form-size distribution). The rhythm
+// templates keep the previous short straight growth. figure-field/mixed-quilt
+// use mined-length targets but straight growth (no turns).
+const SERPENTINE_TEMPLATES = new Set(['pipe-field', 'arc-mosaic']);
+const MINED_LENGTH_TEMPLATES = new Set(['pipe-field', 'arc-mosaic', 'figure-field', 'mixed-quilt']);
+// Direction-draw weights at each serpentine step: keep straight most of the
+// time, turn either way a fifth of the time each.
+const SERPENTINE_CONTINUE_WEIGHT = 0.6;
+const SERPENTINE_TURN_WEIGHT = 0.2;
+// The rhythm templates must never carry a run form longer than this after
+// fill (their canon is rhythm, not serpents). A post-fill splitter re-inks a
+// minimal interior cell of any longer same-ink run to break the join.
+const RHYTHM_RUN_CAP = 6;
+const RHYTHM_TEMPLATES = new Set(['repeat-rhythm', 'checker-motif']);
 
 const BRAND_FILLS = new Set([
   '#121212',
@@ -118,6 +137,7 @@ export function sampleWithDiagnostics(grammar: EngineGrammar, seed: number, knob
     adjacencyFallbacks: 0,
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
+    longestRun: 0,
   };
   const rng = mulberry32(seed);
   const template = chooseTemplate(grammar, rng, knobs.template);
@@ -142,7 +162,7 @@ export function sampleWithDiagnostics(grammar: EngineGrammar, seed: number, knob
   const rawRunCount = drawIntegerRange(template.spec.forms.run, rng);
   const runCount = template.spec.forms.run[1] > 0 ? Math.max(1, rawRunCount) : 0;
   for (let i = 0; i < runCount; i += 1) {
-    placeRun(cells, grammar, rng, workingSet, diag);
+    placeRun(cells, grammar, rng, workingSet, template, diag);
   }
 
   const figureSize = plannedFigureSize(template, knobs, rng);
@@ -163,6 +183,9 @@ export function sampleWithDiagnostics(grammar: EngineGrammar, seed: number, knob
   applyAccentZoning(cells, grammar, rng, template, knobs, diag);
   enforceAccentBudget(cells, grammar);
   ensureAccentPresence(cells, grammar, rng);
+  // Run last: cap rhythm-template run length AFTER every ink mutation, so the
+  // accent passes can't re-merge a split run.
+  splitRhythmRuns(cells, grammar, template);
   applyLogomarkGuard(cells);
 
   const finalCells = finalizeCells(cells);
@@ -178,6 +201,10 @@ export function sampleWithDiagnostics(grammar: EngineGrammar, seed: number, knob
     matchRate: 1,
   };
   plan.forms = detectForms(plan, grammar.tileCatalog, FAMILIES);
+  diag.longestRun = plan.forms.reduce(
+    (max, form) => (form.kind === 'run' && form.cells.length > max ? form.cells.length : max),
+    0,
+  );
   return { plan, diag };
 }
 
@@ -496,17 +523,60 @@ function drawFriezeRow(grammar: EngineGrammar, rng: Rng): number {
   return Number(rowKey);
 }
 
-function placeRun(cells: DraftCell[], grammar: EngineGrammar, rng: Rng, workingSet: string[], diag: SampleDiagnostics): boolean {
+/**
+ * A serpentine growth step. Growing rightward/downward tests the seam with the
+ * CURRENT cell first (its right/bottom meets the candidate's left/top); growing
+ * leftward/upward tests the CANDIDATE first (its right/bottom meets the current
+ * cell's left/top). `axis` is the profile-join axis: horizontal steps ('h') use
+ * left/right edges, vertical steps ('v') use top/bottom edges.
+ */
+type Step = 'right' | 'down' | 'left' | 'up';
+
+const STEP_INFO: Record<Step, { dc: number; dr: number; axis: Direction; currentFirst: boolean }> = {
+  right: { dc: 1, dr: 0, axis: 'h', currentFirst: true },
+  left: { dc: -1, dr: 0, axis: 'h', currentFirst: false },
+  down: { dc: 0, dr: 1, axis: 'v', currentFirst: true },
+  up: { dc: 0, dr: -1, axis: 'v', currentFirst: false },
+};
+
+/** Clockwise / counter-clockwise turns off a heading (90° in grid space). */
+const TURN_CW: Record<Step, Step> = { right: 'down', down: 'left', left: 'up', up: 'right' };
+const TURN_CCW: Record<Step, Step> = { right: 'up', up: 'left', left: 'down', down: 'right' };
+
+/** True iff placing `next` after `current` along `step` satisfies the profile-join contract. */
+function stepJoins(grammar: EngineGrammar, current: Placement, next: Placement, step: Step): boolean {
+  const { axis, currentFirst } = STEP_INFO[step];
+  return currentFirst
+    ? placementsJoin(grammar, current, next, axis)
+    : placementsJoin(grammar, next, current, axis);
+}
+
+function placeRun(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  rng: Rng,
+  workingSet: string[],
+  template: Template,
+  diag: SampleDiagnostics,
+): boolean {
+  const targetLength = MINED_LENGTH_TEMPLATES.has(template.id)
+    ? drawRunTargetLength(grammar, rng)
+    : rng.int(2, 3);
+  const serpentine = SERPENTINE_TEMPLATES.has(template.id);
+
   const starts = cells
     .filter(cell => cell.kind === undefined && (isFree(cells, cell.col + 1, cell.row) || isFree(cells, cell.col, cell.row + 1)))
     .sort(compareCells);
   if (starts.length === 0) return false;
 
-  const desiredSteps = rng.int(1, 3);
   const start = weightedChoice(
     rng,
     starts.map(cell => ({ value: cell, weight: 1, sortKey: positionKey(cell) })),
   );
+
+  // Seed the run with a two-cell placement in a free adjacent direction. The
+  // sampler's observed-pair tables are keyed on axis ('h'/'v'), so choose an
+  // available axis (right or down from the start), then keep growing.
   const availableDirs: Direction[] = [];
   if (isFree(cells, start.col + 1, start.row)) availableDirs.push('h');
   if (isFree(cells, start.col, start.row + 1)) availableDirs.push('v');
@@ -526,23 +596,170 @@ function placeRun(cells: DraftCell[], grammar: EngineGrammar, rng: Rng, workingS
     assignTile(start, pair[0], ink);
     assignTile(next, pair[1], ink);
 
-    let currentCell = next;
-    let currentPlacement = pair[1];
-    for (let step = 1; step < desiredSteps; step += 1) {
-      const candidate = dir === 'h'
-        ? maybeCellAt(cells, currentCell.col + 1, currentCell.row)
-        : maybeCellAt(cells, currentCell.col, currentCell.row + 1);
-      if (!candidate || candidate.kind !== undefined || candidate.ground === ink) break;
-      const placement = drawNextRunPlacement(grammar, rng, workingSet, currentPlacement, dir, diag);
-      if (!placement) break;
-      assignTile(candidate, placement, ink);
-      currentCell = candidate;
-      currentPlacement = placement;
-    }
+    let heading: Step = dir === 'h' ? 'right' : 'down';
+    const grown = serpentine
+      ? growSerpentine(cells, grammar, rng, workingSet, next, pair[1], ink, heading, targetLength, diag)
+      : growStraight(cells, grammar, rng, workingSet, next, pair[1], ink, dir, targetLength, diag);
+    void grown;
     return true;
   }
 
   return false;
+}
+
+/** Old short straight growth (the rhythm-template fallback path). */
+function growStraight(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  rng: Rng,
+  workingSet: string[],
+  seedCell: DraftCell,
+  seedPlacement: Placement,
+  ink: string,
+  dir: Direction,
+  targetLength: number,
+  diag: SampleDiagnostics,
+): number {
+  let currentCell = seedCell;
+  let currentPlacement = seedPlacement;
+  let length = 2;
+  while (length < targetLength) {
+    const candidate = dir === 'h'
+      ? maybeCellAt(cells, currentCell.col + 1, currentCell.row)
+      : maybeCellAt(cells, currentCell.col, currentCell.row + 1);
+    if (!candidate || candidate.kind !== undefined || candidate.ground === ink) break;
+    const placement = drawNextRunPlacement(grammar, rng, workingSet, currentPlacement, dir, diag);
+    if (!placement) break;
+    assignTile(candidate, placement, ink);
+    currentCell = candidate;
+    currentPlacement = placement;
+    length += 1;
+  }
+  return length;
+}
+
+/**
+ * Serpentine growth. At each step draw a heading among {continue, turn-cw,
+ * turn-ccw} weighted {0.6, 0.2, 0.2}; try them in that drawn preference order.
+ * A step is taken only into a free in-bounds cell whose ground differs from the
+ * ink and whose candidate placement satisfies the profile-join contract on the
+ * step's axis (with the correct current/candidate ordering). If the drawn
+ * heading is blocked, fall through to the other headings before stopping.
+ */
+function growSerpentine(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  rng: Rng,
+  workingSet: string[],
+  seedCell: DraftCell,
+  seedPlacement: Placement,
+  ink: string,
+  seedHeading: Step,
+  targetLength: number,
+  diag: SampleDiagnostics,
+): number {
+  let currentCell = seedCell;
+  let currentPlacement = seedPlacement;
+  let heading = seedHeading;
+  let length = 2;
+
+  while (length < targetLength) {
+    const order = drawHeadingOrder(rng, heading);
+    let advanced = false;
+    for (const step of order) {
+      const { dc, dr } = STEP_INFO[step];
+      const candidate = maybeCellAt(cells, currentCell.col + dc, currentCell.row + dr);
+      if (!candidate || candidate.kind !== undefined || candidate.ground === ink) continue;
+      const placement = drawSerpentineStep(grammar, rng, workingSet, currentPlacement, step, diag);
+      if (!placement) continue;
+      assignTile(candidate, placement, ink);
+      currentCell = candidate;
+      currentPlacement = placement;
+      heading = step;
+      length += 1;
+      advanced = true;
+      break;
+    }
+    if (!advanced) break;
+  }
+  return length;
+}
+
+/** Ordered heading preference for one serpentine step (continue / cw / ccw). */
+function drawHeadingOrder(rng: Rng, heading: Step): Step[] {
+  const options: Weighted<Step>[] = [
+    { value: heading, weight: SERPENTINE_CONTINUE_WEIGHT, sortKey: 'a-continue' },
+    { value: TURN_CW[heading], weight: SERPENTINE_TURN_WEIGHT, sortKey: 'b-cw' },
+    { value: TURN_CCW[heading], weight: SERPENTINE_TURN_WEIGHT, sortKey: 'c-ccw' },
+  ];
+  const order: Step[] = [];
+  let remaining = options;
+  while (remaining.length > 0) {
+    const picked = weightedChoice(rng, remaining);
+    order.push(picked);
+    remaining = remaining.filter(entry => entry.value !== picked);
+  }
+  return order;
+}
+
+/** Draw the next placement for a serpentine step, honoring the join contract on the step's axis. */
+function drawSerpentineStep(
+  grammar: EngineGrammar,
+  rng: Rng,
+  workingSet: string[],
+  current: Placement,
+  step: Step,
+  diag: SampleDiagnostics,
+): Placement | null {
+  const { axis, currentFirst } = STEP_INFO[step];
+  const working = new Set(workingSet);
+  const table = axis === 'h' ? grammar.stats.adjacency.horizontal : grammar.stats.adjacency.vertical;
+  const entries: Weighted<Placement>[] = [];
+
+  if (currentFirst) {
+    // current → candidate: read observed out-edges from the current placement.
+    const outs = table[placementKey(current)] ?? {};
+    for (const toKey of Object.keys(outs).sort()) {
+      const to = parsePlacementKey(toKey);
+      if (!to || !working.has(to.tile)) continue;
+      if (!stepJoins(grammar, current, to, step)) continue;
+      entries.push({ value: to, weight: outs[toKey] ?? 0, sortKey: toKey });
+    }
+  } else {
+    // candidate → current: read observed in-edges that lead into the current placement.
+    const currentKey = placementKey(current);
+    for (const fromKey of Object.keys(table).sort()) {
+      const from = parsePlacementKey(fromKey);
+      if (!from || !working.has(from.tile)) continue;
+      const weight = table[fromKey]?.[currentKey] ?? 0;
+      if (weight <= 0) continue;
+      if (!stepJoins(grammar, current, from, step)) continue;
+      entries.push({ value: from, weight, sortKey: fromKey });
+    }
+  }
+
+  if (entries.length > 0) {
+    diag.adjacencyHits += 1;
+    return weightedChoice(rng, entries);
+  }
+
+  // Fallback: same tile, flipped, joined across the seam (mirrors the straight path).
+  diag.adjacencyFallbacks += 1;
+  const flipped: Placement = { tile: current.tile, rotation: current.rotation, flip: !current.flip };
+  if (working.has(flipped.tile) && stepJoins(grammar, current, flipped, step)) return flipped;
+  return null;
+}
+
+/** Target run length drawn from the mined form-size distribution (sizes ≥ 2). */
+function drawRunTargetLength(grammar: EngineGrammar, rng: Rng): number {
+  const sizes = grammar.stats.forms.sizes;
+  const entries = Object.keys(sizes)
+    .map(key => ({ key, size: Number(key) }))
+    .filter(({ size }) => Number.isFinite(size) && size >= 2)
+    .sort((a, b) => a.size - b.size)
+    .map(({ key, size }) => ({ value: size, weight: sizes[key] ?? 0, sortKey: String(size).padStart(3, '0') }));
+  if (entries.length === 0) return rng.int(2, 3);
+  return weightedChoice(rng, entries);
 }
 
 function drawRunPair(
@@ -658,11 +875,15 @@ function fallbackPlacement(grammar: EngineGrammar, current: Placement, dir: Dire
 function plannedFigureSize(template: Template, knobs: SampleKnobs, rng: Rng): number {
   if (knobs.figures === false) return 0;
   if (template.spec.forms.figure[1] <= 0) return 0;
-  const maxCells = Math.min(4, Math.floor(template.spec.figureShare[1] * CELL_COUNT + EPS));
+  // Figures span 2–6 cells, drawn from the template's figureShare range × 18
+  // and clamped to [2, 6]. The share cap keeps figureShare within the template
+  // feature range (e.g. pipe-field's 0.222 → ≤4 cells); the [2,6] clamp lifts
+  // the old hard cap of 2 so figure-field can carry real multi-cell figures.
+  const maxCells = Math.min(6, Math.floor(template.spec.figureShare[1] * CELL_COUNT + EPS));
   const minCells = Math.max(2, Math.ceil(template.spec.figureShare[0] * CELL_COUNT - EPS));
   if (maxCells < minCells) return 0;
   if (knobs.figures !== true && !rng.chance(0.55)) return 0;
-  return Math.min(2, maxCells);
+  return rng.int(minCells, maxCells);
 }
 
 function placeFigure(
@@ -1070,6 +1291,135 @@ function applyAccentZoning(
 
 const NEUTRAL_INKS_SET = new Set(['#121212', '#FFFFFF', '#F3F3F3', '#D9D9D6']);
 
+/**
+ * splitRhythmRuns — cap run-form length on the rhythm templates.
+ *
+ * The rhythm templates' canon is rhythm, not serpents: their fill can still
+ * chain a long connected same-ink tile block (which detectForms reports as one
+ * big 'run' form). This pass re-inks a minimal set of interior tile cells of any
+ * over-cap same-ink connected component to a contrasting neutral, breaking the
+ * same-ink join without touching tile geometry, kind, rotation, flip, ground,
+ * distinctTiles, plainShare, or figureShare — ink-only, so lineworkShare (a
+ * family metric) is untouched too. No-op on the serpentine / mined-length
+ * templates, which are allowed their long runs.
+ */
+function splitRhythmRuns(cells: DraftCell[], grammar: EngineGrammar, template: Template): void {
+  if (!RHYTHM_TEMPLATES.has(template.id)) return;
+
+  // Measure runs exactly as detectForms will (union over rules a/c/d), find the
+  // largest run form over the cap, and re-ink its highest-degree member to break
+  // its joins. Each pass strictly removes one cell from the offending run, so the
+  // loop terminates (bounded by cell count).
+  for (let guard = 0; guard < CELL_COUNT; guard += 1) {
+    const runs = detectRunGroups(cells, grammar);
+    const worst = runs.filter(group => group.length > RHYTHM_RUN_CAP).sort((a, b) => b.length - a.length)[0];
+    if (!worst) return;
+    const positions = new Set(worst.map(positionKey));
+    const target = pickSplitCell(worst.map(c => cells[indexFor(c.col, c.row)]!), positions);
+    const replacement = splitInk(target, cells);
+    target.ink = replacement;
+    target.inks = [replacement];
+  }
+}
+
+/**
+ * Connected run groups over the current draft cells, mirroring detectForms'
+ * union rules for run membership: rule (a) same-ink + active shared edges,
+ * rule (c) same-tile-same-rotation-same-ink frieze pairs (row-adjacent, no edge
+ * requirement), and rule (d) inverted ink/ground + active shared edges.
+ */
+function detectRunGroups(cells: DraftCell[], grammar: EngineGrammar): DraftCell[][] {
+  const tileCells = cells.filter(cell => cell.kind === 'tile' && cell.tile && cell.ink).sort(compareCells);
+  const seen = new Set<string>();
+  const groups: DraftCell[][] = [];
+  for (const start of tileCells) {
+    if (seen.has(positionKey(start))) continue;
+    const group: DraftCell[] = [];
+    const stack = [start];
+    seen.add(positionKey(start));
+    while (stack.length > 0) {
+      const cur = stack.pop()!;
+      group.push(cur);
+      for (const n of tileCells) {
+        if (seen.has(positionKey(n))) continue;
+        if (Math.abs(n.col - cur.col) + Math.abs(n.row - cur.row) !== 1) continue;
+        if (runJoin(grammar, cur, n)) {
+          seen.add(positionKey(n));
+          stack.push(n);
+        }
+      }
+    }
+    groups.push(group);
+  }
+  return groups;
+}
+
+/**
+ * Do two placed tile cells join as a run under detectForms? Rule (a): same ink
+ * + both shared edges active (≥ 0.25). Rule (c): same tile+rotation+ink,
+ * row-adjacent (no edge requirement). Rule (d): inverted ink/ground + active
+ * edges. Any of the three unions them into one run group.
+ */
+function runJoin(grammar: EngineGrammar, a: DraftCell, b: DraftCell): boolean {
+  if (!a.tile || !b.tile) return false;
+  const dir: Direction = a.row === b.row ? 'h' : 'v';
+  // Rule (c): same-tile-same-rotation-same-ink frieze pair (horizontal only).
+  if (
+    dir === 'h' &&
+    a.tile === b.tile &&
+    (a.rotation ?? 0) === (b.rotation ?? 0) &&
+    a.ink && a.ink === b.ink
+  ) {
+    return true;
+  }
+  const sameInk = a.ink === b.ink;
+  const inverted = a.ink === b.ground && a.ground === b.ink;
+  if (!sameInk && !inverted) return false;
+  const [first, second] = dir === 'h'
+    ? (a.col < b.col ? [a, b] : [b, a])
+    : (a.row < b.row ? [a, b] : [b, a]);
+  const eFirst = orientEdges(grammar.tileCatalog[first!.tile!]?.edges ?? ZERO_EDGES, (first!.rotation ?? 0) as Rotation, first!.flip ?? false);
+  const eSecond = orientEdges(grammar.tileCatalog[second!.tile!]?.edges ?? ZERO_EDGES, (second!.rotation ?? 0) as Rotation, second!.flip ?? false);
+  const covFirst = dir === 'h' ? eFirst.right : eFirst.bottom;
+  const covSecond = dir === 'h' ? eSecond.left : eSecond.top;
+  return covFirst >= 0.25 && covSecond >= 0.25;
+}
+
+const ZERO_EDGES = { top: 0, right: 0, bottom: 0, left: 0 };
+
+/** Pick the split target: the member with the most in-group neighbors (ties → row-major). */
+function pickSplitCell(group: DraftCell[], positions: Set<string>): DraftCell {
+  return [...group]
+    .sort(compareCells)
+    .reduce((best, cell) => {
+      const degree = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+        .filter(([dc, dr]) => positions.has(`${cell.col + dc!},${cell.row + dr!}`)).length;
+      const bestDegree = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+        .filter(([dc, dr]) => positions.has(`${best.col + dc!},${best.row + dr!}`)).length;
+      return degree > bestDegree ? cell : best;
+    }, group[0]!);
+}
+
+/**
+ * A neutral ink that breaks the target's run joins to all its component
+ * neighbors: distinct from the run ink (kills rule-a) and never equal to a
+ * neighbor's ground (kills rule-d), while still contrasting the target's ground.
+ */
+function splitInk(target: DraftCell, cells: DraftCell[]): string {
+  const tileNeighbors = neighbors(cells, target).filter(n => n.kind === 'tile');
+  const neighborGrounds = tileNeighbors.map(n => n.ground);
+  const neighborInks = tileNeighbors.map(n => n.ink ?? '');
+  const forbidden = new Set<string>([target.ground, target.ink ?? '', ...neighborGrounds, ...neighborInks]);
+  for (const ink of NEUTRAL_PREFS) {
+    if (!forbidden.has(ink)) return ink;
+  }
+  // Fall back to any neutral that at least contrasts the target's ground.
+  for (const ink of NEUTRAL_PREFS) {
+    if (ink !== target.ground) return ink;
+  }
+  return neutralForGround(target.ground);
+}
+
 function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar): void {
   const accents = new Set(grammar.palette.accentOrder);
   const nonPlain = cells.filter(cell => cell.kind !== 'plain');
@@ -1175,7 +1525,14 @@ function usedTileSet(cells: DraftCell[]): Set<string> {
 /** Minimum edge-profile IoU for two placements to count as truly continuous at the seam. */
 const PROFILE_JOIN_MIN = 0.5;
 
-function placementsJoin(grammar: EngineGrammar, a: Placement, b: Placement, dir: Direction): boolean {
+/**
+ * placementsJoin — the edge-profile continuity contract. `a`'s trailing edge
+ * (right for 'h', bottom for 'v') must meet `b`'s leading edge (left for 'h',
+ * top for 'v'): both edges active (coverage ≥ 0.25) and, when v2 profiles are
+ * present, their line-work lining up (profile IoU ≥ PROFILE_JOIN_MIN). Exported
+ * for the scale test's continuity-integrity check.
+ */
+export function placementsJoin(grammar: EngineGrammar, a: Placement, b: Placement, dir: Direction): boolean {
   const aEntry = grammar.tileCatalog[a.tile];
   const bEntry = grammar.tileCatalog[b.tile];
   if (!aEntry || !bEntry) return false;
