@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { Buffer } from 'node:buffer';
 import { parseSvgElements, type SvgElement } from './svg';
 import { maskFillRatio, maskIoU, rasterizeMask } from './raster';
+import { resolveCssClasses, resolveTransforms } from './preprocess';
 
 export interface TileMaskEntry {
   tile: string;
@@ -58,7 +59,8 @@ export async function buildTileMaskLibrary(
 
     let parsed: ReturnType<typeof parseSvgElements>;
     try {
-      parsed = parseSvgElements(readFileSync(join(tilesDir, tile.filename), 'utf8'));
+      const rawSvg = readFileSync(join(tilesDir, tile.filename), 'utf8');
+      parsed = parseSvgElements(resolveTransforms(resolveCssClasses(rawSvg)));
     } catch (error) {
       recordSkip(skipped, tile.id, errorReason(error));
       continue;
@@ -166,14 +168,23 @@ function tileForegroundPredicate(
   height: number,
 ): (el: SvgElement) => boolean {
   const backgroundIndex = findBackgroundIndex(tile, elements, width, height);
+
+  // Determine the tile's background fill so we can exclude cutout elements.
+  // Cutouts are elements painted in the background color — they punch holes in the
+  // foreground when rasterizeMask paints non-foreground pixels black over white.
+  const backgroundFill: string | undefined =
+    backgroundIndex >= 0 ? elements[backgroundIndex]?.fill : undefined;
+
   const foregroundElements = new Set(
-    elements.filter((el, index) => {
+    elements.filter((el) => {
       if (el.fill === 'none') {
         return false;
       }
-      if (backgroundIndex >= 0) {
-        return index > backgroundIndex;
+      if (backgroundFill !== undefined) {
+        // Foreground = fill differs from background fill; same fill = cutout/hole
+        return el.fill !== backgroundFill;
       }
+      // No background found: every filled element is foreground
       return true;
     }),
   );
