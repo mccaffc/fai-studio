@@ -1728,10 +1728,10 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
   // Deep-copy the plan (cells carry inks/grounds that will be mutated).
   const cells: DraftCell[] = plan.cells.map(c => ({ ...c }));
 
-  // Build a fresh RNG at the same seed but advance it past all the geometry
-  // draws so that accent-zoning uses a reproducible sub-sequence. We reuse the
-  // accentZoning RNG draws only — simplest deterministic approach is a
-  // dedicated RNG seeded from (seed + accent_hash). This gives stable re-zones.
+  // Seed a DEDICATED RNG from (plan seed folded with the accent string's hash):
+  // each distinct accent gets a reproducible but independent zone shape. Note
+  // this is NOT the plan's original stream advanced past geometry — it is a
+  // separate stream entirely (review 2026-07-02 flagged the earlier wording).
   const accentHash = [...accent].reduce((h, ch) => ((h * 31 + ch.charCodeAt(0)) & 0xffffffff), seed);
   const rng = mulberry32(accentHash >>> 0);
 
