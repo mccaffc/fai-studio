@@ -16,6 +16,8 @@ import {
 import type { CorpusResult } from "../engine/corpus/index.js";
 import { GRAMMAR as GRAMMAR_RAW } from "../engine/corpus/data/grammar.js";
 import type { EngineGrammar } from "../engine/corpus/data/grammar.js";
+import { PROGRAMS } from "../engine/corpus/programs.js";
+import type { ProgramId } from "../engine/corpus/programs.js";
 
 const GRAMMAR = GRAMMAR_RAW as unknown as EngineGrammar;
 
@@ -47,6 +49,45 @@ function el(tag: string, attrs: Record<string, string> = {}, html = ""): HTMLEle
 
 // ── module state ─────────────────────────────────────────────────────────────
 
+// ── localStorage persistence ──────────────────────────────────────────────────
+
+const LS_CORPUS_CONFIG = "fai-corpus-config";
+
+interface PersistedCorpusConfig {
+  template?: string;
+  accent?: string;
+  density?: number;
+  figures?: boolean;
+  program?: string;
+}
+
+function loadCorpusConfig(): PersistedCorpusConfig {
+  try {
+    const raw = localStorage.getItem(LS_CORPUS_CONFIG);
+    if (raw) return JSON.parse(raw) as PersistedCorpusConfig;
+  } catch {
+    // ignore corrupt storage
+  }
+  return {};
+}
+
+function saveCorpusConfig(): void {
+  const persisted: PersistedCorpusConfig = {
+    template: state.config.template,
+    accent: state.config.accent,
+    density: state.config.density,
+    figures: state.config.figures,
+    program: state.config.program,
+  };
+  try {
+    localStorage.setItem(LS_CORPUS_CONFIG, JSON.stringify(persisted));
+  } catch {
+    // ignore storage errors (e.g. private browsing quota)
+  }
+}
+
+// ── module state ─────────────────────────────────────────────────────────────
+
 interface CorpusState {
   current: CorpusResult | null;
   vars: CorpusResult[];
@@ -56,19 +97,26 @@ interface CorpusState {
     density: number;
     figures: boolean;
     seed: number;
+    program: string;  // "" = none, else ProgramId
+  };
+}
+
+function makeDefaultConfig() {
+  const saved = loadCorpusConfig();
+  return {
+    template: saved.template ?? "",
+    accent: saved.accent ?? "",
+    density: saved.density ?? 0.5,
+    figures: saved.figures ?? true,
+    seed: (Math.random() * 0xffffffff) >>> 0,
+    program: saved.program ?? "",
   };
 }
 
 const state: CorpusState = {
   current: null,
   vars: [],
-  config: {
-    template: "",
-    accent: "",
-    density: 0.5,
-    figures: true,
-    seed: (Math.random() * 0xffffffff) >>> 0,
-  },
+  config: makeDefaultConfig(),
 };
 
 // ── export helpers (corpus SVG bypasses finalSvg) ────────────────────────────
@@ -144,9 +192,12 @@ function buildCorpusConfig() {
   return {
     seed: state.config.seed,
     template: state.config.template || undefined,
-    accent: state.config.accent || undefined,
+    // accent is ignored by the engine when program is set, but we pass it
+    // anyway so that switching back to None restores the user's chosen accent.
+    accent: state.config.program ? undefined : (state.config.accent || undefined),
     density: state.config.density,
     figures: state.config.figures,
+    program: (state.config.program as ProgramId) || undefined,
   };
 }
 
@@ -154,6 +205,7 @@ export function corpusRegen(newSeed = false): void {
   if (newSeed) {
     state.config.seed = (Math.random() * 0xffffffff) >>> 0;
   }
+  saveCorpusConfig();
   // Defense-in-depth parity with classic regen(): the default mode must never
   // blank the studio — paint any engine error into the canvas instead.
   try {
@@ -171,6 +223,7 @@ export function corpusRegen(newSeed = false): void {
 
 function corpusRecolorInPlace(): void {
   if (!state.current) return;
+  saveCorpusConfig();
   const accent = state.config.accent;
   if (accent) {
     state.current = recolorPlan(state.current, accent);
@@ -267,12 +320,17 @@ function renderCorpusScores(): void {
   const quiltBadge = s.quiltFail
     ? ` <span class="corpus-quilt-badge">QUILT</span>`
     : "";
+  // Show program name in scores line when a program is active.
+  const programSuffix = state.config.program && PROGRAMS[state.config.program as ProgramId]
+    ? ` · program ${PROGRAMS[state.config.program as ProgramId].name}`
+    : "";
   el.innerHTML =
     `conn ${s.connectedness.toFixed(2)} · ` +
     `line ${s.lineworkShare.toFixed(2)} · ` +
     `density ${s.density.toFixed(2)} · ` +
     `acc ${s.accentShare.toFixed(2)} · ` +
     tmpl +
+    programSuffix +
     quiltBadge;
 }
 
@@ -286,6 +344,24 @@ function updateSeedDisplay(): void {
 }
 
 // ── controls panel ────────────────────────────────────────────────────────────
+
+/**
+ * Sync accent select disabled state to the current program config.
+ * Called after a program selection change (without re-rendering the full panel).
+ */
+function updateAccentSelectState(): void {
+  const sel = document.querySelector(
+    "#corpus-controls select[data-corpus-accent]",
+  ) as HTMLSelectElement | null;
+  if (!sel) return;
+  if (state.config.program) {
+    sel.disabled = true;
+    sel.title = "program mode uses the program hue";
+  } else {
+    sel.disabled = false;
+    sel.title = "";
+  }
+}
 
 function renderCorpusControls(): void {
   const root = $("#corpus-controls");
@@ -320,10 +396,42 @@ function renderCorpusControls(): void {
     g.appendChild(sel);
   }
 
+  // Program (ABOVE accent — single-hue law)
+  {
+    const g = group("Program");
+    const sel = el("select", { "data-corpus-program": "" }) as HTMLSelectElement;
+    const none = document.createElement("option");
+    none.value = "";
+    none.textContent = "None";
+    sel.appendChild(none);
+    for (const [id, prog] of Object.entries(PROGRAMS) as [ProgramId, { name: string; hue: string }][]) {
+      const o = document.createElement("option");
+      o.value = id;
+      // Swatch dot via unicode + program name (CSS ::before unreliable in <option>)
+      o.textContent = `● ${prog.name}`;
+      // Store the hue on the option for reference
+      o.dataset.hue = prog.hue;
+      if (id === state.config.program) o.selected = true;
+      sel.appendChild(o);
+    }
+    sel.addEventListener("change", () => {
+      state.config.program = sel.value;
+      // Single-hue law: disable accent select when a program is chosen
+      updateAccentSelectState();
+      corpusRegen(false);
+    });
+    g.appendChild(sel);
+  }
+
   // Accent
   {
     const g = group("Accent");
     const sel = el("select", { "data-corpus-accent": "" }) as HTMLSelectElement;
+    // Disable when program is active (single-hue law)
+    if (state.config.program) {
+      sel.disabled = true;
+      sel.title = "program mode uses the program hue";
+    }
     const auto = document.createElement("option");
     auto.value = "";
     auto.textContent = "Auto";

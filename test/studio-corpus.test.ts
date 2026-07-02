@@ -116,6 +116,103 @@ describe("studio corpus mode (jsdom)", () => {
     expect(sameD).toBe(true);
   });
 
+  it("P3-1a. program select renders 7 options (None + 6 programs)", async () => {
+    await import("../src/studio/main");
+
+    const programSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-program]",
+    ) as HTMLSelectElement;
+    expect(programSelect).toBeTruthy();
+    expect(programSelect.options.length).toBe(7);
+    const firstOpt = programSelect.options.item(0);
+    expect(firstOpt?.value).toBe("");
+    expect(firstOpt?.textContent).toMatch(/None/);
+  });
+
+  it("P3-1b. choosing artificial-intelligence → hue in svg, no #FF4F00, accent disabled", async () => {
+    await import("../src/studio/main");
+
+    const programSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-program]",
+    ) as HTMLSelectElement;
+    expect(programSelect).toBeTruthy();
+
+    programSelect.value = "artificial-intelligence";
+    programSelect.dispatchEvent(new Event("change"));
+
+    const svgHtml = document.querySelector("#canvas")!.innerHTML.toUpperCase();
+    // Must contain the AI program hue (#D63A8C)
+    expect(svgHtml).toContain("#D63A8C");
+    // Must NOT contain corpus orange or white fills (program palette law)
+    expect(svgHtml).not.toContain("#FF4F00");
+    expect(svgHtml).not.toContain('"#FFFFFF"');
+
+    // Accent select must be disabled
+    const accentSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-accent]",
+    ) as HTMLSelectElement;
+    expect(accentSelect).toBeTruthy();
+    expect(accentSelect.disabled).toBe(true);
+    expect(accentSelect.title).toMatch(/program mode/i);
+  });
+
+  it("P3-1c. switching back to None re-enables accent select", async () => {
+    await import("../src/studio/main");
+
+    // First select a program
+    const programSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-program]",
+    ) as HTMLSelectElement;
+    programSelect.value = "artificial-intelligence";
+    programSelect.dispatchEvent(new Event("change"));
+
+    const accentSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-accent]",
+    ) as HTMLSelectElement;
+    expect(accentSelect.disabled).toBe(true);
+
+    // Switch back to None
+    programSelect.value = "";
+    programSelect.dispatchEvent(new Event("change"));
+
+    expect(accentSelect.disabled).toBe(false);
+  });
+
+  it("P3-1d. program choice persists across re-mount (localStorage)", async () => {
+    await import("../src/studio/main");
+
+    // Select a program
+    const programSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-program]",
+    ) as HTMLSelectElement;
+    programSelect.value = "science-innovation";
+    programSelect.dispatchEvent(new Event("change"));
+
+    // Verify localStorage was written
+    const stored = localStorage.getItem("fai-corpus-config");
+    expect(stored).toBeTruthy();
+    const parsed = JSON.parse(stored!);
+    expect(parsed.program).toBe("science-innovation");
+
+    // Re-mount: reset modules and re-import
+    vi.resetModules();
+    skeleton();
+    await import("../src/studio/main");
+
+    // After re-mount, the program select should restore the saved value
+    const programSelect2 = document.querySelector(
+      "#corpus-controls select[data-corpus-program]",
+    ) as HTMLSelectElement;
+    expect(programSelect2).toBeTruthy();
+    expect(programSelect2.value).toBe("science-innovation");
+
+    // And accent should be disabled
+    const accentSelect2 = document.querySelector(
+      "#corpus-controls select[data-corpus-accent]",
+    ) as HTMLSelectElement;
+    expect(accentSelect2.disabled).toBe(true);
+  });
+
   it("5. spacebar triggers reroll (seed display changes)", async () => {
     await import("../src/studio/main");
 
