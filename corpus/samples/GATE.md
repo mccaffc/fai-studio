@@ -41,3 +41,8 @@ FIGURES: PASS — curated corpus figures (lamps, ring-domes, owl-eyes) placed re
 fields; enormous improvement over blobs. Noted for later: canon anchors LARGER figures (3×2 domes)
 than the current max extracted span (2×3) — a future extraction pass could add multi-cell spans.
 PIPES: no regression (3100-3105 hold P2 quality; some gain integrated figures).
+
+## P3 final (2026-07-02): whole-branch review READY TO MERGE, zero must-fixes.
+Track-for-P4 (priority): larger figure spans (canon 3×2 domes vs shipped max 2×2/2×3);
+recolorPlan program→corpus-accent latent two-hue edge (UI-unreachable); drift-drop UX note;
+openCorpusItem guard parity.
