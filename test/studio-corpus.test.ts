@@ -415,3 +415,24 @@ describe("studio corpus mode (jsdom)", () => {
     expect(document.querySelector("#canvas")?.textContent).toMatch(/Unknown template: retired-template/);
   });
 });
+
+describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
+  it('accent select lists the four non-heritage program hues once each', async () => {
+    localStorage.clear();
+    const { mountCorpusMode } = await import('../src/studio/corpus-mode');
+    document.body.innerHTML = '<div id="canvas"></div><div id="corpus-controls"></div><div id="corpus-scores"></div>';
+    mountCorpusMode({ flash: () => {}, onSave: () => {} });
+    const sel = document.querySelector('[data-corpus-accent]') as HTMLSelectElement;
+    const values = [...sel.options].map(o => o.value);
+    for (const hue of ['#8265DB', '#D63A8C', '#268B41', '#3A4A6B']) {
+      expect(values.filter(v => v === hue)).toHaveLength(1);
+    }
+    expect(values.filter(v => v === '#4997D0')).toHaveLength(1); // no dupe for shared hues
+  });
+  it('engine accepts a program hue as explicit accent in full-palette mode', async () => {
+    const { generateBanner } = await import('../src/engine/corpus/index');
+    const r = generateBanner({ seed: 777, accent: '#8265DB' });
+    expect(r.svg).toContain('#8265DB');
+    expect(r.svg).not.toContain('#FF4F00'); // zoning de-scatters heritage strays
+  });
+});

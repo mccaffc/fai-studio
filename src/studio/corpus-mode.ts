@@ -460,6 +460,20 @@ function renderCorpusControls(): void {
       if (hex === state.config.accent) o.selected = true;
       sel.appendChild(o);
     }
+    // Program hues are choosable as explicit accents in full-palette mode
+    // (they stay out of the Auto rotation — wayfinding discipline).
+    const pg = document.createElement("optgroup");
+    pg.label = "Program hues";
+    for (const [pid, p] of Object.entries(PROGRAMS)) {
+      if (CORPUS_ACCENTS.some(([, h]) => h === p.hue)) continue; // already listed as heritage
+      const o = document.createElement("option");
+      o.value = p.hue;
+      o.textContent = `${p.name} ${p.hue}`;
+      o.dataset.programHue = pid;
+      if (p.hue === state.config.accent && !CORPUS_ACCENTS.some(([, h]) => h === p.hue)) o.selected = true;
+      pg.appendChild(o);
+    }
+    sel.appendChild(pg);
     sel.addEventListener("change", () => {
       state.config.accent = sel.value;
       // recolor (geometry frozen) if there's a current result; else regenerate

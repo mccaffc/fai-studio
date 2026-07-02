@@ -21,6 +21,14 @@
  * test/engine-corpus/purity.test.ts.
  */
 
+// Explicit accent knobs accept the corpus accents AND the six program hues:
+// program hues stay OUT of the auto rotation (wayfinding discipline + corpus
+// truth) but are deliberately choosable (Chris, 2026-07-02).
+const PROGRAM_HUES = ['#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'];
+function isAllowedExplicitAccent(accent: string, order: readonly string[]): boolean {
+  return order.includes(accent) || PROGRAM_HUES.includes(accent);
+}
+
 import type {
   BannerPlan,
   CellPlan,
@@ -202,7 +210,7 @@ export function sampleWithDiagnostics(
     if (!placedPatch) {
       placeFigure(cells, grammar, rng, figureSize, knobs.accent, figures, template.id);
     }
-  } else if (knobs.accent && !grammar.palette.accentOrder.includes(knobs.accent)) {
+  } else if (knobs.accent && !isAllowedExplicitAccent(knobs.accent, grammar.palette.accentOrder)) {
     throw new Error(`Unknown accent ink: ${knobs.accent}`);
   }
 
@@ -215,7 +223,7 @@ export function sampleWithDiagnostics(
 
   fillTileCells(cells, grammar, rng, workingSet, template, diag);
   applyAccentZoning(cells, grammar, rng, template, knobs, diag);
-  enforceAccentBudget(cells, grammar);
+  enforceAccentBudget(cells, grammar, knobs.accent);
   ensureAccentPresence(cells, grammar, rng);
   // Run last: cap rhythm-template run length AFTER every ink mutation, so the
   // accent passes can't re-merge a split run.
@@ -820,7 +828,7 @@ function placePatch(
   globalGround: string,
   diag: SampleDiagnostics,
 ): boolean {
-  if (knobAccent && !grammar.palette.accentOrder.includes(knobAccent)) {
+  if (knobAccent && !isAllowedExplicitAccent(knobAccent, grammar.palette.accentOrder)) {
     throw new Error(`Unknown accent ink: ${knobAccent}`);
   }
 
@@ -1098,7 +1106,7 @@ function placeFigure(
   figures: readonly FigureAsset[],
   templateId = '',
 ): boolean {
-  if (knobAccent && !grammar.palette.accentOrder.includes(knobAccent)) {
+  if (knobAccent && !isAllowedExplicitAccent(knobAccent, grammar.palette.accentOrder)) {
     throw new Error(`Unknown accent ink: ${knobAccent}`);
   }
 
@@ -1783,8 +1791,9 @@ function splitInk(target: DraftCell, cells: DraftCell[]): string {
   return neutralForGround(target.ground);
 }
 
-export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar): void {
+export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar, extraAccent?: string): void {
   const accents = new Set(grammar.palette.accentOrder);
+  if (extraAccent) accents.add(extraAccent); // explicit program-hue accents count toward the budget too
   const nonPlain = cells.filter(cell => cell.kind !== 'plain');
   const maxAccent = Math.floor(nonPlain.length * 0.35 + EPS);
   // Patch-accent cells strip LAST, and all-or-nothing: an iconic patch's accent
@@ -2113,7 +2122,7 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
 
   const knobs: SampleKnobs = { accent };
   applyAccentZoning(cells, grammar, rng, template, knobs, diag);
-  enforceAccentBudget(cells, grammar);
+  enforceAccentBudget(cells, grammar, knobs.accent);
 
   const finalCells = finalizeCells(cells);
   return {
