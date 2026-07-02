@@ -3,12 +3,14 @@ import { readFileSync } from 'node:fs';
 import { loadMergedManifest } from '../../tools/mine/render-recon';
 import { composeGrammar } from '../../tools/grammar/grammar-schema';
 import type { Corpus } from '../../tools/mine/schema';
+import type { ManifestTile } from '../../tools/mine/schema';
 
 let result: ReturnType<typeof composeGrammar>;
+let manifest: Map<string, ManifestTile & { baseDir: string }>;
 
 beforeAll(() => {
   const corpus: Corpus = JSON.parse(readFileSync('corpus/corpus.json', 'utf8'));
-  const manifest = loadMergedManifest();
+  manifest = loadMergedManifest();
   result = composeGrammar(corpus, manifest);
 });
 
@@ -18,7 +20,6 @@ describe('composeGrammar', () => {
   });
 
   it('tileCatalog has >80 entries and every entry family matches the manifest', () => {
-    const manifest = loadMergedManifest();
     const entries = Object.entries(result.tileCatalog);
     expect(entries.length).toBeGreaterThan(80);
     for (const [id, entry] of entries) {

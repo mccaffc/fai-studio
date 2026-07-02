@@ -69,8 +69,7 @@ export function composeGrammar(
 
   // --- tile catalog: entries for tiles that appear ≥1 time in the corpus ---
   const tileCatalog: Record<string, TileCatalogEntry> = {};
-  for (const [tileId, count] of Object.entries(stats.tiles)) {
-    if (count < 1) continue;
+  for (const [tileId] of Object.entries(stats.tiles)) {
     const entry = manifest.get(tileId);
     if (!entry) continue;
     tileCatalog[tileId] = {
@@ -94,14 +93,35 @@ export function composeGrammar(
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     .map(([hex]) => hex);
 
+  // key order normalized here so composeGrammar's return value is deterministic for direct consumers, not just the serialized CLI artifact
+  const sortedTileCatalog: Record<string, TileCatalogEntry> = {};
+  for (const key of Object.keys(tileCatalog).sort()) {
+    sortedTileCatalog[key] = tileCatalog[key]!;
+  }
+
+  const sortedGlobalGrounds: Record<string, number> = {};
+  for (const key of Object.keys(stats.globalGrounds).sort()) {
+    sortedGlobalGrounds[key] = stats.globalGrounds[key]!;
+  }
+
+  const sortedInkByGround: Record<string, Record<string, number>> = {};
+  for (const groundKey of Object.keys(stats.inkByGround).sort()) {
+    const inkMap = stats.inkByGround[groundKey]!;
+    const sortedInkMap: Record<string, number> = {};
+    for (const inkKey of Object.keys(inkMap).sort()) {
+      sortedInkMap[inkKey] = inkMap[inkKey]!;
+    }
+    sortedInkByGround[groundKey] = sortedInkMap;
+  }
+
   return {
     schemaVersion: 1,
     stats,
     templates,
-    tileCatalog,
+    tileCatalog: sortedTileCatalog,
     palette: {
-      globalGrounds: stats.globalGrounds,
-      inkByGround: stats.inkByGround,
+      globalGrounds: sortedGlobalGrounds,
+      inkByGround: sortedInkByGround,
       accentOrder,
     },
   };

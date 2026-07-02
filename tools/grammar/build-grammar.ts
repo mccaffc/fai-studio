@@ -31,13 +31,6 @@ function main(): void {
     builtAt: new Date().toISOString(),
   };
 
-  // Sort tileCatalog keys for deterministic output
-  const sortedCatalog: Grammar['tileCatalog'] = {};
-  for (const key of Object.keys(grammar.tileCatalog).sort()) {
-    sortedCatalog[key] = grammar.tileCatalog[key]!;
-  }
-  grammar.tileCatalog = sortedCatalog;
-
   writeFileSync(OUT_PATH, JSON.stringify(grammar, null, 2) + '\n');
 
   const tileCount = Object.keys(grammar.tileCatalog).length;
