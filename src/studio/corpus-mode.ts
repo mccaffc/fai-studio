@@ -154,12 +154,19 @@ export function corpusRegen(newSeed = false): void {
   if (newSeed) {
     state.config.seed = (Math.random() * 0xffffffff) >>> 0;
   }
-  state.current = generateBanner(buildCorpusConfig());
-  state.vars = engineVariations(state.current, 6);
-  renderCorpusCanvas();
-  renderCorpusVariations();
-  updateSeedDisplay();
-  renderCorpusScores();
+  // Defense-in-depth parity with classic regen(): the default mode must never
+  // blank the studio — paint any engine error into the canvas instead.
+  try {
+    state.current = generateBanner(buildCorpusConfig());
+    state.vars = engineVariations(state.current, 6);
+    renderCorpusCanvas();
+    renderCorpusVariations();
+    updateSeedDisplay();
+    renderCorpusScores();
+  } catch (err) {
+    const canvas = document.querySelector("#canvas");
+    if (canvas) canvas.innerHTML = `<p style="padding:20px;color:#c00">${String(err)}</p>`;
+  }
 }
 
 function corpusRecolorInPlace(): void {
