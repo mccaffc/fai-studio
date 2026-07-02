@@ -325,9 +325,8 @@ function renderVariations(): void {
 function saveCorpusItem(config: CorpusConfig, seed: number): void {
   state.saved.push({ kind: "corpus", config, seed });
   persist();
-  // Re-render the tray if it's visible (classic mode). In corpus mode the
-  // tray section is hidden but we keep the list in sync for when they switch.
-  if (studioMode !== "corpus") renderSaved();
+  // Tray is visible in both modes since the corpus save-tray landed — always repaint.
+  renderSaved();
   flash("Saved to the tray below.");
 }
 
@@ -700,6 +699,7 @@ if (studioMode === "corpus") {
   try {
     const mod = await getCorpusMod();
     mod.mountCorpusMode({ flash, onSave: saveCorpusItem });
+    renderSaved(); // persisted tray items must appear on corpus cold boot too
   } catch (err) {
     flash(String(err), true);
   }
