@@ -1115,17 +1115,27 @@ function placeFigure(
     if (!ink) continue;
     const bounds = figureRegionBounds(region);
     if (!regionCoversBounds(region, bounds)) continue;
-    const anchor = region.find(cell => cell.col === bounds.col && cell.row === bounds.row);
-    const asset = anchor ? chooseFigureAsset(figures, bounds.w, bounds.h, rng) : undefined;
+    const chosen = chooseFigureAsset(figures, bounds.w, bounds.h, rng);
     for (const cell of region) {
       cell.kind = 'freeform';
       cell.ink = ink;
       cell.inks = [ink];
     }
-    if (anchor && asset) {
-      anchor.figureId = asset.id;
-      anchor.figureAnchor = true;
-      anchor.figureSpan = [bounds.w, bounds.h];
+    if (chosen) {
+      const { asset, k } = chosen;
+      const spanW = k * asset.w;
+      const spanH = k * asset.h;
+      // Center the aspect-true span within the region on integer cell offsets;
+      // uncovered member cells stay freeform (they render as ground — negative
+      // space around the icon, the canonical read).
+      const offCol = bounds.col + Math.floor((bounds.w - spanW) / 2);
+      const offRow = bounds.row + Math.floor((bounds.h - spanH) / 2);
+      const anchor = region.find(cell => cell.col === offCol && cell.row === offRow);
+      if (anchor) {
+        anchor.figureId = asset.id;
+        anchor.figureAnchor = true;
+        anchor.figureSpan = [spanW, spanH];
+      }
     }
     return true;
   }
@@ -1171,7 +1181,7 @@ function chooseFigureAsset(
   regionW: number,
   regionH: number,
   rng: Rng,
-): FigureAsset | undefined {
+): { asset: FigureAsset; k: number } | undefined {
   // Candidate pool: exact(k=1) ∪ upscaled(k≥2) ∪ fits-within.
   // An asset (w, h) qualifies at integer scale k when regionW===k*w && regionH===k*h.
   // Upscaled candidates (k≥2) are weighted 2× their base weight (hero bias).
@@ -1200,18 +1210,22 @@ function chooseFigureAsset(
   if (candidateEntries.length === 0) {
     for (const asset of [...figures].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0)) {
       if (asset.w <= regionW && asset.h <= regionH) {
+        // Aspect-true: the largest integer scale that fits BOTH axes. The span
+        // becomes k*(w,h) — NEVER the region rect — so figures cannot stretch
+        // out of proportion (Chris's report, 2026-07-02).
+        const k = Math.max(1, Math.min(Math.floor(regionW / asset.w), Math.floor(regionH / asset.h)));
         const baseWeight = 1 / (Math.abs(asset.inkShare - 0.4) + EPS);
         candidateEntries.push({
-          value: { asset, k: 1 },
+          value: { asset, k },
           weight: baseWeight,
-          sortKey: `${asset.id}@1`,
+          sortKey: `${asset.id}@${k}`,
         });
       }
     }
   }
 
   if (candidateEntries.length === 0) return undefined;
-  return weightedChoice(rng, candidateEntries).asset;
+  return weightedChoice(rng, candidateEntries);
 }
 
 /**

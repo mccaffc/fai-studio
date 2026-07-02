@@ -395,3 +395,42 @@ describe('P4.0: figure upscaling', () => {
     expect(largePlacements, 'expected ≥1 large (≥4-cell) figure placement across 20 figure-field seeds').toBeGreaterThanOrEqual(1);
   });
 });
+
+describe('figure aspect integrity (no stretch — Chris report 2026-07-02)', () => {
+  it('every figure <g> across 30 figure-field seeds renders at uniform scale', async () => {
+    const { samplePlan } = await import('../../src/engine/corpus/sample');
+    const { renderPlanSvg } = await import('../../src/engine/corpus/render');
+    const { GRAMMAR } = await import('../../src/engine/corpus/data/grammar');
+    const { TILES } = await import('../../src/engine/corpus/data/tiles');
+    let figures = 0;
+    for (let seed = 12000; seed < 12080; seed++) {
+      const plan = samplePlan(GRAMMAR, seed, { template: 'figure-field', figures: true });
+      if (!plan.cells.some(c => c.figureId)) continue;
+      const svg = renderPlanSvg(plan, TILES, { nodeIds: true });
+      for (const tag of svg.matchAll(/<g\b[^>]*>/g)) {
+        if (!tag[0].includes('data-figure-id')) continue;
+        const m = tag[0].match(/scale\(([-\d.]+),([-\d.]+)\)/);
+        if (!m) continue;
+        figures++;
+        expect(Math.abs(parseFloat(m[1]!) - parseFloat(m[2]!))).toBeLessThan(1e-9);
+      }
+    }
+    expect(figures).toBeGreaterThan(3); // the assertion actually exercised (anchors are sparse)
+  });
+  it('fits-within placement gets an aspect-true span, centered', async () => {
+    const { samplePlan } = await import('../../src/engine/corpus/sample');
+    const { GRAMMAR } = await import('../../src/engine/corpus/data/grammar');
+    // scan seeds for any anchor whose span aspect differs from its asset aspect
+    const { FIGURES } = await import('../../src/engine/corpus/data/figures');
+    const byId = new Map(FIGURES.map(f => [f.id, f]));
+    for (let seed = 12000; seed < 12060; seed++) {
+      const plan = samplePlan(GRAMMAR, seed, { template: 'figure-field', figures: true });
+      for (const cell of plan.cells) {
+        if (!cell.figureId || !cell.figureSpan) continue;
+        const a = byId.get(cell.figureId)!;
+        const [sw, sh] = cell.figureSpan;
+        expect(sw * a.h).toBe(sh * a.w); // span aspect === asset aspect exactly
+      }
+    }
+  });
+});
