@@ -1076,7 +1076,7 @@ function growConnectedRegion(cells: DraftCell[], rng: Rng, start: DraftCell, siz
         const newBboxArea = newBounds.w * newBounds.h;
         const wouldBeRect = (region.length + 1) === newBboxArea;
         // 60/40 bias: rectangular steps get 3× weight, ragged steps get 1×
-        // (3:1 ratio = 75% rect / 25% ragged, approximately 60/40 at selection)
+        // (3:1 ratio = 75% rect / 25% ragged, strong rectangular preference; the plan's 60/40 was a soft target)
         const rectWeight = curIsRect ? 3 : 1;
         return {
           value: cell,
