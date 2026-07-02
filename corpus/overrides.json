@@ -1,0 +1,164 @@
+{
+  "012": {
+    "5,2": {
+      "kind": "freeform"
+    }
+  },
+  "017": {
+    "1,0": {
+      "kind": "freeform"
+    },
+    "3,0": {
+      "kind": "freeform"
+    },
+    "0,1": {
+      "kind": "freeform"
+    },
+    "5,1": {
+      "kind": "freeform"
+    },
+    "4,2": {
+      "kind": "freeform"
+    }
+  },
+  "018": {
+    "2,0": {
+      "kind": "freeform"
+    }
+  },
+  "019": {
+    "2,2": {
+      "kind": "freeform"
+    }
+  },
+  "023": {
+    "1,0": {
+      "kind": "freeform"
+    },
+    "0,1": {
+      "kind": "tile",
+      "tile": "ramp-02",
+      "rotation": 90,
+      "flip": false,
+      "score": 0.880648899188876
+    },
+    "1,1": {
+      "kind": "tile",
+      "tile": "ramp-02",
+      "rotation": 270,
+      "flip": true,
+      "score": 0.880648899188876
+    },
+    "4,1": {
+      "kind": "freeform"
+    },
+    "4,2": {
+      "kind": "tile",
+      "tile": "ramp-02",
+      "rotation": 90,
+      "flip": false,
+      "score": 0.880648899188876
+    },
+    "5,2": {
+      "kind": "tile",
+      "tile": "ramp-02",
+      "rotation": 270,
+      "flip": true,
+      "score": 0.880648899188876
+    }
+  },
+  "024": {
+    "0,0": {
+      "kind": "freeform"
+    },
+    "1,0": {
+      "kind": "freeform"
+    },
+    "4,0": {
+      "kind": "freeform"
+    },
+    "5,0": {
+      "kind": "freeform"
+    },
+    "0,1": {
+      "kind": "freeform"
+    },
+    "5,1": {
+      "kind": "freeform"
+    }
+  },
+  "025": {
+    "4,1": {
+      "kind": "freeform"
+    },
+    "5,2": {
+      "kind": "freeform"
+    }
+  },
+  "035": {
+    "1,0": {
+      "kind": "freeform"
+    }
+  },
+  "043": {
+    "0,0": {
+      "kind": "freeform"
+    },
+    "1,0": {
+      "kind": "freeform"
+    },
+    "2,0": {
+      "kind": "freeform"
+    },
+    "3,0": {
+      "kind": "freeform"
+    },
+    "4,0": {
+      "kind": "freeform"
+    },
+    "5,0": {
+      "kind": "freeform"
+    },
+    "0,1": {
+      "kind": "freeform"
+    },
+    "1,1": {
+      "kind": "freeform"
+    },
+    "2,1": {
+      "kind": "freeform"
+    },
+    "3,1": {
+      "kind": "freeform"
+    },
+    "4,1": {
+      "kind": "freeform"
+    },
+    "5,1": {
+      "kind": "freeform"
+    },
+    "0,2": {
+      "kind": "freeform"
+    },
+    "1,2": {
+      "kind": "freeform"
+    },
+    "2,2": {
+      "kind": "freeform"
+    },
+    "3,2": {
+      "kind": "freeform"
+    },
+    "4,2": {
+      "kind": "freeform"
+    },
+    "5,2": {
+      "kind": "freeform"
+    }
+  },
+  "047": {
+    "5,1": {
+      "kind": "freeform"
+    }
+  }
+}

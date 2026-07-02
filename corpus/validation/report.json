@@ -1,0 +1,5755 @@
+{
+  "generatedAt": "2026-07-02T04:38:58.272Z",
+  "banners": [
+    {
+      "id": "001",
+      "agreement": 0.9573,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9997916666666666
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9988888888888889
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9986805555555556
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9986111111111111
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.75
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9986111111111111
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9986111111111111
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.49027777777777776
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "002",
+      "agreement": 0.9959,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9944444444444445
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9951388888888889
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9945833333333334
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9939583333333334
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9931944444444445
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9920138888888889
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.993125
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9927083333333333
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9925
+        }
+      ]
+    },
+    {
+      "id": "003",
+      "agreement": 0.9467,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9975694444444444
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9980555555555556
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.998125
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9983333333333333
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9996527777777777
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9993055555555556
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9980555555555556
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9990277777777777
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.998125
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.8552777777777778
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9991666666666666
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.20756944444444445
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9983333333333333
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9974305555555556
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9974305555555556
+        }
+      ]
+    },
+    {
+      "id": "004",
+      "agreement": 0.8873,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.8702777777777778
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.8704861111111111
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9075694444444444
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.8683333333333333
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9397222222222222
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.6001388888888889
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.600625
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9397222222222222
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.6002777777777778
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9996527777777777
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9072916666666667
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9996527777777777
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.8674305555555556
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "005",
+      "agreement": 1,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "006",
+      "agreement": 0.9705,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9995138888888889
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.8675694444444444
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.8675
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.8674305555555556
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.8695833333333334
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9990277777777777
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9994444444444445
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "007",
+      "agreement": 0.7775,
+      "matchRate": 0.7333,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9991666666666666
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9988888888888889
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9993055555555556
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9988194444444445
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9997916666666666
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.999375
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        }
+      ]
+    },
+    {
+      "id": "008",
+      "agreement": 0.8889,
+      "matchRate": 0.875,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        }
+      ]
+    },
+    {
+      "id": "009",
+      "agreement": 0.9284,
+      "matchRate": 0.9375,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9944444444444445
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9951388888888889
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9945833333333334
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.7733333333333333
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9920138888888889
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9920138888888889
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9925
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9927083333333333
+        }
+      ]
+    },
+    {
+      "id": "010",
+      "agreement": 0.9387,
+      "matchRate": 0.9444,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9994444444444445
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9944444444444445
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9945833333333334
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9917361111111112
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9915972222222222
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9949305555555555
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.999375
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.955
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9927083333333333
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9925
+        }
+      ]
+    },
+    {
+      "id": "011",
+      "agreement": 0.9123,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9997916666666666
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9988888888888889
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7788194444444444
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.998125
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9949305555555555
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9991666666666666
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5529166666666666
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5529166666666666
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5529166666666666
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9944444444444445
+        }
+      ]
+    },
+    {
+      "id": "012",
+      "agreement": 0.9133,
+      "matchRate": 0.9444,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.99875
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9411111111111111
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.99875
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9413194444444445
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.99875
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9413194444444445
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9926388888888888
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7036111111111111
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9986805555555556
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9393055555555555
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.993125
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9927083333333333
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        }
+      ]
+    },
+    {
+      "id": "013",
+      "agreement": 0.9445,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9801388888888889
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9936805555555556
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9834722222222222
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9890277777777777
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9959722222222223
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9815277777777778
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.1542361111111111
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9813888888888889
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9811111111111112
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9958333333333333
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9899305555555555
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9797916666666666
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9942361111111111
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "014",
+      "agreement": 0.7946,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9997916666666666
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.715625
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5934722222222222
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.75
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.0975
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.6567361111111111
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.0975
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.8306944444444444
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5615277777777777
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "015",
+      "agreement": 0.8926,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.8413888888888889
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7015277777777778
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7077083333333334
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7015277777777778
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7077083333333334
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7015277777777778
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7077083333333334
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9996527777777777
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9995138888888889
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9996527777777777
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9995138888888889
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9995138888888889
+        }
+      ]
+    },
+    {
+      "id": "016",
+      "agreement": 0.7639,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.20847222222222223
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9994444444444445
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 0.21368055555555557
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 0.208125
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5529166666666666
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.8007638888888889
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 0.21368055555555557
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 0.5539583333333333
+        }
+      ]
+    },
+    {
+      "id": "017",
+      "agreement": 0.5876,
+      "matchRate": 0.7222,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.5976388888888889
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9974305555555556
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9989583333333333
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9997916666666666
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5975
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5975
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5975
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5979166666666667
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9991666666666666
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9965277777777778
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5976388888888889
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        }
+      ]
+    },
+    {
+      "id": "018",
+      "agreement": 0.6207,
+      "matchRate": 0.75,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 0.7458333333333333
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.6266666666666667
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 0.5541666666666667
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 0.6356944444444445
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.43333333333333335
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.43333333333333335
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 0.4375
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5611805555555556
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 0.7458333333333333
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        }
+      ]
+    },
+    {
+      "id": "019",
+      "agreement": 0.6924,
+      "matchRate": 0.9231,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9922916666666667
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 0.6284722222222222
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9922916666666667
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9928472222222222
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 0.6284722222222222
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 0.6283333333333333
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9927083333333333
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.000625
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.35097222222222224
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 0.6284027777777778
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 0.6284722222222222
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "020",
+      "agreement": 0.8179,
+      "matchRate": 0.8889,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9939583333333334
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9903472222222223
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.5188194444444445
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9993055555555556
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.5197916666666667
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9995138888888889
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.955
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9913888888888889
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.7543055555555556
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "021",
+      "agreement": 0.9415,
+      "matchRate": 0.9412,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9981944444444445
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9981944444444445
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9973611111111111
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9984027777777778
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9994444444444445
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9775694444444445
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9972222222222222
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.998125
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9976388888888889
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9980555555555556
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9952083333333334
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.996875
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9981944444444445
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9977777777777778
+        }
+      ]
+    },
+    {
+      "id": "022",
+      "agreement": 0.9527,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.644375
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9982638888888888
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.5205555555555555
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.998125
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9981944444444445
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.998125
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9983333333333333
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9979861111111111
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9981944444444445
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.998125
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        }
+      ]
+    },
+    {
+      "id": "023",
+      "agreement": 0.7174,
+      "matchRate": 0.8824,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.5538888888888889
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.7728472222222222
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5320138888888889
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5319444444444444
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7734722222222222
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5538888888888889
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.999375
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9989583333333333
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.7742361111111111
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.7110416666666667
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.7110416666666667
+        }
+      ]
+    },
+    {
+      "id": "024",
+      "agreement": 0.613,
+      "matchRate": 0.6667,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9979166666666667
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9979861111111111
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5538194444444444
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9980555555555556
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.998125
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5538888888888889
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9375
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9983333333333333
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9984722222222222
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "025",
+      "agreement": 0.7274,
+      "matchRate": 0.75,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9989583333333333
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9980555555555556
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9979166666666667
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9978472222222222
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5538888888888889
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9983333333333333
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9981944444444445
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5538888888888889
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        }
+      ]
+    },
+    {
+      "id": "026",
+      "agreement": 0.9987,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9989583333333333
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.998125
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9979166666666667
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9978472222222222
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9979166666666667
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9979166666666667
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9979861111111111
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9978472222222222
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9978472222222222
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.999375
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9979166666666667
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9979166666666667
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "027",
+      "agreement": 0.9117,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9927777777777778
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9945833333333334
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9927777777777778
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9979166666666667
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9927083333333333
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9976388888888889
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9979861111111111
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9931944444444445
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9973611111111111
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9977083333333333
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9925694444444444
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9946527777777778
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5290972222222222
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9571527777777777
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.95625
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5355555555555556
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5357638888888889
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.955625
+        }
+      ]
+    },
+    {
+      "id": "028",
+      "agreement": 0.9996,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.999375
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.999375
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9994444444444445
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9980555555555556
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9979166666666667
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9983333333333333
+        }
+      ]
+    },
+    {
+      "id": "029",
+      "agreement": 0.9544,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.8004861111111111
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.8004861111111111
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.8004861111111111
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.8004861111111111
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9879861111111111
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9888888888888889
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "030",
+      "agreement": 0.9929,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.8729166666666667
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "031",
+      "agreement": 0.9942,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9813888888888889
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9835416666666666
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9816666666666667
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9840277777777777
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9815972222222222
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9836805555555556
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "032",
+      "agreement": 0.9888,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9989583333333333
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.99875
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9989583333333333
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9076388888888889
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9991666666666666
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9991666666666666
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9069444444444444
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9989583333333333
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9990972222222222
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9986111111111111
+        }
+      ]
+    },
+    {
+      "id": "033",
+      "agreement": 0.973,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9993055555555556
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9963194444444444
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9991666666666666
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.7727083333333333
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9832638888888889
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9988888888888889
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.99625
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.7729166666666667
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.99625
+        }
+      ]
+    },
+    {
+      "id": "034",
+      "agreement": 0.9326,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9974305555555556
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.99875
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.599375
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9988194444444445
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9995138888888889
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.6009722222222222
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.6
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9988194444444445
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9989583333333333
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9974305555555556
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9972222222222222
+        }
+      ]
+    },
+    {
+      "id": "035",
+      "agreement": 0.8756,
+      "matchRate": 0.8889,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.99875
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9996527777777777
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9920138888888889
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.7722222222222223
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9988194444444445
+        }
+      ]
+    },
+    {
+      "id": "036",
+      "agreement": 0.8806,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.6775694444444444
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.6776388888888889
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9980555555555556
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9977083333333333
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "037",
+      "agreement": 1,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "038",
+      "agreement": 1,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "039",
+      "agreement": 0.991,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9922222222222222
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9922222222222222
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9904166666666666
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9894444444444445
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9925694444444444
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9925694444444444
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9933333333333333
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9899305555555555
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9934027777777777
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9888194444444445
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9909027777777778
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9932638888888888
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9891666666666666
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9894444444444445
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.990625
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9889583333333334
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9911111111111112
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9889583333333334
+        }
+      ]
+    },
+    {
+      "id": "040",
+      "agreement": 0.9781,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9997916666666666
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9997916666666666
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9997916666666666
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9963194444444444
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.6429861111111111
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.97125
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9953472222222223
+        }
+      ]
+    },
+    {
+      "id": "041",
+      "agreement": 0.9996,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9936111111111111
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "plain",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "042",
+      "agreement": 0.7194,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.75
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.75
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.75
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.19402777777777777
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5472222222222223
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5472222222222223
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5472222222222223
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9086111111111111
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9086111111111111
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5472222222222223
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5
+        }
+      ]
+    },
+    {
+      "id": "043",
+      "agreement": 0,
+      "matchRate": 0,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        }
+      ]
+    },
+    {
+      "id": "044",
+      "agreement": 0.9697,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.6441666666666667
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.906875
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.906875
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9994444444444445
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "045",
+      "agreement": 0.6781,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.75
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.75
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.75
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.5
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.75
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.35291666666666666
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.35291666666666666
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "046",
+      "agreement": 0.9936,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9998611111111111
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.8868055555555555
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9997222222222222
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9996527777777777
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9996527777777777
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "047",
+      "agreement": 0.3889,
+      "matchRate": 0.3889,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "freeform",
+          "agreement": 0
+        }
+      ]
+    },
+    {
+      "id": "048",
+      "agreement": 1,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    },
+    {
+      "id": "049",
+      "agreement": 0.8834,
+      "matchRate": 0.8889,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9929861111111111
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "freeform",
+          "agreement": 0
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.955
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9931944444444445
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9947916666666666
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9951388888888889
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9954166666666666
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9994444444444445
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9949305555555555
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9927083333333333
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9925
+        }
+      ]
+    },
+    {
+      "id": "050",
+      "agreement": 0.9995,
+      "matchRate": 1,
+      "cells": [
+        {
+          "col": 0,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9999305555555555
+        },
+        {
+          "col": 5,
+          "row": 0,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9988194444444445
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9995833333333334
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9991666666666666
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9992361111111111
+        },
+        {
+          "col": 4,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9995138888888889
+        },
+        {
+          "col": 5,
+          "row": 1,
+          "kind": "tile",
+          "agreement": 0.9989583333333333
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9986111111111111
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        },
+        {
+          "col": 4,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 0.9986111111111111
+        },
+        {
+          "col": 5,
+          "row": 2,
+          "kind": "tile",
+          "agreement": 1
+        }
+      ]
+    }
+  ]
+}

@@ -10,9 +10,14 @@
     "test": "vitest run",
     "batch": "npm run build:engine && node scripts/batch.mjs",
     "build:flatten": "esbuild src/studio/flatten-core.ts --bundle --format=esm --platform=neutral --outfile=dist-flatten/flatten-core.js",
-    "flatten:dir": "npm run build:flatten && node scripts/flatten-dir.mjs"
+    "flatten:dir": "npm run build:flatten && node scripts/flatten-dir.mjs",
+    "mine": "esbuild tools/mine/mine.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/mine.mjs && node dist-tools/mine.mjs",
+    "mine:extract": "esbuild tools/mine/extract-tile.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/extract-tile.mjs && node dist-tools/extract-tile.mjs",
+    "mine:validate": "esbuild tools/mine/validate-sheet.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/validate-sheet.mjs && node dist-tools/validate-sheet.mjs"
   },
   "devDependencies": {
+    "@types/jsdom": "^28.0.3",
+    "@types/node": "^26.1.0",
     "canvas": "^3.2.3",
     "esbuild": "^0.28.1",
     "jsdom": "^29.1.1",
