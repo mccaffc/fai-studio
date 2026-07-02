@@ -24,6 +24,11 @@ import {
   initEditor,
   openScene,
 } from "./editor/index";
+import {
+  mountCorpusMode,
+  unmountCorpusMode,
+  corpusSpacebarReroll,
+} from "./corpus-mode";
 
 const info = describe();
 const SWATCHES: Array<[string, string]> = [
@@ -66,6 +71,83 @@ function el(tag: string, attrs: Record<string, string> = {}, html = ""): HTMLEle
   for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
   e.innerHTML = html;
   return e;
+}
+
+// ── studio mode (corpus | classic) ──
+type StudioMode = "corpus" | "classic";
+const LS_MODE_KEY = "fai-studio-mode";
+// Fall back to classic if the corpus panel mount point isn't in the DOM
+// (this keeps older test skeletons working without modification).
+const _corpusMountPresent = !!document.getElementById("corpus-controls");
+let studioMode: StudioMode = _corpusMountPresent
+  ? ((localStorage.getItem(LS_MODE_KEY) as StudioMode | null) ?? "corpus")
+  : "classic";
+
+function applyModeVisibility(): void {
+  const classicAside = $("#controls");
+  const corpusAside = $("#corpus-controls");
+  const savedEl = $("#saved");
+  const savedHeading = document.getElementById("saved-heading");
+  const scoresEl = $("#corpus-scores");
+
+  if (studioMode === "corpus") {
+    if (classicAside) classicAside.style.display = "none";
+    if (corpusAside) corpusAside.style.display = "";
+    if (savedEl) savedEl.style.display = "none";
+    if (savedHeading) savedHeading.style.display = "none";
+    if (scoresEl) scoresEl.style.display = "";
+  } else {
+    if (classicAside) classicAside.style.display = "";
+    if (corpusAside) corpusAside.style.display = "none";
+    if (savedEl) savedEl.style.display = "";
+    if (savedHeading) savedHeading.style.display = "";
+    if (scoresEl) scoresEl.style.display = "none";
+  }
+}
+
+function switchMode(mode: StudioMode): void {
+  studioMode = mode;
+  localStorage.setItem(LS_MODE_KEY, mode);
+  applyModeVisibility();
+  renderModeToggle();
+
+  if (mode === "corpus") {
+    unmountCorpusMode();
+    mountCorpusMode({ flash });
+  } else {
+    unmountCorpusMode();
+    // ensure classic canvas is current
+    if (state.current) {
+      renderCanvas();
+      renderControls();
+      renderVariations();
+    } else {
+      regen();
+    }
+  }
+}
+
+function renderModeToggle(): void {
+  const toggle = $("#mode-toggle");
+  if (!toggle) return;
+  toggle.innerHTML = "";
+
+  for (const mode of ["corpus", "classic"] as StudioMode[]) {
+    const label = mode === "corpus" ? "Corpus" : "Classic";
+    const btn = el(
+      "button",
+      {
+        class: `chip${studioMode === mode ? " on" : ""}`,
+        style: "border-color:#2a2a2a; color:" + (studioMode === mode ? "#121212" : "#f3f3f3") +
+          "; background:" + (studioMode === mode ? "#f3f3f3" : "transparent"),
+      },
+      label,
+    );
+    btn.addEventListener("click", () => {
+      if (studioMode !== mode) switchMode(mode);
+    });
+    toggle.appendChild(btn);
+  }
 }
 
 // ── generation (geometry changes) ──
@@ -482,7 +564,11 @@ document.addEventListener("keydown", (e) => {
   const tag = (e.target as HTMLElement).tagName;
   if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
   e.preventDefault();
-  regen(true);
+  if (studioMode === "corpus") {
+    corpusSpacebarReroll();
+  } else {
+    regen(true);
+  }
 });
 
 // hand off canvas/controls to the editor when it's open; it reports back here
@@ -527,5 +613,17 @@ try {
 } catch {
   state.saved = [];
 }
-regen();
-renderSaved();
+
+// Render the mode toggle in the header
+renderModeToggle();
+// Apply visibility based on the stored/default mode
+applyModeVisibility();
+
+if (studioMode === "corpus") {
+  // Boot in corpus mode (default)
+  mountCorpusMode({ flash });
+} else {
+  // Boot in classic mode
+  regen();
+  renderSaved();
+}
