@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T04:12:25.770Z",
+  "generatedAt": "2026-07-02T04:38:58.272Z",
   "banners": [
     {
       "id": "001",
@@ -348,8 +348,8 @@
     },
     {
       "id": "004",
-      "agreement": 0.7872,
-      "matchRate": 0.7692,
+      "agreement": 0.8873,
+      "matchRate": 1,
       "cells": [
         {
           "col": 0,
@@ -396,8 +396,8 @@
         {
           "col": 1,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.6001388888888889
         },
         {
           "col": 2,
@@ -408,8 +408,8 @@
         {
           "col": 3,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.600625
         },
         {
           "col": 4,
@@ -420,8 +420,8 @@
         {
           "col": 5,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.6002777777777778
         },
         {
           "col": 0,
@@ -1376,7 +1376,7 @@
         {
           "col": 5,
           "row": 2,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         }
       ]
@@ -1855,7 +1855,7 @@
         {
           "col": 1,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -1867,7 +1867,7 @@
         {
           "col": 3,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -1885,7 +1885,7 @@
         {
           "col": 0,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -1915,7 +1915,7 @@
         {
           "col": 5,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -1945,7 +1945,7 @@
         {
           "col": 4,
           "row": 2,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -1976,7 +1976,7 @@
         {
           "col": 2,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -2073,8 +2073,8 @@
     },
     {
       "id": "019",
-      "agreement": 0.4147,
-      "matchRate": 0.5385,
+      "agreement": 0.6924,
+      "matchRate": 0.9231,
       "cells": [
         {
           "col": 0,
@@ -2115,8 +2115,8 @@
         {
           "col": 0,
           "row": 1,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 1,
@@ -2145,14 +2145,14 @@
         {
           "col": 5,
           "row": 1,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 0,
           "row": 2,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 1,
@@ -2169,8 +2169,8 @@
         {
           "col": 3,
           "row": 2,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 4,
@@ -2181,8 +2181,8 @@
         {
           "col": 5,
           "row": 2,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         }
       ]
     },
@@ -2303,8 +2303,8 @@
     },
     {
       "id": "021",
-      "agreement": 0.8304,
-      "matchRate": 0.8235,
+      "agreement": 0.9415,
+      "matchRate": 0.9412,
       "cells": [
         {
           "col": 0,
@@ -2339,8 +2339,8 @@
         {
           "col": 5,
           "row": 0,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9994444444444445
         },
         {
           "col": 0,
@@ -2399,8 +2399,8 @@
         {
           "col": 3,
           "row": 2,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9992361111111111
         },
         {
           "col": 4,
@@ -2533,8 +2533,8 @@
     },
     {
       "id": "023",
-      "agreement": 0.5793,
-      "matchRate": 0.6471,
+      "agreement": 0.7174,
+      "matchRate": 0.8824,
       "cells": [
         {
           "col": 0,
@@ -2545,7 +2545,7 @@
         {
           "col": 1,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -2575,14 +2575,14 @@
         {
           "col": 0,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.5320138888888889
         },
         {
           "col": 1,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.5319444444444444
         },
         {
           "col": 2,
@@ -2599,7 +2599,7 @@
         {
           "col": 4,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -2635,14 +2635,14 @@
         {
           "col": 4,
           "row": 2,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.7110416666666667
         },
         {
           "col": 5,
           "row": 2,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.7110416666666667
         }
       ]
     },
@@ -2654,13 +2654,13 @@
         {
           "col": 0,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 1,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -2678,19 +2678,19 @@
         {
           "col": 4,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 5,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 0,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -2720,7 +2720,7 @@
         {
           "col": 5,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -2829,7 +2829,7 @@
         {
           "col": 4,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -2871,7 +2871,7 @@
         {
           "col": 5,
           "row": 2,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         }
       ]
@@ -3108,8 +3108,8 @@
     },
     {
       "id": "028",
-      "agreement": 0.6663,
-      "matchRate": 0.6667,
+      "agreement": 0.9996,
+      "matchRate": 1,
       "cells": [
         {
           "col": 0,
@@ -3150,38 +3150,38 @@
         {
           "col": 0,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 1,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 2,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 3,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 4,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 5,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 0,
@@ -3798,8 +3798,8 @@
     },
     {
       "id": "034",
-      "agreement": 0.4218,
-      "matchRate": 0.3333,
+      "agreement": 0.9326,
+      "matchRate": 1,
       "cells": [
         {
           "col": 0,
@@ -3810,8 +3810,8 @@
         {
           "col": 1,
           "row": 0,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.99875
         },
         {
           "col": 2,
@@ -3822,8 +3822,8 @@
         {
           "col": 3,
           "row": 0,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.599375
         },
         {
           "col": 4,
@@ -3834,14 +3834,14 @@
         {
           "col": 5,
           "row": 0,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9988194444444445
         },
         {
           "col": 0,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 1,
@@ -3852,8 +3852,8 @@
         {
           "col": 2,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 3,
@@ -3864,14 +3864,14 @@
         {
           "col": 4,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 5,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.6
         },
         {
           "col": 0,
@@ -3882,20 +3882,20 @@
         {
           "col": 1,
           "row": 2,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9988194444444445
         },
         {
           "col": 2,
           "row": 2,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 3,
           "row": 2,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9989583333333333
         },
         {
           "col": 4,
@@ -3925,7 +3925,7 @@
         {
           "col": 1,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -4839,109 +4839,109 @@
         {
           "col": 0,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 1,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 2,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 3,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 4,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 5,
           "row": 0,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 0,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 1,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 2,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 3,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 4,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 5,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 0,
           "row": 2,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 1,
           "row": 2,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 2,
           "row": 2,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 3,
           "row": 2,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 4,
           "row": 2,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
           "col": 5,
           "row": 2,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         }
       ]
@@ -5178,14 +5178,14 @@
     },
     {
       "id": "046",
-      "agreement": 0.4937,
-      "matchRate": 0.5,
+      "agreement": 0.9936,
+      "matchRate": 1,
       "cells": [
         {
           "col": 0,
           "row": 0,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9998611111111111
         },
         {
           "col": 1,
@@ -5196,14 +5196,14 @@
         {
           "col": 2,
           "row": 0,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 3,
           "row": 0,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 4,
@@ -5214,8 +5214,8 @@
         {
           "col": 5,
           "row": 0,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9998611111111111
         },
         {
           "col": 0,
@@ -5226,8 +5226,8 @@
         {
           "col": 1,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9997222222222222
         },
         {
           "col": 2,
@@ -5238,8 +5238,8 @@
         {
           "col": 3,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9999305555555555
         },
         {
           "col": 4,
@@ -5250,8 +5250,8 @@
         {
           "col": 5,
           "row": 1,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9996527777777777
         },
         {
           "col": 0,
@@ -5262,14 +5262,14 @@
         {
           "col": 1,
           "row": 2,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 2,
           "row": 2,
-          "kind": "review",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 0.9996527777777777
         },
         {
           "col": 3,
@@ -5365,7 +5365,7 @@
         {
           "col": 5,
           "row": 1,
-          "kind": "review",
+          "kind": "freeform",
           "agreement": 0
         },
         {
@@ -5408,116 +5408,116 @@
     },
     {
       "id": "048",
-      "agreement": 0,
-      "matchRate": 0,
+      "agreement": 1,
+      "matchRate": 1,
       "cells": [
         {
           "col": 0,
           "row": 0,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 1,
           "row": 0,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 2,
           "row": 0,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 3,
           "row": 0,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 4,
           "row": 0,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 5,
           "row": 0,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 0,
           "row": 1,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 1,
           "row": 1,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 2,
           "row": 1,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 3,
           "row": 1,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 4,
           "row": 1,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 5,
           "row": 1,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 0,
           "row": 2,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 1,
           "row": 2,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 2,
           "row": 2,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 3,
           "row": 2,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 4,
           "row": 2,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         },
         {
           "col": 5,
           "row": 2,
-          "kind": "freeform",
-          "agreement": 0
+          "kind": "tile",
+          "agreement": 1
         }
       ]
     },

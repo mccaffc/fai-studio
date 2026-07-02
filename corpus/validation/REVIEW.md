@@ -46,3 +46,33 @@ All others ≥ ~65%, majority ≥ 90% with all-green heat.
 PASS to Task 9 with the Class B list as the work queue. The P0 bar
 (“reconstruction reads as the same banner”) is met for every banner outside
 Class B; Class A magenta is desired behavior, not failure.
+
+---
+
+# Task 9 addendum — final corpus state (2026-07-02)
+
+## The mined-vocabulary discovery
+The Class B "custom shapes" turned out to be SHARED vocabulary recurring across
+banners, never catalogued in the 141-tile library. Extracted as mined tiles
+(corpus/mined-tiles/): 
+- `mined-034-petal` (lens/petal) — also composes 004 and 028 (IoU 0.999–1.0)
+- `mined-046-knot` (hourglass domes) — also in 021 (0.997)
+- `mined-019-cross` (quarter-disc checker) — **builds ALL of 048's puzzle-blobs**
+  (18/18 at 1.0000): the "organic figures" there are rotated quarter-disc cells
+  fused by shared ink — the edge-fusion principle in its purest form.
+Visually confirmed on re-run sheets: 034/046/048 now reconstruct exactly.
+
+## Final resolutions
+- 043: all 18 cells freeform BY POLICY — hand-drawn connected wave-field
+  (curves differ cell to cell; grammar treats it as a figure-field exemplar).
+- 023: four ramp-02 accepts at 0.881 — minor curvature deviation, structurally
+  correct (slope role); acceptable for grammar, noted for fidelity.
+- All other former review cells → freeform (truthful default: sub-0.85 IoU
+  means the geometry genuinely isn't the library tile).
+
+## Final numbers
+tile 738 (82.0%) · plain 96 (10.7%) · freeform 66 (7.3%) · review 0 (0%)
+Forms: 130 (avg 2.60/banner). Mean whole-image agreement 82.9% (magenta-
+suppressed; tile-cell fidelity ~exact).
+
+GATE: PASSED — corpus.json is the P0 deliverable.

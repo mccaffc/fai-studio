@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "minedAt": "2026-07-02T04:02:30.723Z",
+  "minedAt": "2026-07-02T04:40:09.258Z",
   "banners": [
     {
       "id": "001",
@@ -2316,7 +2316,7 @@
           "col": 1,
           "row": 1,
           "ground": "#121212",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#FF4F00",
           "inks": [
             "#FF4F00",
@@ -2324,28 +2324,28 @@
           ],
           "candidates": [
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": false,
-              "score": 0.7810810810810811
+              "score": 1
             },
             {
-              "tile": "curve-08",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": true,
-              "score": 0.7796381312449365
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 180,
+              "flip": true,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
+          "tile": "mined-034-petal",
           "rotation": 0,
           "flip": false,
-          "score": 0.7810810810810811
+          "score": 1
         },
         {
           "col": 2,
@@ -2359,7 +2359,7 @@
           "col": 3,
           "row": 1,
           "ground": "#121212",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#FF4F00",
           "inks": [
             "#FF4F00",
@@ -2367,28 +2367,28 @@
           ],
           "candidates": [
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": false,
-              "score": 0.7810810810810811
+              "score": 1
             },
             {
-              "tile": "curve-08",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": true,
-              "score": 0.7796381312449365
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 180,
+              "flip": true,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
+          "tile": "mined-034-petal",
           "rotation": 0,
           "flip": false,
-          "score": 0.7810810810810811
+          "score": 1
         },
         {
           "col": 4,
@@ -2428,7 +2428,7 @@
           "col": 5,
           "row": 1,
           "ground": "#121212",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#FFA300",
           "inks": [
             "#FFA300",
@@ -2436,28 +2436,28 @@
           ],
           "candidates": [
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": false,
-              "score": 0.7810810810810811
+              "score": 1
             },
             {
-              "tile": "curve-08",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": true,
-              "score": 0.7796381312449365
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 180,
+              "flip": true,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
+          "tile": "mined-034-petal",
           "rotation": 0,
           "flip": false,
-          "score": 0.7810810810810811
+          "score": 1
         },
         {
           "col": 0,
@@ -2617,7 +2617,7 @@
         }
       ],
       "forms": [],
-      "matchRate": 0.7692
+      "matchRate": 1
     },
     {
       "id": "005",
@@ -7422,7 +7422,7 @@
           "col": 5,
           "row": 2,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#FFA300",
           "inks": [
             "#FFA300"
@@ -8466,16 +8466,16 @@
               "score": 1
             },
             {
-              "tile": "open-02",
+              "tile": "mined-046-knot",
               "rotation": 0,
-              "flip": true,
-              "score": 0.7125700560448359
+              "flip": false,
+              "score": 0.78662109375
             },
             {
-              "tile": "open-02",
-              "rotation": 180,
+              "tile": "mined-046-knot",
+              "rotation": 90,
               "flip": true,
-              "score": 0.7125700560448359
+              "score": 0.78662109375
             }
           ],
           "tile": "joint-08",
@@ -10011,7 +10011,7 @@
           "col": 1,
           "row": 0,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -10079,7 +10079,7 @@
           "col": 3,
           "row": 0,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -10182,7 +10182,7 @@
           "col": 0,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -10357,7 +10357,7 @@
           "col": 5,
           "row": 1,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -10529,7 +10529,7 @@
           "col": 4,
           "row": 2,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -10659,7 +10659,7 @@
           "col": 2,
           "row": 0,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -11304,7 +11304,7 @@
           "col": 0,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -11313,6 +11313,12 @@
             "#F3F3F3"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -11324,14 +11330,12 @@
               "rotation": 270,
               "flip": true,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": true,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": false,
+          "score": 1
         },
         {
           "col": 1,
@@ -11457,12 +11461,18 @@
           "col": 5,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -11474,25 +11484,29 @@
               "rotation": 90,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 0,
           "row": 2,
           "ground": "#D9D9D6",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 180,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 180,
@@ -11504,14 +11518,12 @@
               "rotation": 270,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 180,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 180,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 1,
@@ -11535,6 +11547,12 @@
           ],
           "candidates": [
             {
+              "tile": "mined-019-cross",
+              "rotation": 180,
+              "flip": true,
+              "score": 0.776824034334764
+            },
+            {
               "tile": "ramp-03",
               "rotation": 90,
               "flip": false,
@@ -11545,25 +11563,29 @@
               "rotation": 180,
               "flip": true,
               "score": 0.5766917293233083
-            },
-            {
-              "tile": "curve-07",
-              "rotation": 270,
-              "flip": false,
-              "score": 0.5731432858214554
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 180,
+          "flip": true,
+          "score": 0.776824034334764
         },
         {
           "col": 3,
           "row": 2,
           "ground": "#D9D9D6",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 90,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 90,
@@ -11575,14 +11597,12 @@
               "rotation": 180,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 90,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 4,
@@ -11599,12 +11619,18 @@
           "col": 5,
           "row": 2,
           "ground": "#D9D9D6",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 90,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 90,
@@ -11616,14 +11642,12 @@
               "rotation": 180,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 90,
+          "flip": true,
+          "score": 1
         }
       ],
       "forms": [
@@ -11645,7 +11669,7 @@
         },
         {
           "id": "019-form-2",
-          "kind": "figure",
+          "kind": "run",
           "cells": [
             [
               0,
@@ -11656,6 +11680,7 @@
               2
             ]
           ],
+          "family": "curve",
           "ink": "#121212"
         },
         {
@@ -11676,7 +11701,7 @@
         },
         {
           "id": "019-form-4",
-          "kind": "figure",
+          "kind": "run",
           "cells": [
             [
               5,
@@ -11687,25 +11712,11 @@
               2
             ]
           ],
-          "ink": "#121212"
-        },
-        {
-          "id": "019-form-5",
-          "kind": "figure",
-          "cells": [
-            [
-              2,
-              2
-            ],
-            [
-              3,
-              2
-            ]
-          ],
+          "family": "curve",
           "ink": "#121212"
         }
       ],
-      "matchRate": 0.5385
+      "matchRate": 0.9231
     },
     {
       "id": "020",
@@ -12498,12 +12509,18 @@
           "col": 5,
           "row": 0,
           "ground": "#FFFFFF",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 180,
+              "flip": false,
+              "score": 0.9968963376784605
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -12511,22 +12528,16 @@
               "score": 0.7841796875
             },
             {
-              "tile": "open-05",
-              "rotation": 180,
+              "tile": "mined-046-knot",
+              "rotation": 270,
               "flip": true,
-              "score": 0.514760147601476
-            },
-            {
-              "tile": "open-05",
-              "rotation": 0,
-              "flip": true,
-              "score": 0.5091911764705882
+              "score": 0.7588846364133406
             }
           ],
-          "tile": "joint-08",
-          "rotation": 0,
-          "flip": true,
-          "score": 0.7841796875
+          "tile": "mined-046-knot",
+          "rotation": 180,
+          "flip": false,
+          "score": 0.9968963376784605
         },
         {
           "col": 0,
@@ -12834,12 +12845,18 @@
           "col": 3,
           "row": 2,
           "ground": "#FFFFFF",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 90,
+              "flip": true,
+              "score": 0.9968982630272953
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -12847,22 +12864,16 @@
               "score": 0.78515625
             },
             {
-              "tile": "open-05",
+              "tile": "mined-046-knot",
               "rotation": 0,
-              "flip": true,
-              "score": 0.5156826568265682
-            },
-            {
-              "tile": "open-05",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.5101102941176471
+              "flip": false,
+              "score": 0.759016393442623
             }
           ],
-          "tile": "joint-08",
-          "rotation": 0,
+          "tile": "mined-046-knot",
+          "rotation": 90,
           "flip": true,
-          "score": 0.78515625
+          "score": 0.9968982630272953
         },
         {
           "col": 4,
@@ -12999,7 +13010,7 @@
           "ink": "#121212"
         }
       ],
-      "matchRate": 0.8235
+      "matchRate": 0.9412
     },
     {
       "id": "022",
@@ -13675,7 +13686,7 @@
           "col": 1,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#4997D0",
           "inks": [
             "#4997D0",
@@ -13822,7 +13833,7 @@
           "col": 0,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
             "#F3F3F3",
@@ -13857,7 +13868,7 @@
           "col": 1,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
             "#F3F3F3",
@@ -13961,7 +13972,7 @@
           "col": 4,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -14169,7 +14180,7 @@
           "col": 4,
           "row": 2,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -14204,7 +14215,7 @@
           "col": 5,
           "row": 2,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -14274,6 +14285,22 @@
           "kind": "run",
           "cells": [
             [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "family": "ramp",
+          "ink": "#F3F3F3"
+        },
+        {
+          "id": "023-form-4",
+          "kind": "run",
+          "cells": [
+            [
               2,
               1
             ],
@@ -14286,7 +14313,7 @@
           "ink": "#121212"
         },
         {
-          "id": "023-form-4",
+          "id": "023-form-5",
           "kind": "frieze",
           "cells": [
             [
@@ -14300,9 +14327,25 @@
           ],
           "family": "wave",
           "ink": "#121212"
+        },
+        {
+          "id": "023-form-6",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "family": "ramp",
+          "ink": "#121212"
         }
       ],
-      "matchRate": 0.6471
+      "matchRate": 0.8824
     },
     {
       "id": "024",
@@ -14316,7 +14359,7 @@
           "col": 0,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -14351,7 +14394,7 @@
           "col": 1,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -14454,7 +14497,7 @@
           "col": 4,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -14489,7 +14532,7 @@
           "col": 5,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -14524,7 +14567,7 @@
           "col": 0,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -14699,7 +14742,7 @@
           "col": 5,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -14941,6 +14984,25 @@
       "forms": [
         {
           "id": "024-form-1",
+          "kind": "figure",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "ink": "#121212"
+        },
+        {
+          "id": "024-form-2",
           "kind": "run",
           "cells": [
             [
@@ -14956,7 +15018,26 @@
           "ink": "#F3F3F3"
         },
         {
-          "id": "024-form-2",
+          "id": "024-form-3",
+          "kind": "figure",
+          "cells": [
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "ink": "#121212"
+        },
+        {
+          "id": "024-form-4",
           "kind": "frieze",
           "cells": [
             [
@@ -15271,7 +15352,7 @@
           "col": 4,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -15511,7 +15592,7 @@
           "col": 5,
           "row": 2,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -17061,205 +17142,205 @@
           "col": 0,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 1,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 2,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 3,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 4,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 5,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 0,
@@ -17489,6 +17570,38 @@
           "cells": [
             [
               0,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "curve",
+          "ink": "#121212"
+        },
+        {
+          "id": "028-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              0,
               2
             ],
             [
@@ -17500,7 +17613,7 @@
           "ink": "#121212"
         },
         {
-          "id": "028-form-3",
+          "id": "028-form-4",
           "kind": "frieze",
           "cells": [
             [
@@ -17516,7 +17629,7 @@
           "ink": "#121212"
         }
       ],
-      "matchRate": 0.6667
+      "matchRate": 1
     },
     {
       "id": "029",
@@ -20442,35 +20555,35 @@
           "col": 1,
           "row": 0,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": false,
-              "score": 0.7810810810810811
+              "score": 1
             },
             {
-              "tile": "curve-08",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": true,
-              "score": 0.7796381312449365
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 180,
+              "flip": true,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
+          "tile": "mined-034-petal",
           "rotation": 0,
           "flip": false,
-          "score": 0.7810810810810811
+          "score": 1
         },
         {
           "col": 2,
@@ -20487,7 +20600,7 @@
           "col": 3,
           "row": 0,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -20495,28 +20608,28 @@
           ],
           "candidates": [
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": false,
-              "score": 0.7810810810810811
+              "score": 1
             },
             {
-              "tile": "curve-08",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": true,
-              "score": 0.7796381312449365
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 180,
+              "flip": true,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
+          "tile": "mined-034-petal",
           "rotation": 0,
           "flip": false,
-          "score": 0.7810810810810811
+          "score": 1
         },
         {
           "col": 4,
@@ -20533,69 +20646,69 @@
           "col": 5,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": false,
-              "score": 0.7810810810810811
+              "score": 1
             },
             {
-              "tile": "curve-08",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": true,
-              "score": 0.7796381312449365
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 180,
+              "flip": true,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
+          "tile": "mined-034-petal",
           "rotation": 0,
           "flip": false,
-          "score": 0.7810810810810811
+          "score": 1
         },
         {
           "col": 0,
           "row": 1,
           "ground": "#4997D0",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 1,
@@ -20635,35 +20748,35 @@
           "col": 2,
           "row": 1,
           "ground": "#4997D0",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 3,
@@ -20704,41 +20817,41 @@
           "col": 4,
           "row": 1,
           "ground": "#4997D0",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 5,
           "row": 1,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -20746,28 +20859,28 @@
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 0,
@@ -20784,41 +20897,41 @@
           "col": 1,
           "row": 2,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": false,
-              "score": 0.7810810810810811
+              "score": 1
             },
             {
-              "tile": "curve-08",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 0,
               "flip": true,
-              "score": 0.7796381312449365
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 180,
+              "flip": true,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
+          "tile": "mined-034-petal",
           "rotation": 0,
           "flip": false,
-          "score": 0.7810810810810811
+          "score": 1
         },
         {
           "col": 2,
           "row": 2,
           "ground": "#4997D0",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -20826,62 +20939,62 @@
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 3,
           "row": 2,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
             {
-              "tile": "curve-08",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.7810810810810811
-            },
-            {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 270,
               "flip": true,
-              "score": 0.7810810810810811
+              "score": 0.9993784959602238
             },
             {
-              "tile": "curve-08",
+              "tile": "mined-034-petal",
               "rotation": 90,
-              "flip": true,
-              "score": 0.7801188546731497
+              "flip": false,
+              "score": 0.9981366459627329
+            },
+            {
+              "tile": "mined-034-petal",
+              "rotation": 270,
+              "flip": false,
+              "score": 0.9981366459627329
             }
           ],
-          "tile": "curve-08",
-          "rotation": 90,
-          "flip": false,
-          "score": 0.7810810810810811
+          "tile": "mined-034-petal",
+          "rotation": 270,
+          "flip": true,
+          "score": 0.9993784959602238
         },
         {
           "col": 4,
@@ -20958,6 +21071,54 @@
           "kind": "run",
           "cells": [
             [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "curve",
+          "ink": "#121212"
+        },
+        {
+          "id": "034-form-2",
+          "kind": "frieze",
+          "cells": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "curve",
+          "ink": "#121212"
+        },
+        {
+          "id": "034-form-3",
+          "kind": "frieze",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "curve",
+          "ink": "#121212"
+        },
+        {
+          "id": "034-form-4",
+          "kind": "run",
+          "cells": [
+            [
               4,
               2
             ],
@@ -20970,7 +21131,7 @@
           "ink": "#FF4F00"
         }
       ],
-      "matchRate": 0.3333
+      "matchRate": 1
     },
     {
       "id": "035",
@@ -21018,7 +21179,7 @@
           "col": 1,
           "row": 0,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -21611,6 +21772,21 @@
         },
         {
           "id": "035-form-2",
+          "kind": "figure",
+          "cells": [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "ink": "#121212"
+        },
+        {
+          "id": "035-form-3",
           "kind": "run",
           "cells": [
             [
@@ -25809,7 +25985,7 @@
           "col": 0,
           "row": 0,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -25843,7 +26019,7 @@
           "col": 1,
           "row": 0,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -25877,7 +26053,7 @@
           "col": 2,
           "row": 0,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#FF4F00",
           "inks": [
             "#FF4F00",
@@ -25912,7 +26088,7 @@
           "col": 3,
           "row": 0,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -25946,7 +26122,7 @@
           "col": 4,
           "row": 0,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -25980,7 +26156,7 @@
           "col": 5,
           "row": 0,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -26014,7 +26190,7 @@
           "col": 0,
           "row": 1,
           "ground": "#4997D0",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -26049,7 +26225,7 @@
           "col": 1,
           "row": 1,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -26083,7 +26259,7 @@
           "col": 2,
           "row": 1,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#4997D0",
           "inks": [
             "#4997D0",
@@ -26118,7 +26294,7 @@
           "col": 3,
           "row": 1,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#4997D0",
           "inks": [
             "#4997D0",
@@ -26153,7 +26329,7 @@
           "col": 4,
           "row": 1,
           "ground": "#4997D0",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#4997D0",
           "inks": [
             "#4997D0",
@@ -26189,7 +26365,7 @@
           "col": 5,
           "row": 1,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#4997D0",
           "inks": [
             "#4997D0",
@@ -26224,7 +26400,7 @@
           "col": 0,
           "row": 2,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -26258,7 +26434,7 @@
           "col": 1,
           "row": 2,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -26292,7 +26468,7 @@
           "col": 2,
           "row": 2,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212",
@@ -26327,7 +26503,7 @@
           "col": 3,
           "row": 2,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -26361,7 +26537,7 @@
           "col": 4,
           "row": 2,
           "ground": "#FFA300",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#4997D0",
           "inks": [
             "#4997D0",
@@ -26396,7 +26572,7 @@
           "col": 5,
           "row": 2,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#121212",
           "inks": [
             "#121212"
@@ -26427,7 +26603,93 @@
           "score": 0.7527446300715991
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "043-form-1",
+          "kind": "figure",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "ink": "#121212"
+        },
+        {
+          "id": "043-form-2",
+          "kind": "figure",
+          "cells": [
+            [
+              3,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ]
+          ],
+          "ink": "#121212"
+        },
+        {
+          "id": "043-form-3",
+          "kind": "figure",
+          "cells": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ],
+            [
+              4,
+              2
+            ]
+          ],
+          "ink": "#4997D0"
+        }
+      ],
       "matchRate": 0
     },
     {
@@ -27798,12 +28060,18 @@
           "col": 0,
           "row": 0,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -27811,22 +28079,16 @@
               "score": 0.78662109375
             },
             {
-              "tile": "open-05",
-              "rotation": 0,
+              "tile": "mined-046-knot",
+              "rotation": 90,
               "flip": true,
-              "score": 0.5163669893960351
-            },
-            {
-              "tile": "open-05",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.5107946715663757
+              "score": 0.7596941561987984
             }
           ],
-          "tile": "joint-08",
+          "tile": "mined-046-knot",
           "rotation": 0,
-          "flip": true,
-          "score": 0.78662109375
+          "flip": false,
+          "score": 1
         },
         {
           "col": 1,
@@ -27866,12 +28128,18 @@
           "col": 2,
           "row": 0,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -27879,33 +28147,33 @@
               "score": 0.78662109375
             },
             {
-              "tile": "open-05",
-              "rotation": 0,
+              "tile": "mined-046-knot",
+              "rotation": 90,
               "flip": true,
-              "score": 0.5163669893960351
-            },
-            {
-              "tile": "open-05",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.5107946715663757
+              "score": 0.7596941561987984
             }
           ],
-          "tile": "joint-08",
+          "tile": "mined-046-knot",
           "rotation": 0,
-          "flip": true,
-          "score": 0.78662109375
+          "flip": false,
+          "score": 1
         },
         {
           "col": 3,
           "row": 0,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -27913,22 +28181,16 @@
               "score": 0.78662109375
             },
             {
-              "tile": "open-05",
-              "rotation": 0,
+              "tile": "mined-046-knot",
+              "rotation": 90,
               "flip": true,
-              "score": 0.5163669893960351
-            },
-            {
-              "tile": "open-05",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.5107946715663757
+              "score": 0.7596941561987984
             }
           ],
-          "tile": "joint-08",
+          "tile": "mined-046-knot",
           "rotation": 0,
-          "flip": true,
-          "score": 0.78662109375
+          "flip": false,
+          "score": 1
         },
         {
           "col": 4,
@@ -27968,12 +28230,18 @@
           "col": 5,
           "row": 0,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -27981,22 +28249,16 @@
               "score": 0.78662109375
             },
             {
-              "tile": "open-05",
-              "rotation": 0,
+              "tile": "mined-046-knot",
+              "rotation": 90,
               "flip": true,
-              "score": 0.5163669893960351
-            },
-            {
-              "tile": "open-05",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.5107946715663757
+              "score": 0.7596941561987984
             }
           ],
-          "tile": "joint-08",
+          "tile": "mined-046-knot",
           "rotation": 0,
-          "flip": true,
-          "score": 0.78662109375
+          "flip": false,
+          "score": 1
         },
         {
           "col": 0,
@@ -28037,12 +28299,18 @@
           "col": 1,
           "row": 1,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 180,
+              "flip": false,
+              "score": 0.9962802231866088
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -28050,22 +28318,16 @@
               "score": 0.78564453125
             },
             {
-              "tile": "open-05",
-              "rotation": 180,
+              "tile": "mined-046-knot",
+              "rotation": 270,
               "flip": true,
-              "score": 0.5161439114391144
-            },
-            {
-              "tile": "open-05",
-              "rotation": 0,
-              "flip": true,
-              "score": 0.5105698529411765
+              "score": 0.7595628415300546
             }
           ],
-          "tile": "joint-08",
-          "rotation": 0,
-          "flip": true,
-          "score": 0.78564453125
+          "tile": "mined-046-knot",
+          "rotation": 180,
+          "flip": false,
+          "score": 0.9962802231866088
         },
         {
           "col": 2,
@@ -28105,12 +28367,18 @@
           "col": 3,
           "row": 1,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 180,
+              "flip": true,
+              "score": 0.9981378026070763
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -28118,22 +28386,16 @@
               "score": 0.78515625
             },
             {
-              "tile": "open-05",
+              "tile": "mined-046-knot",
               "rotation": 90,
-              "flip": true,
-              "score": 0.5156826568265682
-            },
-            {
-              "tile": "open-05",
-              "rotation": 0,
               "flip": false,
-              "score": 0.5101102941176471
+              "score": 0.7599781301257518
             }
           ],
-          "tile": "joint-08",
-          "rotation": 0,
-          "flip": false,
-          "score": 0.78515625
+          "tile": "mined-046-knot",
+          "rotation": 180,
+          "flip": true,
+          "score": 0.9981378026070763
         },
         {
           "col": 4,
@@ -28174,12 +28436,18 @@
           "col": 5,
           "row": 1,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 180,
+              "flip": false,
+              "score": 0.9962802231866088
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -28187,22 +28455,16 @@
               "score": 0.78564453125
             },
             {
-              "tile": "open-05",
-              "rotation": 180,
+              "tile": "mined-046-knot",
+              "rotation": 270,
               "flip": true,
-              "score": 0.5161439114391144
-            },
-            {
-              "tile": "open-05",
-              "rotation": 0,
-              "flip": true,
-              "score": 0.5105698529411765
+              "score": 0.7595628415300546
             }
           ],
-          "tile": "joint-08",
-          "rotation": 0,
-          "flip": true,
-          "score": 0.78564453125
+          "tile": "mined-046-knot",
+          "rotation": 180,
+          "flip": false,
+          "score": 0.9962802231866088
         },
         {
           "col": 0,
@@ -28242,12 +28504,18 @@
           "col": 1,
           "row": 2,
           "ground": "#D9D9D6",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -28255,33 +28523,33 @@
               "score": 0.78662109375
             },
             {
-              "tile": "open-05",
-              "rotation": 0,
+              "tile": "mined-046-knot",
+              "rotation": 90,
               "flip": true,
-              "score": 0.5163669893960351
-            },
-            {
-              "tile": "open-05",
-              "rotation": 180,
-              "flip": true,
-              "score": 0.5107946715663757
+              "score": 0.7596941561987984
             }
           ],
-          "tile": "joint-08",
+          "tile": "mined-046-knot",
           "rotation": 0,
-          "flip": true,
-          "score": 0.78662109375
+          "flip": false,
+          "score": 1
         },
         {
           "col": 2,
           "row": 2,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "tile",
           "ink": "#121212",
           "inks": [
             "#121212"
           ],
           "candidates": [
+            {
+              "tile": "mined-046-knot",
+              "rotation": 180,
+              "flip": false,
+              "score": 0.9962802231866088
+            },
             {
               "tile": "joint-08",
               "rotation": 0,
@@ -28289,22 +28557,16 @@
               "score": 0.78564453125
             },
             {
-              "tile": "open-05",
-              "rotation": 180,
+              "tile": "mined-046-knot",
+              "rotation": 270,
               "flip": true,
-              "score": 0.5161439114391144
-            },
-            {
-              "tile": "open-05",
-              "rotation": 0,
-              "flip": true,
-              "score": 0.5105698529411765
+              "score": 0.7595628415300546
             }
           ],
-          "tile": "joint-08",
-          "rotation": 0,
-          "flip": true,
-          "score": 0.78564453125
+          "tile": "mined-046-knot",
+          "rotation": 180,
+          "flip": false,
+          "score": 0.9962802231866088
         },
         {
           "col": 3,
@@ -28410,8 +28672,61 @@
           "score": 1
         }
       ],
-      "forms": [],
-      "matchRate": 0.5
+      "forms": [
+        {
+          "id": "046-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "family": "joint",
+          "ink": "#121212"
+        },
+        {
+          "id": "046-form-2",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "family": "joint",
+          "ink": "#121212"
+        },
+        {
+          "id": "046-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              5,
+              0
+            ],
+            [
+              5,
+              1
+            ]
+          ],
+          "family": "joint",
+          "ink": "#121212"
+        }
+      ],
+      "matchRate": 1
     },
     {
       "id": "047",
@@ -28782,7 +29097,7 @@
           "col": 5,
           "row": 1,
           "ground": "#F3F3F3",
-          "kind": "review",
+          "kind": "freeform",
           "ink": "#D9D9D6",
           "inks": [
             "#D9D9D6",
@@ -29090,12 +29405,18 @@
           "col": 0,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -29107,25 +29428,29 @@
               "rotation": 270,
               "flip": true,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": true,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": false,
+          "score": 1
         },
         {
           "col": 1,
           "row": 0,
           "ground": "#121212",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 180,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 180,
@@ -29137,25 +29462,29 @@
               "rotation": 270,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 180,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 180,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 2,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -29167,25 +29496,29 @@
               "rotation": 90,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 3,
           "row": 0,
           "ground": "#121212",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 90,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 90,
@@ -29197,25 +29530,29 @@
               "rotation": 180,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 90,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 4,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -29227,25 +29564,29 @@
               "rotation": 270,
               "flip": true,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": true,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": false,
+          "score": 1
         },
         {
           "col": 5,
           "row": 0,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -29257,25 +29598,29 @@
               "rotation": 270,
               "flip": true,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": true,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": false,
+          "score": 1
         },
         {
           "col": 0,
           "row": 1,
           "ground": "#121212",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 90,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 90,
@@ -29287,25 +29632,29 @@
               "rotation": 180,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 90,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 1,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -29317,25 +29666,29 @@
               "rotation": 90,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 2,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -29347,25 +29700,29 @@
               "rotation": 90,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 3,
           "row": 1,
           "ground": "#121212",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 180,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 180,
@@ -29377,25 +29734,29 @@
               "rotation": 270,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 180,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 180,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 4,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 90,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 90,
@@ -29407,25 +29768,29 @@
               "rotation": 180,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 90,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 5,
           "row": 1,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 90,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 90,
@@ -29437,25 +29802,29 @@
               "rotation": 180,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 90,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 90,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 0,
           "row": 2,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": false,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -29467,25 +29836,29 @@
               "rotation": 270,
               "flip": true,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": true,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": false,
+          "score": 1
         },
         {
           "col": 1,
           "row": 2,
           "ground": "#121212",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 180,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 180,
@@ -29497,25 +29870,29 @@
               "rotation": 270,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 180,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 180,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 2,
           "row": 2,
           "ground": "#121212",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 180,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 180,
@@ -29527,25 +29904,29 @@
               "rotation": 270,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 180,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 180,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 3,
           "row": 2,
           "ground": "#121212",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -29557,25 +29938,29 @@
               "rotation": 90,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 4,
           "row": 2,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 0,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 0,
@@ -29587,25 +29972,29 @@
               "rotation": 90,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 0,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 0,
+          "flip": true,
+          "score": 1
         },
         {
           "col": 5,
           "row": 2,
           "ground": "#FF4F00",
-          "kind": "freeform",
+          "kind": "tile",
           "ink": "#4997D0",
           "inks": [
             "#4997D0"
           ],
           "candidates": [
+            {
+              "tile": "mined-019-cross",
+              "rotation": 180,
+              "flip": true,
+              "score": 1
+            },
             {
               "tile": "curve-07",
               "rotation": 180,
@@ -29617,56 +30006,58 @@
               "rotation": 270,
               "flip": false,
               "score": 0.6023113528212101
-            },
-            {
-              "tile": "wave-01",
-              "rotation": 180,
-              "flip": false,
-              "score": 0.5904477611940299
             }
-          ]
+          ],
+          "tile": "mined-019-cross",
+          "rotation": 180,
+          "flip": true,
+          "score": 1
         }
       ],
       "forms": [
         {
           "id": "048-form-1",
-          "kind": "figure",
+          "kind": "run",
           "cells": [
             [
               0,
               0
             ],
             [
-              1,
-              0
-            ],
-            [
-              2,
-              0
-            ],
-            [
-              3,
-              0
-            ],
-            [
-              4,
-              0
-            ],
-            [
-              5,
-              0
-            ],
-            [
               0,
               1
-            ],
+            ]
+          ],
+          "family": "curve",
+          "ink": "#4997D0"
+        },
+        {
+          "id": "048-form-2",
+          "kind": "run",
+          "cells": [
             [
               1,
-              1
+              0
             ],
             [
               2,
-              1
+              0
+            ]
+          ],
+          "family": "curve",
+          "ink": "#4997D0"
+        },
+        {
+          "id": "048-form-3",
+          "kind": "run",
+          "cells": [
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
             ],
             [
               3,
@@ -29679,10 +30070,22 @@
             [
               5,
               1
+            ]
+          ],
+          "family": "curve",
+          "ink": "#4997D0"
+        },
+        {
+          "id": "048-form-4",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              1
             ],
             [
-              0,
-              2
+              2,
+              1
             ],
             [
               1,
@@ -29698,17 +30101,14 @@
             ],
             [
               4,
-              2
-            ],
-            [
-              5,
               2
             ]
           ],
+          "family": "curve",
           "ink": "#4997D0"
         }
       ],
-      "matchRate": 0
+      "matchRate": 1
     },
     {
       "id": "049",
