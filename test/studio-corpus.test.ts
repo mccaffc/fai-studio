@@ -227,4 +227,87 @@ describe("studio corpus mode (jsdom)", () => {
     const seedAfter = seedInput.value;
     expect(seedAfter).not.toBe(seedBefore);
   });
+
+  it("P3-2a. corrupt JSON in localStorage mounts cleanly with defaults", async () => {
+    const mem = new Map<string, string>();
+    mem.set("fai-corpus-config", "{oops");
+    vi.stubGlobal("localStorage", {
+      getItem: (k: string) => (mem.has(k) ? mem.get(k)! : null),
+      setItem: (k: string, v: string) => void mem.set(k, String(v)),
+      removeItem: (k: string) => void mem.delete(k),
+      clear: () => mem.clear(),
+    });
+    skeleton();
+
+    // Should mount cleanly (loadCorpusConfig catches the JSON error)
+    await import("../src/studio/main");
+
+    // Canvas should have an SVG (no blank/error state)
+    expect(document.querySelector("#canvas svg")).toBeTruthy();
+
+    // Corpus controls should be visible
+    const corpusAside = document.querySelector("#corpus-controls") as HTMLElement;
+    expect(corpusAside).toBeTruthy();
+    expect(corpusAside.style.display).not.toBe("none");
+
+    // Template and program should be reset to defaults (empty)
+    const templateSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-template]",
+    ) as HTMLSelectElement;
+    const programSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-program]",
+    ) as HTMLSelectElement;
+    expect(templateSelect.value).toBe("");
+    expect(programSelect.value).toBe("");
+  });
+
+  it("P3-2b. stale program/template IDs dropped; mounts with defaults", async () => {
+    const mem = new Map<string, string>();
+    mem.set("fai-corpus-config", JSON.stringify({
+      program: "nonexistent-program",
+      template: "bogus-template",
+      accent: "#FF4F00",
+      density: 0.6,
+      figures: false,
+    }));
+    vi.stubGlobal("localStorage", {
+      getItem: (k: string) => (mem.has(k) ? mem.get(k)! : null),
+      setItem: (k: string, v: string) => void mem.set(k, String(v)),
+      removeItem: (k: string) => void mem.delete(k),
+      clear: () => mem.clear(),
+    });
+    skeleton();
+
+    await import("../src/studio/main");
+
+    // Canvas should have an SVG (generated with defaults, not bogus ids)
+    expect(document.querySelector("#canvas svg")).toBeTruthy();
+    const svgHtml = document.querySelector("#canvas")!.innerHTML;
+
+    // Template default (auto) and program default (none) should apply
+    // → no "bogus-template" or "nonexistent-program" in svg/state
+    expect(svgHtml).not.toContain("bogus");
+    expect(svgHtml).not.toContain("nonexistent");
+
+    // Select elements should have defaults (empty values), not stale ids
+    const templateSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-template]",
+    ) as HTMLSelectElement;
+    const programSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-program]",
+    ) as HTMLSelectElement;
+    expect(templateSelect.value).toBe("");
+    expect(programSelect.value).toBe("");
+
+    // Accent and density (non-id fields) should be preserved from localStorage
+    const accentSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-accent]",
+    ) as HTMLSelectElement;
+    expect(accentSelect.value).toBe("#FF4F00");
+
+    const densitySlider = document.querySelector(
+      "#corpus-controls input[type='range']",
+    ) as HTMLInputElement;
+    expect(Number(densitySlider.value)).toBeCloseTo(0.6, 1);
+  });
 });

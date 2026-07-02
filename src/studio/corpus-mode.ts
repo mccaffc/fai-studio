@@ -86,8 +86,6 @@ function saveCorpusConfig(): void {
   }
 }
 
-// ── module state ─────────────────────────────────────────────────────────────
-
 interface CorpusState {
   current: CorpusResult | null;
   vars: CorpusResult[];
@@ -103,13 +101,26 @@ interface CorpusState {
 
 function makeDefaultConfig() {
   const saved = loadCorpusConfig();
+
+  // Validate program ID: only adopt if it exists in PROGRAMS
+  let program = saved.program ?? "";
+  if (program && !Object.prototype.hasOwnProperty.call(PROGRAMS, program)) {
+    program = "";
+  }
+
+  // Validate template ID: only adopt if it exists in TEMPLATE_IDS
+  let template = saved.template ?? "";
+  if (template && !TEMPLATE_IDS.includes(template as any)) {
+    template = "";
+  }
+
   return {
-    template: saved.template ?? "",
+    template,
     accent: saved.accent ?? "",
     density: saved.density ?? 0.5,
     figures: saved.figures ?? true,
     seed: (Math.random() * 0xffffffff) >>> 0,
-    program: saved.program ?? "",
+    program,
   };
 }
 

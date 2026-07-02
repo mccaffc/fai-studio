@@ -214,14 +214,6 @@ body.mode-editor #saved { display: none; }
 /* ── corpus mode ── */
 #corpus-controls { display: flex; flex-direction: column; gap: 16px; }
 
-/* Program select swatch dots — one ::before per program option */
-#corpus-controls select[data-corpus-program] option[value="technology-statecraft"]::before  { content: "● "; color: #FFA300; }
-#corpus-controls select[data-corpus-program] option[value="american-governance"]::before    { content: "● "; color: #8265DB; }
-#corpus-controls select[data-corpus-program] option[value="artificial-intelligence"]::before{ content: "● "; color: #D63A8C; }
-#corpus-controls select[data-corpus-program] option[value="energy-infrastructure"]::before  { content: "● "; color: #268B41; }
-#corpus-controls select[data-corpus-program] option[value="science-innovation"]::before     { content: "● "; color: #4997D0; }
-#corpus-controls select[data-corpus-program] option[value="frontier-legal-defense"]::before { content: "● "; color: #3A4A6B; }
-/* Fallback: inline swatch dot before each program option text via JS data-swatch-color attribute */
 .corpus-scores {
   margin-top: 6px;
   min-height: 18px;
