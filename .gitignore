@@ -6,3 +6,4 @@ dist-flatten/
 dist-tools/
 corpus/corpus.partial.json
 corpus/samples/
+.superpowers/
