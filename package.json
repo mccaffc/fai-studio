@@ -18,7 +18,8 @@
     "grammar:audit": "esbuild tools/grammar/audit.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/audit.mjs && node dist-tools/audit.mjs",
     "mine:regen-edges": "esbuild tools/mine/regen-edges.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/regen-edges.mjs && node dist-tools/regen-edges.mjs",
     "grammar:samples": "esbuild tools/grammar/render-samples.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/render-samples.mjs && node dist-tools/render-samples.mjs",
-    "gen:engine-data": "esbuild tools/grammar/gen-engine-data.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/gen-engine-data.mjs && node dist-tools/gen-engine-data.mjs"
+    "gen:engine-data": "esbuild tools/grammar/gen-engine-data.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/gen-engine-data.mjs && node dist-tools/gen-engine-data.mjs",
+    "gen:figures": "esbuild tools/grammar/gen-figures.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/gen-figures.mjs && node dist-tools/gen-figures.mjs"
   },
   "devDependencies": {
     "@types/jsdom": "^28.0.3",
