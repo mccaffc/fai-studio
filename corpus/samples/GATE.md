@@ -46,3 +46,11 @@ PIPES: no regression (3100-3105 hold P2 quality; some gain integrated figures).
 Track-for-P4 (priority): larger figure spans (canon 3×2 domes vs shipped max 2×2/2×3);
 recolorPlan program→corpus-accent latent two-hue edge (UI-unreachable); drift-drop UX note;
 openCorpusItem guard parity.
+
+## Iteration 4 — P4 gate (heroes) — 2026-07-02
+Sheets: p4-heroes-11000 / p4-program-heroes-11020 / p4-pipe-regression.
+HEROES: PASS — iconic patches stamp as designed passages (036-dome colonnade reads canonically
+mid-field); role recoloring prevents paste-in look; upscaled figures anchor hero slots. Program
+law holds WITH heroes (Telemagenta creature-face in an AI banner — the compounded brief).
+018-house patch: acceptable in context, stays. Pipes: byte-stable vs P3 (determinism on-sheet).
+Would-show ~65%.
