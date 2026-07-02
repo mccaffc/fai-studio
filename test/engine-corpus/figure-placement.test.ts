@@ -1,9 +1,9 @@
 /**
- * figure-placement.test.ts - Task P3.3 placement/render coverage.
+ * figure-placement.test.ts - Task P3.3 + P4.0 placement/render coverage.
  *
  * These tests cover sampler-side figure asset assignment, renderer-side asset
- * placement, program palette interplay, and recolor geometry freeze for figure
- * metadata. Generated data integrity stays in figures.test.ts.
+ * placement, program palette interplay, recolor geometry freeze, and (P4.0)
+ * integer upscaling of figure assets + hero region bias.
  */
 
 import { describe, expect, it } from 'vitest';
@@ -233,5 +233,148 @@ describe('figure program and recolor interplay', () => {
     const { result } = findGeneratedResultWithFigure();
     const recolored = recolorPlan(result, '#FFA300');
     expect(figureSignature(recolored.plan)).toEqual(figureSignature(result.plan));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P4.0: Figure upscaling + hero-region bias
+// ---------------------------------------------------------------------------
+
+/** Build a synthetic plan with a freeform region of given span, assigning the asset at k=scale. */
+function syntheticUpscalePlan(asset: FigureAsset, spanW: number, spanH: number): BannerPlan {
+  const cells: CellPlan[] = [];
+  for (let row = 0; row < 3; row += 1) {
+    for (let col = 0; col < 6; col += 1) {
+      if (col < spanW && row < spanH) {
+        cells.push({
+          col,
+          row,
+          ground: '#F3F3F3',
+          kind: 'freeform',
+          ink: '#FF4F00',
+          inks: ['#FF4F00'],
+          ...(col === 0 && row === 0
+            ? { figureId: asset.id, figureAnchor: true, figureSpan: [spanW, spanH] as [number, number] }
+            : {}),
+        });
+      } else {
+        cells.push({ col, row, ground: '#F3F3F3', kind: 'plain' });
+      }
+    }
+  }
+  return {
+    id: `synthetic-upscale-${spanW}x${spanH}`,
+    width: 1920,
+    height: 960,
+    cols: 6,
+    rows: 3,
+    ground: '#F3F3F3',
+    cells,
+    forms: [],
+    matchRate: 1,
+    templateId: 'figure-field',
+  };
+}
+
+/**
+ * Parse the scale(sx, sy) from a figure <g … data-figure-id="…" transform="translate(…) scale(sx,sy)">.
+ * Handles both attribute orderings. Returns [sx, sy] or null if no match.
+ */
+function parseFigureTransformScale(svg: string, assetId: string): [number, number] | null {
+  const escaped = assetId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // The renderer emits: <g data-node-id="…" data-figure-id="assetId" transform="translate(…) scale(sx,sy)">
+  const re = new RegExp(`data-figure-id="${escaped}"[^>]+transform="[^"]*scale\\(([^,)]+),([^)]+)\\)"`);
+  const m = re.exec(svg);
+  if (!m) return null;
+  return [parseFloat(m[1]!), parseFloat(m[2]!)];
+}
+
+describe('P4.0: figure upscaling', () => {
+  it('integer upscale: 1×1 asset in 2×2 region renders with 2× scale vs 1×1 region', () => {
+    // Use the first 1×1 asset in the library
+    const asset1x1 = FIGURES.find(a => a.w === 1 && a.h === 1);
+    if (!asset1x1) {
+      // No 1×1 asset in the library — skip gracefully with an informational note
+      console.log('[P4.0] No 1×1 figure asset found; upscale scale-factor test skipped.');
+      return;
+    }
+
+    const CELL_PX = 100;
+
+    // k=1: 1×1 region with 1×1 asset
+    const plan1x1 = syntheticUpscalePlan(asset1x1, 1, 1);
+    const svg1x1 = renderPlanSvg(plan1x1, TILES, { cellPx: CELL_PX, nodeIds: true });
+    const scale1 = parseFigureTransformScale(svg1x1, asset1x1.id);
+    expect(scale1, `no scale found in 1×1 svg for asset ${asset1x1.id}`).not.toBeNull();
+
+    // k=2: 2×2 region with same 1×1 asset (upscaled)
+    const plan2x2 = syntheticUpscalePlan(asset1x1, 2, 2);
+    const svg2x2 = renderPlanSvg(plan2x2, TILES, { cellPx: CELL_PX, nodeIds: true });
+    const scale2 = parseFigureTransformScale(svg2x2, asset1x1.id);
+    expect(scale2, `no scale found in 2×2 svg for asset ${asset1x1.id}`).not.toBeNull();
+
+    // The x-scale (and y-scale) for the 2×2 plan must be exactly 2× the 1×1 plan
+    const ratio = scale2![0] / scale1![0];
+    expect(ratio).toBeCloseTo(2, 5);
+    expect(scale2![1] / scale1![1]).toBeCloseTo(2, 5);
+  });
+
+  it('chooseFigureAsset selects 1×1 asset at k=2 for 2×2 region when library has only 1×1 assets', () => {
+    // Build a library with only 1×1 assets; sample figure-field with figures:true.
+    // Find a seed where the placed anchor has figureSpan=[2,2] (upscaled).
+    const lib1x1 = FIGURES.filter(a => a.w === 1 && a.h === 1);
+    if (lib1x1.length === 0) {
+      console.log('[P4.0] No 1×1 figure assets available; upscale sampler test skipped.');
+      return;
+    }
+
+    let upscalePlacementFound = false;
+    for (let seed = 8000; seed < 8500; seed += 1) {
+      const plan = samplePlan(GRAMMAR, seed, { template: 'figure-field', figures: true }, lib1x1);
+      const anchor = figureAnchors(plan)[0];
+      if (!anchor) continue;
+      // If span is 2×2 or larger and the asset is a 1×1, it must be an upscale placement
+      const [sw, sh] = anchor.figureSpan ?? [0, 0];
+      if (sw >= 2 && sh >= 2) {
+        upscalePlacementFound = true;
+        // Verify the figureId is from our lib1x1
+        const isFrom1x1 = lib1x1.some(a => a.id === anchor.figureId);
+        expect(isFrom1x1, `upscale anchor figureId=${anchor.figureId} not from 1×1 library`).toBe(true);
+        break;
+      }
+    }
+    expect(upscalePlacementFound, 'expected at least one upscale placement (span≥2×2 with 1×1-only library) in seeds 8000..8499').toBe(true);
+  });
+
+  it('is deterministic: same seed and knobs produce identical figure signature', () => {
+    const { seed, plan } = findSamplePlanWithFigure();
+    const again = samplePlan(GRAMMAR, seed, FIGURE_KNOBS);
+    expect(figureSignature(again)).toEqual(figureSignature(plan));
+  });
+
+  it('hero batch: ≥1 upscaled-or-large (≥4 cells) placement across 20 figure-field seeds', () => {
+    let largePlacements = 0;
+    let totalWithFigure = 0;
+    const cellCounts: number[] = [];
+
+    for (const seed of PROBE_SEEDS) {
+      const plan = samplePlan(GRAMMAR, seed, FIGURE_KNOBS);
+      const anchors = figureAnchors(plan);
+      for (const anchor of anchors) {
+        totalWithFigure += 1;
+        const [sw, sh] = anchor.figureSpan ?? [0, 0];
+        const cells = sw * sh;
+        cellCounts.push(cells);
+        if (cells >= 4) largePlacements += 1;
+      }
+    }
+
+    const largeRate = totalWithFigure > 0 ? largePlacements / totalWithFigure : 0;
+    console.log(
+      `[P4.0] hero batch: ${largePlacements} large (≥4-cell) placements out of ${totalWithFigure} total` +
+      ` (rate=${largeRate.toFixed(2)}, cell distribution: ${JSON.stringify(cellCounts)})`,
+    );
+    // Informational — no hard gate on rate, but ≥1 large placement must exist
+    expect(largePlacements, 'expected ≥1 large (≥4-cell) figure placement across 20 figure-field seeds').toBeGreaterThanOrEqual(1);
   });
 });

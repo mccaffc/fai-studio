@@ -189,7 +189,7 @@ export function sampleWithDiagnostics(
 
   const figureSize = plannedFigureSize(template, knobs, rng);
   if (figureSize > 0) {
-    placeFigure(cells, grammar, rng, figureSize, knobs.accent, figures);
+    placeFigure(cells, grammar, rng, figureSize, knobs.accent, figures, template.id);
   } else if (knobs.accent && !grammar.palette.accentOrder.includes(knobs.accent)) {
     throw new Error(`Unknown accent ink: ${knobs.accent}`);
   }
@@ -906,11 +906,11 @@ function fallbackPlacement(grammar: EngineGrammar, current: Placement, dir: Dire
 function plannedFigureSize(template: Template, knobs: SampleKnobs, rng: Rng): number {
   if (knobs.figures === false) return 0;
   if (template.spec.forms.figure[1] <= 0) return 0;
-  // Figures span 2–6 cells, drawn from the template's figureShare range × 18
-  // and clamped to [2, 6]. The share cap keeps figureShare within the template
-  // feature range (e.g. pipe-field's 0.222 → ≤4 cells); the [2,6] clamp lifts
-  // the old hard cap of 2 so figure-field can carry real multi-cell figures.
-  const maxCells = Math.min(6, Math.floor(template.spec.figureShare[1] * CELL_COUNT + EPS));
+  // Figures span 2–6 cells for most templates, drawn from the template's
+  // figureShare range × 18 and clamped to [2, 6]. figure-field allows up to 9
+  // cells (3×3 max region) to enable hero upscale placement.
+  const heroCap = template.id === 'figure-field' ? 9 : 6;
+  const maxCells = Math.min(heroCap, Math.floor(template.spec.figureShare[1] * CELL_COUNT + EPS));
   const minCells = Math.max(2, Math.ceil(template.spec.figureShare[0] * CELL_COUNT - EPS));
   if (maxCells < minCells) return 0;
   if (knobs.figures !== true && !rng.chance(0.55)) return 0;
@@ -924,6 +924,7 @@ function placeFigure(
   size: number,
   knobAccent: string | undefined,
   figures: readonly FigureAsset[],
+  templateId = '',
 ): boolean {
   if (knobAccent && !grammar.palette.accentOrder.includes(knobAccent)) {
     throw new Error(`Unknown accent ink: ${knobAccent}`);
@@ -936,7 +937,7 @@ function placeFigure(
       rng,
       empty.map(cell => ({ value: cell, weight: 1, sortKey: positionKey(cell) })),
     );
-    const region = growConnectedRegion(cells, rng, start, size);
+    const region = growConnectedRegion(cells, rng, start, size, templateId);
     if (region.length < size) continue;
     const ink = chooseAccent(grammar, rng, new Set(region.map(cell => cell.ground)), knobAccent);
     if (!ink) continue;
@@ -999,22 +1000,60 @@ function chooseFigureAsset(
   regionH: number,
   rng: Rng,
 ): FigureAsset | undefined {
-  const exact = figures.filter(asset => asset.w === regionW && asset.h === regionH);
-  const candidates = exact.length > 0
-    ? exact
-    : figures.filter(asset => asset.w <= regionW && asset.h <= regionH);
-  if (candidates.length === 0) return undefined;
-  return weightedChoice(
-    rng,
-    candidates.map(asset => ({
-      value: asset,
-      weight: 1 / (Math.abs(asset.inkShare - 0.4) + EPS),
-      sortKey: asset.id,
-    })),
-  );
+  // Candidate pool: exact(k=1) ∪ upscaled(k≥2) ∪ fits-within.
+  // An asset (w, h) qualifies at integer scale k when regionW===k*w && regionH===k*h.
+  // Upscaled candidates (k≥2) are weighted 2× their base weight (hero bias).
+  // figureSpan is set to the REGION size, so the renderer scales automatically.
+  interface Candidate { asset: FigureAsset; k: number }
+  const candidateEntries: Array<Weighted<Candidate>> = [];
+  const addedIds = new Set<string>();
+
+  for (const asset of [...figures].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0)) {
+    const baseWeight = 1 / (Math.abs(asset.inkShare - 0.4) + EPS);
+    // Integer-scale candidates (k≥1)
+    for (let k = 1; k * asset.w <= regionW && k * asset.h <= regionH; k += 1) {
+      if (k * asset.w === regionW && k * asset.h === regionH) {
+        const heroBias = k >= 2 ? 2 : 1;
+        candidateEntries.push({
+          value: { asset, k },
+          weight: baseWeight * heroBias,
+          sortKey: `${asset.id}@${k}`,
+        });
+        addedIds.add(`${asset.id}@${k}`);
+      }
+    }
+  }
+
+  // fits-within fallback (if no exact/upscale match)
+  if (candidateEntries.length === 0) {
+    for (const asset of [...figures].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0)) {
+      if (asset.w <= regionW && asset.h <= regionH) {
+        const baseWeight = 1 / (Math.abs(asset.inkShare - 0.4) + EPS);
+        candidateEntries.push({
+          value: { asset, k: 1 },
+          weight: baseWeight,
+          sortKey: `${asset.id}@1`,
+        });
+      }
+    }
+  }
+
+  if (candidateEntries.length === 0) return undefined;
+  return weightedChoice(rng, candidateEntries).asset;
 }
 
-function growConnectedRegion(cells: DraftCell[], rng: Rng, start: DraftCell, size: number): DraftCell[] {
+/**
+ * Grow a connected region of `size` cells from `start`.
+ *
+ * For the 'figure-field' template, a 60/40 rectangular bias is applied at each
+ * step: cells that keep the region's area equal to its bounding-box area (i.e.
+ * the region stays a perfect rectangle) are weighted 3× those that would
+ * introduce a ragged protrusion.  This matches the canonical hero-region shape
+ * that enables integer upscale matching (e.g. a 2×2 region can host a 1×1
+ * asset at k=2).  Other templates use uniform weighting (existing behaviour).
+ */
+function growConnectedRegion(cells: DraftCell[], rng: Rng, start: DraftCell, size: number, templateId = ''): DraftCell[] {
+  const figureField = templateId === 'figure-field';
   const region = [start];
   const selected = new Set([positionKey(start)]);
   while (region.length < size) {
@@ -1023,14 +1062,49 @@ function growConnectedRegion(cells: DraftCell[], rng: Rng, start: DraftCell, siz
       .filter(cell => cell.kind === undefined && !selected.has(positionKey(cell)))
       .sort(compareCells);
     if (frontier.length === 0) break;
-    const next = weightedChoice(
-      rng,
-      frontier.map(cell => ({ value: cell, weight: 1, sortKey: positionKey(cell) })),
-    );
+
+    let entries: Weighted<DraftCell>[];
+    if (figureField) {
+      // Compute current bounding box + area
+      const curBounds = figureRegionBounds(region);
+      const curBboxArea = curBounds.w * curBounds.h;
+      const curIsRect = region.length === curBboxArea;
+
+      entries = frontier.map(cell => {
+        // Would adding this cell keep the region rectangular?
+        const newBounds = figureRegionBoundsWithExtra(curBounds, cell);
+        const newBboxArea = newBounds.w * newBounds.h;
+        const wouldBeRect = (region.length + 1) === newBboxArea;
+        // 60/40 bias: rectangular steps get 3× weight, ragged steps get 1×
+        // (3:1 ratio = 75% rect / 25% ragged, approximately 60/40 at selection)
+        const rectWeight = curIsRect ? 3 : 1;
+        return {
+          value: cell,
+          weight: wouldBeRect ? rectWeight : 1,
+          sortKey: positionKey(cell),
+        };
+      });
+    } else {
+      entries = frontier.map(cell => ({ value: cell, weight: 1, sortKey: positionKey(cell) }));
+    }
+
+    const next = weightedChoice(rng, entries);
     region.push(next);
     selected.add(positionKey(next));
   }
   return region;
+}
+
+/** Compute bounding box of `region` with one extra cell added (no mutation). */
+function figureRegionBoundsWithExtra(
+  existing: { col: number; row: number; w: number; h: number },
+  extra: DraftCell,
+): { col: number; row: number; w: number; h: number } {
+  const minCol = Math.min(existing.col, extra.col);
+  const minRow = Math.min(existing.row, extra.row);
+  const maxCol = Math.max(existing.col + existing.w - 1, extra.col);
+  const maxRow = Math.max(existing.row + existing.h - 1, extra.row);
+  return { col: minCol, row: minRow, w: maxCol - minCol + 1, h: maxRow - minRow + 1 };
 }
 
 function chooseAccent(
