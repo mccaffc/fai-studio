@@ -126,11 +126,11 @@ function writeSheet(sheet: Sheet, seedBase: number, sheetIndex: number): string 
 
 /**
  * Determine the display template label for a sample.
- * When the caller pins a template via --template, that is the answer.
- * When not pinned, the sampler draws the template stochastically and
- * does not expose it in the returned plan; label it '(auto)'.
+ * When the plan carries a templateId (set by samplePlan since P2 Task 4),
+ * that is the answer. Falls back to the pinned template flag, then '(auto)'.
  */
-function resolveTemplateLabel(grammar: Grammar, pinnedTemplate: string | undefined): string {
+function resolveTemplateLabel(grammar: Grammar, pinnedTemplate: string | undefined, planTemplateId?: string): string {
+  if (planTemplateId !== undefined) return planTemplateId;
   if (pinnedTemplate !== undefined) return pinnedTemplate;
   void grammar;
   return '(auto)';
@@ -154,7 +154,6 @@ async function main(): Promise<void> {
   const grammar: Grammar = JSON.parse(readFileSync(GRAMMAR_PATH, 'utf8'));
   const manifest = loadMergedManifest();
 
-  const templateLabel = resolveTemplateLabel(grammar, cli.template);
   const plans: PlanEntry[] = [];
   const sheetPaths: string[] = [];
 
@@ -169,6 +168,8 @@ async function main(): Promise<void> {
     const { plan, diag } = sampleWithDiagnostics(grammar, seed, knobs);
     const scores = scorePlan(plan, manifest);
 
+    // Prefer plan.templateId (set since P2 Task 4) over the pinned CLI flag.
+    const templateLabel = resolveTemplateLabel(grammar, cli.template, plan.templateId);
     const entry: PlanEntry = { seed, template: templateLabel, scores, diag };
     plans.push(entry);
 

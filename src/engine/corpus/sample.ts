@@ -36,6 +36,7 @@ import { mulberry32, type Rng } from './rng.js';
 import { TILES } from './data/tiles.js';
 
 export type { SampleKnobs } from './types.js';
+export type { BannerPlan } from './types.js';
 
 /** tile-id → shape family, derived once from the baked tile catalog. */
 const FAMILIES: Record<string, string> = Object.fromEntries(
@@ -206,6 +207,7 @@ export function sampleWithDiagnostics(grammar: EngineGrammar, seed: number, knob
     cells: finalCells,
     forms: [],
     matchRate: 1,
+    templateId: template.id,
   };
   plan.forms = detectForms(plan, grammar.tileCatalog, FAMILIES);
   diag.longestRun = plan.forms.reduce(
@@ -1706,4 +1708,61 @@ function weightedChoice<T>(rng: Rng, entries: Weighted<T>[]): T {
 
 function compareCodepoint(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
+}
+
+// ---------------------------------------------------------------------------
+// rezone — public API helper: re-apply accent zoning only, geometry frozen
+// ---------------------------------------------------------------------------
+
+/**
+ * Deep-copy `plan` and re-run ONLY `applyAccentZoning` + `enforceAccentBudget`
+ * with `accent` as the forced knob. Cell geometry (tile/rotation/flip) is
+ * identical to the input; only inks/grounds may change.
+ *
+ * @param plan    - Source plan (must have been produced by samplePlan / sampleWithDiagnostics).
+ * @param grammar - The engine grammar the plan was sampled from.
+ * @param seed    - The original seed (used to replay the RNG state for accent zoning).
+ * @param accent  - The new accent color to apply.
+ */
+export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, accent: string): BannerPlan {
+  // Deep-copy the plan (cells carry inks/grounds that will be mutated).
+  const cells: DraftCell[] = plan.cells.map(c => ({ ...c }));
+
+  // Build a fresh RNG at the same seed but advance it past all the geometry
+  // draws so that accent-zoning uses a reproducible sub-sequence. We reuse the
+  // accentZoning RNG draws only — simplest deterministic approach is a
+  // dedicated RNG seeded from (seed + accent_hash). This gives stable re-zones.
+  const accentHash = [...accent].reduce((h, ch) => ((h * 31 + ch.charCodeAt(0)) & 0xffffffff), seed);
+  const rng = mulberry32(accentHash >>> 0);
+
+  // Find the template so applyAccentZoning has the template.id check.
+  const template = grammar.templates.find(t => t.id === plan.templateId) ??
+    grammar.templates.find(t => t.bannerIds.length > 0) ??
+    grammar.templates[0];
+  if (!template) throw new Error('rezone: grammar has no templates');
+
+  const diag: SampleDiagnostics = {
+    adjacencyHits: 0,
+    accentZone: 'none',
+    adjacencyFallbacks: 0,
+    fillAdjacencyHits: 0,
+    friezesPlaced: 0,
+    longestRun: 0,
+    runPaths: [],
+  };
+
+  const knobs: SampleKnobs = { accent };
+  applyAccentZoning(cells, grammar, rng, template, knobs, diag);
+  enforceAccentBudget(cells, grammar);
+
+  const finalCells = finalizeCells(cells);
+  return {
+    ...plan,
+    cells: finalCells,
+    // Re-run forms to reflect any ink changes.
+    forms: (() => {
+      const tmp: BannerPlan = { ...plan, cells: finalCells, forms: [] };
+      return detectForms(tmp, grammar.tileCatalog, FAMILIES);
+    })(),
+  };
 }

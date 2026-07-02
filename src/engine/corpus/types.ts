@@ -48,6 +48,8 @@ export interface BannerPlan {
   cells: CellPlan[];        // always 18, row-major
   forms: FormGroup[];
   matchRate: number;        // fraction of non-plain cells with kind==='tile'
+  /** Template name used to generate this plan (set by samplePlan / corpus API). */
+  templateId?: string;
 }
 
 // ---------------------------------------------------------------------------
