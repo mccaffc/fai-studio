@@ -3,3 +3,5 @@ dist-site/
 dist-engine/
 dist-flatten/
 .DS_Store
+dist-tools/
+corpus/corpus.partial.json

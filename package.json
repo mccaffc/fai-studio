@@ -10,7 +10,8 @@
     "test": "vitest run",
     "batch": "npm run build:engine && node scripts/batch.mjs",
     "build:flatten": "esbuild src/studio/flatten-core.ts --bundle --format=esm --platform=neutral --outfile=dist-flatten/flatten-core.js",
-    "flatten:dir": "npm run build:flatten && node scripts/flatten-dir.mjs"
+    "flatten:dir": "npm run build:flatten && node scripts/flatten-dir.mjs",
+    "mine": "esbuild tools/mine/mine.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/mine.mjs && node dist-tools/mine.mjs"
   },
   "devDependencies": {
     "canvas": "^3.2.3",
