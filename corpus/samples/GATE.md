@@ -21,3 +21,13 @@ continuous passages in most pipe-field samples; accents read intentional.
 GATE: PASS (bar: ≥70% quilt-pass ✓, ≥1/3 would-show ✓).
 Named residual for P2: run length — canon serpents reach 15 cells, samples ~4. The renderer
 phase should bias growth length using the corpus form-size distribution (data already mined).
+
+## Iteration 2 — ENGINE OUTPUT (P2 T5 gate) — 2026-07-02
+First gate on the engine's own SVG (renderPlanSvg, serpentine growth live). Sheets:
+engine-mixed-3000 / engine-pipe-3100 / engine-arc-3200.
+Claude verdict: ~60% would-show (bar 50%) — GATE PASS. The signature move is now unmistakable:
+multi-cell serpents (6-10 cells) flowing over shifting grounds in most pipe-field samples;
+accent zones read intentional; density canonical. Residuals (named, non-blocking):
+freeform placeholder blobs visibly synthetic (figure-field suffers most — real figure geometry
+is the next aesthetic frontier); occasional lone-motif field interruptions; some arc clusters
+rosette rather than flow (reads as variety, monitoring).
