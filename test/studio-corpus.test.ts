@@ -1,0 +1,133 @@
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+/** Mirror index.html's mount points — extended for corpus mode. */
+function skeleton(): void {
+  document.body.className = "";
+  document.body.innerHTML = `
+    <header>
+      <div id="mode-toggle"></div>
+    </header>
+    <aside id="controls"></aside>
+    <aside id="corpus-controls"></aside>
+    <section class="stage">
+      <div id="canvas" class="canvas"></div>
+      <div id="canvas-actions" class="canvas-actions"></div>
+      <div id="action-status" class="action-status"></div>
+      <div id="corpus-scores"></div>
+      <h2>Variations</h2>
+      <div id="variations" class="tray"></div>
+      <h2 id="saved-heading">Saved</h2>
+      <div id="saved" class="tray"></div>
+    </section>`;
+}
+
+function findButton(scope: string, re: RegExp): HTMLButtonElement {
+  const b = Array.from(document.querySelectorAll(`${scope} button`)).find((x) =>
+    re.test(x.textContent ?? ""),
+  );
+  if (!b) throw new Error(`button matching ${re} not found in ${scope}`);
+  return b as HTMLButtonElement;
+}
+
+describe("studio corpus mode (jsdom)", () => {
+  beforeEach(() => {
+    vi.resetModules(); // re-boot main.ts against each fresh DOM
+    const mem = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (k: string) => (mem.has(k) ? mem.get(k)! : null),
+      setItem: (k: string, v: string) => void mem.set(k, String(v)),
+      removeItem: (k: string) => void mem.delete(k),
+      clear: () => mem.clear(),
+    });
+    vi.stubGlobal("confirm", () => true);
+    skeleton();
+  });
+
+  it("1. booting in corpus mode (default) renders an svg in #canvas", async () => {
+    await import("../src/studio/main");
+    expect(document.querySelector("#canvas svg")).toBeTruthy();
+    // Corpus controls visible by default
+    const corpusAside = document.querySelector("#corpus-controls") as HTMLElement;
+    expect(corpusAside).toBeTruthy();
+    expect(corpusAside.style.display).not.toBe("none");
+  });
+
+  it("2. mode toggle switches visibility and persists to localStorage", async () => {
+    await import("../src/studio/main");
+
+    // Default is corpus — classic controls should be hidden
+    const classicAside = document.querySelector("#controls") as HTMLElement;
+    const corpusAside = document.querySelector("#corpus-controls") as HTMLElement;
+    expect(classicAside.style.display).toBe("none");
+    expect(corpusAside.style.display).not.toBe("none");
+
+    // Click "Classic" button
+    findButton("header", /Classic/).click();
+    expect(localStorage.getItem("fai-studio-mode")).toBe("classic");
+    expect(classicAside.style.display).not.toBe("none");
+    expect(corpusAside.style.display).toBe("none");
+
+    // Click "Corpus" button
+    findButton("header", /Corpus/).click();
+    expect(localStorage.getItem("fai-studio-mode")).toBe("corpus");
+    expect(classicAside.style.display).toBe("none");
+    expect(corpusAside.style.display).not.toBe("none");
+  });
+
+  it("3. template select change regenerates (different svg content)", async () => {
+    await import("../src/studio/main");
+
+    const before = document.querySelector("#canvas")!.innerHTML;
+
+    // Change template to 'pipe-field'
+    const templateSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-template]",
+    ) as HTMLSelectElement;
+    expect(templateSelect).toBeTruthy();
+    templateSelect.value = "pipe-field";
+    templateSelect.dispatchEvent(new Event("change"));
+
+    const after = document.querySelector("#canvas")!.innerHTML;
+    expect(after).not.toBe(before);
+  });
+
+  it("4. accent change recolors without changing geometry (path d unchanged)", async () => {
+    await import("../src/studio/main");
+
+    // Get a tile path's 'd' attribute before recolor
+    const svgBefore = document.querySelector("#canvas svg")!;
+    const pathBefore = svgBefore.querySelector("path[d]");
+    const dBefore = pathBefore?.getAttribute("d");
+    expect(dBefore).toBeTruthy();
+
+    // Change accent to Celestial Blue
+    const accentSelect = document.querySelector(
+      "#corpus-controls select[data-corpus-accent]",
+    ) as HTMLSelectElement;
+    expect(accentSelect).toBeTruthy();
+    accentSelect.value = "#4997D0";
+    accentSelect.dispatchEvent(new Event("change"));
+
+    // Same path 'd' must still exist (geometry frozen)
+    const svgAfter = document.querySelector("#canvas svg")!;
+    const allPaths = Array.from(svgAfter.querySelectorAll("path[d]"));
+    const sameD = allPaths.some((p) => p.getAttribute("d") === dBefore);
+    expect(sameD).toBe(true);
+  });
+
+  it("5. spacebar triggers reroll (seed display changes)", async () => {
+    await import("../src/studio/main");
+
+    const seedInput = document.querySelector(
+      "#corpus-controls input[data-corpus-seed]",
+    ) as HTMLInputElement;
+    expect(seedInput).toBeTruthy();
+    const seedBefore = seedInput.value;
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { code: "Space", bubbles: true }));
+
+    const seedAfter = seedInput.value;
+    expect(seedAfter).not.toBe(seedBefore);
+  });
+});

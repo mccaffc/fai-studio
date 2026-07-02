@@ -1,0 +1,50 @@
+[
+  {
+    "id": "mined-034-petal",
+    "filename": "mined-034-petal.svg",
+    "shape_family": "curve",
+    "visual_weight": 0.7854,
+    "edge_coverage": {
+      "top": 1,
+      "right": 0.1563,
+      "bottom": 1,
+      "left": 0.1719
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "034/1,0"
+  },
+  {
+    "id": "mined-046-knot",
+    "filename": "mined-046-knot.svg",
+    "shape_family": "joint",
+    "visual_weight": 0.3933,
+    "edge_coverage": {
+      "top": 0.0938,
+      "right": 0.0781,
+      "bottom": 0.5,
+      "left": 0.0938
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "046/0,0"
+  },
+  {
+    "id": "mined-019-cross",
+    "filename": "mined-019-cross.svg",
+    "shape_family": "curve",
+    "visual_weight": 0.2844,
+    "edge_coverage": {
+      "top": 0.0625,
+      "right": 1,
+      "bottom": 1,
+      "left": 0.0625
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "019/0,1"
+  }
+]
