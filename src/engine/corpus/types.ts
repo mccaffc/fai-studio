@@ -31,6 +31,9 @@ export interface CellPlan {
   inks?: Hex[];             // all foreground colors present
   score?: number;           // IoU of the accepted match
   candidates?: { tile: string; rotation: number; flip: boolean; score: number }[];
+  figureId?: string;        // figure asset id, present on the freeform anchor cell
+  figureAnchor?: boolean;   // true only for the top-left figure anchor cell
+  figureSpan?: [number, number]; // [w,h] cells spanned by the figure asset
 }
 
 export interface FormGroup {

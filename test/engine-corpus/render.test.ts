@@ -127,7 +127,10 @@ describe('renderPlanSvg — round-trip vs validated canvas renderer', () => {
   beforeAll(async () => {
     agreements = [];
     for (const { seed, template } of ROUNDTRIP_SEEDS) {
-      const plan = samplePlan(GRAMMAR, seed, { template });
+      // The validated canvas recon path still draws freeform cells as blobs.
+      // Keep this legacy round-trip focused on tile transform parity; figure
+      // asset rendering has its own Task P3.3 tests.
+      const plan = samplePlan(GRAMMAR, seed, { template, figures: false });
       // Compare geometry like-for-like: the canvas recon draws a pre-rasterized
       // tile bitmap with NO seam guard, so we render the SVG without the guard
       // too. The seam-guard hairline is a print-seam overdraw (a few edge px per
@@ -261,13 +264,13 @@ describe('renderPlanSvg — program palette law', () => {
 
 describe('renderPlanSvg — nodeIds option', () => {
   it('omits data-node-id by default', () => {
-    const plan = samplePlan(GRAMMAR, 555, { template: 'pipe-field' });
+    const plan = samplePlan(GRAMMAR, 555, { template: 'pipe-field', figures: false });
     const svg = renderPlanSvg(plan, TILES);
     expect(svg).not.toContain('data-node-id');
   });
 
   it('emits data-node-id="col,row" on each tile cell group when enabled', () => {
-    const plan = samplePlan(GRAMMAR, 555, { template: 'pipe-field' });
+    const plan = samplePlan(GRAMMAR, 555, { template: 'pipe-field', figures: false });
     const svg = renderPlanSvg(plan, TILES, { nodeIds: true });
     const tileCells = plan.cells.filter(c => c.kind === 'tile' || c.kind === 'freeform');
     expect(tileCells.length).toBeGreaterThan(0);

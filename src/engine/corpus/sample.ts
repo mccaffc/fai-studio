@@ -34,6 +34,7 @@ import { detectForms, orientEdges } from './forms.js';
 import { profileIoU } from './profiles.js';
 import { mulberry32, type Rng } from './rng.js';
 import { TILES } from './data/tiles.js';
+import { FIGURES, type FigureAsset } from './data/figures.js';
 
 export type { SampleKnobs } from './types.js';
 export type { BannerPlan } from './types.js';
@@ -125,6 +126,9 @@ interface DraftCell {
   ink?: string;
   inks?: string[];
   score?: number;
+  figureId?: string;
+  figureAnchor?: boolean;
+  figureSpan?: [number, number];
 }
 
 interface Placement {
@@ -133,11 +137,21 @@ interface Placement {
   flip: boolean;
 }
 
-export function samplePlan(grammar: EngineGrammar, seed: number, knobs: SampleKnobs = {}): BannerPlan {
-  return sampleWithDiagnostics(grammar, seed, knobs).plan;
+export function samplePlan(
+  grammar: EngineGrammar,
+  seed: number,
+  knobs: SampleKnobs = {},
+  figures: readonly FigureAsset[] = FIGURES,
+): BannerPlan {
+  return sampleWithDiagnostics(grammar, seed, knobs, figures).plan;
 }
 
-export function sampleWithDiagnostics(grammar: EngineGrammar, seed: number, knobs: SampleKnobs = {}): SampleResult {
+export function sampleWithDiagnostics(
+  grammar: EngineGrammar,
+  seed: number,
+  knobs: SampleKnobs = {},
+  figures: readonly FigureAsset[] = FIGURES,
+): SampleResult {
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
     accentZone: 'none',
@@ -175,7 +189,7 @@ export function sampleWithDiagnostics(grammar: EngineGrammar, seed: number, knob
 
   const figureSize = plannedFigureSize(template, knobs, rng);
   if (figureSize > 0) {
-    placeFigure(cells, grammar, rng, figureSize, knobs.accent);
+    placeFigure(cells, grammar, rng, figureSize, knobs.accent, figures);
   } else if (knobs.accent && !grammar.palette.accentOrder.includes(knobs.accent)) {
     throw new Error(`Unknown accent ink: ${knobs.accent}`);
   }
@@ -909,6 +923,7 @@ function placeFigure(
   rng: Rng,
   size: number,
   knobAccent: string | undefined,
+  figures: readonly FigureAsset[],
 ): boolean {
   if (knobAccent && !grammar.palette.accentOrder.includes(knobAccent)) {
     throw new Error(`Unknown accent ink: ${knobAccent}`);
@@ -925,15 +940,78 @@ function placeFigure(
     if (region.length < size) continue;
     const ink = chooseAccent(grammar, rng, new Set(region.map(cell => cell.ground)), knobAccent);
     if (!ink) continue;
+    const bounds = figureRegionBounds(region);
+    if (!regionCoversBounds(region, bounds)) continue;
+    const anchor = region.find(cell => cell.col === bounds.col && cell.row === bounds.row);
+    const asset = anchor ? chooseFigureAsset(figures, bounds.w, bounds.h, rng) : undefined;
     for (const cell of region) {
       cell.kind = 'freeform';
       cell.ink = ink;
       cell.inks = [ink];
     }
+    if (anchor && asset) {
+      anchor.figureId = asset.id;
+      anchor.figureAnchor = true;
+      anchor.figureSpan = [bounds.w, bounds.h];
+    }
     return true;
   }
 
   return false;
+}
+
+function figureRegionBounds(region: DraftCell[]): { col: number; row: number; w: number; h: number } {
+  let minCol = COLS;
+  let minRow = ROWS;
+  let maxCol = 0;
+  let maxRow = 0;
+  for (const cell of region) {
+    minCol = Math.min(minCol, cell.col);
+    minRow = Math.min(minRow, cell.row);
+    maxCol = Math.max(maxCol, cell.col);
+    maxRow = Math.max(maxRow, cell.row);
+  }
+  return {
+    col: minCol,
+    row: minRow,
+    w: maxCol - minCol + 1,
+    h: maxRow - minRow + 1,
+  };
+}
+
+function regionCoversBounds(
+  region: DraftCell[],
+  bounds: { col: number; row: number; w: number; h: number },
+): boolean {
+  if (region.length !== bounds.w * bounds.h) return false;
+  const positions = new Set(region.map(positionKey));
+  for (let row = bounds.row; row < bounds.row + bounds.h; row += 1) {
+    for (let col = bounds.col; col < bounds.col + bounds.w; col += 1) {
+      if (!positions.has(`${col},${row}`)) return false;
+    }
+  }
+  return true;
+}
+
+function chooseFigureAsset(
+  figures: readonly FigureAsset[],
+  regionW: number,
+  regionH: number,
+  rng: Rng,
+): FigureAsset | undefined {
+  const exact = figures.filter(asset => asset.w === regionW && asset.h === regionH);
+  const candidates = exact.length > 0
+    ? exact
+    : figures.filter(asset => asset.w <= regionW && asset.h <= regionH);
+  if (candidates.length === 0) return undefined;
+  return weightedChoice(
+    rng,
+    candidates.map(asset => ({
+      value: asset,
+      weight: 1 / (Math.abs(asset.inkShare - 0.4) + EPS),
+      sortKey: asset.id,
+    })),
+  );
 }
 
 function growConnectedRegion(cells: DraftCell[], rng: Rng, start: DraftCell, size: number): DraftCell[] {
@@ -1297,6 +1375,7 @@ function applyAccentZoning(
   // de-scatter: accent inks outside all zones revert to neutral
   const accentSet = new Set(accents);
   const inZone = new Set<DraftCell>(); for (const z of zones) for (const c of z) inZone.add(c);
+  for (const c of cells) if (c.kind === 'freeform') inZone.add(c);
   for (const c of cells) {
     if (c.kind === 'plain' || inZone.has(c)) continue;
     if (c.ink && accentSet.has(c.ink)) {

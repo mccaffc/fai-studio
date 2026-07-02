@@ -12,9 +12,10 @@
  *     global ground.
  *   Layer 2 (tiles + figures): for each tile cell, a `<g transform=…>` group
  *     carrying the tile's native-200-space elements, recolored by role
- *     (`fg` → cell.ink, `cutout` → cell.ground). Freeform cells get the
- *     deterministic organic-blob placeholder (ink-filled). Plain cells emit
- *     nothing (the ground layer already painted them).
+ *     (`fg` → cell.ink, `cutout` → cell.ground). Figure anchors emit one
+ *     spanned corpus figure group. Freeform cells without an assigned figure
+ *     keep the deterministic organic-blob placeholder (ink-filled). Plain cells
+ *     emit nothing (the ground layer already painted them).
  *
  * ---------------------------------------------------------------------------
  * Transform derivation (MUST match the validated canvas renderer)
@@ -52,6 +53,7 @@
 
 import type { BannerPlan, CellPlan } from './types.js';
 import type { EngineTile, TileElement } from './data/tiles.js';
+import { FIGURES, type FigureAsset } from './data/figures.js';
 
 export interface RenderOptions {
   /** Painted cell size in px; canvas is cols·cellPx × rows·cellPx. Default 320. */
@@ -67,6 +69,8 @@ export interface RenderOptions {
    * hit-testing. Default off (exports stay clean, output deterministic).
    */
   nodeIds?: boolean;
+  /** Figure library used to resolve CellPlan.figureId. Defaults to FIGURES. */
+  figureAssets?: readonly FigureAsset[];
 }
 
 const SEAM_STROKE = 0.6;
@@ -81,6 +85,10 @@ function escPath(s: string): string {
     .replace(/"/g, '&quot;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+
+function escAttr(s: string): string {
+  return escPath(s);
 }
 
 /** Serialize one element with the given fill; optionally add a seam-guard stroke. */
@@ -157,6 +165,57 @@ function cellTransform(cell: CellPlan, cellPx: number): string {
   return ops.join(' ');
 }
 
+function figureTransform(cell: CellPlan, asset: FigureAsset, span: [number, number], cellPx: number): string {
+  const viewW = asset.w * 200;
+  const viewH = asset.h * 200;
+  const rectW = span[0] * cellPx;
+  const rectH = span[1] * cellPx;
+  const tx = cell.col * cellPx;
+  const ty = cell.row * cellPx;
+  const sx = rectW / viewW;
+  const sy = rectH / viewH;
+  return `translate(${num(tx)},${num(ty)}) scale(${num(sx)},${num(sy)})`;
+}
+
+function cellKey(cell: Pick<CellPlan, 'col' | 'row'>): string {
+  return `${cell.col},${cell.row}`;
+}
+
+function figureCoveredCells(plan: BannerPlan): Set<string> {
+  const covered = new Set<string>();
+  for (const cell of plan.cells) {
+    if (!cell.figureId || !cell.figureSpan) continue;
+    const [spanW, spanH] = cell.figureSpan;
+    for (let row = cell.row; row < Math.min(plan.rows, cell.row + spanH); row += 1) {
+      for (let col = cell.col; col < Math.min(plan.cols, cell.col + spanW); col += 1) {
+        if (col === cell.col && row === cell.row) continue;
+        covered.add(`${col},${row}`);
+      }
+    }
+  }
+  return covered;
+}
+
+function renderFigureGroup(
+  plan: BannerPlan,
+  cell: CellPlan,
+  asset: FigureAsset,
+  cellPx: number,
+  seamGuard: boolean,
+  nodeIds: boolean,
+): string {
+  const span = cell.figureSpan ?? [asset.w, asset.h];
+  const ink = cell.ink ?? '#121212';
+  const ground = cell.ground ?? plan.ground;
+  const attrs = nodeIds
+    ? ` data-node-id="${cell.col},${cell.row}" data-figure-id="${escAttr(asset.id)}"`
+    : '';
+  const body = asset.elements
+    .map(el => serializeElement(el, el.role === 'cutout' ? ground : ink, seamGuard))
+    .join('');
+  return `<g${attrs} transform="${figureTransform(cell, asset, span, cellPx)}">${body}</g>`;
+}
+
 // ---------------------------------------------------------------------------
 // Renderer
 // ---------------------------------------------------------------------------
@@ -169,6 +228,10 @@ export function renderPlanSvg(
   const cellPx = opts.cellPx ?? 320;
   const seamGuard = opts.seamGuard ?? true;
   const nodeIds = opts.nodeIds ?? false;
+  const figureAssets = opts.figureAssets ?? FIGURES;
+  const figureById = new Map(figureAssets.map(asset => [asset.id, asset]));
+  const figureCovered = figureCoveredCells(plan);
+  const figureGroups: string[] = [];
 
   const width = plan.cols * cellPx;
   const height = plan.rows * cellPx;
@@ -202,6 +265,14 @@ export function renderPlanSvg(
         .join('');
       parts.push(`<g${idAttr} transform="${cellTransform(cell, cellPx)}">${body}</g>`);
     } else if (cell.kind === 'freeform' || cell.kind === 'review') {
+      if (cell.figureId) {
+        const asset = figureById.get(cell.figureId);
+        if (asset && cell.figureSpan) {
+          figureGroups.push(renderFigureGroup(plan, cell, asset, cellPx, seamGuard, nodeIds));
+          continue;
+        }
+      }
+      if (figureCovered.has(cellKey(cell))) continue;
       const ink = cell.ink ?? '#121212';
       const tx = cell.col * cellPx;
       const ty = cell.row * cellPx;
@@ -211,6 +282,7 @@ export function renderPlanSvg(
     // 'plain' → ground already painted in Layer 1.
   }
 
+  parts.push(...figureGroups);
   parts.push('</svg>');
   return parts.join('');
 }
