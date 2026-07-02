@@ -19,6 +19,7 @@
  */
 
 import type { Corpus, ManifestTile } from '../mine/schema.js';
+import type { TileEdgeProfiles } from './edge-profiles.js';
 import { computeStats, type StatsTables } from './stats.js';
 import { computeFeatures } from './features.js';
 import { assignTemplates, type Template } from './templates.js';
@@ -31,10 +32,12 @@ export interface TileCatalogEntry {
   rotations: Record<string, number>;
   /** Fraction of usages where flip=true. */
   flipShare: number;
+  /** Per-variant edge bit-profiles ('rot/flip' → hex vectors); v2 edge-matching contract. */
+  profiles?: TileEdgeProfiles;
 }
 
 export interface Grammar {
-  schemaVersion: 1;
+  schemaVersion: 2;
   /** ISO timestamp; stamped by the CLI main(), not by composeGrammar(). */
   builtAt: string;
   stats: StatsTables;
@@ -62,6 +65,7 @@ export interface Grammar {
 export function composeGrammar(
   corpus: Corpus,
   manifest: Map<string, ManifestTile & { baseDir: string }>,
+  profiles?: Record<string, TileEdgeProfiles>,
 ): Omit<Grammar, 'builtAt'> {
   const stats = computeStats(corpus, manifest);
   const features = corpus.banners.map(b => computeFeatures(b, stats, manifest));
@@ -77,6 +81,7 @@ export function composeGrammar(
       edges: entry.edge_coverage,
       rotations: stats.tileRotations[tileId] ?? { '0': 0, '90': 0, '180': 0, '270': 0 },
       flipShare: stats.tileFlipShare[tileId] ?? 0,
+      ...(profiles?.[tileId] ? { profiles: profiles[tileId] } : {}),
     };
   }
 
@@ -115,7 +120,7 @@ export function composeGrammar(
   }
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     stats,
     templates,
     tileCatalog: sortedTileCatalog,

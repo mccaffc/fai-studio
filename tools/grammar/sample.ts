@@ -20,6 +20,7 @@ import type { Grammar } from './grammar-schema.js';
 import type { GroundSchemeKind } from './stats.js';
 import type { Template } from './templates.js';
 import { detectForms, orientEdges } from '../mine/forms.js';
+import { profileIoU, type VariantKey } from './edge-profiles.js';
 import { loadMergedManifest } from '../mine/render-recon.js';
 import type { BannerRecon, CellRecon, ManifestTile } from '../mine/schema.js';
 import { mulberry32, type Rng } from './rng.js';
@@ -33,6 +34,7 @@ export interface SampleKnobs {
 
 export interface SampleDiagnostics {
   adjacencyHits: number;
+  accentZone: 'ink' | 'ground' | 'figure' | 'none';
   adjacencyFallbacks: number;
   fillAdjacencyHits: number;
   friezesPlaced: number;
@@ -101,6 +103,7 @@ export function samplePlan(grammar: Grammar, seed: number, knobs: SampleKnobs = 
 export function sampleWithDiagnostics(grammar: Grammar, seed: number, knobs: SampleKnobs = {}): SampleResult {
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
+    accentZone: 'none',
     adjacencyFallbacks: 0,
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
@@ -146,6 +149,7 @@ export function sampleWithDiagnostics(grammar: Grammar, seed: number, knobs: Sam
   placePlainCells(cells, grammar, rng, plainTarget);
 
   fillTileCells(cells, grammar, rng, workingSet, template, diag);
+  applyAccentZoning(cells, grammar, rng, template, knobs, diag);
   enforceAccentBudget(cells, grammar);
   ensureAccentPresence(cells, grammar, rng);
   applyLogomarkGuard(cells, getManifest());
@@ -964,6 +968,102 @@ function dominantGround(grounds: string[]): string {
     .sort((a, b) => b[1] - a[1] || compareCodepoint(a[0], b[0]))[0]?.[0] ?? '#F3F3F3';
 }
 
+
+/**
+ * Accent zoning (visual-gate iteration 1): the corpus carries its accent on
+ * ONE form or ground region — never scattered singles. Draw one accent + one
+ * zone; de-scatter every accent ink outside it. Modes: 'ink' recolors a
+ * same-tile flood's inks to the accent; 'ground' turns the zone's grounds
+ * into a colored block (canonical black-on-orange move); 'figure' adopts an
+ * existing freeform figure as the zone. A second zone fires at p=0.2 on the
+ * large templates (mixed-quilt / figure-field), echoing two-accent banners.
+ */
+function applyAccentZoning(
+  cells: DraftCell[],
+  grammar: Grammar,
+  rng: Rng,
+  template: Template,
+  knobs: SampleKnobs,
+  diag: SampleDiagnostics,
+): void {
+  const accents = grammar.palette.accentOrder.filter(a => BRAND_FILLS.has(a));
+  if (accents.length === 0) return;
+  const drawAccentInk = (): string => {
+    if (knobs.accent) return knobs.accent;
+    return weightedChoice(rng, accents.map((a, i) => ({ value: a, weight: accents.length - i, sortKey: a })))!;
+  };
+
+  const zones: Set<DraftCell>[] = [];
+  const zoneAccents: string[] = [];
+
+  const figureCells = cells.filter(c => c.kind === 'freeform');
+  if (figureCells.length > 0 && rng.next() < 0.5) {
+    // adopt the figure as the accent zone (its ink is already an accent by construction)
+    zones.push(new Set(figureCells));
+    zoneAccents.push(figureCells[0]!.ink ?? drawAccentInk());
+    diag.accentZone = 'figure';
+  } else {
+    const accent = drawAccentInk();
+    const anchors = cells
+      .filter(c => c.kind === 'tile' && c.tile)
+      .sort(compareCells);
+    if (anchors.length === 0) return;
+    const anchor = weightedChoice(rng, anchors.map(c => ({ value: c, weight: 1, sortKey: `${c.col},${c.row}` })))!;
+    // same-tile flood from the anchor (captures a run/frieze segment), cap 6
+    const zone = new Set<DraftCell>([anchor]);
+    const queue = [anchor];
+    while (queue.length > 0 && zone.size < 6) {
+      const cur = queue.shift()!;
+      for (const n of cells) {
+        if (zone.size >= 6 || zone.has(n) || n.kind !== 'tile' || n.tile !== cur.tile) continue;
+        const adj = Math.abs(n.col - cur.col) + Math.abs(n.row - cur.row) === 1;
+        if (adj) { zone.add(n); queue.push(n); }
+      }
+    }
+    const mode = rng.next() < 0.6 ? 'ink' : 'ground';
+    if (mode === 'ink') {
+      for (const c of zone) if (accent !== c.ground) { c.ink = accent; c.inks = [accent]; }
+      diag.accentZone = 'ink';
+    } else {
+      for (const c of zone) {
+        c.ground = accent;
+        const ink = c.ink === accent || c.ink === undefined ? '#121212' : c.ink;
+        c.ink = NEUTRAL_INKS_SET.has(ink) ? ink : '#121212';
+        if (c.ink === accent) c.ink = '#121212';
+        c.inks = c.ink ? [c.ink] : [];
+      }
+      diag.accentZone = 'ground';
+    }
+    zones.push(zone);
+    zoneAccents.push(accent);
+  }
+
+  // optional second zone on large templates
+  if ((template.id === 'mixed-quilt' || template.id === 'figure-field') && rng.next() < 0.2) {
+    const accent2 = drawAccentInk();
+    const outside = cells.filter(c => c.kind === 'tile' && c.tile && !zones[0]!.has(c)).sort(compareCells);
+    if (outside.length > 0) {
+      const a2 = weightedChoice(rng, outside.map(c => ({ value: c, weight: 1, sortKey: `${c.col},${c.row}` })))!;
+      const z2 = new Set<DraftCell>([a2]);
+      if (accent2 !== a2.ground) { a2.ink = accent2; a2.inks = [accent2]; }
+      zones.push(z2); zoneAccents.push(accent2);
+    }
+  }
+
+  // de-scatter: accent inks outside all zones revert to neutral
+  const accentSet = new Set(accents);
+  const inZone = new Set<DraftCell>(); for (const z of zones) for (const c of z) inZone.add(c);
+  for (const c of cells) {
+    if (c.kind === 'plain' || inZone.has(c)) continue;
+    if (c.ink && accentSet.has(c.ink)) {
+      const ink = neutralForGround(c.ground);
+      c.ink = ink; c.inks = [ink];
+    }
+  }
+}
+
+const NEUTRAL_INKS_SET = new Set(['#121212', '#FFFFFF', '#F3F3F3', '#D9D9D6']);
+
 function enforceAccentBudget(cells: DraftCell[], grammar: Grammar): void {
   const accents = new Set(grammar.palette.accentOrder);
   const nonPlain = cells.filter(cell => cell.kind !== 'plain');
@@ -1069,15 +1169,30 @@ function usedTileSet(cells: DraftCell[]): Set<string> {
   return used;
 }
 
+/** Minimum edge-profile IoU for two placements to count as truly continuous at the seam. */
+const PROFILE_JOIN_MIN = 0.5;
+
 function placementsJoin(grammar: Grammar, a: Placement, b: Placement, dir: Direction): boolean {
   const aEntry = grammar.tileCatalog[a.tile];
   const bEntry = grammar.tileCatalog[b.tile];
   if (!aEntry || !bEntry) return false;
   const aEdges = orientEdges(aEntry.edges, a.rotation, a.flip);
   const bEdges = orientEdges(bEntry.edges, b.rotation, b.flip);
-  return dir === 'h'
+  const active = dir === 'h'
     ? aEdges.right >= 0.25 && bEdges.left >= 0.25
     : aEdges.bottom >= 0.25 && bEdges.top >= 0.25;
+  if (!active) return false;
+  // v2 edge-matching contract: the line-work must actually LINE UP at the seam,
+  // not merely both touch it. Activity-only when profiles are absent (v1 grammar).
+  const aProf = aEntry.profiles?.[variantKey(a)];
+  const bProf = bEntry.profiles?.[variantKey(b)];
+  if (!aProf || !bProf) return true;
+  const iou = dir === 'h' ? profileIoU(aProf.right, bProf.left) : profileIoU(aProf.bottom, bProf.top);
+  return iou >= PROFILE_JOIN_MIN;
+}
+
+function variantKey(p: Placement): VariantKey {
+  return `${p.rotation}/${p.flip ? 'f' : '-'}` as VariantKey;
 }
 
 function parsePlacementKey(key: string): Placement | null {

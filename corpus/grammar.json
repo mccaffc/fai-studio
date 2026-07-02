@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "stats": {
     "schemaVersion": 1,
     "families": {
@@ -3165,7 +3165,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.3333333333333333
+      "flipShare": 0.3333333333333333,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000000",
+          "bottom": "8000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "0000000000000001",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000000000",
+          "left": "8000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "0000000000000001"
+        },
+        "180/-": {
+          "top": "0000000000000001",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "8000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000001",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "8000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "angle-05": {
       "family": "angle",
@@ -3181,7 +3231,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.6470588235294118
+      "flipShare": 0.6470588235294118,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000001",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "0000000000000001"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "8000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "8000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "8000000000000000"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "8000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000001",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "0000000000000001",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "angle-06": {
       "family": "angle",
@@ -3197,7 +3297,57 @@
         "180": 2,
         "270": 0
       },
-      "flipShare": 0.6666666666666666
+      "flipShare": 0.6666666666666666,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "180/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "angle-07": {
       "family": "angle",
@@ -3213,7 +3363,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.6666666666666666
+      "flipShare": 0.6666666666666666,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000000",
+          "bottom": "ffff000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000ffff",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000000000",
+          "left": "ffff000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000ffff"
+        },
+        "180/-": {
+          "top": "000000000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "ffff000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "000000000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffff000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "angle-08": {
       "family": "angle",
@@ -3229,7 +3429,57 @@
         "180": 0,
         "270": 1
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000000",
+          "bottom": "ffff000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000ffff",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000000000",
+          "left": "ffff000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000ffff"
+        },
+        "180/-": {
+          "top": "000000000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "ffff000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "000000000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffff000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "angle-09": {
       "family": "angle",
@@ -3245,7 +3495,57 @@
         "180": 0,
         "270": 1
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "180/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "angle-10": {
       "family": "angle",
@@ -3261,7 +3561,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.5
+      "flipShare": 0.5,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffe"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "180/-": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "cascade-01": {
       "family": "cascade",
@@ -3277,7 +3627,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "c000000000000000",
+          "bottom": "0000000000000000",
+          "left": "e000000000000000"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "e000000000000000",
+          "bottom": "0000000000000000",
+          "left": "c000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000007",
+          "right": "ffffffffffffffff",
+          "bottom": "0000000000000003",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000003",
+          "right": "ffffffffffffffff",
+          "bottom": "0000000000000007",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000007",
+          "bottom": "ffffffffffffffff",
+          "left": "0000000000000003"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000003",
+          "bottom": "ffffffffffffffff",
+          "left": "0000000000000007"
+        },
+        "270/-": {
+          "top": "c000000000000000",
+          "right": "0000000000000000",
+          "bottom": "e000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "e000000000000000",
+          "right": "0000000000000000",
+          "bottom": "c000000000000000",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "cascade-03": {
       "family": "cascade",
@@ -3293,7 +3693,57 @@
         "180": 0,
         "270": 4
       },
-      "flipShare": 0.42857142857142855
+      "flipShare": 0.42857142857142855,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "f800000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "f800000000000000"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000001f",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "000000000000001f",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000001f"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "000000000000001f",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "f800000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "f800000000000000",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "cascade-04": {
       "family": "cascade",
@@ -3309,7 +3759,57 @@
         "180": 0,
         "270": 1
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "fe00000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffff0000"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "fe00000000000000"
+        },
+        "90/-": {
+          "top": "0000ffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000007f",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "000000000000007f",
+          "right": "ffffffffffffffff",
+          "bottom": "0000ffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000ffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000007f"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "000000000000007f",
+          "bottom": "ffffffffffffffff",
+          "left": "0000ffffffffffff"
+        },
+        "270/-": {
+          "top": "fe00000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffff0000",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "fe00000000000000",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "centric-03": {
       "family": "centric",
@@ -3325,7 +3825,57 @@
         "180": 4,
         "270": 0
       },
-      "flipShare": 0.7857142857142857
+      "flipShare": 0.7857142857142857,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "000000001fffffff",
+          "bottom": "000000001fffffff",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffff800000000",
+          "left": "000000001fffffff"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffff800000000",
+          "left": "000000001fffffff"
+        },
+        "90/f": {
+          "top": "fffffff800000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffff800000000"
+        },
+        "180/-": {
+          "top": "fffffff800000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffff800000000"
+        },
+        "180/f": {
+          "top": "000000001fffffff",
+          "right": "fffffff800000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "000000001fffffff",
+          "right": "fffffff800000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "000000001fffffff",
+          "bottom": "000000001fffffff",
+          "left": "0000000000000000"
+        }
+      }
     },
     "circle-02": {
       "family": "circle",
@@ -3341,7 +3891,57 @@
         "180": 1,
         "270": 0
       },
-      "flipShare": 0.75
+      "flipShare": 0.75,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        }
+      }
     },
     "circle-03": {
       "family": "circle",
@@ -3357,7 +3957,57 @@
         "180": 4,
         "270": 0
       },
-      "flipShare": 0.8
+      "flipShare": 0.8,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffff0000"
+        },
+        "0/f": {
+          "top": "0000ffffffffffff",
+          "right": "ffffffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000ffffffffffff",
+          "right": "ffffffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000ffffffffffff",
+          "bottom": "0000ffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000ffffffffffff",
+          "bottom": "0000ffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffff0000",
+          "left": "0000ffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffff0000",
+          "left": "0000ffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffff0000"
+        }
+      }
     },
     "circle-04": {
       "family": "circle",
@@ -3373,7 +4023,57 @@
         "180": 21,
         "270": 0
       },
-      "flipShare": 0.8035714285714286
+      "flipShare": 0.8035714285714286,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "ff00000000000000",
+          "bottom": "ff00000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000000000ff",
+          "left": "ff00000000000000"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000000000ff",
+          "left": "ff00000000000000"
+        },
+        "90/f": {
+          "top": "00000000000000ff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000000000ff"
+        },
+        "180/-": {
+          "top": "00000000000000ff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000000000ff"
+        },
+        "180/f": {
+          "top": "ff00000000000000",
+          "right": "00000000000000ff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "ff00000000000000",
+          "right": "00000000000000ff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "ff00000000000000",
+          "bottom": "ff00000000000000",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "circle-05": {
       "family": "circle",
@@ -3389,7 +4089,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "circle-06": {
       "family": "circle",
@@ -3405,7 +4155,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "circle-07": {
       "family": "circle",
@@ -3421,7 +4221,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "circle-08": {
       "family": "circle",
@@ -3437,7 +4287,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000001ff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000003ff8000000"
+        },
+        "0/f": {
+          "top": "0000001ff8000000",
+          "right": "0000003ff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000001ff8000000"
+        },
+        "90/-": {
+          "top": "0000001ffc000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000001ff8000000"
+        },
+        "90/f": {
+          "top": "0000001ff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000001ffc000000",
+          "left": "0000001ff8000000"
+        },
+        "180/-": {
+          "top": "0000001ff8000000",
+          "right": "0000001ffc000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000001ff8000000"
+        },
+        "180/f": {
+          "top": "0000001ff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000001ffc000000"
+        },
+        "270/-": {
+          "top": "0000001ff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000003ff8000000",
+          "left": "0000001ff8000000"
+        },
+        "270/f": {
+          "top": "0000003ff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000001ff8000000"
+        }
+      }
     },
     "circle-09": {
       "family": "circle",
@@ -3453,7 +4353,57 @@
         "180": 2,
         "270": 0
       },
-      "flipShare": 0.4
+      "flipShare": 0.4,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "000000000000001f",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000003f"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "000000000000003f",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000001f"
+        },
+        "90/-": {
+          "top": "fc00000000000000",
+          "right": "0000000000000000",
+          "bottom": "f800000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "f800000000000000",
+          "right": "0000000000000000",
+          "bottom": "fc00000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "fc00000000000000",
+          "bottom": "0000000000000000",
+          "left": "f800000000000000"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "f800000000000000",
+          "bottom": "0000000000000000",
+          "left": "fc00000000000000"
+        },
+        "270/-": {
+          "top": "000000000000001f",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000003f",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "000000000000003f",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000001f",
+          "left": "0000000000000000"
+        }
+      }
     },
     "circle-10": {
       "family": "circle",
@@ -3469,7 +4419,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "00ffffffffffff00",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "00ffffffffffff00",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "00ffffffffffff00"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "00ffffffffffff00"
+        },
+        "180/-": {
+          "top": "00ffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "00ffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "circle-12": {
       "family": "circle",
@@ -3485,7 +4485,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "001ffffffffff800",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "001ffffffffff800",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "001ffffffffff800"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "001ffffffffff800"
+        },
+        "180/-": {
+          "top": "001ffffffffff800",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "001ffffffffff800",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "001ffffffffff800",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "001ffffffffff800",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "circle-13": {
       "family": "circle",
@@ -3501,7 +4551,57 @@
         "180": 3,
         "270": 1
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "0000001ff8000000",
+          "right": "0000001fffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "0000003fffffffff"
+        },
+        "0/f": {
+          "top": "0000001ff8000000",
+          "right": "0000003fffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "0000001fffffffff"
+        },
+        "90/-": {
+          "top": "fffffffffc000000",
+          "right": "0000001ff8000000",
+          "bottom": "fffffffff8000000",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "fffffffff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "fffffffffc000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffc000000",
+          "bottom": "0000001ff8000000",
+          "left": "fffffffff8000000"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "fffffffffc000000"
+        },
+        "270/-": {
+          "top": "0000001fffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "0000003fffffffff",
+          "left": "0000001ff8000000"
+        },
+        "270/f": {
+          "top": "0000003fffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "0000001fffffffff",
+          "left": "0000001ff8000000"
+        }
+      }
     },
     "circle-14": {
       "family": "circle",
@@ -3517,7 +4617,57 @@
         "180": 1,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "000000000000003f"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "000000000000003f",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "fc00000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fc00000000000000",
+          "left": "00000000ffffffff"
+        },
+        "180/-": {
+          "top": "00000000ffffffff",
+          "right": "fc00000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fc00000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "000000000000003f",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "000000000000003f",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "circle-15": {
       "family": "circle",
@@ -3533,7 +4683,57 @@
         "180": 2,
         "270": 2
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffff0000",
+          "left": "000000000000007f"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "000000000000007f",
+          "bottom": "0000ffffffffffff",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "fe00000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffff0000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fe00000000000000",
+          "left": "0000ffffffffffff"
+        },
+        "180/-": {
+          "top": "0000ffffffffffff",
+          "right": "fe00000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "ffffffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fe00000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000ffffffffffff",
+          "bottom": "000000000000007f",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "000000000000007f",
+          "right": "ffffffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "composition-01": {
       "family": "composition",
@@ -3549,7 +4749,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "composition-09": {
       "family": "composition",
@@ -3565,7 +4815,57 @@
         "180": 0,
         "270": 2
       },
-      "flipShare": 0.7142857142857143
+      "flipShare": 0.7142857142857143,
+      "profiles": {
+        "0/-": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "000000ffffff0000",
+          "left": "0000ffffff000000"
+        },
+        "0/f": {
+          "top": "ffffffffffffff00",
+          "right": "0000ffffff000000",
+          "bottom": "0000ffffff000000",
+          "left": "ffffffffffffff00"
+        },
+        "90/-": {
+          "top": "000000ffffff0000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "000000ffffff0000"
+        },
+        "90/f": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "000000ffffff0000",
+          "left": "0000ffffff000000"
+        },
+        "180/-": {
+          "top": "0000ffffff000000",
+          "right": "000000ffffff0000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "180/f": {
+          "top": "000000ffffff0000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "000000ffffff0000"
+        },
+        "270/-": {
+          "top": "ffffffffffffff00",
+          "right": "0000ffffff000000",
+          "bottom": "0000ffffff000000",
+          "left": "ffffffffffffff00"
+        },
+        "270/f": {
+          "top": "0000ffffff000000",
+          "right": "000000ffffff0000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        }
+      }
     },
     "composition-10": {
       "family": "composition",
@@ -3581,7 +4881,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.5
+      "flipShare": 0.5,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000ffffff000000",
+          "bottom": "0000ffffff000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "000000ffffff0000",
+          "left": "0000ffffff000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "000000ffffff0000",
+          "left": "0000ffffff000000"
+        },
+        "90/f": {
+          "top": "000000ffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "000000ffffff0000"
+        },
+        "180/-": {
+          "top": "000000ffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "000000ffffff0000"
+        },
+        "180/f": {
+          "top": "0000ffffff000000",
+          "right": "000000ffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000ffffff000000",
+          "right": "000000ffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000ffffff000000",
+          "bottom": "0000ffffff000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "curve-03": {
       "family": "curve",
@@ -3597,7 +4947,57 @@
         "180": 2,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffff800000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffff800000"
+        },
+        "0/f": {
+          "top": "000001ffffffffff",
+          "right": "ffffffffff800000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "000001ffffffffff",
+          "right": "ffffffffff800000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "000001ffffffffff",
+          "bottom": "000001ffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "000001ffffffffff",
+          "bottom": "000001ffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffff800000",
+          "left": "000001ffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffff800000",
+          "left": "000001ffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffff800000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffff800000"
+        }
+      }
     },
     "curve-04": {
       "family": "curve",
@@ -3613,7 +5013,57 @@
         "180": 4,
         "270": 0
       },
-      "flipShare": 0.5714285714285714
+      "flipShare": 0.5714285714285714,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffffff00"
+        },
+        "0/f": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffffff00"
+        }
+      }
     },
     "curve-05": {
       "family": "curve",
@@ -3629,7 +5079,57 @@
         "180": 2,
         "270": 0
       },
-      "flipShare": 0.8333333333333334
+      "flipShare": 0.8333333333333334,
+      "profiles": {
+        "0/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "0/f": {
+          "top": "ffffffff00000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "ffffffff00000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffff00000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffff00000000"
+        },
+        "270/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        }
+      }
     },
     "curve-06": {
       "family": "curve",
@@ -3645,7 +5145,57 @@
         "180": 0,
         "270": 1
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "000000000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000ffff"
+        },
+        "0/f": {
+          "top": "ffff000000000000",
+          "right": "000000000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "ffff000000000000",
+          "right": "000000000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffff000000000000",
+          "bottom": "ffff000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffff000000000000",
+          "bottom": "ffff000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000ffff",
+          "left": "ffff000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000ffff",
+          "left": "ffff000000000000"
+        },
+        "270/f": {
+          "top": "000000000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000ffff"
+        }
+      }
     },
     "curve-09": {
       "family": "curve",
@@ -3661,7 +5211,57 @@
         "180": 0,
         "270": 4
       },
-      "flipShare": 0.42857142857142855
+      "flipShare": 0.42857142857142855,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "float-01": {
       "family": "float",
@@ -3677,7 +5277,57 @@
         "180": 3,
         "270": 6
       },
-      "flipShare": 0.0625
+      "flipShare": 0.0625,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "float-02": {
       "family": "float",
@@ -3693,7 +5343,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "float-03": {
       "family": "float",
@@ -3709,7 +5409,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "00000007e0000000",
+          "right": "0000000000000000",
+          "bottom": "00000007e0000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "00000007e0000000",
+          "right": "0000000000000000",
+          "bottom": "00000007e0000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "00000007e0000000",
+          "bottom": "0000000000000000",
+          "left": "00000007e0000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "00000007e0000000",
+          "bottom": "0000000000000000",
+          "left": "00000007e0000000"
+        },
+        "180/-": {
+          "top": "00000007e0000000",
+          "right": "0000000000000000",
+          "bottom": "00000007e0000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "00000007e0000000",
+          "right": "0000000000000000",
+          "bottom": "00000007e0000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "00000007e0000000",
+          "bottom": "0000000000000000",
+          "left": "00000007e0000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "00000007e0000000",
+          "bottom": "0000000000000000",
+          "left": "00000007e0000000"
+        }
+      }
     },
     "float-04": {
       "family": "float",
@@ -3725,7 +5475,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "00000007e0000000",
+          "right": "0000000000000000",
+          "bottom": "00000007e0000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "00000007e0000000",
+          "right": "0000000000000000",
+          "bottom": "00000007e0000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "00000007e0000000",
+          "bottom": "0000000000000000",
+          "left": "00000007e0000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "00000007e0000000",
+          "bottom": "0000000000000000",
+          "left": "00000007e0000000"
+        },
+        "180/-": {
+          "top": "00000007e0000000",
+          "right": "0000000000000000",
+          "bottom": "00000007e0000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "00000007e0000000",
+          "right": "0000000000000000",
+          "bottom": "00000007e0000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "00000007e0000000",
+          "bottom": "0000000000000000",
+          "left": "00000007e0000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "00000007e0000000",
+          "bottom": "0000000000000000",
+          "left": "00000007e0000000"
+        }
+      }
     },
     "float-05": {
       "family": "float",
@@ -3741,7 +5541,57 @@
         "180": 0,
         "270": 2
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        },
+        "180/-": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        }
+      }
     },
     "float-06": {
       "family": "float",
@@ -3757,7 +5607,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        },
+        "180/-": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        }
+      }
     },
     "float-07": {
       "family": "float",
@@ -3773,7 +5673,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        },
+        "180/-": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000ff0000000",
+          "right": "0000000000000000",
+          "bottom": "0000000ff0000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000ff0000000",
+          "bottom": "0000000000000000",
+          "left": "0000000ff0000000"
+        }
+      }
     },
     "joint-01": {
       "family": "joint",
@@ -3789,7 +5739,57 @@
         "180": 0,
         "270": 1
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffff00000000ffff",
+          "bottom": "3fffffffffffffff",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "fffffffffffffffc",
+          "left": "ffff00000000ffff"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffff00000000ffff",
+          "left": "3fffffffffffffff"
+        },
+        "90/f": {
+          "top": "ffff00000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "fffffffffffffffc"
+        },
+        "180/-": {
+          "top": "fffffffffffffffc",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffff00000000ffff"
+        },
+        "180/f": {
+          "top": "3fffffffffffffff",
+          "right": "ffff00000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "ffff00000000ffff",
+          "right": "fffffffffffffffc",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "3fffffffffffffff",
+          "bottom": "ffff00000000ffff",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "joint-02": {
       "family": "joint",
@@ -3805,7 +5805,57 @@
         "180": 3,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000ffffffffffff",
+          "bottom": "8000ffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffff0001",
+          "left": "0000ffffffffffff"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "ffffffffffff0000",
+          "left": "8000ffffffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffff0000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffff0001"
+        },
+        "180/-": {
+          "top": "ffffffffffff0001",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "ffffffffffff0000"
+        },
+        "180/f": {
+          "top": "8000ffffffffffff",
+          "right": "ffffffffffff0000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000ffffffffffff",
+          "right": "ffffffffffff0001",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "8000ffffffffffff",
+          "bottom": "0000ffffffffffff",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "joint-05": {
       "family": "joint",
@@ -3821,7 +5871,57 @@
         "180": 1,
         "270": 1
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "0000020000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffe"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000000000",
+          "left": "0000020000000000"
+        },
+        "90/-": {
+          "top": "7fffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "0000000000400000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000400000",
+          "right": "7fffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "7fffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "0000000000400000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000400000",
+          "bottom": "fffffffffffffffe",
+          "left": "7fffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000020000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffe",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "fffffffffffffffe",
+          "right": "0000000000000000",
+          "bottom": "0000020000000000",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "joint-06": {
       "family": "joint",
@@ -3837,7 +5937,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffe00000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "000000007fffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "fffffffe00000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "90/f": {
+          "top": "ffffffff00000000",
+          "right": "000000007fffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffff00000000"
+        },
+        "180/-": {
+          "top": "ffffffff00000000",
+          "right": "00000000ffffffff",
+          "bottom": "000000007fffffff",
+          "left": "ffffffff00000000"
+        },
+        "180/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "fffffffe00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffff00000000",
+          "left": "000000007fffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "fffffffe00000000"
+        }
+      }
     },
     "joint-08": {
       "family": "joint",
@@ -3853,7 +6003,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffff00000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "90/f": {
+          "top": "ffffffff00000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffff00000000"
+        },
+        "180/-": {
+          "top": "ffffffff00000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffff00000000"
+        },
+        "180/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffff00000000"
+        }
+      }
     },
     "lines-01": {
       "family": "lines",
@@ -3869,7 +6069,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.5
+      "flipShare": 0.5,
+      "profiles": {
+        "0/-": {
+          "top": "03f81fc0fc07e03f",
+          "right": "ffffffffffffffff",
+          "bottom": "03f81fc0fc07e03f",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "fc07e03f03f81fc0",
+          "right": "0000000000000000",
+          "bottom": "fc07e03f03f81fc0",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "03f81fc0fc07e03f",
+          "bottom": "ffffffffffffffff",
+          "left": "03f81fc0fc07e03f"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "fc07e03f03f81fc0",
+          "bottom": "0000000000000000",
+          "left": "fc07e03f03f81fc0"
+        },
+        "180/-": {
+          "top": "fc07e03f03f81fc0",
+          "right": "0000000000000000",
+          "bottom": "fc07e03f03f81fc0",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "03f81fc0fc07e03f",
+          "right": "ffffffffffffffff",
+          "bottom": "03f81fc0fc07e03f",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "fc07e03f03f81fc0",
+          "bottom": "0000000000000000",
+          "left": "fc07e03f03f81fc0"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "03f81fc0fc07e03f",
+          "bottom": "ffffffffffffffff",
+          "left": "03f81fc0fc07e03f"
+        }
+      }
     },
     "lines-02": {
       "family": "lines",
@@ -3885,7 +6135,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.625
+      "flipShare": 0.625,
+      "profiles": {
+        "0/-": {
+          "top": "03f81fc0fc07e03f",
+          "right": "ffffffffffffffff",
+          "bottom": "03f81fc0fc07e03f",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "fc07e03f03f81fc0",
+          "right": "0000000000000000",
+          "bottom": "fc07e03f03f81fc0",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "03f81fc0fc07e03f",
+          "bottom": "ffffffffffffffff",
+          "left": "03f81fc0fc07e03f"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "fc07e03f03f81fc0",
+          "bottom": "0000000000000000",
+          "left": "fc07e03f03f81fc0"
+        },
+        "180/-": {
+          "top": "fc07e03f03f81fc0",
+          "right": "0000000000000000",
+          "bottom": "fc07e03f03f81fc0",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "03f81fc0fc07e03f",
+          "right": "ffffffffffffffff",
+          "bottom": "03f81fc0fc07e03f",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "fc07e03f03f81fc0",
+          "bottom": "0000000000000000",
+          "left": "fc07e03f03f81fc0"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "03f81fc0fc07e03f",
+          "bottom": "ffffffffffffffff",
+          "left": "03f81fc0fc07e03f"
+        }
+      }
     },
     "lines-03": {
       "family": "lines",
@@ -3901,7 +6201,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.39473684210526316
+      "flipShare": 0.39473684210526316,
+      "profiles": {
+        "0/-": {
+          "top": "03f81fc0fc07e03f",
+          "right": "ffffffffffffffff",
+          "bottom": "03f81fc0fc07e03f",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "fc07e03f03f81fc0",
+          "right": "0000000000000000",
+          "bottom": "fc07e03f03f81fc0",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "03f81fc0fc07e03f",
+          "bottom": "ffffffffffffffff",
+          "left": "03f81fc0fc07e03f"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "fc07e03f03f81fc0",
+          "bottom": "0000000000000000",
+          "left": "fc07e03f03f81fc0"
+        },
+        "180/-": {
+          "top": "fc07e03f03f81fc0",
+          "right": "0000000000000000",
+          "bottom": "fc07e03f03f81fc0",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "03f81fc0fc07e03f",
+          "right": "ffffffffffffffff",
+          "bottom": "03f81fc0fc07e03f",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "fc07e03f03f81fc0",
+          "bottom": "0000000000000000",
+          "left": "fc07e03f03f81fc0"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "03f81fc0fc07e03f",
+          "bottom": "ffffffffffffffff",
+          "left": "03f81fc0fc07e03f"
+        }
+      }
     },
     "lines-04": {
       "family": "lines",
@@ -3917,7 +6267,57 @@
         "180": 12,
         "270": 31
       },
-      "flipShare": 0.5185185185185185
+      "flipShare": 0.5185185185185185,
+      "profiles": {
+        "0/-": {
+          "top": "03f81fc0fc07e03f",
+          "right": "fc07e03f03f81fc0",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "0/f": {
+          "top": "fc07e03f03f81fc0",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "fc07e03f03f81fc0"
+        },
+        "90/-": {
+          "top": "ffffffffffffff00",
+          "right": "03f81fc0fc07e03f",
+          "bottom": "03f81fc0fc07e03f",
+          "left": "ffffffffffffff00"
+        },
+        "90/f": {
+          "top": "03f81fc0fc07e03f",
+          "right": "fc07e03f03f81fc0",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "180/-": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "fc07e03f03f81fc0",
+          "left": "03f81fc0fc07e03f"
+        },
+        "180/f": {
+          "top": "ffffffffffffff00",
+          "right": "03f81fc0fc07e03f",
+          "bottom": "03f81fc0fc07e03f",
+          "left": "ffffffffffffff00"
+        },
+        "270/-": {
+          "top": "fc07e03f03f81fc0",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "fc07e03f03f81fc0"
+        },
+        "270/f": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "fc07e03f03f81fc0",
+          "left": "03f81fc0fc07e03f"
+        }
+      }
     },
     "lines-06": {
       "family": "lines",
@@ -3933,7 +6333,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.3888888888888889
+      "flipShare": 0.3888888888888889,
+      "profiles": {
+        "0/-": {
+          "top": "00e007003803c01c",
+          "right": "0000000000000000",
+          "bottom": "00e007003803c01c",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "3803c01c00e00700",
+          "right": "0000000000000000",
+          "bottom": "3803c01c00e00700",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "00e007003803c01c",
+          "bottom": "0000000000000000",
+          "left": "00e007003803c01c"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "3803c01c00e00700",
+          "bottom": "0000000000000000",
+          "left": "3803c01c00e00700"
+        },
+        "180/-": {
+          "top": "3803c01c00e00700",
+          "right": "0000000000000000",
+          "bottom": "3803c01c00e00700",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "00e007003803c01c",
+          "right": "0000000000000000",
+          "bottom": "00e007003803c01c",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "3803c01c00e00700",
+          "bottom": "0000000000000000",
+          "left": "3803c01c00e00700"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "00e007003803c01c",
+          "bottom": "0000000000000000",
+          "left": "00e007003803c01c"
+        }
+      }
     },
     "lines-09": {
       "family": "lines",
@@ -3949,7 +6399,57 @@
         "180": 11,
         "270": 4
       },
-      "flipShare": 0.25
+      "flipShare": 0.25,
+      "profiles": {
+        "0/-": {
+          "top": "00e007003803c01e",
+          "right": "7803c01c00e00700",
+          "bottom": "ffffffffffffffc0",
+          "left": "03ffffffffffffff"
+        },
+        "0/f": {
+          "top": "7803c01c00e00700",
+          "right": "03ffffffffffffff",
+          "bottom": "03ffffffffffffff",
+          "left": "7803c01c00e00700"
+        },
+        "90/-": {
+          "top": "ffffffffffffffc0",
+          "right": "00e007003803c01e",
+          "bottom": "00e007003803c01e",
+          "left": "ffffffffffffffc0"
+        },
+        "90/f": {
+          "top": "00e007003803c01e",
+          "right": "7803c01c00e00700",
+          "bottom": "ffffffffffffffc0",
+          "left": "03ffffffffffffff"
+        },
+        "180/-": {
+          "top": "03ffffffffffffff",
+          "right": "ffffffffffffffc0",
+          "bottom": "7803c01c00e00700",
+          "left": "00e007003803c01e"
+        },
+        "180/f": {
+          "top": "ffffffffffffffc0",
+          "right": "00e007003803c01e",
+          "bottom": "00e007003803c01e",
+          "left": "ffffffffffffffc0"
+        },
+        "270/-": {
+          "top": "7803c01c00e00700",
+          "right": "03ffffffffffffff",
+          "bottom": "03ffffffffffffff",
+          "left": "7803c01c00e00700"
+        },
+        "270/f": {
+          "top": "03ffffffffffffff",
+          "right": "ffffffffffffffc0",
+          "bottom": "7803c01c00e00700",
+          "left": "00e007003803c01e"
+        }
+      }
     },
     "lines-10": {
       "family": "lines",
@@ -3965,7 +6465,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.38461538461538464
+      "flipShare": 0.38461538461538464,
+      "profiles": {
+        "0/-": {
+          "top": "18181820c30418c4",
+          "right": "0000000000000000",
+          "bottom": "18181820c30418c4",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "231820c304181818",
+          "right": "0000000000000000",
+          "bottom": "231820c304181818",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "18181820c30418c4",
+          "bottom": "0000000000000000",
+          "left": "18181820c30418c4"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "231820c304181818",
+          "bottom": "0000000000000000",
+          "left": "231820c304181818"
+        },
+        "180/-": {
+          "top": "231820c304181818",
+          "right": "0000000000000000",
+          "bottom": "231820c304181818",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "18181820c30418c4",
+          "right": "0000000000000000",
+          "bottom": "18181820c30418c4",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "231820c304181818",
+          "bottom": "0000000000000000",
+          "left": "231820c304181818"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "18181820c30418c4",
+          "bottom": "0000000000000000",
+          "left": "18181820c30418c4"
+        }
+      }
     },
     "lines-11": {
       "family": "lines",
@@ -3981,7 +6531,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "lines-12": {
       "family": "lines",
@@ -3997,7 +6597,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "fc03f807e01fc03f",
+          "right": "ffffffffffffffff",
+          "bottom": "fc03f807e01fc03f",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "fc03f807e01fc03f",
+          "right": "ffffffffffffffff",
+          "bottom": "fc03f807e01fc03f",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fc03f807e01fc03f",
+          "bottom": "ffffffffffffffff",
+          "left": "fc03f807e01fc03f"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "fc03f807e01fc03f",
+          "bottom": "ffffffffffffffff",
+          "left": "fc03f807e01fc03f"
+        },
+        "180/-": {
+          "top": "fc03f807e01fc03f",
+          "right": "ffffffffffffffff",
+          "bottom": "fc03f807e01fc03f",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "fc03f807e01fc03f",
+          "right": "ffffffffffffffff",
+          "bottom": "fc03f807e01fc03f",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "fc03f807e01fc03f",
+          "bottom": "ffffffffffffffff",
+          "left": "fc03f807e01fc03f"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "fc03f807e01fc03f",
+          "bottom": "ffffffffffffffff",
+          "left": "fc03f807e01fc03f"
+        }
+      }
     },
     "merge-02": {
       "family": "merge",
@@ -4013,7 +6663,57 @@
         "180": 2,
         "270": 0
       },
-      "flipShare": 0.2222222222222222
+      "flipShare": 0.2222222222222222,
+      "profiles": {
+        "0/-": {
+          "top": "0000001ff8000000",
+          "right": "0000001fffffffff",
+          "bottom": "fc03f807e01fc03f",
+          "left": "0000003fffffffff"
+        },
+        "0/f": {
+          "top": "0000001ff8000000",
+          "right": "0000003fffffffff",
+          "bottom": "fc03f807e01fc03f",
+          "left": "0000001fffffffff"
+        },
+        "90/-": {
+          "top": "fffffffffc000000",
+          "right": "0000001ff8000000",
+          "bottom": "fffffffff8000000",
+          "left": "fc03f807e01fc03f"
+        },
+        "90/f": {
+          "top": "fffffffff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "fffffffffc000000",
+          "left": "fc03f807e01fc03f"
+        },
+        "180/-": {
+          "top": "fc03f807e01fc03f",
+          "right": "fffffffffc000000",
+          "bottom": "0000001ff8000000",
+          "left": "fffffffff8000000"
+        },
+        "180/f": {
+          "top": "fc03f807e01fc03f",
+          "right": "fffffffff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "fffffffffc000000"
+        },
+        "270/-": {
+          "top": "0000001fffffffff",
+          "right": "fc03f807e01fc03f",
+          "bottom": "0000003fffffffff",
+          "left": "0000001ff8000000"
+        },
+        "270/f": {
+          "top": "0000003fffffffff",
+          "right": "fc03f807e01fc03f",
+          "bottom": "0000001fffffffff",
+          "left": "0000001ff8000000"
+        }
+      }
     },
     "mined-019-cross": {
       "family": "curve",
@@ -4029,7 +6729,57 @@
         "180": 6,
         "270": 0
       },
-      "flipShare": 0.782608695652174
+      "flipShare": 0.782608695652174,
+      "profiles": {
+        "0/-": {
+          "top": "000000000000000f",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000000f"
+        },
+        "0/f": {
+          "top": "f000000000000000",
+          "right": "000000000000000f",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "f000000000000000",
+          "right": "000000000000000f",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "f000000000000000",
+          "bottom": "f000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "f000000000000000",
+          "bottom": "f000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000000f",
+          "left": "f000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000000f",
+          "left": "f000000000000000"
+        },
+        "270/f": {
+          "top": "000000000000000f",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000000f"
+        }
+      }
     },
     "mined-034-petal": {
       "family": "curve",
@@ -4045,7 +6795,57 @@
         "180": 0,
         "270": 12
       },
-      "flipShare": 0.631578947368421
+      "flipShare": 0.631578947368421,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "f80000000000001f",
+          "bottom": "ffffffffffffffff",
+          "left": "f80000000000003f"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "f80000000000003f",
+          "bottom": "ffffffffffffffff",
+          "left": "f80000000000001f"
+        },
+        "90/-": {
+          "top": "fc0000000000001f",
+          "right": "ffffffffffffffff",
+          "bottom": "f80000000000001f",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "f80000000000001f",
+          "right": "ffffffffffffffff",
+          "bottom": "fc0000000000001f",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "fc0000000000001f",
+          "bottom": "ffffffffffffffff",
+          "left": "f80000000000001f"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "f80000000000001f",
+          "bottom": "ffffffffffffffff",
+          "left": "fc0000000000001f"
+        },
+        "270/-": {
+          "top": "f80000000000001f",
+          "right": "ffffffffffffffff",
+          "bottom": "f80000000000003f",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "f80000000000003f",
+          "right": "ffffffffffffffff",
+          "bottom": "f80000000000001f",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "mined-046-knot": {
       "family": "joint",
@@ -4061,7 +6861,57 @@
         "180": 5,
         "270": 0
       },
-      "flipShare": 0.18181818181818182
+      "flipShare": 0.18181818181818182,
+      "profiles": {
+        "0/-": {
+          "top": "00000000fc000000",
+          "right": "0000001f00000000",
+          "bottom": "ffffffff00000000",
+          "left": "000000000000003f"
+        },
+        "0/f": {
+          "top": "0000003f00000000",
+          "right": "000000000000003f",
+          "bottom": "00000000ffffffff",
+          "left": "0000001f00000000"
+        },
+        "90/-": {
+          "top": "fc00000000000000",
+          "right": "00000000fc000000",
+          "bottom": "00000000f8000000",
+          "left": "ffffffff00000000"
+        },
+        "90/f": {
+          "top": "00000000f8000000",
+          "right": "0000003f00000000",
+          "bottom": "fc00000000000000",
+          "left": "00000000ffffffff"
+        },
+        "180/-": {
+          "top": "00000000ffffffff",
+          "right": "fc00000000000000",
+          "bottom": "0000003f00000000",
+          "left": "00000000f8000000"
+        },
+        "180/f": {
+          "top": "ffffffff00000000",
+          "right": "00000000f8000000",
+          "bottom": "00000000fc000000",
+          "left": "fc00000000000000"
+        },
+        "270/-": {
+          "top": "0000001f00000000",
+          "right": "00000000ffffffff",
+          "bottom": "000000000000003f",
+          "left": "0000003f00000000"
+        },
+        "270/f": {
+          "top": "000000000000003f",
+          "right": "ffffffff00000000",
+          "bottom": "0000001f00000000",
+          "left": "00000000fc000000"
+        }
+      }
     },
     "mirror-01": {
       "family": "mirror",
@@ -4077,7 +6927,57 @@
         "180": 3,
         "270": 0
       },
-      "flipShare": 0.25
+      "flipShare": 0.25,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000007",
+          "right": "ffffffffffffffff",
+          "bottom": "0000000000000007",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "e000000000000000",
+          "right": "0000000000000000",
+          "bottom": "e000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000007",
+          "bottom": "ffffffffffffffff",
+          "left": "0000000000000007"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "e000000000000000",
+          "bottom": "0000000000000000",
+          "left": "e000000000000000"
+        },
+        "180/-": {
+          "top": "e000000000000000",
+          "right": "0000000000000000",
+          "bottom": "e000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "0000000000000007",
+          "right": "ffffffffffffffff",
+          "bottom": "0000000000000007",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "e000000000000000",
+          "bottom": "0000000000000000",
+          "left": "e000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000007",
+          "bottom": "ffffffffffffffff",
+          "left": "0000000000000007"
+        }
+      }
     },
     "mirror-02": {
       "family": "mirror",
@@ -4093,7 +6993,57 @@
         "180": 8,
         "270": 0
       },
-      "flipShare": 0.5555555555555556
+      "flipShare": 0.5555555555555556,
+      "profiles": {
+        "0/-": {
+          "top": "000000000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000ffff",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "ffff000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffff000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "000000000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000ffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffff000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffff000000000000"
+        },
+        "180/-": {
+          "top": "ffff000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffff000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "000000000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000ffff",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffff000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffff000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "000000000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000ffff"
+        }
+      }
     },
     "mirror-03": {
       "family": "mirror",
@@ -4109,7 +7059,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.4
+      "flipShare": 0.4,
+      "profiles": {
+        "0/-": {
+          "top": "000000000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000ffff",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "ffff000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffff000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "000000000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000ffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffff000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffff000000000000"
+        },
+        "180/-": {
+          "top": "ffff000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffff000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "000000000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000ffff",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffff000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffff000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "000000000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000ffff"
+        }
+      }
     },
     "mirror-04": {
       "family": "mirror",
@@ -4125,7 +7125,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.25
+      "flipShare": 0.25,
+      "profiles": {
+        "0/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "180/-": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        }
+      }
     },
     "open-01": {
       "family": "open",
@@ -4141,7 +7191,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.4666666666666667
+      "flipShare": 0.4666666666666667,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffff00",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "ffffffffffffff00"
+        },
+        "0/f": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "90/-": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffff00",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "ffffffffffffff00"
+        },
+        "180/-": {
+          "top": "ffffffffffffff00",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "ffffffffffffff00"
+        },
+        "180/f": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "270/-": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffff00",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "ffffffffffffff00"
+        }
+      }
     },
     "open-02": {
       "family": "open",
@@ -4157,7 +7257,57 @@
         "180": 1,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffff00000000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffff00",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffffffffff00"
+        },
+        "180/-": {
+          "top": "ffffffffffffff00",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffffffffff00"
+        },
+        "180/f": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "ffffffff00000000"
+        }
+      }
     },
     "open-04": {
       "family": "open",
@@ -4173,7 +7323,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.8
+      "flipShare": 0.8,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffffff00"
+        },
+        "0/f": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffffff00"
+        }
+      }
     },
     "open-05": {
       "family": "open",
@@ -4189,7 +7389,57 @@
         "180": 1,
         "270": 0
       },
-      "flipShare": 0.6666666666666666
+      "flipShare": 0.6666666666666666,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffff00000000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "ffffffffffffff00",
+          "left": "00ffffffffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffff00",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffffffffff00"
+        },
+        "180/-": {
+          "top": "ffffffffffffff00",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "ffffffffffffff00"
+        },
+        "180/f": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "00ffffffffffffff",
+          "right": "ffffffffffffff00",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "00ffffffffffffff",
+          "bottom": "00ffffffffffffff",
+          "left": "ffffffff00000000"
+        }
+      }
     },
     "open-09": {
       "family": "open",
@@ -4205,7 +7455,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.6666666666666666
+      "flipShare": 0.6666666666666666,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffe000000000",
+          "right": "0000000000000000",
+          "bottom": "f000000000000000",
+          "left": "ffffffe0ffffffff"
+        },
+        "0/f": {
+          "top": "0000000007ffffff",
+          "right": "ffffffe0ffffffff",
+          "bottom": "000000000000000f",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "ffffffff07ffffff",
+          "right": "ffffffe000000000",
+          "bottom": "0000000000000000",
+          "left": "f000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000007ffffff",
+          "bottom": "ffffffff07ffffff",
+          "left": "000000000000000f"
+        },
+        "180/-": {
+          "top": "000000000000000f",
+          "right": "ffffffff07ffffff",
+          "bottom": "0000000007ffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "f000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffe000000000",
+          "left": "ffffffff07ffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "000000000000000f",
+          "bottom": "ffffffe0ffffffff",
+          "left": "0000000007ffffff"
+        },
+        "270/f": {
+          "top": "ffffffe0ffffffff",
+          "right": "f000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffe000000000"
+        }
+      }
     },
     "ramp-01": {
       "family": "ramp",
@@ -4221,7 +7521,57 @@
         "180": 0,
         "270": 2
       },
-      "flipShare": 0.6666666666666666
+      "flipShare": 0.6666666666666666,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffff000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "ffff000000000000"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000000000ffff",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "000000000000ffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000000000ffff"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "000000000000ffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "ffff000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "ffff000000000000",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "ramp-02": {
       "family": "ramp",
@@ -4237,7 +7587,57 @@
         "180": 2,
         "270": 2
       },
-      "flipShare": 0.3333333333333333
+      "flipShare": 0.3333333333333333,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffff0000"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "90/-": {
+          "top": "0000ffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "0000ffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000ffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "0000ffffffffffff"
+        },
+        "270/-": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffff0000",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "ramp-04": {
       "family": "ramp",
@@ -4253,7 +7653,57 @@
         "180": 4,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "8000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "0000000000000001",
+          "left": "ffffffff00000000"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "8000000000000000"
+        },
+        "90/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "0000000000000001"
+        },
+        "180/-": {
+          "top": "0000000000000001",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "180/f": {
+          "top": "8000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000001",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "8000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "rectangle-03": {
       "family": "rectangle",
@@ -4269,7 +7719,57 @@
         "180": 2,
         "270": 7
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "ffffffffffffffff"
+        }
+      }
     },
     "rectangle-06": {
       "family": "rectangle",
@@ -4285,7 +7785,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "000000ffff000000",
+          "bottom": "0000000000000000",
+          "left": "000000ffff000000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "000000ffff000000",
+          "bottom": "0000000000000000",
+          "left": "000000ffff000000"
+        },
+        "90/-": {
+          "top": "000000ffff000000",
+          "right": "0000000000000000",
+          "bottom": "000000ffff000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "000000ffff000000",
+          "right": "0000000000000000",
+          "bottom": "000000ffff000000",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "000000ffff000000",
+          "bottom": "0000000000000000",
+          "left": "000000ffff000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "000000ffff000000",
+          "bottom": "0000000000000000",
+          "left": "000000ffff000000"
+        },
+        "270/-": {
+          "top": "000000ffff000000",
+          "right": "0000000000000000",
+          "bottom": "000000ffff000000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "000000ffff000000",
+          "right": "0000000000000000",
+          "bottom": "000000ffff000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "rectangle-07": {
       "family": "rectangle",
@@ -4301,7 +7851,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000ffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000ffffffff0000"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "0000ffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000ffffffff0000"
+        },
+        "90/-": {
+          "top": "0000ffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000ffffffff0000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000ffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000ffffffff0000",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000ffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000ffffffff0000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000ffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000ffffffff0000"
+        },
+        "270/-": {
+          "top": "0000ffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000ffffffff0000",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "0000ffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000ffffffff0000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "rectangle-08": {
       "family": "rectangle",
@@ -4317,7 +7917,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "00ffffffffffff00"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "00ffffffffffff00"
+        },
+        "90/-": {
+          "top": "00ffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "00ffffffffffff00",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "00ffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "00ffffffffffff00",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "00ffffffffffff00"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "00ffffffffffff00",
+          "bottom": "0000000000000000",
+          "left": "00ffffffffffff00"
+        },
+        "270/-": {
+          "top": "00ffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "00ffffffffffff00",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "00ffffffffffff00",
+          "right": "0000000000000000",
+          "bottom": "00ffffffffffff00",
+          "left": "0000000000000000"
+        }
+      }
     },
     "shape-01": {
       "family": "shape",
@@ -4333,7 +7983,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "0000003ff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000003ffc000000"
+        },
+        "0/f": {
+          "top": "0000001ffc000000",
+          "right": "0000003ffc000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000001ff8000000"
+        },
+        "90/-": {
+          "top": "0000003ffc000000",
+          "right": "0000003ff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000001ff8000000"
+        },
+        "90/f": {
+          "top": "0000001ff8000000",
+          "right": "0000001ffc000000",
+          "bottom": "0000003ffc000000",
+          "left": "0000001ff8000000"
+        },
+        "180/-": {
+          "top": "0000001ff8000000",
+          "right": "0000003ffc000000",
+          "bottom": "0000001ffc000000",
+          "left": "0000001ff8000000"
+        },
+        "180/f": {
+          "top": "0000001ff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000003ff8000000",
+          "left": "0000003ffc000000"
+        },
+        "270/-": {
+          "top": "0000001ff8000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000003ffc000000",
+          "left": "0000001ffc000000"
+        },
+        "270/f": {
+          "top": "0000003ffc000000",
+          "right": "0000001ff8000000",
+          "bottom": "0000001ff8000000",
+          "left": "0000003ff8000000"
+        }
+      }
     },
     "shape-02": {
       "family": "shape",
@@ -4349,7 +8049,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.65
+      "flipShare": 0.65,
+      "profiles": {
+        "0/-": {
+          "top": "2061e3ffffe00000",
+          "right": "0000003ffc000000",
+          "bottom": "2061e3ffffe00000",
+          "left": "0007ffffffffe000"
+        },
+        "0/f": {
+          "top": "000007ffffc78604",
+          "right": "0007ffffffffe000",
+          "bottom": "000007ffffc78604",
+          "left": "0000003ffc000000"
+        },
+        "90/-": {
+          "top": "0007ffffffffe000",
+          "right": "2061e3ffffe00000",
+          "bottom": "0000003ffc000000",
+          "left": "2061e3ffffe00000"
+        },
+        "90/f": {
+          "top": "0000003ffc000000",
+          "right": "000007ffffc78604",
+          "bottom": "0007ffffffffe000",
+          "left": "000007ffffc78604"
+        },
+        "180/-": {
+          "top": "000007ffffc78604",
+          "right": "0007ffffffffe000",
+          "bottom": "000007ffffc78604",
+          "left": "0000003ffc000000"
+        },
+        "180/f": {
+          "top": "2061e3ffffe00000",
+          "right": "0000003ffc000000",
+          "bottom": "2061e3ffffe00000",
+          "left": "0007ffffffffe000"
+        },
+        "270/-": {
+          "top": "0000003ffc000000",
+          "right": "000007ffffc78604",
+          "bottom": "0007ffffffffe000",
+          "left": "000007ffffc78604"
+        },
+        "270/f": {
+          "top": "0007ffffffffe000",
+          "right": "2061e3ffffe00000",
+          "bottom": "0000003ffc000000",
+          "left": "2061e3ffffe00000"
+        }
+      }
     },
     "square-01": {
       "family": "square",
@@ -4365,7 +8115,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 0.5
+      "flipShare": 0.5,
+      "profiles": {
+        "0/-": {
+          "top": "ffff000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffff000000000000"
+        },
+        "0/f": {
+          "top": "000000000000ffff",
+          "right": "ffff000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "000000000000ffff",
+          "right": "ffff000000000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "000000000000ffff",
+          "bottom": "000000000000ffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "000000000000ffff",
+          "bottom": "000000000000ffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffff000000000000",
+          "left": "000000000000ffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffff000000000000",
+          "left": "000000000000ffff"
+        },
+        "270/f": {
+          "top": "ffff000000000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffff000000000000"
+        }
+      }
     },
     "square-02": {
       "family": "square",
@@ -4381,7 +8181,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        },
+        "0/f": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "00000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffff00000000",
+          "left": "00000000ffffffff"
+        },
+        "270/f": {
+          "top": "ffffffff00000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffff00000000"
+        }
+      }
     },
     "square-03": {
       "family": "square",
@@ -4397,7 +8247,57 @@
         "180": 3,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "ffffffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffff0000"
+        },
+        "0/f": {
+          "top": "0000ffffffffffff",
+          "right": "ffffffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "0000ffffffffffff",
+          "right": "ffffffffffff0000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000ffffffffffff",
+          "bottom": "0000ffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "0000ffffffffffff",
+          "bottom": "0000ffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffff0000",
+          "left": "0000ffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffffff0000",
+          "left": "0000ffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffff0000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffffff0000"
+        }
+      }
     },
     "square-04": {
       "family": "square",
@@ -4413,7 +8313,57 @@
         "180": 4,
         "270": 0
       },
-      "flipShare": 0.85
+      "flipShare": 0.85,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffff8",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffff8"
+        },
+        "0/f": {
+          "top": "1fffffffffffffff",
+          "right": "fffffffffffffff8",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "1fffffffffffffff",
+          "right": "fffffffffffffff8",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "1fffffffffffffff",
+          "bottom": "1fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/-": {
+          "top": "0000000000000000",
+          "right": "1fffffffffffffff",
+          "bottom": "1fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffff8",
+          "left": "1fffffffffffffff"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffff8",
+          "left": "1fffffffffffffff"
+        },
+        "270/f": {
+          "top": "fffffffffffffff8",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffff8"
+        }
+      }
     },
     "square-05": {
       "family": "square",
@@ -4429,7 +8379,57 @@
         "180": 0,
         "270": 0
       },
-      "flipShare": 1
+      "flipShare": 1,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffffffffffe",
+          "right": "00000000ffffffff",
+          "bottom": "80000000ffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "7fffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffff00000001",
+          "left": "00000000ffffffff"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffffffffffe",
+          "bottom": "ffffffff00000000",
+          "left": "80000000ffffffff"
+        },
+        "90/f": {
+          "top": "ffffffff00000000",
+          "right": "7fffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffff00000001"
+        },
+        "180/-": {
+          "top": "ffffffff00000001",
+          "right": "ffffffffffffffff",
+          "bottom": "7fffffffffffffff",
+          "left": "ffffffff00000000"
+        },
+        "180/f": {
+          "top": "80000000ffffffff",
+          "right": "ffffffff00000000",
+          "bottom": "fffffffffffffffe",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "00000000ffffffff",
+          "right": "ffffffff00000001",
+          "bottom": "ffffffffffffffff",
+          "left": "7fffffffffffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "80000000ffffffff",
+          "bottom": "00000000ffffffff",
+          "left": "fffffffffffffffe"
+        }
+      }
     },
     "wave-01": {
       "family": "wave",
@@ -4445,7 +8445,57 @@
         "180": 3,
         "270": 2
       },
-      "flipShare": 0.3
+      "flipShare": 0.3,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffc",
+          "left": "3fffffffffffffff"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "3fffffffffffffff",
+          "bottom": "3fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "fffffffffffffffc",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffc"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffffc",
+          "left": "3fffffffffffffff"
+        },
+        "180/-": {
+          "top": "3fffffffffffffff",
+          "right": "fffffffffffffffc",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "fffffffffffffffc",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffffc"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "3fffffffffffffff",
+          "bottom": "3fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "3fffffffffffffff",
+          "right": "fffffffffffffffc",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "wave-02": {
       "family": "wave",
@@ -4461,7 +8511,57 @@
         "180": 3,
         "270": 0
       },
-      "flipShare": 0.6363636363636364
+      "flipShare": 0.6363636363636364,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000007",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "0000000000000007"
+        },
+        "0/f": {
+          "top": "e000000000000000",
+          "right": "0000000000000007",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "e000000000000000",
+          "right": "0000000000000007",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "e000000000000000",
+          "bottom": "e000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "e000000000000000",
+          "bottom": "e000000000000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "0000000000000007",
+          "left": "e000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "0000000000000007",
+          "left": "e000000000000000"
+        },
+        "270/f": {
+          "top": "0000000000000007",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "0000000000000007"
+        }
+      }
     },
     "wave-05": {
       "family": "wave",
@@ -4477,7 +8577,57 @@
         "180": 11,
         "270": 5
       },
-      "flipShare": 0.5384615384615384
+      "flipShare": 0.5384615384615384,
+      "profiles": {
+        "0/-": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffe00000000",
+          "left": "1fffffffffffffff"
+        },
+        "0/f": {
+          "top": "0000000000000000",
+          "right": "1fffffffffffffff",
+          "bottom": "000000007fffffff",
+          "left": "0000000000000000"
+        },
+        "90/-": {
+          "top": "fffffffffffffff8",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffe00000000"
+        },
+        "90/f": {
+          "top": "0000000000000000",
+          "right": "0000000000000000",
+          "bottom": "fffffffffffffff8",
+          "left": "000000007fffffff"
+        },
+        "180/-": {
+          "top": "000000007fffffff",
+          "right": "fffffffffffffff8",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        },
+        "180/f": {
+          "top": "fffffffe00000000",
+          "right": "0000000000000000",
+          "bottom": "0000000000000000",
+          "left": "fffffffffffffff8"
+        },
+        "270/-": {
+          "top": "0000000000000000",
+          "right": "000000007fffffff",
+          "bottom": "1fffffffffffffff",
+          "left": "0000000000000000"
+        },
+        "270/f": {
+          "top": "1fffffffffffffff",
+          "right": "fffffffe00000000",
+          "bottom": "0000000000000000",
+          "left": "0000000000000000"
+        }
+      }
     },
     "wave-06": {
       "family": "wave",
@@ -4493,7 +8643,57 @@
         "180": 2,
         "270": 0
       },
-      "flipShare": 0
+      "flipShare": 0,
+      "profiles": {
+        "0/-": {
+          "top": "fffffffe00000000",
+          "right": "000000007fffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "0/f": {
+          "top": "000000007fffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000007fffffff"
+        },
+        "90/-": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffe00000000",
+          "bottom": "fffffffe00000000",
+          "left": "ffffffffffffffff"
+        },
+        "90/f": {
+          "top": "fffffffe00000000",
+          "right": "000000007fffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "ffffffffffffffff"
+        },
+        "180/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000007fffffff",
+          "left": "fffffffe00000000"
+        },
+        "180/f": {
+          "top": "ffffffffffffffff",
+          "right": "fffffffe00000000",
+          "bottom": "fffffffe00000000",
+          "left": "ffffffffffffffff"
+        },
+        "270/-": {
+          "top": "000000007fffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "000000007fffffff"
+        },
+        "270/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "000000007fffffff",
+          "left": "fffffffe00000000"
+        }
+      }
     },
     "wave-08": {
       "family": "wave",
@@ -4509,7 +8709,57 @@
         "180": 0,
         "270": 1
       },
-      "flipShare": 0.3333333333333333
+      "flipShare": 0.3333333333333333,
+      "profiles": {
+        "0/-": {
+          "top": "00000007ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000007ffffffff",
+          "left": "0000000000000000"
+        },
+        "0/f": {
+          "top": "ffffffffe0000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffe0000000",
+          "left": "ffffffffffffffff"
+        },
+        "90/-": {
+          "top": "0000000000000000",
+          "right": "00000007ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000007ffffffff"
+        },
+        "90/f": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffe0000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffe0000000"
+        },
+        "180/-": {
+          "top": "ffffffffe0000000",
+          "right": "0000000000000000",
+          "bottom": "ffffffffe0000000",
+          "left": "ffffffffffffffff"
+        },
+        "180/f": {
+          "top": "00000007ffffffff",
+          "right": "ffffffffffffffff",
+          "bottom": "00000007ffffffff",
+          "left": "0000000000000000"
+        },
+        "270/-": {
+          "top": "ffffffffffffffff",
+          "right": "ffffffffe0000000",
+          "bottom": "0000000000000000",
+          "left": "ffffffffe0000000"
+        },
+        "270/f": {
+          "top": "0000000000000000",
+          "right": "00000007ffffffff",
+          "bottom": "ffffffffffffffff",
+          "left": "00000007ffffffff"
+        }
+      }
     }
   },
   "palette": {
@@ -4573,5 +8823,5 @@
       "#FFA300"
     ]
   },
-  "builtAt": "2026-07-02T09:12:37.038Z"
+  "builtAt": "2026-07-02T11:09:13.839Z"
 }

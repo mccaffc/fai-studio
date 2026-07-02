@@ -12,6 +12,8 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadMergedManifest } from '../mine/render-recon.js';
+import { buildTileMaskLibrary } from '../mine/tile-match.js';
+import { buildEdgeProfiles } from './edge-profiles.js';
 import { composeGrammar } from './grammar-schema.js';
 import type { Corpus } from '../mine/schema.js';
 import type { Grammar } from './grammar-schema.js';
@@ -20,11 +22,14 @@ const ROOT = process.cwd();
 const CORPUS_PATH = join(ROOT, 'corpus', 'corpus.json');
 const OUT_PATH = join(ROOT, 'corpus', 'grammar.json');
 
-function main(): void {
+async function main(): Promise<void> {
   const corpus: Corpus = JSON.parse(readFileSync(CORPUS_PATH, 'utf8'));
   const manifest = loadMergedManifest();
 
-  const partial = composeGrammar(corpus, manifest);
+  const lib = await buildTileMaskLibrary('corpus/reference/tiles', 'corpus/reference/tiles-manifest.json', 64,
+    { tilesDir: 'corpus/mined-tiles', manifestPath: 'corpus/mined-tiles/manifest.json' });
+  const profiles = buildEdgeProfiles(lib);
+  const partial = composeGrammar(corpus, manifest, profiles);
 
   const grammar: Grammar = {
     ...partial,
@@ -40,4 +45,4 @@ function main(): void {
   console.log(`builtAt: ${grammar.builtAt}`);
 }
 
-main();
+main().catch(err => { console.error(err); process.exit(1); });
