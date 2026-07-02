@@ -35,6 +35,7 @@ import { profileIoU } from './profiles.js';
 import { mulberry32, type Rng } from './rng.js';
 import { TILES } from './data/tiles.js';
 import { FIGURES, type FigureAsset } from './data/figures.js';
+import { PATCHES, type IconicPatch, type PatchCell, type PatchGroundRole, type PatchInkRole } from './data/patches.js';
 
 export type { SampleKnobs } from './types.js';
 export type { BannerPlan } from './types.js';
@@ -53,6 +54,7 @@ export interface SampleDiagnostics {
   adjacencyFallbacks: number;
   fillAdjacencyHits: number;
   friezesPlaced: number;
+  patchesPlaced: number;
   /** Largest 'run'-form cell count in the final plan (from plan.forms). */
   longestRun: number;
   /**
@@ -129,6 +131,8 @@ interface DraftCell {
   figureId?: string;
   figureAnchor?: boolean;
   figureSpan?: [number, number];
+  patchId?: string;
+  patchInkRole?: PatchInkRole;
 }
 
 interface Placement {
@@ -142,8 +146,9 @@ export function samplePlan(
   seed: number,
   knobs: SampleKnobs = {},
   figures: readonly FigureAsset[] = FIGURES,
+  patches: readonly IconicPatch[] = PATCHES,
 ): BannerPlan {
-  return sampleWithDiagnostics(grammar, seed, knobs, figures).plan;
+  return sampleWithDiagnostics(grammar, seed, knobs, figures, patches).plan;
 }
 
 export function sampleWithDiagnostics(
@@ -151,6 +156,7 @@ export function sampleWithDiagnostics(
   seed: number,
   knobs: SampleKnobs = {},
   figures: readonly FigureAsset[] = FIGURES,
+  patches: readonly IconicPatch[] = PATCHES,
 ): SampleResult {
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
@@ -158,6 +164,7 @@ export function sampleWithDiagnostics(
     adjacencyFallbacks: 0,
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
+    patchesPlaced: 0,
     longestRun: 0,
     runPaths: [],
   };
@@ -189,7 +196,12 @@ export function sampleWithDiagnostics(
 
   const figureSize = plannedFigureSize(template, knobs, rng);
   if (figureSize > 0) {
-    placeFigure(cells, grammar, rng, figureSize, knobs.accent, figures, template.id);
+    const placedPatch = shouldPlacePatch(template.id, rng)
+      ? placePatch(cells, grammar, rng, knobs.accent, patches, globalGround, diag)
+      : false;
+    if (!placedPatch) {
+      placeFigure(cells, grammar, rng, figureSize, knobs.accent, figures, template.id);
+    }
   } else if (knobs.accent && !grammar.palette.accentOrder.includes(knobs.accent)) {
     throw new Error(`Unknown accent ink: ${knobs.accent}`);
   }
@@ -793,6 +805,166 @@ function drawRunTargetLength(grammar: EngineGrammar, rng: Rng): number {
   return weightedChoice(rng, entries);
 }
 
+function shouldPlacePatch(templateId: string, rng: Rng): boolean {
+  if (templateId === 'figure-field') return rng.chance(0.5);
+  if (templateId === 'mixed-quilt' || templateId === 'arc-mosaic') return rng.chance(0.1);
+  return false;
+}
+
+function placePatch(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  rng: Rng,
+  knobAccent: string | undefined,
+  patches: readonly IconicPatch[],
+  globalGround: string,
+  diag: SampleDiagnostics,
+): boolean {
+  if (knobAccent && !grammar.palette.accentOrder.includes(knobAccent)) {
+    throw new Error(`Unknown accent ink: ${knobAccent}`);
+  }
+
+  const placement = choosePatchPlacement(cells, patches, rng);
+  if (!placement) return false;
+
+  const { patch, col, row } = placement;
+  const shifted = shiftedGround(cells, globalGround);
+  const patchGrounds = patch.cells.map(cell => resolvePatchGround(cell.groundRole, globalGround, shifted, undefined));
+  const patchAccent = chooseAccent(grammar, rng, new Set(patchGrounds), knobAccent);
+  const anchorCell = firstStampedPatchCell(patch);
+
+  for (const patchCell of patch.cells) {
+    const target = cellAt(cells, col + patchCell.dx, row + patchCell.dy);
+    const isAnchor = anchorCell === patchCell;
+    const resolved = resolvePatchCell(patchCell, grammar, rng, globalGround, shifted, patchAccent);
+    target.kind = resolved.kind;
+    target.ground = resolved.ground;
+    if (isAnchor) target.patchId = patch.id;
+    if (resolved.kind === 'tile') {
+      target.tile = resolved.tile;
+      target.rotation = resolved.rotation;
+      target.flip = resolved.flip;
+      target.ink = resolved.ink;
+      target.inks = resolved.ink ? [resolved.ink] : [];
+      target.score = 1;
+      target.patchInkRole = patchCell.inkRole;
+    }
+  }
+
+  diag.patchesPlaced += 1;
+  return true;
+}
+
+function choosePatchPlacement(
+  cells: DraftCell[],
+  patches: readonly IconicPatch[],
+  rng: Rng,
+): { patch: IconicPatch; col: number; row: number } | null {
+  const usablePatches = [...patches]
+    .filter(patch => patch.w >= 2 && patch.h >= 2 && patch.w <= 4 && patch.h <= 3)
+    .sort((a, b) => compareCodepoint(a.id, b.id));
+  if (usablePatches.length === 0) return null;
+
+  const sizes = [...new Map(usablePatches.map(patch => [`${patch.w}x${patch.h}`, { w: patch.w, h: patch.h }])).values()]
+    .sort((a, b) => (b.w * b.h) - (a.w * a.h) || b.w - a.w || b.h - a.h);
+
+  for (let row = 0; row < ROWS; row += 1) {
+    for (let col = 0; col < COLS; col += 1) {
+      for (const size of sizes) {
+        if (col + size.w > COLS || row + size.h > ROWS) continue;
+        if (!rectIsFree(cells, col, row, size.w, size.h)) continue;
+        const candidates = usablePatches.filter(patch => patch.w === size.w && patch.h === size.h);
+        const patch = weightedChoice(
+          rng,
+          candidates.map(candidate => ({ value: candidate, weight: 1, sortKey: candidate.id })),
+        );
+        return { patch, col, row };
+      }
+    }
+  }
+
+  return null;
+}
+
+function rectIsFree(cells: DraftCell[], col: number, row: number, w: number, h: number): boolean {
+  for (let dy = 0; dy < h; dy += 1) {
+    for (let dx = 0; dx < w; dx += 1) {
+      if (cellAt(cells, col + dx, row + dy).kind !== undefined) return false;
+    }
+  }
+  return true;
+}
+
+function firstStampedPatchCell(patch: IconicPatch): PatchCell | undefined {
+  return [...patch.cells].sort((a, b) => a.dy - b.dy || a.dx - b.dx)[0];
+}
+
+function shiftedGround(cells: DraftCell[], globalGround: string): string {
+  const counts = new Map<string, number>();
+  for (const cell of cells) {
+    if (cell.ground === globalGround) continue;
+    counts.set(cell.ground, (counts.get(cell.ground) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || compareCodepoint(a[0], b[0]))[0]?.[0] ?? globalGround;
+}
+
+function resolvePatchCell(
+  patchCell: PatchCell,
+  grammar: EngineGrammar,
+  rng: Rng,
+  globalGround: string,
+  shifted: string,
+  patchAccent: string | null,
+): {
+  kind: PatchCell['kind'];
+  ground: string;
+  tile?: string;
+  rotation?: Rotation;
+  flip?: boolean;
+  ink?: string;
+} {
+  let ground = resolvePatchGround(patchCell.groundRole, globalGround, shifted, undefined);
+  if (patchCell.kind === 'plain') {
+    return { kind: 'plain', ground };
+  }
+
+  const ink = resolvePatchInk(patchCell.inkRole, ground, grammar, rng, patchAccent);
+  ground = resolvePatchGround(patchCell.groundRole, globalGround, shifted, ink);
+  return {
+    kind: 'tile',
+    ground,
+    tile: patchCell.tile,
+    rotation: patchCell.rotation ?? 0,
+    flip: patchCell.flip ?? false,
+    ink,
+  };
+}
+
+function resolvePatchGround(
+  role: PatchGroundRole,
+  globalGround: string,
+  shifted: string,
+  resolvedInk: string | undefined,
+): string {
+  if (role === 'g0') return globalGround;
+  if (role === 'g1') return shifted;
+  return resolvedInk === '#121212' ? '#F3F3F3' : '#121212';
+}
+
+function resolvePatchInk(
+  role: PatchInkRole | undefined,
+  ground: string,
+  grammar: EngineGrammar,
+  rng: Rng,
+  patchAccent: string | null,
+): string | undefined {
+  if (!role) return undefined;
+  if (role === 'accent') return patchAccent ?? neutralForGround(ground);
+  if (role === 'ink2') return neutralForGround(ground);
+  return drawInkForGround(grammar, rng, ground);
+}
+
 function drawRunPair(
   grammar: EngineGrammar,
   rng: Rng,
@@ -1391,9 +1563,16 @@ function applyAccentZoning(
 
   const zones: Set<DraftCell>[] = [];
   const zoneAccents: string[] = [];
+  const patchAccentCells = cells
+    .filter(c => c.kind === 'tile' && c.patchInkRole === 'accent' && c.ink && accents.includes(c.ink))
+    .sort(compareCells);
 
   const figureCells = cells.filter(c => c.kind === 'freeform');
-  if (figureCells.length > 0 && rng.next() < 0.5) {
+  if (patchAccentCells.length > 0) {
+    zones.push(new Set(patchAccentCells));
+    zoneAccents.push(patchAccentCells[0]!.ink ?? drawAccentInk());
+    diag.accentZone = 'ink';
+  } else if (figureCells.length > 0 && rng.next() < 0.5) {
     // adopt the figure as the accent zone (its ink is already an accent by construction)
     zones.push(new Set(figureCells));
     zoneAccents.push(figureCells[0]!.ink ?? drawAccentInk());
@@ -1662,7 +1841,8 @@ function finalizeCells(cells: DraftCell[]): CellPlan[] {
     if (cell.kind === undefined) {
       throw new Error(`Unresolved sampled cell ${positionKey(cell)}`);
     }
-    return { ...cell } as CellPlan;
+    const { patchInkRole: _patchInkRole, ...publicCell } = cell;
+    return publicCell as CellPlan;
   });
 }
 
@@ -1900,6 +2080,7 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
     adjacencyFallbacks: 0,
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
+    patchesPlaced: 0,
     longestRun: 0,
     runPaths: [],
   };
