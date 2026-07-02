@@ -31,3 +31,13 @@ accent zones read intentional; density canonical. Residuals (named, non-blocking
 freeform placeholder blobs visibly synthetic (figure-field suffers most — real figure geometry
 is the next aesthetic frontier); occasional lone-motif field interruptions; some arc clusters
 rosette rather than flow (reads as variety, monitoring).
+
+## Iteration 3 — P3 gate (figures + programs) — 2026-07-02
+Sheets: p3-figures-9100 / p3-programs-5001 / p3-pipe-regression.
+PROGRAMS: PASS emphatically — all 6 hues on pure neutrals, palette law visibly holds (no white/
+orange anywhere, one hue per banner), indigo legibility guard confirmed on-sheet. This is the
+program-banner capability as briefed.
+FIGURES: PASS — curated corpus figures (lamps, ring-domes, owl-eyes) placed recolored in generated
+fields; enormous improvement over blobs. Noted for later: canon anchors LARGER figures (3×2 domes)
+than the current max extracted span (2×3) — a future extraction pass could add multi-cell spans.
+PIPES: no regression (3100-3105 hold P2 quality; some gain integrated figures).
