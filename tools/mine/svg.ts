@@ -35,6 +35,11 @@ export function parseSvgElements(svgText: string): { width: number; height: numb
 
   const walk = (node: Element, inheritedFill: string | undefined, inheritedFillRule: FillRule | undefined): void => {
     const tag = node.localName.toLowerCase();
+
+    if (SKIP_SUBTREES.has(tag)) {
+      return;
+    }
+
     if (node.hasAttribute('transform')) {
       throw new Error(`Unsupported transform on <${tag}>`);
     }
@@ -42,12 +47,11 @@ export function parseSvgElements(svgText: string): { width: number; height: numb
     const fill = resolveFill(node, inheritedFill);
     const fillRule = resolveFillRule(node, inheritedFillRule);
 
-    if (SKIP_SUBTREES.has(tag)) {
-      return;
-    }
-
     if (SHAPE_TAGS.has(tag)) {
-      elements.push(parseShape(node, tag, fill ?? '#000000', fillRule));
+      if (fill === undefined) {
+        throw new Error(`<${tag}> has no fill attribute and none inherited — corpus SVGs must carry explicit fills`);
+      }
+      elements.push(parseShape(node, tag, fill, fillRule));
     }
 
     for (const child of Array.from(node.children) as Element[]) {

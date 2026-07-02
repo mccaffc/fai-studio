@@ -20,4 +20,20 @@ describe('parseSvgElements', () => {
     expect(smoke).toBeGreaterThan(0);
     expect(elements[smoke + 1].kind).toBe('path'); // 009's stripes follow their ground rect
   });
+  it('skips defs subtree without throwing on transform', () => {
+    const svg = `<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+      <defs transform="translate(3,3)"><rect x="0" y="0" width="10" height="10" fill="#FF4F00"/></defs>
+      <rect x="0" y="0" width="200" height="200" fill="#121212"/>
+    </svg>`;
+    const { elements } = parseSvgElements(svg);
+    expect(elements.length).toBe(1);
+    expect(elements[0].kind).toBe('rect');
+    expect(elements[0].fill).toBe('#121212');
+  });
+  it('throws when shape has no fill and none inherited', () => {
+    const svg = `<svg viewBox="0 0 10 10" width="10" height="10" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="10" height="10"/>
+    </svg>`;
+    expect(() => parseSvgElements(svg)).toThrow(/no fill/);
+  });
 });
