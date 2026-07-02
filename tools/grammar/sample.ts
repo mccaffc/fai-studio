@@ -1117,21 +1117,19 @@ function accentInkEntriesForGround(grammar: Grammar, ground: string): Weighted<s
     .map(ink => ({ value: ink, weight: inkMap[ink] ?? 0, sortKey: ink }));
 }
 
-function applyLogomarkGuard(
-  cells: DraftCell[],
-  manifest: Map<string, ManifestTile & { baseDir: string }>,
-): void {
-  for (const cell of cells.sort(compareCells)) {
-    if (cell.kind !== 'tile' || !cell.tile) continue;
-    const entry = manifest.get(cell.tile);
-    if (entry?.dominant_direction !== 'left' && entry?.dominant_direction !== 'right') continue;
-    const next = maybeCellAt(cells, cell.col + 1, cell.row);
-    if (!next || next.kind !== 'tile' || next.tile !== cell.tile) continue;
-    const nextEntry = manifest.get(next.tile);
-    if (nextEntry?.dominant_direction === entry.dominant_direction) {
-      next.flip = !(next.flip ?? false);
-    }
-  }
+function applyLogomarkGuard(cells: DraftCell[], manifest: Map<string, ManifestTile & { baseDir: string }>): void {
+  // TODO(P2): port the REAL logo-guard (src/engine/render/logo-guard.ts) at render level.
+  // The P0 brand law targets exactly tri/dart + tri/chevron-notch primitives, forbids
+  // exactly-two (not 3+) same-direction chevrons adjacent along the pointing axis, with
+  // direction = flip ? (rot+180)%360 : rot, on BOTH axes. A prior plan-level approximation
+  // here keyed off manifest dominant_direction (45 tiles, wrong set) and toggled flip
+  // (which does not change dominant_direction), i.e. it mutated legal friezes while
+  // failing to establish its own invariant — final P1 review, 2026-07-02.
+  // SAFE AS NO-OP FOR P1: the catalog contains no chevron primitives (closest family is
+  // 'angle', which is not the mark), and P1 plans are offline artifacts — nothing renders
+  // to shippable SVG until P2, where the real guard must run.
+  void cells;
+  void manifest;
 }
 
 function finalizeCells(cells: DraftCell[]): CellRecon[] {
