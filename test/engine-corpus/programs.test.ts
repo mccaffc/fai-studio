@@ -29,6 +29,7 @@ import { samplePlan } from '../../src/engine/corpus/sample.js';
 import { renderPlanSvg } from '../../src/engine/corpus/render.js';
 import { TILES } from '../../src/engine/corpus/data/tiles.js';
 import type { EngineGrammar } from '../../src/engine/corpus/types.js';
+import { assertProgramPaletteSvg, assertProgramPalettePlan } from './helpers.js';
 
 const GRAMMAR = RAW_GRAMMAR as unknown as EngineGrammar;
 
@@ -375,15 +376,78 @@ describe('recolorPlan — program-hue swap', () => {
 });
 
 // ---------------------------------------------------------------------------
-// helpers
+// C2: hue→hue swap tests where h1 is NOT a corpus accent
+// ---------------------------------------------------------------------------
+
+describe('recolorPlan — hue→hue swap where h1 is not a corpus accent (C2)', () => {
+  // american-governance (#8265DB) and artificial-intelligence (#D63A8C) are NOT
+  // classic corpus accents — they are pure program hues. Swapping from these
+  // to another program hue previously leaked h1 cells into the output because
+  // remapInk/remapGround did not know about prevHue.
+
+  it('american-governance → frontier-legal-defense: palette law on result, no h1 in SVG', () => {
+    const h1 = PROGRAMS['american-governance'].hue;          // #8265DB (not a corpus accent)
+    const h2 = PROGRAMS['frontier-legal-defense'].hue;       // #3A4A6B
+    const base = generateBanner({ seed: 7, program: 'american-governance' });
+    const swapped = recolorPlan(base, h2);
+
+    // Palette law: only 3 neutrals + h2; NO h1
+    assertProgramPaletteSvg(swapped.svg, h2, 'american-governance→frontier-legal-defense SVG');
+    assertProgramPalettePlan(swapped.plan, h2, 'american-governance→frontier-legal-defense plan');
+
+    // Geometry frozen: tile/rotation/flip identical to pre-swap
+    expect(swapped.plan.cells).toHaveLength(base.plan.cells.length);
+    for (let i = 0; i < base.plan.cells.length; i++) {
+      const orig = base.plan.cells[i]!;
+      const recolored = swapped.plan.cells[i]!;
+      expect(recolored.tile, `tile at ${i}`).toBe(orig.tile);
+      expect(recolored.rotation, `rotation at ${i}`).toBe(orig.rotation);
+      expect(recolored.flip, `flip at ${i}`).toBe(orig.flip);
+    }
+  });
+
+  it('artificial-intelligence → technology-statecraft: palette law on result, no h1 in SVG', () => {
+    const h1 = PROGRAMS['artificial-intelligence'].hue;      // #D63A8C (not a corpus accent)
+    const h2 = PROGRAMS['technology-statecraft'].hue;        // #FFA300
+    const base = generateBanner({ seed: 42, program: 'artificial-intelligence' });
+    const swapped = recolorPlan(base, h2);
+
+    // Palette law: only 3 neutrals + h2; NO h1
+    assertProgramPaletteSvg(swapped.svg, h2, 'artificial-intelligence→technology-statecraft SVG');
+    assertProgramPalettePlan(swapped.plan, h2, 'artificial-intelligence→technology-statecraft plan');
+
+    // Geometry frozen
+    expect(swapped.plan.cells).toHaveLength(base.plan.cells.length);
+    for (let i = 0; i < base.plan.cells.length; i++) {
+      const orig = base.plan.cells[i]!;
+      const recolored = swapped.plan.cells[i]!;
+      expect(recolored.tile, `tile at ${i}`).toBe(orig.tile);
+      expect(recolored.rotation, `rotation at ${i}`).toBe(orig.rotation);
+      expect(recolored.flip, `flip at ${i}`).toBe(orig.flip);
+    }
+  });
+
+  it('multi-seed sweep: all 6-program round-trips satisfy palette law', () => {
+    const programIds = Object.keys(PROGRAMS) as ProgramId[];
+    for (const fromId of programIds) {
+      for (const toId of programIds) {
+        if (fromId === toId) continue;
+        const base = generateBanner({ seed: 13, program: fromId });
+        const swapped = recolorPlan(base, PROGRAMS[toId].hue);
+        assertProgramPalettePlan(
+          swapped.plan,
+          PROGRAMS[toId].hue,
+          `${fromId}→${toId}`,
+        );
+      }
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// helpers (M1: local wrapper delegates to shared assertProgramPaletteSvg)
 // ---------------------------------------------------------------------------
 
 function assertProgramPalette(svg: string, hue: string, label: string): void {
-  const allowed = new Set(['#121212', '#F3F3F3', '#D9D9D6', hue.toUpperCase()]);
-  const hexes = svg.match(/(?:fill|stroke)="(#[0-9A-Fa-f]{6})"/g) ?? [];
-  for (const attr of hexes) {
-    const m = attr.match(/#[0-9A-Fa-f]{6}/)!;
-    const hex = m[0].toUpperCase();
-    expect(allowed, `program-law violation: ${hex} in ${label} (allowed: ${[...allowed].join(',')})`).toContain(hex);
-  }
+  assertProgramPaletteSvg(svg, hue, label);
 }

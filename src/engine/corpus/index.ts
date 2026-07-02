@@ -194,11 +194,13 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
   let newConfig: CorpusConfig;
 
   if (prev.config.program && newProgramEntry) {
-    // Program hue swap: re-run applyProgramPalette on the original geometry.
-    // We need the original sampled (pre-program) plan to re-apply. Since we
-    // only have the transformed plan, rezone first with a neutral to freeze
-    // geometry, then re-apply the new program palette.
-    newPlan = applyProgramPalette(prev.plan, newProgramEntry[1].hue);
+    // Program hue swap: re-apply applyProgramPalette on the already-transformed
+    // plan. Pass prevHue so remapInk/remapGround reclaim h1 cells before
+    // stamping h2 — without this, 4 of 6 program hues (not corpus accents)
+    // would survive the transform unchanged, producing a two-hue output that
+    // violates the palette law (C1 fix).
+    const prevHue = PROGRAMS[prev.config.program].hue;
+    newPlan = applyProgramPalette(prev.plan, newProgramEntry[1].hue, prevHue);
     newConfig = { ...prev.config, accent, program: newProgramEntry[0] };
   } else if (prev.config.program && !newProgramEntry) {
     // Switching to a corpus accent while still in program mode is not meaningful;
