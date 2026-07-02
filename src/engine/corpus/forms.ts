@@ -1,38 +1,70 @@
 /**
- * forms.ts — Multi-cell form detection for banner reconstructions.
+ * forms.ts — multi-cell form detection for banner plans (engine, zero-dep).
  *
- * Runs union-find over the 18 cells of a banner and emits FormGroup records
- * for connected groups of ≥ 2 cells, using four join rules:
+ * Runs union-find over the 18 cells of a plan and emits FormGroup records for
+ * connected groups of ≥ 2 cells, using four join rules:
  *
- *  (a) Both kind==='tile', same ink, and the shared edge has edge_coverage ≥ 0.25
+ *  (a) Both kind==='tile', same ink, and the shared edge has edge coverage ≥ 0.25
  *      on both sides after applying the cell's rotation/flip.
  *  (b) Both kind==='freeform' and share an ink (same ink value).
- *  (c) Both are the same tile+rotation in a row (frieze): same tile, same rotation,
- *      same ink, same row, adjacent columns.
- *  (d) Both kind==='tile', the shared edge has edge_coverage ≥ 0.25 on both sides
+ *  (c) Both are the same tile+rotation in a row (frieze): same tile, same
+ *      rotation, same ink, same row, adjacent columns.
+ *  (d) Both kind==='tile', the shared edge has coverage ≥ 0.25 on both sides
  *      (same orientEdges logic as rule a), AND the ink/ground pair is INVERTED:
- *      a.ink === b.ground && a.ground === b.ink. This captures the FAI figure-ground
- *      inversion signature: continuous line-work flowing across cells where the line
- *      alternates roles — white pipes on black in one cell, black pipes on white in
- *      the next. Without rule (d), these visually-continuous runs are invisible to the
- *      same-ink join in rule (a). Groups built via rule (d) take 'run' kind (unless
- *      freeform members are involved via other rules, in which case 'figure' wins).
+ *      a.ink === b.ground && a.ground === b.ink. Captures the FAI figure-ground
+ *      inversion signature; rule (d) joins take 'run' kind.
  *
- * kind precedence: 'figure' if any member is freeform; 'frieze' if built purely by
- * rule (c); 'run' otherwise.
+ * kind precedence: 'figure' if any member is freeform; 'frieze' if built purely
+ * by rule (c); 'run' otherwise.
  *
  * Edge orientation: rotating 90° maps [top,right,bottom,left] → [left,top,right,bottom]
  * (i.e. top←left, right←top, bottom←right, left←bottom). Flip swaps left/right BEFORE rotation.
+ *
+ * This is the ENGINE detectForms — it consumes a tile catalog (edges) plus a
+ * families record instead of the Node manifest. tools/mine/forms.ts keeps its
+ * manifest-based detectForms for mining and re-imports orientEdges from here.
  */
 
-import type { BannerRecon, CellRecon, FormGroup, ManifestTile } from './schema.js';
+import type { BannerPlan, CellPlan, Edges, FormGroup } from './types.js';
 
-// orientEdges + its Edges type now live in the engine (single source of truth);
-// tools may import from src (never the reverse). Re-exported so existing
-// importers of forms.ts keep working unchanged.
-import { orientEdges, type Edges } from '../../src/engine/corpus/forms.js';
-export { orientEdges };
-export type { Edges };
+export type { Edges } from './types.js';
+
+// ---------------------------------------------------------------------------
+// Edge orientation transform
+// ---------------------------------------------------------------------------
+
+/**
+ * orientEdges — Apply a cell's flip + rotation to a tile's edge coverage.
+ *
+ * The brief says: "rotating 90° maps [top,right,bottom,left] → [left,top,right,bottom]"
+ * Meaning the NEW orientation's edges are:
+ *   new.top    = old.left
+ *   new.right  = old.top
+ *   new.bottom = old.right
+ *   new.left   = old.bottom
+ *
+ * Flip swaps left/right BEFORE rotation.
+ */
+export function orientEdges(
+  edges: Edges,
+  rotation: 0 | 90 | 180 | 270,
+  flip: boolean,
+): Edges {
+  // Step 1: flip (swap left/right)
+  let { top, right, bottom, left } = edges;
+  if (flip) {
+    [left, right] = [right, left];
+  }
+
+  // Step 2: apply rotation in 90° increments
+  // One 90° CW rotation: new = { top:left, right:top, bottom:right, left:bottom }
+  const steps = (rotation / 90) % 4;
+  for (let i = 0; i < steps; i++) {
+    [top, right, bottom, left] = [left, top, right, bottom];
+  }
+
+  return { top, right, bottom, left };
+}
 
 // ---------------------------------------------------------------------------
 // Union-find helpers
@@ -57,11 +89,24 @@ function union(uf: number[], x: number, y: number): void {
 }
 
 // ---------------------------------------------------------------------------
-// Main detectForms function
+// Main detectForms — engine variant (catalog + families record)
 // ---------------------------------------------------------------------------
 
-export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): FormGroup[] {
-  const cells = banner.cells;
+export interface FormsCatalogEntry {
+  edges: Edges;
+}
+
+/**
+ * detectForms — engine variant. Edges come from `catalog[tileId].edges`;
+ * shape family comes from the `families` record. Same join rules and kind
+ * precedence as the tools' manifest-based detectForms.
+ */
+export function detectForms(
+  plan: BannerPlan,
+  catalog: Record<string, FormsCatalogEntry>,
+  families: Record<string, string>,
+): FormGroup[] {
+  const cells = plan.cells;
   const n = cells.length;
 
   // Build lookup: cell index by [col, row]
@@ -71,20 +116,10 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
     cellIndex.set(`${c.col},${c.row}`, i);
   }
 
-  // Build manifest lookup by tile id
-  const manifestById = new Map<string, ManifestTile>();
-  for (const tile of manifest) {
-    manifestById.set(tile.id, tile);
-  }
-
   // Union-find
   const uf = makeUF(n);
 
-  // Track join rule provenance per edge pair for kind detection.
-  // For each union edge (pair), we record whether it was joined by rule (a/b) only,
-  // or whether rule (c) applied (possibly alongside rule (a)).
   // A group is 'frieze' if ALL its joins were rule (c)-eligible (same-tile-same-row).
-  // We track per-cell: ruleCOnly = was only ever joined by (c), never solely by (a/b).
   const joinedOnlyByAorB = new Set<number>(); // joined by (a) or (b) but NOT (c)
 
   for (let i = 0; i < n; i++) {
@@ -93,7 +128,6 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
     // 'review' and 'plain' cells never join
     if (ci.kind === 'review' || ci.kind === 'plain') continue;
 
-    // Check 4 neighbors: right (col+1), down (row+1) — we only check each pair once
     const neighbors: [number, number, 'h' | 'v'][] = [
       [ci.col + 1, ci.row, 'h'],
       [ci.col, ci.row + 1, 'v'],
@@ -105,12 +139,11 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
 
       const cj = cells[j]!;
 
-      // 'review' and 'plain' cells never join
       if (cj.kind === 'review' || cj.kind === 'plain') continue;
 
       let joined = false;
 
-      // Check rule (c) eligibility first (same tile, same rotation, same ink, same row, adjacent col)
+      // Rule (c) eligibility (same tile, same rotation, same ink, same row, adjacent col)
       const ruleC_eligible =
         dir === 'h' &&
         ci.kind === 'tile' &&
@@ -127,7 +160,6 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
         const inkJ = cj.ink;
         if (inkI && inkJ && inkI === inkJ) {
           joined = true;
-          // freeform joins are always rule (b), not (c)
           joinedOnlyByAorB.add(i);
           joinedOnlyByAorB.add(j);
         }
@@ -136,70 +168,46 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
       // Rule (a): both tile, same ink, active shared edge on both sides
       if (!joined && ci.kind === 'tile' && cj.kind === 'tile') {
         if (ci.ink && cj.ink && ci.ink === cj.ink && ci.tile && cj.tile) {
-          const mI = manifestById.get(ci.tile);
-          const mJ = manifestById.get(cj.tile);
+          const eI = catalog[ci.tile]?.edges;
+          const eJ = catalog[cj.tile]?.edges;
 
-          if (mI && mJ) {
-            const edgesI = orientEdges(
-              mI.edge_coverage,
-              (ci.rotation ?? 0) as 0 | 90 | 180 | 270,
-              ci.flip ?? false,
-            );
-            const edgesJ = orientEdges(
-              mJ.edge_coverage,
-              (cj.rotation ?? 0) as 0 | 90 | 180 | 270,
-              cj.flip ?? false,
-            );
+          if (eI && eJ) {
+            const edgesI = orientEdges(eI, (ci.rotation ?? 0) as 0 | 90 | 180 | 270, ci.flip ?? false);
+            const edgesJ = orientEdges(eJ, (cj.rotation ?? 0) as 0 | 90 | 180 | 270, cj.flip ?? false);
 
-            // Shared edge: for horizontal adjacency (i is left of j): i's right ↔ j's left
-            // For vertical adjacency (i is above j): i's bottom ↔ j's top
             const edgeCovI = dir === 'h' ? edgesI.right : edgesI.bottom;
             const edgeCovJ = dir === 'h' ? edgesJ.left : edgesJ.top;
 
             if (edgeCovI >= 0.25 && edgeCovJ >= 0.25) {
               joined = true;
-              // If rule (c) also applies, don't mark as AorB-only
               if (!ruleC_eligible) {
                 joinedOnlyByAorB.add(i);
                 joinedOnlyByAorB.add(j);
               }
-              // (if ruleC_eligible too, the join came from both — treat as frieze-eligible)
             }
           }
         }
       }
 
       // Rule (d): both tile, active shared edge on both sides, INVERTED ink/ground pair.
-      // Captures figure-ground inversion: line-work flowing across cells where the line
-      // alternates roles (white-on-black → black-on-white). Rule (d) joins are 'run' kind,
-      // same as rule (a). Not frieze-eligible (different inks means different tile roles).
       if (!joined && ci.kind === 'tile' && cj.kind === 'tile') {
         if (
           ci.ink && cj.ink && ci.ground && cj.ground &&
           ci.ink === cj.ground && ci.ground === cj.ink &&
           ci.tile && cj.tile
         ) {
-          const mI = manifestById.get(ci.tile);
-          const mJ = manifestById.get(cj.tile);
+          const eI = catalog[ci.tile]?.edges;
+          const eJ = catalog[cj.tile]?.edges;
 
-          if (mI && mJ) {
-            const edgesI = orientEdges(
-              mI.edge_coverage,
-              (ci.rotation ?? 0) as 0 | 90 | 180 | 270,
-              ci.flip ?? false,
-            );
-            const edgesJ = orientEdges(
-              mJ.edge_coverage,
-              (cj.rotation ?? 0) as 0 | 90 | 180 | 270,
-              cj.flip ?? false,
-            );
+          if (eI && eJ) {
+            const edgesI = orientEdges(eI, (ci.rotation ?? 0) as 0 | 90 | 180 | 270, ci.flip ?? false);
+            const edgesJ = orientEdges(eJ, (cj.rotation ?? 0) as 0 | 90 | 180 | 270, cj.flip ?? false);
 
             const edgeCovI = dir === 'h' ? edgesI.right : edgesI.bottom;
             const edgeCovJ = dir === 'h' ? edgesJ.left : edgesJ.top;
 
             if (edgeCovI >= 0.25 && edgeCovJ >= 0.25) {
               joined = true;
-              // Rule (d) joins are 'run' kind (not frieze-eligible)
               joinedOnlyByAorB.add(i);
               joinedOnlyByAorB.add(j);
             }
@@ -210,7 +218,6 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
       // Rule (c): same tile, same rotation, same ink, same row, horizontally adjacent
       if (!joined && ruleC_eligible) {
         joined = true;
-        // Not marking as AorB-only — these are frieze-eligible
       }
 
       if (joined) {
@@ -225,7 +232,6 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
     const ci = cells[i]!;
     if (ci.kind === 'review' || ci.kind === 'plain') continue;
     const root = find(uf, i);
-    // Only include cells that are actually in a union (root has ≥ 2 members)
     if (!groups.has(root)) groups.set(root, []);
     groups.get(root)!.push(i);
   }
@@ -238,9 +244,6 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
 
   // Sort groups by topmost-leftmost member (row-major: row first, then col)
   validGroups.sort((a, b) => {
-    const ca = cells[a[0]!]!;
-    const cb = cells[b[0]!]!;
-    // find min cell in each group
     const minA = a.reduce((best, idx) => {
       const c = cells[idx]!;
       return c.row < cells[best]!.row || (c.row === cells[best]!.row && c.col < cells[best]!.col)
@@ -274,7 +277,6 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
     });
 
     // Determine kind: 'figure' > 'frieze' > 'run'
-    // 'frieze' = built purely by rule (c) — no member was joined solely by rule (a) or (b)
     const hasFreeform = members.some((i) => cells[i]!.kind === 'freeform');
     const hasAorBOnlyJoin = members.some((i) => joinedOnlyByAorB.has(i));
 
@@ -287,15 +289,15 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
       kind = 'run';
     }
 
-    // Dominant shape_family (most common among tile members; undefined for pure freeform)
+    // Dominant shape family (most common among tile members; undefined for pure freeform)
     let family: string | undefined;
     const familyCount = new Map<string, number>();
     for (const i of members) {
       const c = cells[i]!;
       if (c.kind === 'tile' && c.tile) {
-        const m = manifestById.get(c.tile);
-        if (m?.shape_family) {
-          familyCount.set(m.shape_family, (familyCount.get(m.shape_family) ?? 0) + 1);
+        const fam = families[c.tile];
+        if (fam) {
+          familyCount.set(fam, (familyCount.get(fam) ?? 0) + 1);
         }
       }
     }
@@ -311,14 +313,13 @@ export function detectForms(banner: BannerRecon, manifest: ManifestTile[]): Form
     }
     const ink = [...inkCount.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? '#000000';
 
-    // Cell pairs [col, row], sorted row-major
     const cellPairs: [number, number][] = members.map((i) => {
       const c = cells[i]!;
       return [c.col, c.row];
     });
 
     formGroups.push({
-      id: `${banner.id}-form-${gIdx + 1}`,
+      id: `${plan.id}-form-${gIdx + 1}`,
       kind,
       cells: cellPairs,
       ...(family !== undefined ? { family } : {}),

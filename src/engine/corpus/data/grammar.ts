@@ -5,10 +5,10 @@
 
 // ---- Inline type declarations ----
 
-interface EngineGroundSchemes { counts: Record<string, number>; }
-interface EngineForms { kinds: Record<string, number>; sizes: Record<string, number>; byFamily: Record<string, number>; friezeRows: Record<string, number>; }
-interface EnginePlain { positions: Record<string, number>; }
-interface EngineStats {
+export interface EngineGroundSchemes { counts: Record<string, number>; }
+export interface EngineForms { kinds: Record<string, number>; sizes: Record<string, number>; byFamily: Record<string, number>; friezeRows: Record<string, number>; }
+export interface EnginePlain { positions: Record<string, number>; }
+export interface EngineStats {
   schemaVersion: number;
   families: Record<string, number>;
   tiles: Record<string, number>;
@@ -21,8 +21,8 @@ interface EngineStats {
   forms: EngineForms;
   plain: EnginePlain;
 }
-interface TileCatalogEntry { family: string; edges: { top: number; right: number; bottom: number; left: number }; rotations: Record<string, number>; flipShare: number; profiles?: unknown; }
-interface EngineGrammar {
+export interface TileCatalogEntry { family: string; edges: { top: number; right: number; bottom: number; left: number }; rotations: Record<string, number>; flipShare: number; profiles?: unknown; }
+export interface EngineGrammar {
   schemaVersion: number;
   stats: EngineStats;
   templates: unknown[];

@@ -278,7 +278,8 @@ function main(): void {
     }
   }
   if (parseErrors > 0) {
-    console.warn(`gen-engine-data: ${parseErrors} tiles had parse errors and were skipped`);
+    console.error(`gen-engine-data: ${parseErrors} tiles had parse errors — aborting so the committed data can't go stale`);
+    process.exit(1);
   }
 
   // ---- Write grammar.ts ----
@@ -292,10 +293,10 @@ function main(): void {
     '',
     '// ---- Inline type declarations ----',
     '',
-    'interface EngineGroundSchemes { counts: Record<string, number>; }',
-    'interface EngineForms { kinds: Record<string, number>; sizes: Record<string, number>; byFamily: Record<string, number>; friezeRows: Record<string, number>; }',
-    'interface EnginePlain { positions: Record<string, number>; }',
-    'interface EngineStats {',
+    'export interface EngineGroundSchemes { counts: Record<string, number>; }',
+    'export interface EngineForms { kinds: Record<string, number>; sizes: Record<string, number>; byFamily: Record<string, number>; friezeRows: Record<string, number>; }',
+    'export interface EnginePlain { positions: Record<string, number>; }',
+    'export interface EngineStats {',
     '  schemaVersion: number;',
     '  families: Record<string, number>;',
     '  tiles: Record<string, number>;',
@@ -308,8 +309,8 @@ function main(): void {
     '  forms: EngineForms;',
     '  plain: EnginePlain;',
     '}',
-    'interface TileCatalogEntry { family: string; edges: { top: number; right: number; bottom: number; left: number }; rotations: Record<string, number>; flipShare: number; profiles?: unknown; }',
-    'interface EngineGrammar {',
+    'export interface TileCatalogEntry { family: string; edges: { top: number; right: number; bottom: number; left: number }; rotations: Record<string, number>; flipShare: number; profiles?: unknown; }',
+    'export interface EngineGrammar {',
     '  schemaVersion: number;',
     '  stats: EngineStats;',
     '  templates: unknown[];',

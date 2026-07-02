@@ -19,9 +19,11 @@
 import type { TileMaskEntry } from '../mine/tile-match.js';
 import { transformMask } from '../mine/tile-match.js';
 
-export interface EdgeProfileSet { top: string; right: string; bottom: string; left: string }
-export type VariantKey = `${0 | 90 | 180 | 270}/${'f' | '-'}`;
-export type TileEdgeProfiles = Record<VariantKey, EdgeProfileSet>;
+// Pure parts live in the engine (single source of truth); re-exported here so
+// tools consumers keep importing them from edge-profiles unchanged.
+export { profileIoU, popcount4 } from '../../src/engine/corpus/profiles.js';
+export type { EdgeProfileSet, VariantKey, TileEdgeProfiles } from '../../src/engine/corpus/profiles.js';
+import type { EdgeProfileSet, VariantKey, TileEdgeProfiles } from '../../src/engine/corpus/profiles.js';
 
 const ROTATIONS = [0, 90, 180, 270] as const;
 const SIZE = 64;
@@ -62,19 +64,4 @@ export function buildEdgeProfiles(lib: TileMaskEntry[], size = SIZE): Record<str
     out[tile] = profiles;
   }
   return out;
-}
-
-/** IoU over set bits of two hex-encoded profiles. Both empty → 0. */
-export function profileIoU(aHex: string, bHex: string): number {
-  let inter = 0, union = 0;
-  for (let i = 0; i < aHex.length; i++) {
-    const a = parseInt(aHex[i]!, 16), b = parseInt(bHex[i]!, 16);
-    inter += popcount4(a & b);
-    union += popcount4(a | b);
-  }
-  return union === 0 ? 0 : inter / union;
-}
-
-function popcount4(n: number): number {
-  return (n & 1) + ((n >> 1) & 1) + ((n >> 2) & 1) + ((n >> 3) & 1);
 }
