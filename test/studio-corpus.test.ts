@@ -116,12 +116,18 @@ describe("studio corpus mode (jsdom)", () => {
     expect(sameD).toBe(true);
   });
 
-  it("5. spacebar triggers reroll (canvas innerHTML changes)", async () => {
+  it("5. spacebar triggers reroll (seed display changes)", async () => {
     await import("../src/studio/main");
 
-    const before = document.querySelector("#canvas")!.innerHTML;
+    const seedInput = document.querySelector(
+      "#corpus-controls input[data-corpus-seed]",
+    ) as HTMLInputElement;
+    expect(seedInput).toBeTruthy();
+    const seedBefore = seedInput.value;
+
     document.dispatchEvent(new KeyboardEvent("keydown", { code: "Space", bubbles: true }));
-    const after = document.querySelector("#canvas")!.innerHTML;
-    expect(after).not.toBe(before);
+
+    const seedAfter = seedInput.value;
+    expect(seedAfter).not.toBe(seedBefore);
   });
 });

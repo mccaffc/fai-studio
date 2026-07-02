@@ -124,6 +124,7 @@ function switchMode(mode: StudioMode): void {
     } else {
       regen();
     }
+    renderSaved();
   }
 }
 

@@ -81,7 +81,7 @@ function triggerDownload(url: string, filename: string): void {
 }
 
 function corpusSvgFilename(ext: string): string {
-  const tmpl = state.config.template || "auto";
+  const tmpl = state.current?.plan.templateId ?? (state.config.template || "auto");
   const seed = state.current?.seed ?? 0;
   return `fai-corpus-${tmpl}-${seed}.${ext}`;
 }
@@ -89,7 +89,9 @@ function corpusSvgFilename(ext: string): string {
 function corpusDownloadSvg(): void {
   if (!state.current) return;
   const blob = new Blob([state.current.svg], { type: "image/svg+xml" });
-  triggerDownload(URL.createObjectURL(blob), corpusSvgFilename("svg"));
+  const url = URL.createObjectURL(blob);
+  triggerDownload(url, corpusSvgFilename("svg"));
+  URL.revokeObjectURL(url);
 }
 
 async function corpusDownloadPng(scale = 2): Promise<void> {
@@ -342,14 +344,21 @@ function renderCorpusControls(): void {
   {
     const g = group("Density");
     const row = el("div", { class: "row" });
+    const label = el("label", {}, `Density: ${state.config.density.toFixed(2)}`);
     const slider = el("input", {
       type: "range", min: "0", max: "1", step: "0.01",
       value: String(state.config.density),
     }) as HTMLInputElement;
+    // Show live value on input (no regen); regenerate only on change (pointer-up)
+    slider.addEventListener("input", () => {
+      label.textContent = `Density: ${Number(slider.value).toFixed(2)}`;
+    });
     slider.addEventListener("change", () => {
       state.config.density = Number(slider.value);
+      label.textContent = `Density: ${state.config.density.toFixed(2)}`;
       corpusRegen(false);
     });
+    row.appendChild(label);
     row.appendChild(slider);
     g.appendChild(row);
   }
