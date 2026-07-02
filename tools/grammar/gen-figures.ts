@@ -130,10 +130,27 @@ interface Viewport {
   h: number;
 }
 
+/**
+ * CURATED SHIP LIST — Claude's visual curation, 2026-07-02 (P3 Task 2).
+ * Reviewed all 27 candidates on the contact sheet (corpus/samples/figures-sheet.png).
+ * Cut 7: fig-018-1 (window-square fragment, meaningless standalone); fig-025-1 +
+ * fig-025-3 (near-empty background fragments, ink 0.11); fig-047-1/2/3 (squiggle
+ * extraction noise); fig-043-1 (the ENTIRE 043 banner as one asset — placing it
+ * would replicate a canonical piece verbatim rather than recombine vocabulary).
+ * Use --all to regenerate uncurated; --include to override the list.
+ */
+const CURATED = new Set([
+  'fig-007-1', 'fig-007-2', 'fig-008-1', 'fig-009-1', 'fig-012-1',
+  'fig-017-1', 'fig-017-2', 'fig-017-3', 'fig-017-4', 'fig-019-1',
+  'fig-020-2', 'fig-021-1', 'fig-023-1', 'fig-023-2', 'fig-024-1',
+  'fig-024-2', 'fig-025-4', 'fig-035-1', 'fig-043-2', 'fig-043-3',
+]);
+
 function parseArgs(argv: string[]): { include?: Set<string> } {
+  if (argv.includes('--all')) return {};
   const includeIdx = argv.indexOf('--include');
   if (includeIdx === -1) {
-    return {};
+    return { include: CURATED };
   }
   const value = argv[includeIdx + 1];
   if (!value || value.startsWith('--')) {
