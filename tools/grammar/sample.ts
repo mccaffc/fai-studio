@@ -1,0 +1,965 @@
+/**
+ * sample.ts — seeded grammar sampler for BannerRecon plans.
+ *
+ * RNG draw order is intentionally linear:
+ * 1. template if knobs.template is absent
+ * 2. global ground
+ * 3. ground scheme, then scheme-specific ground/cell draws
+ * 4. dominant family, distinct-tile target, working-set tiles
+ * 5. form counts and form placements
+ * 6. optional figure region/accent
+ * 7. plain positions
+ * 8. tile fills: tile, rotation, flip, ink per remaining cell
+ *
+ * Every object-backed weighted draw iterates sorted keys. Arrays whose order is
+ * semantic, such as palette.accentOrder, carry explicit sort keys before draw.
+ */
+
+import { LINEWORK_FAMILIES } from './features.js';
+import type { Grammar } from './grammar-schema.js';
+import type { GroundSchemeKind } from './stats.js';
+import type { Template } from './templates.js';
+import { detectForms, orientEdges } from '../mine/forms.js';
+import { loadMergedManifest } from '../mine/render-recon.js';
+import type { BannerRecon, CellRecon, ManifestTile } from '../mine/schema.js';
+import { mulberry32, type Rng } from './rng.js';
+
+export interface SampleKnobs {
+  template?: string;
+  accent?: string;
+  density?: number;
+  figures?: boolean;
+}
+
+const COLS = 6;
+const ROWS = 3;
+const CELL_COUNT = COLS * ROWS;
+const EPS = 1e-9;
+
+const BRAND_FILLS = new Set([
+  '#121212',
+  '#F3F3F3',
+  '#D9D9D6',
+  '#FF4F00',
+  '#4997D0',
+  '#FFA300',
+  '#FFFFFF',
+]);
+
+const NEUTRAL_PREFS = ['#121212', '#F3F3F3', '#FFFFFF', '#D9D9D6'] as const;
+const ROTATIONS = [0, 90, 180, 270] as const;
+
+type Rotation = typeof ROTATIONS[number];
+type Direction = 'h' | 'v';
+
+interface Weighted<T> {
+  value: T;
+  weight: number;
+  sortKey: string;
+}
+
+interface DraftCell {
+  col: number;
+  row: number;
+  ground: string;
+  kind?: CellRecon['kind'];
+  tile?: string;
+  rotation?: Rotation;
+  flip?: boolean;
+  ink?: string;
+  inks?: string[];
+  score?: number;
+}
+
+interface Placement {
+  tile: string;
+  rotation: Rotation;
+  flip: boolean;
+}
+
+let manifestCache: Map<string, ManifestTile & { baseDir: string }> | null = null;
+
+export function samplePlan(grammar: Grammar, seed: number, knobs: SampleKnobs = {}): BannerRecon {
+  const rng = mulberry32(seed);
+  const template = chooseTemplate(grammar, rng, knobs.template);
+  const globalGround = drawGlobalGround(grammar, rng);
+  const groundScheme = drawGroundScheme(template, rng);
+  const cells = makeDraftCells(generateGrounds(grammar, rng, groundScheme, globalGround));
+
+  const dominantFamily = drawDominantFamily(grammar, template, rng);
+  let targetDistinct = drawIntegerRange(template.spec.distinctTiles, rng);
+  if (template.spec.distinctTiles[1] > 0 && targetDistinct === 0) {
+    targetDistinct = 1;
+  }
+  let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct);
+  if (workingSet.length === 0) {
+    workingSet = selectWorkingSet(grammar, rng, template, firstAvailableFamily(grammar), 1);
+  }
+  targetDistinct = workingSet.length;
+
+  const friezeCount = drawIntegerRange(template.spec.forms.frieze, rng);
+  placeFriezes(cells, grammar, rng, workingSet, friezeCount);
+
+  const rawRunCount = drawIntegerRange(template.spec.forms.run, rng);
+  const runCount = template.spec.forms.run[1] > 0 ? Math.max(1, rawRunCount) : 0;
+  for (let i = 0; i < runCount; i += 1) {
+    placeRun(cells, grammar, rng, workingSet);
+  }
+
+  const figureSize = plannedFigureSize(template, knobs, rng);
+  if (figureSize > 0) {
+    placeFigure(cells, grammar, rng, figureSize, knobs.accent);
+  } else if (knobs.accent && !grammar.palette.accentOrder.includes(knobs.accent)) {
+    throw new Error(`Unknown accent ink: ${knobs.accent}`);
+  }
+
+  const usedTiles = usedTileSet(cells);
+  const emptyBeforePlain = cells.filter(cell => cell.kind === undefined).length;
+  const requiredTileCells = Math.max(0, targetDistinct - usedTiles.size);
+  const basePlainTarget = plainTargetCount(template, knobs.density ?? 0.5);
+  const plainTarget = Math.max(0, Math.min(basePlainTarget, emptyBeforePlain - requiredTileCells));
+  placePlainCells(cells, grammar, rng, plainTarget);
+
+  fillTileCells(cells, grammar, rng, workingSet, template);
+  enforceAccentBudget(cells, grammar);
+  applyLogomarkGuard(cells, getManifest());
+
+  const finalCells = finalizeCells(cells);
+  const plan: BannerRecon = {
+    id: `sample-${seed}`,
+    width: 1920,
+    height: 960,
+    cols: COLS,
+    rows: ROWS,
+    ground: globalGround,
+    cells: finalCells,
+    forms: [],
+    matchRate: 1,
+  };
+  plan.forms = detectForms(plan, [...getManifest().values()]);
+  return plan;
+}
+
+function getManifest(): Map<string, ManifestTile & { baseDir: string }> {
+  manifestCache ??= loadMergedManifest();
+  return manifestCache;
+}
+
+function chooseTemplate(grammar: Grammar, rng: Rng, id: string | undefined): Template {
+  if (id) {
+    const found = grammar.templates.find(template => template.id === id);
+    if (!found) throw new Error(`Unknown template: ${id}`);
+    return found;
+  }
+
+  return weightedChoice(
+    rng,
+    grammar.templates.map(template => ({
+      value: template,
+      weight: template.bannerIds.length,
+      sortKey: template.id,
+    })),
+  );
+}
+
+function drawGlobalGround(grammar: Grammar, rng: Rng): string {
+  return drawWeightedRecord(
+    grammar.palette.globalGrounds,
+    rng,
+    key => BRAND_FILLS.has(key),
+    '#F3F3F3',
+  );
+}
+
+function drawGroundScheme(template: Template, rng: Rng): GroundSchemeKind {
+  const schemes = [...template.spec.groundSchemes].sort();
+  if (schemes.length === 0) return 'uniform';
+  return weightedChoice(
+    rng,
+    schemes.map(kind => ({ value: kind, weight: 1, sortKey: kind })),
+  );
+}
+
+function generateGrounds(
+  grammar: Grammar,
+  rng: Rng,
+  scheme: GroundSchemeKind,
+  globalGround: string,
+): string[] {
+  const grounds = Array.from({ length: CELL_COUNT }, () => globalGround);
+  const pool = groundPool(grammar, globalGround);
+
+  switch (scheme) {
+    case 'uniform':
+      return grounds;
+
+    case 'checker': {
+      const second = drawGroundFromPool(pool, rng, new Set([globalGround]));
+      forEachPosition((col, row, idx) => {
+        grounds[idx] = (col + row) % 2 === 0 ? globalGround : second;
+      });
+      return grounds;
+    }
+
+    case 'banded-rows': {
+      const distinct = drawDistinctGrounds(pool, rng, Math.min(3, Math.max(2, pool.length)));
+      const offset = distinct.length > 1 ? rng.int(0, distinct.length - 1) : 0;
+      forEachPosition((_col, row, idx) => {
+        grounds[idx] = distinct[(row + offset) % distinct.length] ?? globalGround;
+      });
+      return grounds;
+    }
+
+    case 'banded-cols': {
+      const distinct = drawDistinctGrounds(pool, rng, Math.min(3, Math.max(2, pool.length)));
+      const offset = distinct.length > 1 ? rng.int(0, distinct.length - 1) : 0;
+      forEachPosition((col, _row, idx) => {
+        grounds[idx] = distinct[(col + offset) % distinct.length] ?? globalGround;
+      });
+      return grounds;
+    }
+
+    case 'zoned': {
+      const offGrounds = drawDistinctGrounds(
+        pool.filter(ground => ground !== globalGround),
+        rng,
+        Math.min(rng.int(1, 3), Math.max(1, pool.length - 1)),
+      );
+      const occupied = new Set<string>();
+      for (const ground of offGrounds) {
+        const rect = drawRegionRect(rng, occupied);
+        for (let row = rect.row; row < rect.row + rect.h; row += 1) {
+          for (let col = rect.col; col < rect.col + rect.w; col += 1) {
+            grounds[indexFor(col, row)] = ground;
+            occupied.add(`${col},${row}`);
+          }
+        }
+      }
+      return grounds;
+    }
+
+    case 'scatter': {
+      forEachPosition((_col, _row, idx) => {
+        if (rng.chance(0.2)) {
+          grounds[idx] = drawGroundFromPool(pool, rng, new Set([globalGround]));
+        }
+      });
+      return grounds;
+    }
+  }
+}
+
+function groundPool(grammar: Grammar, globalGround: string): string[] {
+  const fromInkTables = Object.keys(grammar.palette.inkByGround).filter(key => BRAND_FILLS.has(key));
+  if (!fromInkTables.includes(globalGround) && BRAND_FILLS.has(globalGround)) {
+    fromInkTables.push(globalGround);
+  }
+  const sorted = [...new Set(fromInkTables)].sort();
+  return sorted.length > 0 ? sorted : ['#121212', '#F3F3F3'];
+}
+
+function drawGroundFromPool(pool: string[], rng: Rng, exclude = new Set<string>()): string {
+  const candidates = pool.filter(ground => !exclude.has(ground)).sort();
+  const usable = candidates.length > 0 ? candidates : pool.filter(ground => BRAND_FILLS.has(ground)).sort();
+  return weightedChoice(
+    rng,
+    usable.map(ground => ({ value: ground, weight: 1, sortKey: ground })),
+  );
+}
+
+function drawDistinctGrounds(pool: string[], rng: Rng, count: number): string[] {
+  let remaining = [...new Set(pool)].sort();
+  const selected: string[] = [];
+  while (remaining.length > 0 && selected.length < count) {
+    const picked = weightedChoice(
+      rng,
+      remaining.map(ground => ({ value: ground, weight: 1, sortKey: ground })),
+    );
+    selected.push(picked);
+    remaining = remaining.filter(ground => ground !== picked);
+  }
+  return selected.length > 0 ? selected : ['#F3F3F3'];
+}
+
+function drawRegionRect(rng: Rng, occupied: Set<string>): { col: number; row: number; w: number; h: number } {
+  let fallback = { col: 0, row: 0, w: 2, h: 1 };
+  for (let attempt = 0; attempt < 16; attempt += 1) {
+    const w = rng.int(1, 3);
+    const h = rng.int(1, 3);
+    const area = w * h;
+    if (area < 2 || area > 6) continue;
+    const col = rng.int(0, COLS - w);
+    const row = rng.int(0, ROWS - h);
+    const rect = { col, row, w, h };
+    fallback = rect;
+    if (!rectCells(rect).some(([c, r]) => occupied.has(`${c},${r}`))) {
+      return rect;
+    }
+  }
+  return fallback;
+}
+
+function rectCells(rect: { col: number; row: number; w: number; h: number }): [number, number][] {
+  const cells: [number, number][] = [];
+  for (let row = rect.row; row < rect.row + rect.h; row += 1) {
+    for (let col = rect.col; col < rect.col + rect.w; col += 1) {
+      cells.push([col, row]);
+    }
+  }
+  return cells;
+}
+
+function drawDominantFamily(grammar: Grammar, template: Template, rng: Rng): string {
+  const availableFamilies = new Set(Object.values(grammar.tileCatalog).map(entry => entry.family));
+  const families = template.spec.dominantFamilies
+    .filter(family => availableFamilies.has(family))
+    .sort();
+  const candidates = families.length > 0 ? families : [...availableFamilies].sort();
+  return weightedChoice(
+    rng,
+    candidates.map(family => ({
+      value: family,
+      weight: grammar.stats.families[family] ?? 1,
+      sortKey: family,
+    })),
+  );
+}
+
+function selectWorkingSet(
+  grammar: Grammar,
+  rng: Rng,
+  template: Template,
+  dominantFamily: string,
+  targetDistinct: number,
+): string[] {
+  const allTiles = Object.keys(grammar.tileCatalog).sort();
+  const preferredFamilies = new Set(template.spec.dominantFamilies);
+  const preferred = allTiles.filter(tile => preferredFamilies.has(grammar.tileCatalog[tile]?.family ?? ''));
+  const dominant = preferred.filter(tile => grammar.tileCatalog[tile]?.family === dominantFamily);
+  const selected: string[] = [];
+
+  const quota = Math.min(targetDistinct, Math.ceil(targetDistinct * 0.6));
+  selected.push(...drawTileIds(grammar, rng, dominant, quota, selected));
+  if (selected.length < targetDistinct) {
+    selected.push(...drawTileIds(grammar, rng, preferred, targetDistinct - selected.length, selected));
+  }
+  if (selected.length < targetDistinct) {
+    selected.push(...drawTileIds(grammar, rng, allTiles, targetDistinct - selected.length, selected));
+  }
+
+  return [...new Set(selected)].sort();
+}
+
+function drawTileIds(
+  grammar: Grammar,
+  rng: Rng,
+  candidates: string[],
+  count: number,
+  alreadySelected: string[],
+): string[] {
+  let remaining = [...new Set(candidates)]
+    .filter(tile => !alreadySelected.includes(tile))
+    .sort();
+  const picked: string[] = [];
+  while (remaining.length > 0 && picked.length < count) {
+    const tile = weightedChoice(
+      rng,
+      remaining.map(id => ({ value: id, weight: tileWeight(grammar, id), sortKey: id })),
+    );
+    picked.push(tile);
+    remaining = remaining.filter(id => id !== tile);
+  }
+  return picked;
+}
+
+function firstAvailableFamily(grammar: Grammar): string {
+  return Object.values(grammar.tileCatalog)
+    .map(entry => entry.family)
+    .sort()[0] ?? 'lines';
+}
+
+function placeFriezes(
+  cells: DraftCell[],
+  grammar: Grammar,
+  rng: Rng,
+  workingSet: string[],
+  count: number,
+): void {
+  const capable = workingSet
+    .filter(tile => {
+      const edges = grammar.tileCatalog[tile]?.edges;
+      return edges !== undefined && edges.left >= 0.25 && edges.right >= 0.25;
+    })
+    .sort();
+  if (capable.length === 0) return;
+
+  for (let i = 0; i < count; i += 1) {
+    const row = drawFriezeRow(grammar, rng);
+    if (!rowIsFree(cells, row)) continue;
+    const tile = weightedChoice(
+      rng,
+      capable.map(id => ({ value: id, weight: tileWeight(grammar, id), sortKey: id })),
+    );
+    const rotation = drawRotation(grammar, rng, tile);
+    const rowCells = Array.from({ length: COLS }, (_v, col) => cellAt(cells, col, row));
+    const ink = neutralForGrounds(rowCells.map(cell => cell.ground));
+    for (const cell of rowCells) {
+      assignTile(cell, { tile, rotation, flip: cell.col % 2 === 1 }, ink);
+    }
+  }
+}
+
+function drawFriezeRow(grammar: Grammar, rng: Rng): number {
+  const rowKey = drawWeightedRecord(grammar.stats.forms.friezeRows, rng, key => /^[0-2]$/.test(key), '1');
+  return Number(rowKey);
+}
+
+function placeRun(cells: DraftCell[], grammar: Grammar, rng: Rng, workingSet: string[]): boolean {
+  const starts = cells
+    .filter(cell => cell.kind === undefined && (isFree(cells, cell.col + 1, cell.row) || isFree(cells, cell.col, cell.row + 1)))
+    .sort(compareCells);
+  if (starts.length === 0) return false;
+
+  const desiredSteps = rng.int(1, 3);
+  const start = weightedChoice(
+    rng,
+    starts.map(cell => ({ value: cell, weight: 1, sortKey: positionKey(cell) })),
+  );
+  const availableDirs: Direction[] = [];
+  if (isFree(cells, start.col + 1, start.row)) availableDirs.push('h');
+  if (isFree(cells, start.col, start.row + 1)) availableDirs.push('v');
+  if (availableDirs.length === 0) return false;
+
+  const firstDir = weightedChoice(
+    rng,
+    availableDirs.map(dir => ({ value: dir, weight: 1, sortKey: dir })),
+  );
+  const dirs = [firstDir, ...availableDirs.filter(dir => dir !== firstDir)].sort((a, b) => (a === firstDir ? -1 : b === firstDir ? 1 : a.localeCompare(b)));
+
+  for (const dir of dirs) {
+    const next = dir === 'h' ? cellAt(cells, start.col + 1, start.row) : cellAt(cells, start.col, start.row + 1);
+    const pair = drawRunPair(grammar, rng, workingSet, dir);
+    if (!pair) continue;
+    const ink = neutralForGrounds([start.ground, next.ground]);
+    assignTile(start, pair[0], ink);
+    assignTile(next, pair[1], ink);
+
+    let currentCell = next;
+    let currentPlacement = pair[1];
+    for (let step = 1; step < desiredSteps; step += 1) {
+      const candidate = dir === 'h'
+        ? maybeCellAt(cells, currentCell.col + 1, currentCell.row)
+        : maybeCellAt(cells, currentCell.col, currentCell.row + 1);
+      if (!candidate || candidate.kind !== undefined || candidate.ground === ink) break;
+      const placement = drawNextRunPlacement(grammar, rng, workingSet, currentPlacement, dir);
+      if (!placement) break;
+      assignTile(candidate, placement, ink);
+      currentCell = candidate;
+      currentPlacement = placement;
+    }
+    return true;
+  }
+
+  return false;
+}
+
+function drawRunPair(
+  grammar: Grammar,
+  rng: Rng,
+  workingSet: string[],
+  dir: Direction,
+): [Placement, Placement] | null {
+  const primary = observedRunPairEntries(grammar, workingSet, dir, false);
+  if (primary.length > 0) return weightedChoice(rng, primary);
+  const relaxed = observedRunPairEntries(grammar, workingSet, dir, true);
+  if (relaxed.length > 0) return weightedChoice(rng, relaxed);
+  return drawFallbackPair(grammar, rng, workingSet, dir);
+}
+
+function observedRunPairEntries(
+  grammar: Grammar,
+  workingSet: string[],
+  dir: Direction,
+  allowHorizontalFriezePair: boolean,
+): Weighted<[Placement, Placement]>[] {
+  const working = new Set(workingSet);
+  const table = dir === 'h' ? grammar.stats.adjacency.horizontal : grammar.stats.adjacency.vertical;
+  const entries: Weighted<[Placement, Placement]>[] = [];
+  for (const fromKey of Object.keys(table).sort()) {
+    const from = parsePlacementKey(fromKey);
+    if (!from || !working.has(from.tile)) continue;
+    const outs = table[fromKey] ?? {};
+    for (const toKey of Object.keys(outs).sort()) {
+      const to = parsePlacementKey(toKey);
+      if (!to || !working.has(to.tile)) continue;
+      if (!allowHorizontalFriezePair && dir === 'h' && from.tile === to.tile && from.rotation === to.rotation) {
+        continue;
+      }
+      if (!placementsJoin(grammar, from, to, dir)) continue;
+      entries.push({
+        value: [from, to],
+        weight: outs[toKey] ?? 0,
+        sortKey: `${fromKey}>${toKey}`,
+      });
+    }
+  }
+  return entries;
+}
+
+function drawNextRunPlacement(
+  grammar: Grammar,
+  rng: Rng,
+  workingSet: string[],
+  current: Placement,
+  dir: Direction,
+): Placement | null {
+  const working = new Set(workingSet);
+  const table = dir === 'h' ? grammar.stats.adjacency.horizontal : grammar.stats.adjacency.vertical;
+  const currentKey = placementKey(current);
+  const outs = table[currentKey] ?? {};
+  const entries: Weighted<Placement>[] = [];
+  for (const toKey of Object.keys(outs).sort()) {
+    const to = parsePlacementKey(toKey);
+    if (!to || !working.has(to.tile)) continue;
+    if (dir === 'h' && current.tile === to.tile && current.rotation === to.rotation) continue;
+    if (!placementsJoin(grammar, current, to, dir)) continue;
+    entries.push({ value: to, weight: outs[toKey] ?? 0, sortKey: toKey });
+  }
+  if (entries.length > 0) return weightedChoice(rng, entries);
+
+  const fallback = fallbackPlacement(grammar, current, dir);
+  return fallback && working.has(fallback.tile) ? fallback : null;
+}
+
+function drawFallbackPair(
+  grammar: Grammar,
+  rng: Rng,
+  workingSet: string[],
+  dir: Direction,
+): [Placement, Placement] | null {
+  const entries: Weighted<[Placement, Placement]>[] = [];
+  for (const tile of [...workingSet].sort()) {
+    for (const rotation of ROTATIONS) {
+      for (const flip of [false, true]) {
+        const from = { tile, rotation, flip };
+        const to = { tile, rotation, flip: !flip };
+        if (!placementsJoin(grammar, from, to, dir)) continue;
+        entries.push({
+          value: [from, to],
+          weight: tileWeight(grammar, tile),
+          sortKey: `${placementKey(from)}>${placementKey(to)}`,
+        });
+      }
+    }
+  }
+  return entries.length > 0 ? weightedChoice(rng, entries) : null;
+}
+
+function fallbackPlacement(grammar: Grammar, current: Placement, dir: Direction): Placement | null {
+  const next = { ...current, flip: !current.flip };
+  return placementsJoin(grammar, current, next, dir) ? next : null;
+}
+
+function plannedFigureSize(template: Template, knobs: SampleKnobs, rng: Rng): number {
+  if (knobs.figures === false) return 0;
+  if (template.spec.forms.figure[1] <= 0) return 0;
+  const maxCells = Math.min(4, Math.floor(template.spec.figureShare[1] * CELL_COUNT + EPS));
+  const minCells = Math.max(2, Math.ceil(template.spec.figureShare[0] * CELL_COUNT - EPS));
+  if (maxCells < minCells) return 0;
+  if (knobs.figures !== true && !rng.chance(0.55)) return 0;
+  return Math.min(2, maxCells);
+}
+
+function placeFigure(
+  cells: DraftCell[],
+  grammar: Grammar,
+  rng: Rng,
+  size: number,
+  knobAccent: string | undefined,
+): boolean {
+  if (knobAccent && !grammar.palette.accentOrder.includes(knobAccent)) {
+    throw new Error(`Unknown accent ink: ${knobAccent}`);
+  }
+
+  for (let attempt = 0; attempt < 64; attempt += 1) {
+    const empty = cells.filter(cell => cell.kind === undefined).sort(compareCells);
+    if (empty.length < size) return false;
+    const start = weightedChoice(
+      rng,
+      empty.map(cell => ({ value: cell, weight: 1, sortKey: positionKey(cell) })),
+    );
+    const region = growConnectedRegion(cells, rng, start, size);
+    if (region.length < size) continue;
+    const ink = chooseAccent(grammar, rng, new Set(region.map(cell => cell.ground)), knobAccent);
+    if (!ink) continue;
+    for (const cell of region) {
+      cell.kind = 'freeform';
+      cell.ink = ink;
+      cell.inks = [ink];
+    }
+    return true;
+  }
+
+  return false;
+}
+
+function growConnectedRegion(cells: DraftCell[], rng: Rng, start: DraftCell, size: number): DraftCell[] {
+  const region = [start];
+  const selected = new Set([positionKey(start)]);
+  while (region.length < size) {
+    const frontier = region
+      .flatMap(cell => neighbors(cells, cell))
+      .filter(cell => cell.kind === undefined && !selected.has(positionKey(cell)))
+      .sort(compareCells);
+    if (frontier.length === 0) break;
+    const next = weightedChoice(
+      rng,
+      frontier.map(cell => ({ value: cell, weight: 1, sortKey: positionKey(cell) })),
+    );
+    region.push(next);
+    selected.add(positionKey(next));
+  }
+  return region;
+}
+
+function chooseAccent(
+  grammar: Grammar,
+  rng: Rng,
+  excludedGrounds: Set<string>,
+  knobAccent: string | undefined,
+): string | null {
+  if (knobAccent && !excludedGrounds.has(knobAccent)) return knobAccent;
+  if (knobAccent) return null;
+
+  const accents = grammar.palette.accentOrder
+    .map((accent, index) => ({ accent, index }))
+    .filter(({ accent }) => BRAND_FILLS.has(accent) && !excludedGrounds.has(accent));
+  if (accents.length === 0) return null;
+  return weightedChoice(
+    rng,
+    accents.map(({ accent, index }) => ({
+      value: accent,
+      weight: grammar.palette.accentOrder.length - index,
+      sortKey: accent,
+    })),
+  );
+}
+
+function plainTargetCount(template: Template, density: number): number {
+  const d = Math.max(0, Math.min(1, density));
+  const [lo, hi] = template.spec.plainShare;
+  const targetShare = hi - d * (hi - lo);
+  const minCount = Math.ceil(lo * CELL_COUNT - EPS);
+  const maxCount = Math.floor(hi * CELL_COUNT + EPS);
+  return Math.max(minCount, Math.min(maxCount, Math.round(targetShare * CELL_COUNT)));
+}
+
+function placePlainCells(cells: DraftCell[], grammar: Grammar, rng: Rng, count: number): void {
+  for (let i = 0; i < count; i += 1) {
+    const empty = cells.filter(cell => cell.kind === undefined).sort(compareCells);
+    if (empty.length === 0) return;
+    const cell = weightedChoice(
+      rng,
+      empty.map(candidate => ({
+        value: candidate,
+        weight: grammar.stats.plain.positions[positionKey(candidate)] ?? 1,
+        sortKey: positionKey(candidate),
+      })),
+    );
+    cell.kind = 'plain';
+  }
+}
+
+function fillTileCells(
+  cells: DraftCell[],
+  grammar: Grammar,
+  rng: Rng,
+  workingSet: string[],
+  template: Template,
+): void {
+  const targetLinework = midpoint(template.spec.lineworkShare);
+  const used = usedTileSet(cells);
+  let tileCells = 0;
+  let lineworkCells = 0;
+  for (const cell of cells) {
+    if (cell.kind === 'tile' && cell.tile) {
+      tileCells += 1;
+      if (isLineworkTile(grammar, cell.tile)) lineworkCells += 1;
+    }
+  }
+
+  const fillTargets = cells.filter(cell => cell.kind === undefined).sort(compareCells);
+  for (let i = 0; i < fillTargets.length; i += 1) {
+    const cell = fillTargets[i]!;
+    const remainingSlots = fillTargets.length - i;
+    const tile = chooseFillTile(grammar, rng, workingSet, used, remainingSlots, targetLinework, tileCells, lineworkCells);
+    const rotation = drawRotation(grammar, rng, tile);
+    const flip = rng.chance(grammar.tileCatalog[tile]?.flipShare ?? 0);
+    const ink = drawInkForGround(grammar, rng, cell.ground);
+    assignTile(cell, { tile, rotation, flip }, ink);
+    used.add(tile);
+    tileCells += 1;
+    if (isLineworkTile(grammar, tile)) lineworkCells += 1;
+  }
+}
+
+function chooseFillTile(
+  grammar: Grammar,
+  rng: Rng,
+  workingSet: string[],
+  used: Set<string>,
+  remainingSlots: number,
+  targetLinework: number,
+  tileCells: number,
+  lineworkCells: number,
+): string {
+  const unused = workingSet.filter(tile => !used.has(tile)).sort();
+  let pool = unused.length > 0 ? unused : [...workingSet].sort();
+  if (pool.length === 0) pool = Object.keys(grammar.tileCatalog).sort();
+
+  const currentShare = tileCells === 0 ? targetLinework : lineworkCells / tileCells;
+  const wantLinework = currentShare < targetLinework;
+  const shaped = pool.filter(tile => isLineworkTile(grammar, tile) === wantLinework);
+  if (shaped.length > 0 && unused.length < remainingSlots) {
+    pool = shaped;
+  }
+
+  return weightedChoice(
+    rng,
+    pool.map(tile => ({ value: tile, weight: tileWeight(grammar, tile), sortKey: tile })),
+  );
+}
+
+function drawRotation(grammar: Grammar, rng: Rng, tile: string): Rotation {
+  const rotations = grammar.tileCatalog[tile]?.rotations ?? {};
+  return weightedChoice(
+    rng,
+    ROTATIONS.map(rotation => ({
+      value: rotation,
+      weight: rotations[String(rotation)] ?? 0,
+      sortKey: String(rotation).padStart(3, '0'),
+    })),
+  );
+}
+
+function drawInkForGround(grammar: Grammar, rng: Rng, ground: string): string {
+  const inkMap = grammar.palette.inkByGround[ground] ?? {};
+  const entries = Object.keys(inkMap)
+    .filter(ink => BRAND_FILLS.has(ink) && ink !== ground)
+    .sort()
+    .map(ink => ({ value: ink, weight: inkMap[ink] ?? 0, sortKey: ink }));
+  if (entries.length === 0) return neutralForGround(ground);
+  return weightedChoice(rng, entries);
+}
+
+function enforceAccentBudget(cells: DraftCell[], grammar: Grammar): void {
+  const accents = new Set(grammar.palette.accentOrder);
+  const nonPlain = cells.filter(cell => cell.kind !== 'plain');
+  const maxAccent = Math.floor(nonPlain.length * 0.35 + EPS);
+  const accentCells = nonPlain
+    .filter(cell => cell.ink && accents.has(cell.ink))
+    .sort((a, b) => {
+      const kindA = a.kind === 'freeform' ? 1 : 0;
+      const kindB = b.kind === 'freeform' ? 1 : 0;
+      return kindA - kindB || compareCells(a, b);
+    });
+  const excess = accentCells.length - maxAccent;
+  for (let i = 0; i < excess; i += 1) {
+    const cell = accentCells[i]!;
+    const ink = neutralForGround(cell.ground);
+    cell.ink = ink;
+    cell.inks = [ink];
+  }
+}
+
+function applyLogomarkGuard(
+  cells: DraftCell[],
+  manifest: Map<string, ManifestTile & { baseDir: string }>,
+): void {
+  for (const cell of cells.sort(compareCells)) {
+    if (cell.kind !== 'tile' || !cell.tile) continue;
+    const entry = manifest.get(cell.tile);
+    if (entry?.dominant_direction !== 'left' && entry?.dominant_direction !== 'right') continue;
+    const next = maybeCellAt(cells, cell.col + 1, cell.row);
+    if (!next || next.kind !== 'tile' || next.tile !== cell.tile) continue;
+    const nextEntry = manifest.get(next.tile);
+    if (nextEntry?.dominant_direction === entry.dominant_direction) {
+      next.flip = !(next.flip ?? false);
+    }
+  }
+}
+
+function finalizeCells(cells: DraftCell[]): CellRecon[] {
+  return cells.sort(compareCells).map(cell => {
+    if (cell.kind === undefined) {
+      throw new Error(`Unresolved sampled cell ${positionKey(cell)}`);
+    }
+    return { ...cell } as CellRecon;
+  });
+}
+
+function makeDraftCells(grounds: string[]): DraftCell[] {
+  const cells: DraftCell[] = [];
+  forEachPosition((col, row, idx) => {
+    cells.push({ col, row, ground: grounds[idx] ?? '#F3F3F3' });
+  });
+  return cells;
+}
+
+function assignTile(cell: DraftCell, placement: Placement, ink: string): void {
+  cell.kind = 'tile';
+  cell.tile = placement.tile;
+  cell.rotation = placement.rotation;
+  cell.flip = placement.flip;
+  cell.ink = ink;
+  cell.inks = [ink];
+  cell.score = 1;
+}
+
+function usedTileSet(cells: DraftCell[]): Set<string> {
+  const used = new Set<string>();
+  for (const cell of cells) {
+    if (cell.kind === 'tile' && cell.tile) used.add(cell.tile);
+  }
+  return used;
+}
+
+function placementsJoin(grammar: Grammar, a: Placement, b: Placement, dir: Direction): boolean {
+  const aEntry = grammar.tileCatalog[a.tile];
+  const bEntry = grammar.tileCatalog[b.tile];
+  if (!aEntry || !bEntry) return false;
+  const aEdges = orientEdges(aEntry.edges, a.rotation, a.flip);
+  const bEdges = orientEdges(bEntry.edges, b.rotation, b.flip);
+  return dir === 'h'
+    ? aEdges.right >= 0.25 && bEdges.left >= 0.25
+    : aEdges.bottom >= 0.25 && bEdges.top >= 0.25;
+}
+
+function parsePlacementKey(key: string): Placement | null {
+  const [tile, rotationRaw, flipRaw] = key.split('/');
+  const rotation = Number(rotationRaw);
+  if (!tile || !isRotation(rotation) || (flipRaw !== 'f' && flipRaw !== '-')) return null;
+  return { tile, rotation, flip: flipRaw === 'f' };
+}
+
+function placementKey(placement: Placement): string {
+  return `${placement.tile}/${placement.rotation}/${placement.flip ? 'f' : '-'}`;
+}
+
+function isRotation(value: number): value is Rotation {
+  return value === 0 || value === 90 || value === 180 || value === 270;
+}
+
+function rowIsFree(cells: DraftCell[], row: number): boolean {
+  for (let col = 0; col < COLS; col += 1) {
+    if (cellAt(cells, col, row).kind !== undefined) return false;
+  }
+  return true;
+}
+
+function neighbors(cells: DraftCell[], cell: DraftCell): DraftCell[] {
+  return [
+    maybeCellAt(cells, cell.col - 1, cell.row),
+    maybeCellAt(cells, cell.col + 1, cell.row),
+    maybeCellAt(cells, cell.col, cell.row - 1),
+    maybeCellAt(cells, cell.col, cell.row + 1),
+  ].filter((candidate): candidate is DraftCell => candidate !== undefined);
+}
+
+function isFree(cells: DraftCell[], col: number, row: number): boolean {
+  const cell = maybeCellAt(cells, col, row);
+  return cell !== undefined && cell.kind === undefined;
+}
+
+function maybeCellAt(cells: DraftCell[], col: number, row: number): DraftCell | undefined {
+  if (col < 0 || col >= COLS || row < 0 || row >= ROWS) return undefined;
+  return cells[indexFor(col, row)];
+}
+
+function cellAt(cells: DraftCell[], col: number, row: number): DraftCell {
+  const cell = maybeCellAt(cells, col, row);
+  if (!cell) throw new Error(`Cell out of bounds: ${col},${row}`);
+  return cell;
+}
+
+function indexFor(col: number, row: number): number {
+  return row * COLS + col;
+}
+
+function positionKey(cell: Pick<DraftCell, 'col' | 'row'>): string {
+  return `${cell.col},${cell.row}`;
+}
+
+function compareCells(a: Pick<DraftCell, 'col' | 'row'>, b: Pick<DraftCell, 'col' | 'row'>): number {
+  return a.row - b.row || a.col - b.col;
+}
+
+function forEachPosition(fn: (col: number, row: number, idx: number) => void): void {
+  for (let row = 0; row < ROWS; row += 1) {
+    for (let col = 0; col < COLS; col += 1) {
+      fn(col, row, indexFor(col, row));
+    }
+  }
+}
+
+function neutralForGround(ground: string): string {
+  return ground === '#121212' ? '#F3F3F3' : '#121212';
+}
+
+function neutralForGrounds(grounds: string[]): string {
+  for (const ink of NEUTRAL_PREFS) {
+    if (!grounds.includes(ink)) return ink;
+  }
+  return '#121212';
+}
+
+function isLineworkTile(grammar: Grammar, tile: string): boolean {
+  const family = grammar.tileCatalog[tile]?.family;
+  return family !== undefined && LINEWORK_FAMILIES.has(family);
+}
+
+function tileWeight(grammar: Grammar, tile: string): number {
+  return grammar.stats.tiles[tile] ?? 1;
+}
+
+function midpoint(range: [number, number]): number {
+  return (range[0] + range[1]) / 2;
+}
+
+function drawIntegerRange(range: [number, number], rng: Rng): number {
+  const lo = Math.ceil(range[0] - EPS);
+  const hi = Math.floor(range[1] + EPS);
+  if (hi <= lo) return lo;
+  return rng.int(lo, hi);
+}
+
+function drawWeightedRecord(
+  record: Record<string, number>,
+  rng: Rng,
+  include: (key: string) => boolean,
+  fallback: string,
+): string {
+  const entries = Object.keys(record)
+    .filter(include)
+    .sort()
+    .map(key => ({ value: key, weight: record[key] ?? 0, sortKey: key }));
+  if (entries.length === 0) return fallback;
+  return weightedChoice(rng, entries);
+}
+
+function weightedChoice<T>(rng: Rng, entries: Weighted<T>[]): T {
+  if (entries.length === 0) {
+    throw new Error('weightedChoice requires at least one entry');
+  }
+
+  const sorted = [...entries].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+  const positive = sorted.filter(entry => entry.weight > 0);
+  const usable = positive.length > 0 ? positive : sorted.map(entry => ({ ...entry, weight: 1 }));
+  const total = usable.reduce((sum, entry) => sum + entry.weight, 0);
+  let roll = rng.next() * total;
+  for (const entry of usable) {
+    roll -= entry.weight;
+    if (roll < 0) return entry.value;
+  }
+  return usable[usable.length - 1]!.value;
+}
