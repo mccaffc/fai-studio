@@ -42,6 +42,12 @@
  * "flip first, then rotate" — the mirror lives inside (to the right of) the
  * rotate, so it is applied to the tile before the rotation, matching the canvas
  * `rotate` → `scale(-1,1)` order. The round-trip test proves the pixel match.
+ *
+ * ---------------------------------------------------------------------------
+ * TRACK list
+ * ---------------------------------------------------------------------------
+ * TODO: guard-on pixel gate; stroke-width is tile-space (scales with cellPx/200)
+ *   — 0.96px at 320; spec says 0.6 — reconcile in a future pass.
  */
 
 import type { BannerPlan, CellPlan } from './types.js';
@@ -174,10 +180,11 @@ export function renderPlanSvg(
   // ---- Layer 1: ground mosaic ----
   parts.push(`<rect width="${width}" height="${height}" fill="${plan.ground}"/>`);
   for (const cell of plan.cells) {
-    if (cell.ground !== plan.ground) {
+    const cellGround = cell.ground ?? plan.ground;
+    if (cellGround !== plan.ground) {
       const x = cell.col * cellPx;
       const y = cell.row * cellPx;
-      parts.push(`<rect x="${x}" y="${y}" width="${cellPx}" height="${cellPx}" fill="${cell.ground}"/>`);
+      parts.push(`<rect x="${x}" y="${y}" width="${cellPx}" height="${cellPx}" fill="${cellGround}"/>`);
     }
   }
 
@@ -189,13 +196,13 @@ export function renderPlanSvg(
       const tile = tiles[cell.tile];
       if (!tile) continue; // unknown tile id → skip (ground shows through)
       const ink = cell.ink ?? '#F3F3F3';
-      const ground = cell.ground;
+      const ground = cell.ground ?? plan.ground;
       const body = tile.elements
         .map(el => serializeElement(el, el.role === 'cutout' ? ground : ink, seamGuard))
         .join('');
       parts.push(`<g${idAttr} transform="${cellTransform(cell, cellPx)}">${body}</g>`);
     } else if (cell.kind === 'freeform' || cell.kind === 'review') {
-      const ink = cell.ink ?? '#888888';
+      const ink = cell.ink ?? '#121212';
       const tx = cell.col * cellPx;
       const ty = cell.row * cellPx;
       const blob = freeformBlobPath(tx, ty, cellPx, ink, seamGuard);

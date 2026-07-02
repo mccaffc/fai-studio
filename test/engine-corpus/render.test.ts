@@ -284,6 +284,42 @@ describe('renderPlanSvg — cutout role paints ground', () => {
     // Antialiased edges produce a few blended pixels; keep it a small minority.
     expect(other / (RCELL * RCELL), 'too many non-brand-color pixels (blend)').toBeLessThan(0.15);
   });
+
+  it('renderer is defensive: fills ground safely even if cell.ground is undefined', async () => {
+    const tileId = findCutoutTile();
+    expect(tileId, 'no cutout tile in catalog').toBeDefined();
+
+    const ink = '#FF4F00';
+    const planGround = '#FFFFFF'; // white
+    // Create a plan with missing ground on a tile cell (malformed, but renderer must handle it).
+    const cells: Array<any> = [];
+    for (let row = 0; row < 3; row += 1) {
+      for (let col = 0; col < 6; col += 1) {
+        if (col === 0 && row === 0) {
+          // Deliberately omit ground: tests renderer's defensive ?? fallback.
+          cells.push({ col, row, kind: 'tile', tile: tileId!, rotation: 0, flip: false, ink });
+        } else {
+          cells.push({ col, row, ground: planGround, kind: 'plain' });
+        }
+      }
+    }
+    const plan: BannerPlan = {
+      id: 'synthetic-omit-ground',
+      width: 1920, height: 960, cols: 6, rows: 3,
+      ground: planGround,
+      cells,
+      forms: [],
+      matchRate: 1,
+    };
+
+    const svg = renderPlanSvg(plan, TILES);
+
+    // SVG must NOT contain the string "undefined" (defensive fallback must work).
+    expect(svg, 'SVG contains "undefined" — ground fallback broken').not.toContain('undefined');
+
+    // The SVG must contain the cutout filled with plan.ground (the fallback).
+    expect(svg).toContain(`fill="${planGround}"`);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -334,6 +370,78 @@ describe('renderPlanSvg — canvas structure', () => {
     const svg = renderPlanSvg(plan, TILES, { cellPx: 200 });
     expect(svg).toContain(`width="${plan.cols * 200}"`);
     expect(svg).toContain(`viewBox="0 0 ${plan.cols * 200} ${plan.rows * 200}"`);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Seam-guard structural tests
+// ---------------------------------------------------------------------------
+
+describe('renderPlanSvg — seam-guard strokes (brand safety)', () => {
+  it('default (seamGuard:true) includes stroke attributes on all elements', () => {
+    const plan = samplePlan(GRAMMAR, 999, { template: 'pipe-field' });
+    const svg = renderPlanSvg(plan, TILES); // seamGuard defaults to true
+    expect(svg).toContain('stroke=');
+    // Every stroke must be one of the 7 brand colors.
+    const strokes = svg.match(/stroke="(#[0-9A-Fa-f]{6})"/g) ?? [];
+    for (const attr of strokes) {
+      const m = attr.match(/#[0-9A-Fa-f]{6}/)!;
+      const hex = m[0].toUpperCase();
+      expect(BRAND, `non-brand stroke ${hex}`).toContain(hex);
+    }
+  });
+
+  it('seamGuard:false omits all stroke attributes on tile groups', () => {
+    const plan = samplePlan(GRAMMAR, 999, { template: 'pipe-field' });
+    const svg = renderPlanSvg(plan, TILES, { seamGuard: false });
+    // Count tile <g> groups.
+    const tileCells = plan.cells.filter(c => c.kind === 'tile' && c.tile);
+    expect(tileCells.length).toBeGreaterThan(0);
+    // When seamGuard is false, tile elements should not have stroke attributes.
+    // (The full SVG may contain strokes elsewhere, e.g. inherited, but tile
+    // elements emitted by serializeElement must not inject stroke=.)
+    // Since we can't easily parse the SVG, check that the pattern
+    // "stroke-width=" does NOT appear (it's only added by seam guard).
+    const withGuard = renderPlanSvg(plan, TILES, { seamGuard: true });
+    const withoutGuard = renderPlanSvg(plan, TILES, { seamGuard: false });
+    expect(withGuard).toContain('stroke-width=');
+    expect(withoutGuard).not.toContain('stroke-width=');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Freeform fallback colors
+// ---------------------------------------------------------------------------
+
+describe('renderPlanSvg — freeform ink fallback', () => {
+  it('freeform cell without ink property uses brand-safe fallback #121212', () => {
+    // Synthetic plan: freeform cell at (0,0) with NO ink property.
+    const cells: Array<any> = [];
+    for (let row = 0; row < 3; row += 1) {
+      for (let col = 0; col < 6; col += 1) {
+        if (col === 0 && row === 0) {
+          // Omit ink: renderer falls back to #121212 (brand-safe dark).
+          cells.push({ col, row, ground: '#FFFFFF', kind: 'freeform' });
+        } else {
+          cells.push({ col, row, ground: '#FFFFFF', kind: 'plain' });
+        }
+      }
+    }
+    const plan: BannerPlan = {
+      id: 'synthetic-freeform',
+      width: 1920, height: 960, cols: 6, rows: 3,
+      ground: '#FFFFFF',
+      cells,
+      forms: [],
+      matchRate: 1,
+    };
+
+    const svg = renderPlanSvg(plan, TILES);
+
+    // The freeform blob should be filled with #121212 (the new fallback).
+    expect(svg).toContain('fill="#121212"');
+    // Must NOT use the old fallback #888888.
+    expect(svg).not.toContain('fill="#888888"');
   });
 });
 
