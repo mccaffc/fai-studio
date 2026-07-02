@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { samplePlan } from '../../tools/grammar/sample';
+import { samplePlan, sampleWithDiagnostics } from '../../tools/grammar/sample';
 import { computeFeatures } from '../../tools/grammar/features';
 import { loadMergedManifest } from '../../tools/mine/render-recon';
 import type { Grammar } from '../../tools/grammar/grammar-schema';
@@ -140,5 +140,27 @@ describe('samplePlan', () => {
     }
 
     expect(checkedPair).toBe(true);
+  });
+
+  it('returns diagnostics without changing the sampled plan', () => {
+    const knobs = { template: 'mixed-quilt', density: 0.5 };
+    const { plan, diag } = sampleWithDiagnostics(grammar, 1, knobs);
+
+    expect(plan).toEqual(samplePlan(grammar, 1, knobs));
+    expect(diag.adjacencyHits).toBeGreaterThanOrEqual(0);
+    expect(diag.adjacencyFallbacks).toBeGreaterThanOrEqual(0);
+    expect(diag.fillAdjacencyHits).toBeGreaterThan(0);
+    expect(diag.friezesPlaced).toBeGreaterThanOrEqual(0);
+  });
+
+  it('places friezes for eligible sampled rows', () => {
+    let friezesPlaced = 0;
+    for (const template of grammar.templates) {
+      for (let seed = 5000; seed < 5060; seed += 1) {
+        friezesPlaced += sampleWithDiagnostics(grammar, seed, { template: template.id }).diag.friezesPlaced;
+      }
+    }
+
+    expect(friezesPlaced).toBeGreaterThan(0);
   });
 });

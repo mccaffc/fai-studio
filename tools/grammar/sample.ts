@@ -31,10 +31,24 @@ export interface SampleKnobs {
   figures?: boolean;
 }
 
+export interface SampleDiagnostics {
+  adjacencyHits: number;
+  adjacencyFallbacks: number;
+  fillAdjacencyHits: number;
+  friezesPlaced: number;
+}
+
+export interface SampleResult {
+  plan: BannerRecon;
+  diag: SampleDiagnostics;
+}
+
 const COLS = 6;
 const ROWS = 3;
 const CELL_COUNT = COLS * ROWS;
 const EPS = 1e-9;
+const DOMINANT_FAMILY_QUOTA = 0.18;
+const LINEWORK_STEERING_STRENGTH = 1;
 
 const BRAND_FILLS = new Set([
   '#121212',
@@ -48,6 +62,7 @@ const BRAND_FILLS = new Set([
 
 const NEUTRAL_PREFS = ['#121212', '#F3F3F3', '#FFFFFF', '#D9D9D6'] as const;
 const ROTATIONS = [0, 90, 180, 270] as const;
+const FRIEZE_FAMILIES = new Set(['lines', 'wave', 'circle', 'float', 'mirror', 'square']);
 
 type Rotation = typeof ROTATIONS[number];
 type Direction = 'h' | 'v';
@@ -80,10 +95,20 @@ interface Placement {
 let manifestCache: Map<string, ManifestTile & { baseDir: string }> | null = null;
 
 export function samplePlan(grammar: Grammar, seed: number, knobs: SampleKnobs = {}): BannerRecon {
+  return sampleWithDiagnostics(grammar, seed, knobs).plan;
+}
+
+export function sampleWithDiagnostics(grammar: Grammar, seed: number, knobs: SampleKnobs = {}): SampleResult {
+  const diag: SampleDiagnostics = {
+    adjacencyHits: 0,
+    adjacencyFallbacks: 0,
+    fillAdjacencyHits: 0,
+    friezesPlaced: 0,
+  };
   const rng = mulberry32(seed);
   const template = chooseTemplate(grammar, rng, knobs.template);
   const globalGround = drawGlobalGround(grammar, rng);
-  const groundScheme = drawGroundScheme(template, rng);
+  const groundScheme = drawGroundScheme(grammar, template, rng);
   const cells = makeDraftCells(generateGrounds(grammar, rng, groundScheme, globalGround));
 
   const dominantFamily = drawDominantFamily(grammar, template, rng);
@@ -98,12 +123,12 @@ export function samplePlan(grammar: Grammar, seed: number, knobs: SampleKnobs = 
   targetDistinct = workingSet.length;
 
   const friezeCount = drawIntegerRange(template.spec.forms.frieze, rng);
-  placeFriezes(cells, grammar, rng, workingSet, friezeCount);
+  placeFriezes(cells, grammar, rng, workingSet, friezeCount, diag);
 
   const rawRunCount = drawIntegerRange(template.spec.forms.run, rng);
   const runCount = template.spec.forms.run[1] > 0 ? Math.max(1, rawRunCount) : 0;
   for (let i = 0; i < runCount; i += 1) {
-    placeRun(cells, grammar, rng, workingSet);
+    placeRun(cells, grammar, rng, workingSet, diag);
   }
 
   const figureSize = plannedFigureSize(template, knobs, rng);
@@ -120,8 +145,9 @@ export function samplePlan(grammar: Grammar, seed: number, knobs: SampleKnobs = 
   const plainTarget = Math.max(0, Math.min(basePlainTarget, emptyBeforePlain - requiredTileCells));
   placePlainCells(cells, grammar, rng, plainTarget);
 
-  fillTileCells(cells, grammar, rng, workingSet, template);
+  fillTileCells(cells, grammar, rng, workingSet, template, diag);
   enforceAccentBudget(cells, grammar);
+  ensureAccentPresence(cells, grammar, rng);
   applyLogomarkGuard(cells, getManifest());
 
   const finalCells = finalizeCells(cells);
@@ -137,7 +163,7 @@ export function samplePlan(grammar: Grammar, seed: number, knobs: SampleKnobs = 
     matchRate: 1,
   };
   plan.forms = detectForms(plan, [...getManifest().values()]);
-  return plan;
+  return { plan, diag };
 }
 
 function getManifest(): Map<string, ManifestTile & { baseDir: string }> {
@@ -171,12 +197,16 @@ function drawGlobalGround(grammar: Grammar, rng: Rng): string {
   );
 }
 
-function drawGroundScheme(template: Template, rng: Rng): GroundSchemeKind {
+function drawGroundScheme(grammar: Grammar, template: Template, rng: Rng): GroundSchemeKind {
   const schemes = [...template.spec.groundSchemes].sort();
   if (schemes.length === 0) return 'uniform';
   return weightedChoice(
     rng,
-    schemes.map(kind => ({ value: kind, weight: 1, sortKey: kind })),
+    schemes.map(kind => ({
+      value: kind,
+      weight: grammar.stats.groundSchemes.counts[kind] || 1,
+      sortKey: kind,
+    })),
   );
 }
 
@@ -319,7 +349,7 @@ function drawDominantFamily(grammar: Grammar, template: Template, rng: Rng): str
     rng,
     candidates.map(family => ({
       value: family,
-      weight: grammar.stats.families[family] ?? 1,
+      weight: 1,
       sortKey: family,
     })),
   );
@@ -338,13 +368,13 @@ function selectWorkingSet(
   const dominant = preferred.filter(tile => grammar.tileCatalog[tile]?.family === dominantFamily);
   const selected: string[] = [];
 
-  const quota = Math.min(targetDistinct, Math.ceil(targetDistinct * 0.6));
+  const quota = Math.min(targetDistinct, Math.ceil(targetDistinct * DOMINANT_FAMILY_QUOTA));
   selected.push(...drawTileIds(grammar, rng, dominant, quota, selected));
   if (selected.length < targetDistinct) {
-    selected.push(...drawTileIds(grammar, rng, preferred, targetDistinct - selected.length, selected));
+    selected.push(...drawTileIdsByFamily(grammar, rng, preferred, targetDistinct - selected.length, selected));
   }
   if (selected.length < targetDistinct) {
-    selected.push(...drawTileIds(grammar, rng, allTiles, targetDistinct - selected.length, selected));
+    selected.push(...drawTileIdsByFamily(grammar, rng, allTiles, targetDistinct - selected.length, selected));
   }
 
   return [...new Set(selected)].sort();
@@ -372,6 +402,35 @@ function drawTileIds(
   return picked;
 }
 
+function drawTileIdsByFamily(
+  grammar: Grammar,
+  rng: Rng,
+  candidates: string[],
+  count: number,
+  alreadySelected: string[],
+): string[] {
+  let remaining = [...new Set(candidates)]
+    .filter(tile => !alreadySelected.includes(tile))
+    .sort();
+  const picked: string[] = [];
+  while (remaining.length > 0 && picked.length < count) {
+    const families = [...new Set(remaining.map(tile => grammar.tileCatalog[tile]?.family).filter((family): family is string => !!family))].sort();
+    if (families.length === 0) break;
+    const family = weightedChoice(
+      rng,
+      families.map(value => ({ value, weight: 1, sortKey: value })),
+    );
+    const familyTiles = remaining.filter(tile => grammar.tileCatalog[tile]?.family === family);
+    const tile = weightedChoice(
+      rng,
+      familyTiles.map(id => ({ value: id, weight: tileWeight(grammar, id), sortKey: id })),
+    );
+    picked.push(tile);
+    remaining = remaining.filter(id => id !== tile);
+  }
+  return picked;
+}
+
 function firstAvailableFamily(grammar: Grammar): string {
   return Object.values(grammar.tileCatalog)
     .map(entry => entry.family)
@@ -384,29 +443,42 @@ function placeFriezes(
   rng: Rng,
   workingSet: string[],
   count: number,
+  diag: SampleDiagnostics,
 ): void {
-  const capable = workingSet
-    .filter(tile => {
-      const edges = grammar.tileCatalog[tile]?.edges;
-      return edges !== undefined && edges.left >= 0.25 && edges.right >= 0.25;
-    })
-    .sort();
+  const capable = friezePlacements(grammar, workingSet);
   if (capable.length === 0) return;
 
   for (let i = 0; i < count; i += 1) {
     const row = drawFriezeRow(grammar, rng);
     if (!rowIsFree(cells, row)) continue;
-    const tile = weightedChoice(
-      rng,
-      capable.map(id => ({ value: id, weight: tileWeight(grammar, id), sortKey: id })),
-    );
-    const rotation = drawRotation(grammar, rng, tile);
+    const placement = weightedChoice(rng, capable);
     const rowCells = Array.from({ length: COLS }, (_v, col) => cellAt(cells, col, row));
-    const ink = neutralForGrounds(rowCells.map(cell => cell.ground));
+    const ink = drawInkForCells(grammar, rng, rowCells);
     for (const cell of rowCells) {
-      assignTile(cell, { tile, rotation, flip: cell.col % 2 === 1 }, ink);
+      assignTile(cell, { tile: placement.tile, rotation: placement.rotation, flip: cell.col % 2 === 1 }, ink);
+    }
+    diag.friezesPlaced += 1;
+  }
+}
+
+function friezePlacements(grammar: Grammar, workingSet: string[]): Weighted<Placement>[] {
+  const entries: Weighted<Placement>[] = [];
+  for (const tile of [...workingSet].sort()) {
+    const entry = grammar.tileCatalog[tile];
+    if (!entry) continue;
+    const familyEligible = FRIEZE_FAMILIES.has(entry.family);
+    for (const rotation of ROTATIONS) {
+      const edges = orientEdges(entry.edges, rotation, false);
+      const edgeEligible = edges.left + edges.right >= 0.25;
+      if (!edgeEligible && !familyEligible) continue;
+      entries.push({
+        value: { tile, rotation, flip: false },
+        weight: tileWeight(grammar, tile) * (entry.rotations[String(rotation)] ?? 0),
+        sortKey: `${tile}/${String(rotation).padStart(3, '0')}`,
+      });
     }
   }
+  return entries;
 }
 
 function drawFriezeRow(grammar: Grammar, rng: Rng): number {
@@ -414,7 +486,7 @@ function drawFriezeRow(grammar: Grammar, rng: Rng): number {
   return Number(rowKey);
 }
 
-function placeRun(cells: DraftCell[], grammar: Grammar, rng: Rng, workingSet: string[]): boolean {
+function placeRun(cells: DraftCell[], grammar: Grammar, rng: Rng, workingSet: string[], diag: SampleDiagnostics): boolean {
   const starts = cells
     .filter(cell => cell.kind === undefined && (isFree(cells, cell.col + 1, cell.row) || isFree(cells, cell.col, cell.row + 1)))
     .sort(compareCells);
@@ -434,13 +506,13 @@ function placeRun(cells: DraftCell[], grammar: Grammar, rng: Rng, workingSet: st
     rng,
     availableDirs.map(dir => ({ value: dir, weight: 1, sortKey: dir })),
   );
-  const dirs = [firstDir, ...availableDirs.filter(dir => dir !== firstDir)].sort((a, b) => (a === firstDir ? -1 : b === firstDir ? 1 : a.localeCompare(b)));
+  const dirs = [firstDir, ...availableDirs.filter(dir => dir !== firstDir)].sort((a, b) => (a === firstDir ? -1 : b === firstDir ? 1 : compareCodepoint(a, b)));
 
   for (const dir of dirs) {
     const next = dir === 'h' ? cellAt(cells, start.col + 1, start.row) : cellAt(cells, start.col, start.row + 1);
-    const pair = drawRunPair(grammar, rng, workingSet, dir);
+    const pair = drawRunPair(grammar, rng, workingSet, dir, diag);
     if (!pair) continue;
-    const ink = neutralForGrounds([start.ground, next.ground]);
+    const ink = drawInkForCells(grammar, rng, [start, next]);
     assignTile(start, pair[0], ink);
     assignTile(next, pair[1], ink);
 
@@ -451,7 +523,7 @@ function placeRun(cells: DraftCell[], grammar: Grammar, rng: Rng, workingSet: st
         ? maybeCellAt(cells, currentCell.col + 1, currentCell.row)
         : maybeCellAt(cells, currentCell.col, currentCell.row + 1);
       if (!candidate || candidate.kind !== undefined || candidate.ground === ink) break;
-      const placement = drawNextRunPlacement(grammar, rng, workingSet, currentPlacement, dir);
+      const placement = drawNextRunPlacement(grammar, rng, workingSet, currentPlacement, dir, diag);
       if (!placement) break;
       assignTile(candidate, placement, ink);
       currentCell = candidate;
@@ -468,11 +540,19 @@ function drawRunPair(
   rng: Rng,
   workingSet: string[],
   dir: Direction,
+  diag: SampleDiagnostics,
 ): [Placement, Placement] | null {
   const primary = observedRunPairEntries(grammar, workingSet, dir, false);
-  if (primary.length > 0) return weightedChoice(rng, primary);
+  if (primary.length > 0) {
+    diag.adjacencyHits += 1;
+    return weightedChoice(rng, primary);
+  }
   const relaxed = observedRunPairEntries(grammar, workingSet, dir, true);
-  if (relaxed.length > 0) return weightedChoice(rng, relaxed);
+  if (relaxed.length > 0) {
+    diag.adjacencyHits += 1;
+    return weightedChoice(rng, relaxed);
+  }
+  diag.adjacencyFallbacks += 1;
   return drawFallbackPair(grammar, rng, workingSet, dir);
 }
 
@@ -512,6 +592,7 @@ function drawNextRunPlacement(
   workingSet: string[],
   current: Placement,
   dir: Direction,
+  diag: SampleDiagnostics,
 ): Placement | null {
   const working = new Set(workingSet);
   const table = dir === 'h' ? grammar.stats.adjacency.horizontal : grammar.stats.adjacency.vertical;
@@ -525,9 +606,13 @@ function drawNextRunPlacement(
     if (!placementsJoin(grammar, current, to, dir)) continue;
     entries.push({ value: to, weight: outs[toKey] ?? 0, sortKey: toKey });
   }
-  if (entries.length > 0) return weightedChoice(rng, entries);
+  if (entries.length > 0) {
+    diag.adjacencyHits += 1;
+    return weightedChoice(rng, entries);
+  }
 
   const fallback = fallbackPlacement(grammar, current, dir);
+  diag.adjacencyFallbacks += 1;
   return fallback && working.has(fallback.tile) ? fallback : null;
 }
 
@@ -648,7 +733,7 @@ function chooseAccent(
 function plainTargetCount(template: Template, density: number): number {
   const d = Math.max(0, Math.min(1, density));
   const [lo, hi] = template.spec.plainShare;
-  const targetShare = hi - d * (hi - lo);
+  const targetShare = lo + (hi - lo) * ((1 - d) ** 2);
   const minCount = Math.ceil(lo * CELL_COUNT - EPS);
   const maxCount = Math.floor(hi * CELL_COUNT + EPS);
   return Math.max(minCount, Math.min(maxCount, Math.round(targetShare * CELL_COUNT)));
@@ -676,6 +761,7 @@ function fillTileCells(
   rng: Rng,
   workingSet: string[],
   template: Template,
+  diag: SampleDiagnostics,
 ): void {
   const targetLinework = midpoint(template.spec.lineworkShare);
   const used = usedTileSet(cells);
@@ -692,15 +778,122 @@ function fillTileCells(
   for (let i = 0; i < fillTargets.length; i += 1) {
     const cell = fillTargets[i]!;
     const remainingSlots = fillTargets.length - i;
-    const tile = chooseFillTile(grammar, rng, workingSet, used, remainingSlots, targetLinework, tileCells, lineworkCells);
-    const rotation = drawRotation(grammar, rng, tile);
-    const flip = rng.chance(grammar.tileCatalog[tile]?.flipShare ?? 0);
+    const adjacent = drawAdjacentFillPlacement(
+      grammar,
+      rng,
+      workingSet,
+      used,
+      remainingSlots,
+      cell,
+      cells,
+      targetLinework,
+      tileCells,
+      lineworkCells,
+    );
+    if (adjacent.attempted && !adjacent.placement) {
+      diag.adjacencyFallbacks += 1;
+    }
+    const placement = adjacent.placement ?? independentFillPlacement(
+      grammar,
+      rng,
+      workingSet,
+      used,
+      remainingSlots,
+      targetLinework,
+      tileCells,
+      lineworkCells,
+    );
+    if (adjacent.placement) {
+      diag.fillAdjacencyHits += 1;
+    }
     const ink = drawInkForGround(grammar, rng, cell.ground);
-    assignTile(cell, { tile, rotation, flip }, ink);
-    used.add(tile);
+    assignTile(cell, placement, ink);
+    used.add(placement.tile);
     tileCells += 1;
-    if (isLineworkTile(grammar, tile)) lineworkCells += 1;
+    if (isLineworkTile(grammar, placement.tile)) lineworkCells += 1;
   }
+}
+
+function drawAdjacentFillPlacement(
+  grammar: Grammar,
+  rng: Rng,
+  workingSet: string[],
+  used: Set<string>,
+  remainingSlots: number,
+  cell: DraftCell,
+  cells: DraftCell[],
+  targetLinework: number,
+  tileCells: number,
+  lineworkCells: number,
+): { attempted: boolean; placement: Placement | null } {
+  const working = new Set(workingSet);
+  const unused = workingSet.filter(tile => !used.has(tile));
+  const requireUnused = unused.length > 0 && unused.length >= remainingSlots;
+  const candidates = new Map<string, Weighted<Placement>>();
+  let attempted = false;
+
+  const left = maybeCellAt(cells, cell.col - 1, cell.row);
+  const top = maybeCellAt(cells, cell.col, cell.row - 1);
+  const sources: { source: DraftCell | undefined; dir: Direction }[] = [
+    { source: left, dir: 'h' },
+    { source: top, dir: 'v' },
+  ];
+
+  for (const { source, dir } of sources) {
+    if (!isPlacedTile(source)) continue;
+    attempted = true;
+    const table = dir === 'h' ? grammar.stats.adjacency.horizontal : grammar.stats.adjacency.vertical;
+    const outs = table[placementKey(source)] ?? {};
+    for (const toKey of Object.keys(outs).sort()) {
+      const to = parsePlacementKey(toKey);
+      if (!to || !working.has(to.tile)) continue;
+      if (requireUnused && used.has(to.tile)) continue;
+      const previous = candidates.get(toKey);
+      const weight = outs[toKey] ?? 0;
+      if (previous) {
+        previous.weight += weight;
+      } else {
+        candidates.set(toKey, { value: to, weight, sortKey: toKey });
+      }
+    }
+  }
+
+  const entries = steerPlacementEntries(grammar, [...candidates.values()], targetLinework, tileCells, lineworkCells);
+  return {
+    attempted,
+    placement: entries.length > 0 ? weightedChoice(rng, entries) : null,
+  };
+}
+
+function steerPlacementEntries(
+  grammar: Grammar,
+  entries: Weighted<Placement>[],
+  targetLinework: number,
+  tileCells: number,
+  lineworkCells: number,
+): Weighted<Placement>[] {
+  const currentShare = tileCells === 0 ? targetLinework : lineworkCells / tileCells;
+  const wantLinework = currentShare < targetLinework;
+  const shaped = entries.filter(entry => isLineworkTile(grammar, entry.value.tile) === wantLinework);
+  return shaped.length > 0 ? shaped : entries;
+}
+
+function independentFillPlacement(
+  grammar: Grammar,
+  rng: Rng,
+  workingSet: string[],
+  used: Set<string>,
+  remainingSlots: number,
+  targetLinework: number,
+  tileCells: number,
+  lineworkCells: number,
+): Placement {
+  const tile = chooseFillTile(grammar, rng, workingSet, used, remainingSlots, targetLinework, tileCells, lineworkCells);
+  return {
+    tile,
+    rotation: drawRotation(grammar, rng, tile),
+    flip: rng.chance(grammar.tileCatalog[tile]?.flipShare ?? 0),
+  };
 }
 
 function chooseFillTile(
@@ -720,13 +913,13 @@ function chooseFillTile(
   const currentShare = tileCells === 0 ? targetLinework : lineworkCells / tileCells;
   const wantLinework = currentShare < targetLinework;
   const shaped = pool.filter(tile => isLineworkTile(grammar, tile) === wantLinework);
-  if (shaped.length > 0 && unused.length < remainingSlots) {
-    pool = shaped;
-  }
-
   return weightedChoice(
     rng,
-    pool.map(tile => ({ value: tile, weight: tileWeight(grammar, tile), sortKey: tile })),
+    pool.map(tile => ({
+      value: tile,
+      weight: tileWeight(grammar, tile) * (shaped.includes(tile) && unused.length < remainingSlots ? 1 + LINEWORK_STEERING_STRENGTH : 1),
+      sortKey: tile,
+    })),
   );
 }
 
@@ -743,13 +936,32 @@ function drawRotation(grammar: Grammar, rng: Rng, tile: string): Rotation {
 }
 
 function drawInkForGround(grammar: Grammar, rng: Rng, ground: string): string {
-  const inkMap = grammar.palette.inkByGround[ground] ?? {};
+  return drawInkForGrounds(grammar, rng, [ground]);
+}
+
+function drawInkForCells(grammar: Grammar, rng: Rng, cells: DraftCell[]): string {
+  return drawInkForGrounds(grammar, rng, cells.map(cell => cell.ground));
+}
+
+function drawInkForGrounds(grammar: Grammar, rng: Rng, grounds: string[]): string {
+  const dominant = dominantGround(grounds);
+  const excluded = new Set(grounds);
+  const inkMap = grammar.palette.inkByGround[dominant] ?? {};
   const entries = Object.keys(inkMap)
-    .filter(ink => BRAND_FILLS.has(ink) && ink !== ground)
+    .filter(ink => BRAND_FILLS.has(ink) && !excluded.has(ink))
     .sort()
     .map(ink => ({ value: ink, weight: inkMap[ink] ?? 0, sortKey: ink }));
-  if (entries.length === 0) return neutralForGround(ground);
+  if (entries.length === 0) return neutralForGrounds(grounds);
   return weightedChoice(rng, entries);
+}
+
+function dominantGround(grounds: string[]): string {
+  const counts = new Map<string, number>();
+  for (const ground of grounds) {
+    counts.set(ground, (counts.get(ground) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || compareCodepoint(a[0], b[0]))[0]?.[0] ?? '#F3F3F3';
 }
 
 function enforceAccentBudget(cells: DraftCell[], grammar: Grammar): void {
@@ -770,6 +982,39 @@ function enforceAccentBudget(cells: DraftCell[], grammar: Grammar): void {
     cell.ink = ink;
     cell.inks = [ink];
   }
+}
+
+function ensureAccentPresence(cells: DraftCell[], grammar: Grammar, rng: Rng): void {
+  const accents = new Set(grammar.palette.accentOrder);
+  const nonPlain = cells.filter(cell => cell.kind !== 'plain');
+  if (nonPlain.some(cell => cell.ink && accents.has(cell.ink))) return;
+  if (Math.floor(nonPlain.length * 0.35 + EPS) <= 0) return;
+
+  const candidates: Weighted<{ cell: DraftCell; entries: Weighted<string>[] }>[] = [];
+  for (const cell of nonPlain.sort(compareCells)) {
+    const entries = accentInkEntriesForGround(grammar, cell.ground);
+    if (entries.length === 0) continue;
+    candidates.push({
+      value: { cell, entries },
+      weight: entries.reduce((sum, entry) => sum + entry.weight, 0),
+      sortKey: positionKey(cell),
+    });
+  }
+  if (candidates.length === 0) return;
+
+  const { cell, entries } = weightedChoice(rng, candidates);
+  const ink = weightedChoice(rng, entries);
+  cell.ink = ink;
+  cell.inks = [ink];
+}
+
+function accentInkEntriesForGround(grammar: Grammar, ground: string): Weighted<string>[] {
+  const accents = new Set(grammar.palette.accentOrder);
+  const inkMap = grammar.palette.inkByGround[ground] ?? {};
+  return Object.keys(inkMap)
+    .filter(ink => accents.has(ink) && BRAND_FILLS.has(ink) && ink !== ground)
+    .sort()
+    .map(ink => ({ value: ink, weight: inkMap[ink] ?? 0, sortKey: ink }));
 }
 
 function applyLogomarkGuard(
@@ -871,6 +1116,10 @@ function isFree(cells: DraftCell[], col: number, row: number): boolean {
   return cell !== undefined && cell.kind === undefined;
 }
 
+function isPlacedTile(cell: DraftCell | undefined): cell is DraftCell & Required<Pick<DraftCell, 'tile' | 'rotation' | 'flip'>> {
+  return cell !== undefined && cell.kind === 'tile' && !!cell.tile && cell.rotation !== undefined && cell.flip !== undefined;
+}
+
 function maybeCellAt(cells: DraftCell[], col: number, row: number): DraftCell | undefined {
   if (col < 0 || col >= COLS || row < 0 || row >= ROWS) return undefined;
   return cells[indexFor(col, row)];
@@ -952,8 +1201,9 @@ function weightedChoice<T>(rng: Rng, entries: Weighted<T>[]): T {
     throw new Error('weightedChoice requires at least one entry');
   }
 
-  const sorted = [...entries].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+  const sorted = [...entries].sort((a, b) => compareCodepoint(a.sortKey, b.sortKey));
   const positive = sorted.filter(entry => entry.weight > 0);
+  // A fully zero-weight candidate set still represents an allowed set; draw it uniformly.
   const usable = positive.length > 0 ? positive : sorted.map(entry => ({ ...entry, weight: 1 }));
   const total = usable.reduce((sum, entry) => sum + entry.weight, 0);
   let roll = rng.next() * total;
@@ -962,4 +1212,8 @@ function weightedChoice<T>(rng: Rng, entries: Weighted<T>[]): T {
     if (roll < 0) return entry.value;
   }
   return usable[usable.length - 1]!.value;
+}
+
+function compareCodepoint(a: string, b: string): number {
+  return a < b ? -1 : a > b ? 1 : 0;
 }
