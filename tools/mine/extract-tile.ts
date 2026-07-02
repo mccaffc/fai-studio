@@ -14,6 +14,17 @@ interface CellCoord {
   row: number;
 }
 
+interface PathPoint {
+  x: number;
+  y: number;
+}
+
+interface PathTransformState {
+  current: PathPoint;
+  subpathStart: PathPoint;
+  hasCurrentPoint: boolean;
+}
+
 interface MinedTileManifestEntry {
   id: string;
   filename: string;
@@ -49,6 +60,11 @@ export function transformPathDataForCell(d: string, cell: CellCoord): string {
   const tokens = tokenizePathData(d);
   const parts: string[] = [];
   let idx = 0;
+  const state: PathTransformState = {
+    current: { x: 0, y: 0 },
+    subpathStart: { x: 0, y: 0 },
+    hasCurrentPoint: false,
+  };
 
   while (idx < tokens.length) {
     const commandToken = tokens[idx];
@@ -58,13 +74,13 @@ export function transformPathDataForCell(d: string, cell: CellCoord): string {
     idx += 1;
 
     const command = commandToken.value;
-    if (command !== command.toUpperCase()) {
-      throw new Error(`Relative path command '${command}' is not supported`);
-    }
-
-    const arity = commandArity(command);
+    const upperCommand = command.toUpperCase();
+    const isRelative = command !== upperCommand;
+    const arity = commandArity(upperCommand);
     if (arity === 0) {
-      parts.push(command);
+      parts.push(upperCommand);
+      state.current = { ...state.subpathStart };
+      state.hasCurrentPoint = true;
       continue;
     }
 
@@ -81,11 +97,28 @@ export function transformPathDataForCell(d: string, cell: CellCoord): string {
       throw new Error(`Path command '${command}' expected argument groups of ${arity}, got ${values.length}`);
     }
 
-    const transformed: string[] = [];
+    let pendingCommand: string | undefined;
+    let pendingArgs: string[] = [];
+    const flushPending = (): void => {
+      if (pendingCommand) {
+        parts.push(`${pendingCommand}${pendingArgs.join(' ')}`);
+      }
+      pendingCommand = undefined;
+      pendingArgs = [];
+    };
+
+    let groupIndex = 0;
     for (let offset = 0; offset < values.length; offset += arity) {
-      transformed.push(...transformCommandGroup(command, values.slice(offset, offset + arity), cell));
+      const effectiveCommand = upperCommand === 'M' && groupIndex > 0 ? 'L' : upperCommand;
+      const transformed = transformCommandGroup(effectiveCommand, values.slice(offset, offset + arity), isRelative, state, cell);
+      if (pendingCommand && pendingCommand !== effectiveCommand) {
+        flushPending();
+      }
+      pendingCommand = effectiveCommand;
+      pendingArgs.push(...transformed);
+      groupIndex += 1;
     }
-    parts.push(`${command}${transformed.join(' ')}`);
+    flushPending();
   }
 
   return parts.join('');
@@ -104,7 +137,7 @@ function tokenizePathData(d: string): PathToken[] {
     }
 
     const value = match[0];
-    tokens.push(/[A-Za-z]/.test(value) ? { type: 'command', value } : { type: 'number', value });
+    tokens.push(isPathCommand(value) ? { type: 'command', value } : { type: 'number', value });
     lastIndex = tokenRe.lastIndex;
   }
 
@@ -117,6 +150,10 @@ function tokenizePathData(d: string): PathToken[] {
   }
 
   return tokens;
+}
+
+function isPathCommand(value: string): boolean {
+  return /^[MmLlHhVvCcSsQqTtAaZz]$/.test(value);
 }
 
 function commandArity(command: string): number {
@@ -142,31 +179,89 @@ function commandArity(command: string): number {
   }
 }
 
-function transformCommandGroup(command: string, values: string[], cell: CellCoord): string[] {
+function transformCommandGroup(
+  command: string,
+  values: string[],
+  isRelative: boolean,
+  state: PathTransformState,
+  cell: CellCoord,
+): string[] {
+  if (command === 'M') {
+    const point = absolutePoint(parsePathNumber(values[0]!, command), parsePathNumber(values[1]!, command), isRelative && state.hasCurrentPoint, state.current);
+    state.current = point;
+    state.subpathStart = point;
+    state.hasCurrentPoint = true;
+    return transformPoint(point, cell);
+  }
+
+  if (command === 'L' || command === 'T') {
+    const point = absolutePoint(parsePathNumber(values[0]!, command), parsePathNumber(values[1]!, command), isRelative, state.current);
+    state.current = point;
+    state.hasCurrentPoint = true;
+    return transformPoint(point, cell);
+  }
+
   if (command === 'H') {
-    return [formatNumber(transformX(parsePathNumber(values[0]!, command), cell.col))];
+    const x = isRelative ? state.current.x + parsePathNumber(values[0]!, command) : parsePathNumber(values[0]!, command);
+    state.current = { x, y: state.current.y };
+    state.hasCurrentPoint = true;
+    return [formatNumber(transformX(x, cell.col))];
   }
+
   if (command === 'V') {
-    return [formatNumber(transformY(parsePathNumber(values[0]!, command), cell.row))];
+    const y = isRelative ? state.current.y + parsePathNumber(values[0]!, command) : parsePathNumber(values[0]!, command);
+    state.current = { x: state.current.x, y };
+    state.hasCurrentPoint = true;
+    return [formatNumber(transformY(y, cell.row))];
   }
+
+  if (command === 'C') {
+    const points = [
+      absolutePoint(parsePathNumber(values[0]!, command), parsePathNumber(values[1]!, command), isRelative, state.current),
+      absolutePoint(parsePathNumber(values[2]!, command), parsePathNumber(values[3]!, command), isRelative, state.current),
+      absolutePoint(parsePathNumber(values[4]!, command), parsePathNumber(values[5]!, command), isRelative, state.current),
+    ];
+    state.current = points[2]!;
+    state.hasCurrentPoint = true;
+    return points.flatMap((point) => transformPoint(point, cell));
+  }
+
+  if (command === 'S' || command === 'Q') {
+    const points = [
+      absolutePoint(parsePathNumber(values[0]!, command), parsePathNumber(values[1]!, command), isRelative, state.current),
+      absolutePoint(parsePathNumber(values[2]!, command), parsePathNumber(values[3]!, command), isRelative, state.current),
+    ];
+    state.current = points[1]!;
+    state.hasCurrentPoint = true;
+    return points.flatMap((point) => transformPoint(point, cell));
+  }
+
   if (command === 'A') {
+    const endpoint = absolutePoint(parsePathNumber(values[5]!, command), parsePathNumber(values[6]!, command), isRelative, state.current);
+    state.current = endpoint;
+    state.hasCurrentPoint = true;
     return [
       formatNumber(scaleLength(parsePathNumber(values[0]!, command))),
       formatNumber(scaleLength(parsePathNumber(values[1]!, command))),
       values[2]!,
       values[3]!,
       values[4]!,
-      formatNumber(transformX(parsePathNumber(values[5]!, command), cell.col)),
-      formatNumber(transformY(parsePathNumber(values[6]!, command), cell.row)),
+      ...transformPoint(endpoint, cell),
     ];
   }
 
-  const transformed: string[] = [];
-  for (let idx = 0; idx < values.length; idx += 2) {
-    transformed.push(formatNumber(transformX(parsePathNumber(values[idx]!, command), cell.col)));
-    transformed.push(formatNumber(transformY(parsePathNumber(values[idx + 1]!, command), cell.row)));
-  }
-  return transformed;
+  throw new Error(`Unsupported path command '${command}'`);
+}
+
+function absolutePoint(x: number, y: number, isRelative: boolean, current: PathPoint): PathPoint {
+  return isRelative ? { x: current.x + x, y: current.y + y } : { x, y };
+}
+
+function transformPoint(point: PathPoint, cell: CellCoord): string[] {
+  return [
+    formatNumber(transformX(point.x, cell.col)),
+    formatNumber(transformY(point.y, cell.row)),
+  ];
 }
 
 function parsePathNumber(raw: string, command: string): number {
