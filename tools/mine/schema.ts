@@ -1,5 +1,17 @@
 export const SCHEMA_VERSION = 1;
 
+export interface ManifestTile {
+  id: string;
+  filename: string;
+  shape_family: string;
+  visual_weight?: number;
+  edge_coverage: { top: number; right: number; bottom: number; left: number };
+  dominant_direction?: string;
+  renderable?: boolean;
+  has_background_rect?: boolean;
+  mined_from?: string;
+}
+
 export type Hex = string; // '#RRGGBB' uppercase
 
 export interface CellRecon {

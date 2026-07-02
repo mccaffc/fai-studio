@@ -23,8 +23,9 @@ import {
   type BannerRecon,
   type CellRecon,
   type Corpus,
+  type ManifestTile,
 } from './schema.js';
-import { detectForms, type ManifestTile } from './forms.js';
+import { detectForms } from './forms.js';
 
 
 // ---------------------------------------------------------------------------

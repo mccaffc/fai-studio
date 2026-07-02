@@ -4,6 +4,7 @@ import { Buffer } from 'node:buffer';
 import { parseSvgElements, type SvgElement } from './svg';
 import { maskFillRatio, maskIoU, rasterizeMask } from './raster';
 import { resolveCssClasses, resolveTransforms } from './preprocess';
+import type { ManifestTile } from './schema';
 
 export interface TileMaskEntry {
   tile: string;
@@ -25,13 +26,6 @@ export interface CellMatch {
 export const THRESHOLDS = { accept: 0.92, review: 0.75, plainMax: 0.005 } as const;
 
 type Rotation = TileMaskEntry['rotation'];
-
-interface ManifestTile {
-  id: string;
-  filename: string;
-  has_background_rect?: boolean;
-  renderable?: boolean;
-}
 
 interface TileSource {
   tile: ManifestTile;

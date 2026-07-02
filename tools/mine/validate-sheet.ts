@@ -16,15 +16,15 @@
  * The per-cell agreement scores verify this round-trip empirically.
  */
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { Buffer } from 'node:buffer';
 import canvasPkg from 'canvas';
-import { parseSvgElements, type SvgElement } from './svg.js';
-import { segmentCells, type CellSlice } from './cells.js';
-import { resolveCssClasses, resolveTransforms } from './preprocess.js';
-import { ensureBackgroundRect } from './preprocess.js';
-import type { Corpus, BannerRecon, CellRecon } from './schema.js';
-import type { ManifestTile } from './forms.js';
+import { parseSvgElements } from './svg.js';
+import { segmentCells } from './cells.js';
+import { resolveCssClasses, resolveTransforms, ensureBackgroundRect } from './preprocess.js';
+import type { Corpus } from './schema.js';
+import { loadMergedManifest, renderRecon } from './render-recon.js';
 
 const { createCanvas, loadImage } = canvasPkg;
 type NodeCanvas = ReturnType<typeof createCanvas>;
@@ -33,143 +33,15 @@ type Ctx = ReturnType<NodeCanvas['getContext']>;
 const ROOT = process.cwd();
 const CORPUS_PATH = join(ROOT, 'corpus', 'corpus.json');
 const BANNERS_DIR = join(ROOT, 'corpus', 'reference', 'banners');
-const TILES_DIR = join(ROOT, 'corpus', 'reference', 'tiles');
-const MANIFEST_PATH = join(ROOT, 'corpus', 'reference', 'tiles-manifest.json');
-const MINED_TILES_DIR = join(ROOT, 'corpus', 'mined-tiles');
-const MINED_MANIFEST_PATH = join(MINED_TILES_DIR, 'manifest.json');
 const OUT_DIR = join(ROOT, 'corpus', 'validation');
 
 // Render geometry: 720×360 → each of the 6×3 cells is exactly 120×120.
 const RW = 720, RH = 360, CELL = 120;
-const SRC_CELL = 320;
-const MAGENTA = 'rgba(214, 58, 140, 0.45)';
 const BANNERS_PER_SHEET = 10;
 const HEAT_W = 200;
 
 interface CellScore { col: number; row: number; kind: string; agreement: number }
 interface BannerScore { id: string; agreement: number; matchRate: number; cells: CellScore[] }
-
-type ManifestLookupEntry = ManifestTile & { filename: string; baseDir: string; has_background_rect?: boolean };
-
-function loadManifestEntries(manifestPath: string, baseDir: string): ManifestLookupEntry[] {
-  const raw = JSON.parse(readFileSync(manifestPath, 'utf8')) as
-    | (ManifestTile & { filename: string; has_background_rect?: boolean })[]
-    | { tiles?: (ManifestTile & { filename: string; has_background_rect?: boolean })[] };
-  const arr = Array.isArray(raw) ? raw : (raw.tiles ?? []);
-  return arr.map(t => ({ ...t, baseDir }));
-}
-
-function manifestById(): Map<string, ManifestLookupEntry> {
-  const entries = loadManifestEntries(MANIFEST_PATH, TILES_DIR);
-  if (existsSync(MINED_MANIFEST_PATH)) {
-    entries.push(...loadManifestEntries(MINED_MANIFEST_PATH, MINED_TILES_DIR));
-  }
-  return new Map(entries.map(t => [t.id, t]));
-}
-
-// --- color-aware element serialization (raster.ts's serializer is mask-only) ---
-function serializeColored(el: SvgElement, fill: string): string {
-  const rule = el.fillRule ? ` fill-rule="${el.fillRule}"` : '';
-  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  switch (el.kind) {
-    case 'rect': return `<rect x="${el.x}" y="${el.y}" width="${el.w}" height="${el.h}" fill="${fill}"/>`;
-    case 'circle': return `<circle cx="${el.cx}" cy="${el.cy}" r="${el.r}" fill="${fill}"/>`;
-    case 'ellipse': return `<ellipse cx="${el.cx}" cy="${el.cy}" rx="${el.rx}" ry="${el.ry}" fill="${fill}"/>`;
-    case 'path': return `<path d="${esc(el.d!)}"${rule} fill="${fill}"/>`;
-  }
-}
-
-function svgDoc(viewBox: string, size: { w: number; h: number }, body: string): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="${size.w}" height="${size.h}">${body}</svg>`;
-}
-
-// --- tile background rule (mirrors tile-match's rule) ---
-function tileBackgroundIndex(elements: SvgElement[], hasBackgroundRect: boolean): number {
-  const first = elements[0];
-  const isFullTileRect = first && first.kind === 'rect'
-    && (first.x ?? 0) === 0 && (first.y ?? 0) === 0 && first.w === 200 && first.h === 200;
-  if (hasBackgroundRect || isFullTileRect) return 0;
-  return -1;
-}
-
-// --- recolored tile image cache ---
-const tileImgCache = new Map<string, Promise<canvasPkg.Image>>();
-
-function recoloredTile(
-  tileId: string, ink: string, ground: string,
-  manifest: Map<string, ManifestLookupEntry>,
-): Promise<canvasPkg.Image> {
-  const key = `${tileId}|${ink}|${ground}`;
-  let cached = tileImgCache.get(key);
-  if (cached) return cached;
-  cached = (async () => {
-    const entry = manifest.get(tileId);
-    if (!entry) throw new Error(`tile ${tileId} not in manifest`);
-    const raw = readFileSync(join(entry.baseDir, entry.filename), 'utf8');
-    const parsed = parseSvgElements(resolveTransforms(resolveCssClasses(raw)));
-    const bgIdx = tileBackgroundIndex(parsed.elements, (entry as any).has_background_rect === true);
-    const bgFill = bgIdx >= 0 ? parsed.elements[bgIdx]!.fill : undefined;
-    const body = parsed.elements
-      .map((el, i) => {
-        if (i === bgIdx || el.fill === 'none') return '';        // bg → transparent (cell ground shows)
-        return serializeColored(el, el.fill === bgFill ? ground : ink); // cutouts → ground, fg → ink
-      })
-      .join('');
-    return loadImage(Buffer.from(svgDoc('0 0 200 200', { w: 200, h: 200 }, body)));
-  })();
-  tileImgCache.set(key, cached);
-  return cached;
-}
-
-// --- reconstruction ---
-async function renderRecon(
-  banner: BannerRecon,
-  originalCells: CellSlice[],
-  manifest: Map<string, ManifestLookupEntry>,
-): Promise<NodeCanvas> {
-  const cv = createCanvas(RW, RH);
-  const ctx = cv.getContext('2d');
-  ctx.fillStyle = banner.ground;
-  ctx.fillRect(0, 0, RW, RH);
-
-  for (const cell of banner.cells) {
-    const x = cell.col * CELL, y = cell.row * CELL;
-    if (cell.ground !== banner.ground) {
-      ctx.fillStyle = cell.ground;
-      ctx.fillRect(x, y, CELL, CELL);
-    }
-  }
-
-  for (const cell of banner.cells) {
-    const x = cell.col * CELL, y = cell.row * CELL;
-    if (cell.kind === 'tile' && cell.tile) {
-      const img = await recoloredTile(cell.tile, cell.ink ?? '#F3F3F3', cell.ground, manifest);
-      ctx.save();
-      ctx.translate(x + CELL / 2, y + CELL / 2);
-      ctx.rotate(((cell.rotation ?? 0) * Math.PI) / 180);
-      if (cell.flip) ctx.scale(-1, 1);
-      ctx.drawImage(img, -CELL / 2, -CELL / 2, CELL, CELL);
-      ctx.restore();
-    } else if (cell.kind === 'freeform' || cell.kind === 'review') {
-      // Copy the ORIGINAL banner's foreground for this cell, tinted magenta:
-      // shows in context what mining could not explain.
-      const slice = originalCells.find(c => c.col === cell.col && c.row === cell.row);
-      if (slice && slice.foreground.length) {
-        const body = slice.foreground
-          .filter(el => el.fill !== 'none')
-          .map(el => serializeColored(el, el.fill))
-          .join('');
-        const vb = `${cell.col * SRC_CELL} ${cell.row * SRC_CELL} ${SRC_CELL} ${SRC_CELL}`;
-        const img = await loadImage(Buffer.from(svgDoc(vb, { w: CELL, h: CELL }, body)));
-        ctx.drawImage(img, x, y, CELL, CELL);
-      }
-      ctx.fillStyle = MAGENTA;
-      ctx.fillRect(x, y, CELL, CELL);
-    }
-    // 'plain' → ground already painted
-  }
-  return cv;
-}
 
 // --- agreement ---
 function cellAgreement(a: Uint8ClampedArray, b: Uint8ClampedArray, col: number, row: number): number {
@@ -197,7 +69,7 @@ function heatColor(score: number, kind: string): string {
 async function main(): Promise<void> {
   mkdirSync(OUT_DIR, { recursive: true });
   const corpus: Corpus = JSON.parse(readFileSync(CORPUS_PATH, 'utf8'));
-  const manifest = manifestById();
+  const manifest = loadMergedManifest();
   const scores: BannerScore[] = [];
 
   const sheets: NodeCanvas[] = [];
@@ -226,6 +98,7 @@ async function main(): Promise<void> {
     const pre = resolveTransforms(resolveCssClasses(ensureBackgroundRect(rawSvg)));
     const segmented = segmentCells(parseSvgElements(pre));
 
+    // Pass segmented.cells so freeform cells copy from the original (validation mode)
     const reconCv = await renderRecon(banner, segmented.cells, manifest);
 
     const a = origCtx.getImageData(0, 0, RW, RH).data;

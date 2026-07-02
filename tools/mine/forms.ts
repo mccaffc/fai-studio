@@ -17,17 +17,7 @@
  * (i.e. top←left, right←top, bottom←right, left←bottom). Flip swaps left/right BEFORE rotation.
  */
 
-import type { BannerRecon, CellRecon, FormGroup } from './schema.js';
-
-// ---------------------------------------------------------------------------
-// Minimal ManifestTile type (schema.ts doesn't define one)
-// ---------------------------------------------------------------------------
-
-export interface ManifestTile {
-  id: string;
-  shape_family?: string;
-  edge_coverage: { top: number; right: number; bottom: number; left: number };
-}
+import type { BannerRecon, CellRecon, FormGroup, ManifestTile } from './schema.js';
 
 // ---------------------------------------------------------------------------
 // Edge orientation transform
