@@ -13,6 +13,7 @@
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parseSvgElements } from './svg.js';
 import { segmentCells, type CellSlice } from './cells.js';
 import { rasterizeMask, type Viewport } from './raster.js';
@@ -428,7 +429,12 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((err) => {
-  console.error('[mine] Fatal error:', err);
-  process.exit(1);
-});
+// Only execute when this file is the Node entry point — not when imported by tests.
+const _thisFile = fileURLToPath(import.meta.url);
+const _argv1 = process.argv[1] ?? '';
+if (_argv1 === _thisFile || _argv1.endsWith('/mine.mjs') || _argv1.endsWith('\\mine.mjs')) {
+  main().catch((err) => {
+    console.error('[mine] Fatal error:', err);
+    process.exit(1);
+  });
+}

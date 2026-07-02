@@ -13,12 +13,13 @@
  *
  * Join rule: profileIoU(A.right, B.left) — intersection/union of set bits.
  * Both-empty → 0 (an empty seam is not a join; activity gates emptiness).
+ *
+ * Note: EdgeProfileSet / VariantKey / TileEdgeProfiles are declared in the
+ * generated data/grammar.ts (single source of truth, self-contained). This
+ * module re-exports them so importers can use the stable profiles.ts path.
  */
 
-import type { EdgeProfileSet, VariantKey } from './types.js';
-
-export type { EdgeProfileSet, VariantKey } from './types.js';
-export type TileEdgeProfiles = Record<VariantKey, EdgeProfileSet>;
+export type { EdgeProfileSet, VariantKey, TileEdgeProfiles } from './data/grammar.js';
 
 /** IoU over set bits of two hex-encoded profiles. Both empty → 0. */
 export function profileIoU(aHex: string, bHex: string): number {

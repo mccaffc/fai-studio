@@ -7,10 +7,11 @@
  * tools/mine/schema.ts's BannerRecon/CellRecon/FormGroup, so the tools' thin
  * re-export shims type-check against the tools' tests unchanged.
  *
- * The grammar type (EngineGrammar) is the shape the sampler actually reads. It
- * is a structural subset of the tools' `Grammar` (grammar-schema.ts) and of the
- * generated `data/grammar.ts` GRAMMAR value, so both can be passed to
- * samplePlan without conversion.
+ * Grammar types (EngineGrammar / TileCatalogEntry / Template / TemplateSpec /
+ * GroundSchemeKind) are the canonical single declarations, emitted inline in the
+ * generated data/grammar.ts. This file re-exports them so the rest of the engine
+ * and the studio can import from a stable hand-written path rather than the
+ * generated file path.
  */
 
 export type Hex = string; // '#RRGGBB' uppercase
@@ -78,83 +79,19 @@ export interface Edges {
 }
 
 // ---------------------------------------------------------------------------
-// Grammar types (structural subset of tools' Grammar + generated GRAMMAR)
+// Grammar types — re-exported from the generated data module (single source
+// of truth; generated file stays self-contained by inlining these definitions).
 // ---------------------------------------------------------------------------
 
-export type GroundSchemeKind =
-  | 'uniform'
-  | 'checker'
-  | 'banded-rows'
-  | 'banded-cols'
-  | 'zoned'
-  | 'scatter';
+export type {
+  EngineGrammar,
+  EngineStats,
+  TileCatalogEntry,
+  GroundSchemeKind,
+  TemplateSpec,
+  Template,
+} from './data/grammar.js';
 
-export interface TemplateSpec {
-  groundSchemes: GroundSchemeKind[];
-  dominantFamilies: string[];
-  distinctTiles: [number, number];
-  forms: { run: [number, number]; frieze: [number, number]; figure: [number, number] };
-  figureShare: [number, number];
-  plainShare: [number, number];
-  lineworkShare: [number, number];
-}
-
-export interface Template {
-  id: string;
-  name: string;
-  bannerIds: string[];
-  spec: TemplateSpec;
-}
-
-export type VariantKey = `${0 | 90 | 180 | 270}/${'f' | '-'}`;
-
-export interface EdgeProfileSet {
-  top: string;
-  right: string;
-  bottom: string;
-  left: string;
-}
-
-export type TileEdgeProfiles = Record<VariantKey, EdgeProfileSet>;
-
-export interface TileCatalogEntry {
-  family: string;
-  edges: Edges;
-  rotations: Record<string, number>;
-  flipShare: number;
-  profiles?: TileEdgeProfiles;
-}
-
-export interface EngineStats {
-  schemaVersion: number;
-  families: Record<string, number>;
-  tiles: Record<string, number>;
-  tileRotations: Record<string, Record<string, number>>;
-  tileFlipShare: Record<string, number>;
-  adjacency: {
-    horizontal: Record<string, Record<string, number>>;
-    vertical: Record<string, Record<string, number>>;
-  };
-  inkByGround: Record<string, Record<string, number>>;
-  globalGrounds: Record<string, number>;
-  groundSchemes: { counts: Record<string, number> };
-  forms: {
-    kinds: Record<string, number>;
-    sizes: Record<string, number>;
-    byFamily: Record<string, number>;
-    friezeRows: Record<string, number>;
-  };
-  plain: { positions: Record<string, number> };
-}
-
-export interface EngineGrammar {
-  schemaVersion: number;
-  stats: EngineStats;
-  templates: Template[];
-  tileCatalog: Record<string, TileCatalogEntry>;
-  palette: {
-    globalGrounds: Record<string, number>;
-    inkByGround: Record<string, Record<string, number>>;
-    accentOrder: string[];
-  };
-}
+// EdgeProfileSet / VariantKey / TileEdgeProfiles are declared in data/grammar.ts
+// and also re-exported by profiles.ts (the pure edge-matching helpers module).
+export type { EdgeProfileSet, VariantKey, TileEdgeProfiles } from './data/grammar.js';

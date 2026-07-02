@@ -20,9 +20,14 @@
  * Edge orientation: rotating 90° maps [top,right,bottom,left] → [left,top,right,bottom]
  * (i.e. top←left, right←top, bottom←right, left←bottom). Flip swaps left/right BEFORE rotation.
  *
- * This is the ENGINE detectForms — it consumes a tile catalog (edges) plus a
- * families record instead of the Node manifest. tools/mine/forms.ts keeps its
- * manifest-based detectForms for mining and re-imports orientEdges from here.
+ * ## Shared core
+ *
+ * `detectFormsCore` is the parameterized implementation; it takes an edge
+ * accessor and family accessor so both the engine variant (catalog + families
+ * record) and the tools/mine variant (ManifestTile manifest) can share the same
+ * union-find + join logic without duplication.
+ *
+ * `detectForms` is the engine-facing wrapper.
  */
 
 import type { BannerPlan, CellPlan, Edges, FormGroup } from './types.js';
@@ -89,22 +94,29 @@ function union(uf: number[], x: number, y: number): void {
 }
 
 // ---------------------------------------------------------------------------
-// Main detectForms — engine variant (catalog + families record)
+// Parameterized core (shared by engine variant and tools/mine variant)
 // ---------------------------------------------------------------------------
 
-export interface FormsCatalogEntry {
-  edges: Edges;
+export interface DetectFormsParams {
+  /** Return the edge coverage for a tile id, or undefined if not in catalog. */
+  getEdges: (tileId: string) => Edges | undefined;
+  /** Return the shape family for a tile id, or undefined if unknown. */
+  getFamily: (tileId: string) => string | undefined;
+  /** Return the ink for a cell — used to look up the dominant foreground. */
+  getInk: (cell: CellPlan) => string | undefined;
 }
 
 /**
- * detectForms — engine variant. Edges come from `catalog[tileId].edges`;
- * shape family comes from the `families` record. Same join rules and kind
- * precedence as the tools' manifest-based detectForms.
+ * detectFormsCore — shared parameterized union-find + join-rules core.
+ *
+ * Both the engine variant (`detectForms`) and the tools/mine variant call this.
+ * The params functor supplies tile-edge and tile-family lookups so the core
+ * stays decoupled from whether the data source is a catalog record, a
+ * ManifestTile, or anything else.
  */
-export function detectForms(
+export function detectFormsCore(
   plan: BannerPlan,
-  catalog: Record<string, FormsCatalogEntry>,
-  families: Record<string, string>,
+  params: DetectFormsParams,
 ): FormGroup[] {
   const cells = plan.cells;
   const n = cells.length;
@@ -156,8 +168,8 @@ export function detectForms(
 
       // Rule (b): both freeform, share an ink
       if (ci.kind === 'freeform' && cj.kind === 'freeform') {
-        const inkI = ci.ink;
-        const inkJ = cj.ink;
+        const inkI = params.getInk(ci);
+        const inkJ = params.getInk(cj);
         if (inkI && inkJ && inkI === inkJ) {
           joined = true;
           joinedOnlyByAorB.add(i);
@@ -168,8 +180,8 @@ export function detectForms(
       // Rule (a): both tile, same ink, active shared edge on both sides
       if (!joined && ci.kind === 'tile' && cj.kind === 'tile') {
         if (ci.ink && cj.ink && ci.ink === cj.ink && ci.tile && cj.tile) {
-          const eI = catalog[ci.tile]?.edges;
-          const eJ = catalog[cj.tile]?.edges;
+          const eI = params.getEdges(ci.tile);
+          const eJ = params.getEdges(cj.tile);
 
           if (eI && eJ) {
             const edgesI = orientEdges(eI, (ci.rotation ?? 0) as 0 | 90 | 180 | 270, ci.flip ?? false);
@@ -196,8 +208,8 @@ export function detectForms(
           ci.ink === cj.ground && ci.ground === cj.ink &&
           ci.tile && cj.tile
         ) {
-          const eI = catalog[ci.tile]?.edges;
-          const eJ = catalog[cj.tile]?.edges;
+          const eI = params.getEdges(ci.tile);
+          const eJ = params.getEdges(cj.tile);
 
           if (eI && eJ) {
             const edgesI = orientEdges(eI, (ci.rotation ?? 0) as 0 | 90 | 180 | 270, ci.flip ?? false);
@@ -295,7 +307,7 @@ export function detectForms(
     for (const i of members) {
       const c = cells[i]!;
       if (c.kind === 'tile' && c.tile) {
-        const fam = families[c.tile];
+        const fam = params.getFamily(c.tile);
         if (fam) {
           familyCount.set(fam, (familyCount.get(fam) ?? 0) + 1);
         }
@@ -309,7 +321,8 @@ export function detectForms(
     const inkCount = new Map<string, number>();
     for (const i of members) {
       const c = cells[i]!;
-      if (c.ink) inkCount.set(c.ink, (inkCount.get(c.ink) ?? 0) + 1);
+      const ink = params.getInk(c);
+      if (ink) inkCount.set(ink, (inkCount.get(ink) ?? 0) + 1);
     }
     const ink = [...inkCount.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? '#000000';
 
@@ -328,4 +341,28 @@ export function detectForms(
   }
 
   return formGroups;
+}
+
+// ---------------------------------------------------------------------------
+// Engine-facing wrapper (catalog + families record)
+// ---------------------------------------------------------------------------
+
+export interface FormsCatalogEntry {
+  edges: Edges;
+}
+
+/**
+ * detectForms — engine variant. Edges come from `catalog[tileId].edges`;
+ * shape family comes from the `families` record. Delegates to detectFormsCore.
+ */
+export function detectForms(
+  plan: BannerPlan,
+  catalog: Record<string, FormsCatalogEntry>,
+  families: Record<string, string>,
+): FormGroup[] {
+  return detectFormsCore(plan, {
+    getEdges: (tileId) => catalog[tileId]?.edges,
+    getFamily: (tileId) => families[tileId],
+    getInk: (cell) => cell.ink,
+  });
 }

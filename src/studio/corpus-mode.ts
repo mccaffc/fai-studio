@@ -14,12 +14,8 @@ import {
   describePlan,
 } from "../engine/corpus/index.js";
 import type { CorpusResult } from "../engine/corpus/index.js";
-import { GRAMMAR as GRAMMAR_RAW } from "../engine/corpus/data/grammar.js";
-import type { EngineGrammar } from "../engine/corpus/data/grammar.js";
 import { PROGRAMS } from "../engine/corpus/programs.js";
 import type { ProgramId } from "../engine/corpus/programs.js";
-
-const GRAMMAR = GRAMMAR_RAW as unknown as EngineGrammar;
 
 const TEMPLATE_IDS = [
   "pipe-field",
@@ -285,6 +281,12 @@ function renderCorpusCanvas(): void {
     updateSeedDisplay();
     renderCorpusScores();
   });
+  mkBtn("Save", "", () => {
+    if (!state.current) return;
+    if (onSaveFn) {
+      onSaveFn(state.current.config, state.current.seed);
+    }
+  });
   mkBtn("SVG", "ghost", () => {
     corpusDownloadSvg();
     flash("SVG saved to your browser's Downloads folder.");
@@ -531,12 +533,48 @@ function renderCorpusControls(): void {
 
 export interface CorpusModeOptions {
   flash: (msg: string, isError?: boolean) => void;
+  /** Called when the user saves a corpus result to the tray. */
+  onSave?: (config: import("../engine/corpus/index.js").CorpusConfig, seed: number) => void;
 }
+
+let onSaveFn: ((config: import("../engine/corpus/index.js").CorpusConfig, seed: number) => void) | null = null;
 
 export function mountCorpusMode(opts: CorpusModeOptions): void {
   flashFn = opts.flash;
+  onSaveFn = opts.onSave ?? null;
   renderCorpusControls();
   corpusRegen(false);
+}
+
+/**
+ * Generate a banner for tray preview rendering — used by the save tray in main.ts
+ * (which can't statically import the corpus engine without blowing the initial bundle).
+ */
+export function generateBannerForTray(
+  config: import("../engine/corpus/index.js").CorpusConfig,
+  seed: number,
+): import("../engine/corpus/index.js").CorpusResult {
+  return generateBanner({ ...config, seed });
+}
+
+/** Restore a previously saved corpus item — used by the save tray. */
+export function openCorpusItem(config: import("../engine/corpus/index.js").CorpusConfig, seed: number): void {
+  state.config = {
+    template: config.template ?? "",
+    accent: config.accent ?? "",
+    density: config.density ?? 0.5,
+    figures: config.figures ?? true,
+    seed,
+    program: config.program ?? "",
+  };
+  saveCorpusConfig();
+  state.current = generateBanner({ ...config, seed });
+  state.vars = engineVariations(state.current, 6);
+  renderCorpusCanvas();
+  renderCorpusVariations();
+  updateSeedDisplay();
+  renderCorpusScores();
+  renderCorpusControls();
 }
 
 export function unmountCorpusMode(): void {
@@ -560,5 +598,3 @@ export function corpusSpacebarReroll(): void {
   renderCorpusScores();
 }
 
-// Export GRAMMAR accentOrder so main.ts can reference it if needed
-export { GRAMMAR };

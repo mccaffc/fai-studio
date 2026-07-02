@@ -21,11 +21,25 @@ export interface EngineStats {
   forms: EngineForms;
   plain: EnginePlain;
 }
-export interface TileCatalogEntry { family: string; edges: { top: number; right: number; bottom: number; left: number }; rotations: Record<string, number>; flipShare: number; profiles?: unknown; }
+export interface EdgeProfileSet { top: string; right: string; bottom: string; left: string; }
+export type VariantKey = `${0 | 90 | 180 | 270}/${'f' | '-'}`;
+export type TileEdgeProfiles = Record<VariantKey, EdgeProfileSet>;
+export interface TileCatalogEntry { family: string; edges: { top: number; right: number; bottom: number; left: number }; rotations: Record<string, number>; flipShare: number; profiles?: TileEdgeProfiles; }
+export type GroundSchemeKind = 'uniform' | 'checker' | 'banded-rows' | 'banded-cols' | 'zoned' | 'scatter';
+export interface TemplateSpec {
+  groundSchemes: GroundSchemeKind[];
+  dominantFamilies: string[];
+  distinctTiles: [number, number];
+  forms: { run: [number, number]; frieze: [number, number]; figure: [number, number] };
+  figureShare: [number, number];
+  plainShare: [number, number];
+  lineworkShare: [number, number];
+}
+export interface Template { id: string; name: string; bannerIds: string[]; spec: TemplateSpec; }
 export interface EngineGrammar {
   schemaVersion: number;
   stats: EngineStats;
-  templates: unknown[];
+  templates: Template[];
   tileCatalog: Record<string, TileCatalogEntry>;
   palette: { globalGrounds: Record<string, number>; inkByGround: Record<string, Record<string, number>>; accentOrder: string[]; };
 }

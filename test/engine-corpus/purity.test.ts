@@ -20,9 +20,8 @@ import { GRAMMAR } from '../../src/engine/corpus/data/grammar.js';
 import { samplePlan } from '../../src/engine/corpus/sample.js';
 import type { EngineGrammar } from '../../src/engine/corpus/types.js';
 
-// The generated GRAMMAR declares `templates: unknown[]`; the runtime value holds
-// full Template objects, so cast to the engine grammar type for the call.
-const G = GRAMMAR as unknown as EngineGrammar;
+// GRAMMAR is now typed with Template[] directly; no cast needed.
+const G: EngineGrammar = GRAMMAR;
 
 const ENGINE_DIR = join(process.cwd(), 'src', 'engine', 'corpus');
 
@@ -47,6 +46,11 @@ const FORBIDDEN_SUBSTRINGS: { needle: string; label: string }[] = [
   { needle: 'Math.random', label: 'Math.random (use mulberry32)' },
   { needle: 'Date.now', label: 'Date.now (side-effect-free / deterministic)' },
   { needle: 'require(', label: 'require( (CommonJS)' },
+  // Dynamic import() is forbidden in engine code: the engine must be
+  // synchronous and bundle-split at the studio (main.ts) boundary, not inside
+  // the zero-dep engine module tree. Re-exports with `export type { … } from`
+  // are static and unaffected by this check.
+  { needle: 'await import(', label: 'await import( (dynamic import — engine must be synchronous)' },
 ];
 
 describe('engine corpus purity', () => {

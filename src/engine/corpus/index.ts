@@ -22,9 +22,9 @@ import { renderPlanSvg } from './render.js';
 import { PROGRAMS, applyProgramPalette } from './programs.js';
 import type { ProgramId } from './programs.js';
 
-// The generated grammar module declares `templates: unknown[]` to avoid
-// circularly importing the engine types; cast once at the boundary.
-const GRAMMAR = GRAMMAR_RAW as unknown as EngineGrammar;
+// GRAMMAR is typed as EngineGrammar (with Template[] templates) directly in
+// the generated file; no cast needed.
+const GRAMMAR: EngineGrammar = GRAMMAR_RAW;
 
 // ---------------------------------------------------------------------------
 // Public interfaces

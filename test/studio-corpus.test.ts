@@ -310,4 +310,77 @@ describe("studio corpus mode (jsdom)", () => {
     ) as HTMLInputElement;
     expect(Number(densitySlider.value)).toBeCloseTo(0.6, 1);
   });
+
+  // ── P3-5 save-tray tests ──
+
+  it("P3-5a. Save button in corpus mode fires onSave with current config+seed", async () => {
+    await import("../src/studio/main");
+
+    // Capture seed before clicking Save
+    const seedInput = document.querySelector(
+      "#corpus-controls input[data-corpus-seed]",
+    ) as HTMLInputElement;
+    expect(seedInput).toBeTruthy();
+    const seedValue = Number(seedInput.value);
+    expect(Number.isFinite(seedValue)).toBe(true);
+
+    // Click Save — the corpus Save button lives in #canvas-actions
+    const saveBtn = Array.from(
+      document.querySelectorAll("#canvas-actions button"),
+    ).find((b) => b.textContent?.trim() === "Save") as HTMLButtonElement | undefined;
+    expect(saveBtn).toBeTruthy();
+    saveBtn!.click();
+
+    // flash message should appear
+    const status = document.querySelector("#action-status") as HTMLElement;
+    expect(status.textContent).toMatch(/Saved/i);
+
+    // item must be persisted in localStorage
+    const stored = localStorage.getItem("fai-pattern-saved");
+    expect(stored).toBeTruthy();
+    const items = JSON.parse(stored!) as Array<{ kind: string; seed: number }>;
+    expect(items.length).toBeGreaterThanOrEqual(1);
+    const corpusItem = items.find((x) => x.kind === "corpus");
+    expect(corpusItem).toBeTruthy();
+    expect(corpusItem!.seed).toBe(seedValue);
+  });
+
+  it("P3-5b. generateBannerForTray is deterministic — same config+seed produces identical SVG", async () => {
+    // Import corpus-mode directly (not via main.ts) — no jsdom needed.
+    const mod = await import("../src/studio/corpus-mode");
+    const config = { template: "", accent: "#FF4F00", density: 0.5, figures: true };
+    const seed = 123456789;
+    const r1 = mod.generateBannerForTray(config, seed);
+    const r2 = mod.generateBannerForTray(config, seed);
+    expect(r1.svg).toBe(r2.svg);
+  });
+
+  it("P3-5c. corpus save-tray item restores on re-mount via localStorage", async () => {
+    await import("../src/studio/main");
+
+    // Capture current seed
+    const seedInput = document.querySelector(
+      "#corpus-controls input[data-corpus-seed]",
+    ) as HTMLInputElement;
+    const originalSeed = Number(seedInput.value);
+
+    // Click Save
+    const saveBtn = Array.from(
+      document.querySelectorAll("#canvas-actions button"),
+    ).find((b) => b.textContent?.trim() === "Save") as HTMLButtonElement;
+    expect(saveBtn).toBeTruthy();
+    saveBtn.click();
+
+    // Re-mount with the same localStorage (already set by the click above)
+    vi.resetModules();
+    skeleton();
+    await import("../src/studio/main");
+
+    // The saved item should survive the round-trip
+    const stored = localStorage.getItem("fai-pattern-saved");
+    const items = JSON.parse(stored ?? "[]") as Array<{ kind: string; seed: number }>;
+    const corpusItem = items.find((x) => x.kind === "corpus");
+    expect(corpusItem).toBeTruthy();
+    expect(corpusItem!.seed).toBe(originalSeed);
+  });
 });
