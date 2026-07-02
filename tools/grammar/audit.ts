@@ -51,6 +51,7 @@ function main(): void {
     adjacencyFallbacks: 0,
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
+    runPathsTotal: 0,
   };
   const longestRuns: number[] = [];
   const accentInks = new Set(grammar.palette.accentOrder);
@@ -66,6 +67,7 @@ function main(): void {
     diagTotals.adjacencyFallbacks += diag.adjacencyFallbacks;
     diagTotals.fillAdjacencyHits += diag.fillAdjacencyHits;
     diagTotals.friezesPlaced += diag.friezesPlaced;
+    diagTotals.runPathsTotal += diag.runPaths.length;
     longestRuns.push(diag.longestRun);
 
     if (plan.forms.length === 0) zeroFormPlans += 1;
@@ -335,6 +337,7 @@ function printReport(input: {
   console.log(`  adjacency hit rate: ${formatPercent(share(input.diagTotals.adjacencyHits, adjacencyAttempts))}`);
   console.log(`  fill adjacency hits: ${input.diagTotals.fillAdjacencyHits}`);
   console.log(`  friezes placed: ${input.diagTotals.friezesPlaced}`);
+  console.log(`  run paths: mean ${(input.diagTotals.runPathsTotal / SEEDS.length).toFixed(2)} per plan`);
   console.log(`  longest run: mean ${input.longestRunMean.toFixed(2)} / max ${input.longestRunMax}`);
   console.log('');
 
@@ -349,6 +352,7 @@ interface SampleDiagTotals {
   adjacencyFallbacks: number;
   fillAdjacencyHits: number;
   friezesPlaced: number;
+  runPathsTotal: number;
 }
 
 function printShareTable(sample: Record<string, number>, corpus: Record<string, number>, orderedKeys?: string[]): void {

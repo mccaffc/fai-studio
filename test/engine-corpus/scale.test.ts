@@ -17,7 +17,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { GRAMMAR as RAW_GRAMMAR } from '../../src/engine/corpus/data/grammar.js';
-import { samplePlan, placementsJoin } from '../../src/engine/corpus/sample.js';
+import { samplePlan, sampleWithDiagnostics, placementsJoin } from '../../src/engine/corpus/sample.js';
 import type { BannerPlan, CellPlan, EngineGrammar } from '../../src/engine/corpus/types.js';
 
 const GRAMMAR = RAW_GRAMMAR as unknown as EngineGrammar;
@@ -62,18 +62,55 @@ describe('serpentine scale', () => {
     }
   });
 
-  it('every ≥3-cell run form carries a real profile-joined spine', () => {
-    // detectForms builds a 'run' from edge-coverage joins (rule a, ≥0.25),
-    // inverted ink/ground joins (rule d), and same-tile-same-rotation frieze
-    // pairs (rule c) — all WEAKER than the profile-join contract (profileIoU ≥
-    // 0.5). The fill pass legitimately produces edge-coverage-only adjacencies,
-    // so not every run-form edge profile-joins. What the serpentine sampler
-    // GUARANTEES is that each run it grows is stitched by real profile-continuous
-    // seams: so we assert that every ≥3-cell run form contains at least one
-    // non-exempt adjacent pair that satisfies placementsJoin (profileIoU ≥ 0.5)
-    // — i.e. the continuity is real, not an accident of touching edges. (Rule-c
-    // friezes and rule-d inversions are distinct continuity mechanisms and are
-    // exempt from the profile check.)
+  it('every growth-path consecutive pair satisfies placementsJoin (100% — regression gate)', () => {
+    // The sampler's growth steps are placementsJoin-gated by construction.
+    // diag.runPaths records each explicitly-grown run (seed pair + accepted
+    // growth steps, in order). Every consecutive pair in every runPath MUST
+    // satisfy the profile-join contract — these edges were gated at growth time,
+    // so a failure here is a real bug in growth-join enforcement.
+    for (const seed of [9000, 9003, 9007, 9012, 9025]) {
+      const { plan, diag } = sampleWithDiagnostics(GRAMMAR, seed, { template: 'pipe-field' });
+      void plan;
+      expect(diag.runPaths.length, `seed ${seed}: expected ≥1 runPath`).toBeGreaterThanOrEqual(1);
+      for (const runPath of diag.runPaths) {
+        expect(runPath.length, `seed ${seed}: runPath length`).toBeGreaterThanOrEqual(2);
+        for (let i = 0; i < runPath.length - 1; i += 1) {
+          const [prevCol, prevRow] = runPath[i]!;
+          const [nextCol, nextRow] = runPath[i + 1]!;
+          // Consecutive cells must be orthogonally adjacent.
+          const dist = Math.abs(nextCol - prevCol) + Math.abs(nextRow - prevRow);
+          expect(dist, `seed ${seed} path[${i}]->[${i + 1}]: not orthogonally adjacent (${prevCol},${prevRow})->(${nextCol},${nextRow})`).toBe(1);
+          // Determine step direction and argument order for placementsJoin.
+          const dir = prevRow === nextRow ? 'h' : 'v';
+          const cells = cellByPosition(plan);
+          const prevCell = cells.get(`${prevCol},${prevRow}`)!;
+          const nextCell = cells.get(`${nextCol},${nextRow}`)!;
+          expect(prevCell, `seed ${seed}: prevCell (${prevCol},${prevRow}) missing`).toBeDefined();
+          expect(nextCell, `seed ${seed}: nextCell (${nextCol},${nextRow}) missing`).toBeDefined();
+          expect(prevCell.kind, `seed ${seed}: prevCell not tile`).toBe('tile');
+          expect(nextCell.kind, `seed ${seed}: nextCell not tile`).toBe('tile');
+          // right/down: join(prev,next); left/up: join(next,prev) — mirrors stepJoins arg order.
+          const isForward = (dir === 'h' && nextCol > prevCol) || (dir === 'v' && nextRow > prevRow);
+          const [a, b] = isForward
+            ? [prevCell, nextCell]
+            : [nextCell, prevCell];
+          const joined = placementsJoin(
+            GRAMMAR,
+            { tile: a.tile!, rotation: a.rotation ?? 0, flip: a.flip ?? false },
+            { tile: b.tile!, rotation: b.rotation ?? 0, flip: b.flip ?? false },
+            dir,
+          );
+          expect(joined, `seed ${seed} path[${i}]->[${i + 1}] (${prevCol},${prevRow})->(${nextCol},${nextRow}) dir=${dir}: placementsJoin failed`).toBe(true);
+        }
+      }
+    }
+  });
+
+  it('run forms ≥3 cells carry at least one spine edge (form-level sanity)', () => {
+    // form groupings include fill-incidental clumps (mining-calibrated
+    // ink-activity joins); form-level edge fractions are diluted by design —
+    // growth integrity is asserted on diag.runPaths above; visual quality of
+    // fill clumps is the T5 gate's judgment.
     for (const seed of [9000, 9003, 9007, 9012, 9025]) {
       const plan = samplePlan(GRAMMAR, seed, { template: 'pipe-field' });
       const cells = cellByPosition(plan);
@@ -99,7 +136,7 @@ describe('serpentine scale', () => {
             if (joined) spineEdges += 1;
           }
         }
-        expect(spineEdges, `seed ${seed} run form ${JSON.stringify(form.cells)} has no profile-joined spine edge`).toBeGreaterThanOrEqual(1);
+        expect(spineEdges, `seed ${seed} run form ${JSON.stringify(form.cells)}: expected ≥1 spine edge`).toBeGreaterThanOrEqual(1);
       }
     }
   });

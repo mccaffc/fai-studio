@@ -53,6 +53,12 @@ export interface SampleDiagnostics {
   friezesPlaced: number;
   /** Largest 'run'-form cell count in the final plan (from plan.forms). */
   longestRun: number;
+  /**
+   * One entry per explicitly-grown run: the cell coordinates [col, row] of the
+   * seed pair plus each accepted growth step, in placement order. Populated by
+   * both growSerpentine and growStraight. Deterministic; no behavior change.
+   */
+  runPaths: [number, number][][];
 }
 
 export interface SampleResult {
@@ -138,6 +144,7 @@ export function sampleWithDiagnostics(grammar: EngineGrammar, seed: number, knob
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
     longestRun: 0,
+    runPaths: [],
   };
   const rng = mulberry32(seed);
   const template = chooseTemplate(grammar, rng, knobs.template);
@@ -596,11 +603,15 @@ function placeRun(
     assignTile(start, pair[0], ink);
     assignTile(next, pair[1], ink);
 
+    // Start recording the run path: seed pair in order [start, next].
+    const runPath: [number, number][] = [[start.col, start.row], [next.col, next.row]];
+
     let heading: Step = dir === 'h' ? 'right' : 'down';
     const grown = serpentine
-      ? growSerpentine(cells, grammar, rng, workingSet, next, pair[1], ink, heading, targetLength, diag)
-      : growStraight(cells, grammar, rng, workingSet, next, pair[1], ink, dir, targetLength, diag);
+      ? growSerpentine(cells, grammar, rng, workingSet, next, pair[1], ink, heading, targetLength, diag, runPath)
+      : growStraight(cells, grammar, rng, workingSet, next, pair[1], ink, dir, targetLength, diag, runPath);
     void grown;
+    diag.runPaths.push(runPath);
     return true;
   }
 
@@ -619,6 +630,7 @@ function growStraight(
   dir: Direction,
   targetLength: number,
   diag: SampleDiagnostics,
+  runPath: [number, number][],
 ): number {
   let currentCell = seedCell;
   let currentPlacement = seedPlacement;
@@ -631,6 +643,7 @@ function growStraight(
     const placement = drawNextRunPlacement(grammar, rng, workingSet, currentPlacement, dir, diag);
     if (!placement) break;
     assignTile(candidate, placement, ink);
+    runPath.push([candidate.col, candidate.row]);
     currentCell = candidate;
     currentPlacement = placement;
     length += 1;
@@ -657,6 +670,7 @@ function growSerpentine(
   seedHeading: Step,
   targetLength: number,
   diag: SampleDiagnostics,
+  runPath: [number, number][],
 ): number {
   let currentCell = seedCell;
   let currentPlacement = seedPlacement;
@@ -673,6 +687,7 @@ function growSerpentine(
       const placement = drawSerpentineStep(grammar, rng, workingSet, currentPlacement, step, diag);
       if (!placement) continue;
       assignTile(candidate, placement, ink);
+      runPath.push([candidate.col, candidate.row]);
       currentCell = candidate;
       currentPlacement = placement;
       heading = step;
