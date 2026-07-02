@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Buffer } from 'node:buffer';
 import { parseSvgElements, type SvgElement } from './svg';
@@ -33,6 +33,11 @@ interface ManifestTile {
   renderable?: boolean;
 }
 
+interface TileSource {
+  tile: ManifestTile;
+  tilesDir: string;
+}
+
 const ROTATIONS: Rotation[] = [0, 90, 180, 270];
 const FLIPS = [false, true] as const;
 const FILL_RATIO_PREFILTER = 0.15;
@@ -41,17 +46,17 @@ export async function buildTileMaskLibrary(
   tilesDir: string,
   manifestPath: string,
   size = 64,
+  extra?: { tilesDir: string; manifestPath: string },
 ): Promise<TileMaskEntry[]> {
-  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as ManifestTile[] | { tiles?: ManifestTile[] };
-  const tiles = Array.isArray(manifest) ? manifest : manifest.tiles;
-  if (!Array.isArray(tiles)) {
-    throw new Error(`Tile manifest must be an array or contain a tiles array: ${manifestPath}`);
+  const tileSources: TileSource[] = loadTileSources(tilesDir, manifestPath);
+  if (extra && existsSync(extra.manifestPath)) {
+    tileSources.push(...loadTileSources(extra.tilesDir, extra.manifestPath));
   }
 
   const entries: TileMaskEntry[] = [];
   const skipped: { tile: string; reason: string }[] = [];
 
-  for (const tile of tiles) {
+  for (const { tile, tilesDir: tileSourceDir } of tileSources) {
     if (tile.renderable === false) {
       recordSkip(skipped, tile.id, 'renderable=false');
       continue;
@@ -59,7 +64,7 @@ export async function buildTileMaskLibrary(
 
     let parsed: ReturnType<typeof parseSvgElements>;
     try {
-      const rawSvg = readFileSync(join(tilesDir, tile.filename), 'utf8');
+      const rawSvg = readFileSync(join(tileSourceDir, tile.filename), 'utf8');
       parsed = parseSvgElements(resolveTransforms(resolveCssClasses(rawSvg)));
     } catch (error) {
       recordSkip(skipped, tile.id, errorReason(error));
@@ -112,6 +117,15 @@ export async function buildTileMaskLibrary(
   }
 
   return entries;
+}
+
+function loadTileSources(tilesDir: string, manifestPath: string): TileSource[] {
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as ManifestTile[] | { tiles?: ManifestTile[] };
+  const tiles = Array.isArray(manifest) ? manifest : manifest.tiles;
+  if (!Array.isArray(tiles)) {
+    throw new Error(`Tile manifest must be an array or contain a tiles array: ${manifestPath}`);
+  }
+  return tiles.map((tile) => ({ tile, tilesDir }));
 }
 
 export function matchCell(cellMask: Uint8Array, library: TileMaskEntry[]): CellMatch {
@@ -212,7 +226,7 @@ function isFullTileRect(el: SvgElement, width: number, height: number): boolean 
   );
 }
 
-function transformMask(mask: Uint8Array, size: number, rotation: Rotation, flip: boolean): Uint8Array {
+export function transformMask(mask: Uint8Array, size: number, rotation: Rotation, flip: boolean): Uint8Array {
   if (mask.length !== size * size) {
     throw new Error(`Mask length ${mask.length} does not match ${size}x${size}`);
   }

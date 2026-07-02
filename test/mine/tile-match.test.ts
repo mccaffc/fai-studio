@@ -17,6 +17,16 @@ describe('buildTileMaskLibrary', () => {
     expect(representedTiles.size).toBeGreaterThan(120);
     expect(lib.length).toBeGreaterThan(representedTiles.size);
   });
+
+  it('ignores a nonexistent extra manifest', async () => {
+    const withMissingExtra = await buildTileMaskLibrary(
+      'corpus/reference/tiles',
+      'corpus/reference/tiles-manifest.json',
+      64,
+      { tilesDir: 'corpus/mined-tiles', manifestPath: 'corpus/mined-tiles/does-not-exist.json' },
+    );
+    expect(withMissingExtra).toHaveLength(lib.length);
+  }, 120_000);
 });
 
 describe('matchCell - synthetic exact recovery', () => {

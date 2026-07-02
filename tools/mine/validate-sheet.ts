@@ -16,7 +16,7 @@
  * The per-cell agreement scores verify this round-trip empirically.
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import canvasPkg from 'canvas';
 import { parseSvgElements, type SvgElement } from './svg.js';
@@ -35,6 +35,8 @@ const CORPUS_PATH = join(ROOT, 'corpus', 'corpus.json');
 const BANNERS_DIR = join(ROOT, 'corpus', 'reference', 'banners');
 const TILES_DIR = join(ROOT, 'corpus', 'reference', 'tiles');
 const MANIFEST_PATH = join(ROOT, 'corpus', 'reference', 'tiles-manifest.json');
+const MINED_TILES_DIR = join(ROOT, 'corpus', 'mined-tiles');
+const MINED_MANIFEST_PATH = join(MINED_TILES_DIR, 'manifest.json');
 const OUT_DIR = join(ROOT, 'corpus', 'validation');
 
 // Render geometry: 720×360 → each of the 6×3 cells is exactly 120×120.
@@ -47,10 +49,22 @@ const HEAT_W = 200;
 interface CellScore { col: number; row: number; kind: string; agreement: number }
 interface BannerScore { id: string; agreement: number; matchRate: number; cells: CellScore[] }
 
-function manifestById(): Map<string, ManifestTile & { filename: string }> {
-  const raw = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
-  const arr: (ManifestTile & { filename: string })[] = Array.isArray(raw) ? raw : raw.tiles;
-  return new Map(arr.map(t => [t.id, t]));
+type ManifestLookupEntry = ManifestTile & { filename: string; baseDir: string; has_background_rect?: boolean };
+
+function loadManifestEntries(manifestPath: string, baseDir: string): ManifestLookupEntry[] {
+  const raw = JSON.parse(readFileSync(manifestPath, 'utf8')) as
+    | (ManifestTile & { filename: string; has_background_rect?: boolean })[]
+    | { tiles?: (ManifestTile & { filename: string; has_background_rect?: boolean })[] };
+  const arr = Array.isArray(raw) ? raw : (raw.tiles ?? []);
+  return arr.map(t => ({ ...t, baseDir }));
+}
+
+function manifestById(): Map<string, ManifestLookupEntry> {
+  const entries = loadManifestEntries(MANIFEST_PATH, TILES_DIR);
+  if (existsSync(MINED_MANIFEST_PATH)) {
+    entries.push(...loadManifestEntries(MINED_MANIFEST_PATH, MINED_TILES_DIR));
+  }
+  return new Map(entries.map(t => [t.id, t]));
 }
 
 // --- color-aware element serialization (raster.ts's serializer is mask-only) ---
@@ -83,7 +97,7 @@ const tileImgCache = new Map<string, Promise<canvasPkg.Image>>();
 
 function recoloredTile(
   tileId: string, ink: string, ground: string,
-  manifest: Map<string, ManifestTile & { filename: string }>,
+  manifest: Map<string, ManifestLookupEntry>,
 ): Promise<canvasPkg.Image> {
   const key = `${tileId}|${ink}|${ground}`;
   let cached = tileImgCache.get(key);
@@ -91,7 +105,7 @@ function recoloredTile(
   cached = (async () => {
     const entry = manifest.get(tileId);
     if (!entry) throw new Error(`tile ${tileId} not in manifest`);
-    const raw = readFileSync(join(TILES_DIR, entry.filename), 'utf8');
+    const raw = readFileSync(join(entry.baseDir, entry.filename), 'utf8');
     const parsed = parseSvgElements(resolveTransforms(resolveCssClasses(raw)));
     const bgIdx = tileBackgroundIndex(parsed.elements, (entry as any).has_background_rect === true);
     const bgFill = bgIdx >= 0 ? parsed.elements[bgIdx]!.fill : undefined;
@@ -111,7 +125,7 @@ function recoloredTile(
 async function renderRecon(
   banner: BannerRecon,
   originalCells: CellSlice[],
-  manifest: Map<string, ManifestTile & { filename: string }>,
+  manifest: Map<string, ManifestLookupEntry>,
 ): Promise<NodeCanvas> {
   const cv = createCanvas(RW, RH);
   const ctx = cv.getContext('2d');

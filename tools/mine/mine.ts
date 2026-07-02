@@ -35,6 +35,8 @@ const PROJECT_ROOT = resolve('.');
 const BANNERS_DIR = join(PROJECT_ROOT, 'corpus', 'reference', 'banners');
 const TILES_DIR = join(PROJECT_ROOT, 'corpus', 'reference', 'tiles');
 const MANIFEST_PATH = join(PROJECT_ROOT, 'corpus', 'reference', 'tiles-manifest.json');
+const MINED_TILES_DIR = join(PROJECT_ROOT, 'corpus', 'mined-tiles');
+const MINED_MANIFEST_PATH = join(MINED_TILES_DIR, 'manifest.json');
 const OVERRIDES_PATH = join(PROJECT_ROOT, 'corpus', 'overrides.json');
 const CORPUS_PATH = join(PROJECT_ROOT, 'corpus', 'corpus.json');
 const CORPUS_PARTIAL_PATH = join(PROJECT_ROOT, 'corpus', 'corpus.partial.json');
@@ -181,7 +183,7 @@ interface TileUsage {
 
 function printStats(
   banners: BannerRecon[],
-  manifestPath: string,
+  manifestTiles: ManifestTile[],
 ): void {
   // Per-banner one-liner
   console.log('\n=== Per-banner stats ===');
@@ -231,20 +233,8 @@ function printStats(
   }
 
   // Per-family counts (derive family from manifest by tile id)
-  let manifest: { tiles?: { id: string; shape_family?: string }[] } | { id: string; shape_family?: string }[];
-  try {
-    manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
-  } catch {
-    console.warn('[mine] Could not load manifest for family stats');
-    return;
-  }
-
-  const tilesArr = Array.isArray(manifest)
-    ? (manifest as { id: string; shape_family?: string }[])
-    : ((manifest as { tiles?: { id: string; shape_family?: string }[] }).tiles ?? []);
-
   const familyByTile = new Map<string, string>();
-  for (const t of tilesArr) {
+  for (const t of manifestTiles) {
     if (t.shape_family) {
       familyByTile.set(t.id, t.shape_family);
     }
@@ -285,6 +275,30 @@ function pct(n: number, total: number): string {
   return total === 0 ? '0.0' : ((n / total) * 100).toFixed(1);
 }
 
+function loadManifestTilesFile(path: string): ManifestTile[] {
+  const raw = JSON.parse(readFileSync(path, 'utf8')) as ManifestTile[] | { tiles?: ManifestTile[] };
+  return Array.isArray(raw) ? raw : (raw.tiles ?? []);
+}
+
+function loadManifestTiles(): ManifestTile[] {
+  let manifestTiles: ManifestTile[] = [];
+  try {
+    manifestTiles = loadManifestTilesFile(MANIFEST_PATH);
+  } catch (err) {
+    console.warn('[mine] Warning: failed to load manifest tiles for form detection:', err);
+  }
+
+  if (existsSync(MINED_MANIFEST_PATH)) {
+    try {
+      manifestTiles = [...manifestTiles, ...loadManifestTilesFile(MINED_MANIFEST_PATH)];
+    } catch (err) {
+      console.warn('[mine] Warning: failed to load mined manifest tiles for form detection:', err);
+    }
+  }
+
+  return manifestTiles;
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -293,19 +307,14 @@ async function main(): Promise<void> {
   const minedAt = new Date().toISOString();
 
   console.log('[mine] Building tile-mask library...');
-  const library = await buildTileMaskLibrary(TILES_DIR, MANIFEST_PATH);
+  const library = await buildTileMaskLibrary(TILES_DIR, MANIFEST_PATH, 64, {
+    tilesDir: MINED_TILES_DIR,
+    manifestPath: MINED_MANIFEST_PATH,
+  });
   console.log(`[mine] Library built: ${library.length} variants`);
 
   // Load manifest tiles for detectForms
-  let manifestTiles: ManifestTile[] = [];
-  try {
-    const raw = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8')) as
-      | ManifestTile[]
-      | { tiles?: ManifestTile[] };
-    manifestTiles = Array.isArray(raw) ? raw : (raw.tiles ?? []);
-  } catch (err) {
-    console.warn('[mine] Warning: failed to load manifest tiles for form detection:', err);
-  }
+  const manifestTiles = loadManifestTiles();
 
   const overrides = loadOverrides();
 
@@ -348,7 +357,7 @@ async function main(): Promise<void> {
     console.log(`\n[mine] Wrote ${outPath} (PARTIAL — single-banner debug run, do NOT commit as corpus.json)`);
   } else {
     console.log(`\n[mine] Wrote ${outPath}`);
-    printStats(banners, MANIFEST_PATH);
+    printStats(banners, manifestTiles);
   }
 }
 

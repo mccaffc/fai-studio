@@ -12,6 +12,7 @@
     "build:flatten": "esbuild src/studio/flatten-core.ts --bundle --format=esm --platform=neutral --outfile=dist-flatten/flatten-core.js",
     "flatten:dir": "npm run build:flatten && node scripts/flatten-dir.mjs",
     "mine": "esbuild tools/mine/mine.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/mine.mjs && node dist-tools/mine.mjs",
+    "mine:extract": "esbuild tools/mine/extract-tile.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/extract-tile.mjs && node dist-tools/extract-tile.mjs",
     "mine:validate": "esbuild tools/mine/validate-sheet.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/validate-sheet.mjs && node dist-tools/validate-sheet.mjs"
   },
   "devDependencies": {
