@@ -24,6 +24,25 @@ import {
   initEditor,
   openScene,
 } from "./editor/index";
+// CorpusConfig is a type-only import — no runtime corpus code in main.ts's static bundle.
+import type { CorpusConfig } from "../engine/corpus/index.js";
+
+// ── corpus-mode dynamic import ──
+// corpus-mode.ts bundles ~56 KB gzip of baked grammar data; classic-only users
+// should never pay that cost. We lazy-load it on first corpus activation.
+type CorpusMod = typeof import("./corpus-mode");
+let _corpusModPromise: Promise<CorpusMod> | null = null;
+let _corpusMod: CorpusMod | null = null; // set once promise resolves
+
+function getCorpusMod(): Promise<CorpusMod> {
+  if (!_corpusModPromise) {
+    _corpusModPromise = import("./corpus-mode").then((mod) => {
+      _corpusMod = mod;
+      return mod;
+    });
+  }
+  return _corpusModPromise;
+}
 
 const info = describe();
 const SWATCHES: Array<[string, string]> = [
@@ -43,10 +62,12 @@ const MODE_LABELS: Record<ColorMode, string> = {
 };
 
 /** Generated items reproduce from config+seed; scene items are hand-edited or
- *  freeform and carry a full self-contained scene snapshot. */
+ *  freeform and carry a full self-contained scene snapshot. Corpus items store
+ *  config+seed and re-generate deterministically (tiny storage). */
 type SavedItem =
   | { kind: "generated"; config: Config; seed: number }
-  | { kind: "scene"; v: 1; scene: Scene };
+  | { kind: "scene"; v: 1; scene: Scene }
+  | { kind: "corpus"; config: CorpusConfig; seed: number };
 
 const state = {
   config: defaultConfig(),
@@ -66,6 +87,96 @@ function el(tag: string, attrs: Record<string, string> = {}, html = ""): HTMLEle
   for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
   e.innerHTML = html;
   return e;
+}
+
+// ── studio mode (corpus | classic) ──
+type StudioMode = "corpus" | "classic";
+const LS_MODE_KEY = "fai-studio-mode";
+// Fall back to classic if the corpus panel mount point isn't in the DOM
+// (this keeps older test skeletons working without modification).
+const _corpusMountPresent = !!document.getElementById("corpus-controls");
+let studioMode: StudioMode = _corpusMountPresent
+  ? ((localStorage.getItem(LS_MODE_KEY) as StudioMode | null) ?? "corpus")
+  : "classic";
+
+function applyModeVisibility(): void {
+  const classicAside = $("#controls");
+  const corpusAside = $("#corpus-controls");
+  const savedEl = $("#saved");
+  const savedHeading = document.getElementById("saved-heading");
+  const scoresEl = $("#corpus-scores");
+
+  if (studioMode === "corpus") {
+    if (classicAside) classicAside.style.display = "none";
+    if (corpusAside) corpusAside.style.display = "";
+    // Show the saved tray in corpus mode so corpus items are accessible.
+    if (savedEl) savedEl.style.display = "";
+    if (savedHeading) savedHeading.style.display = "";
+    if (scoresEl) scoresEl.style.display = "";
+  } else {
+    if (classicAside) classicAside.style.display = "";
+    if (corpusAside) corpusAside.style.display = "none";
+    if (savedEl) savedEl.style.display = "";
+    if (savedHeading) savedHeading.style.display = "";
+    if (scoresEl) scoresEl.style.display = "none";
+  }
+}
+
+function switchMode(mode: StudioMode): void {
+  studioMode = mode;
+  localStorage.setItem(LS_MODE_KEY, mode);
+  applyModeVisibility();
+  renderModeToggle();
+
+  if (mode === "corpus") {
+    // If module already loaded, switch synchronously (no flicker).
+    // Otherwise show loading state and await the dynamic import.
+    if (_corpusMod) {
+      _corpusMod.unmountCorpusMode();
+      _corpusMod.mountCorpusMode({ flash, onSave: saveCorpusItem });
+    } else {
+      const canvas = document.getElementById("canvas");
+      if (canvas) canvas.innerHTML = `<p style="padding:20px;color:#666">Loading…</p>`;
+      getCorpusMod().then((mod) => {
+        mod.unmountCorpusMode();
+        mod.mountCorpusMode({ flash, onSave: saveCorpusItem });
+      }).catch((err) => flash(String(err), true));
+    }
+  } else {
+    if (_corpusMod) _corpusMod.unmountCorpusMode();
+    // ensure classic canvas is current
+    if (state.current) {
+      renderCanvas();
+      renderControls();
+      renderVariations();
+    } else {
+      regen();
+    }
+    renderSaved();
+  }
+}
+
+function renderModeToggle(): void {
+  const toggle = $("#mode-toggle");
+  if (!toggle) return;
+  toggle.innerHTML = "";
+
+  for (const mode of ["corpus", "classic"] as StudioMode[]) {
+    const label = mode === "corpus" ? "Corpus" : "Classic";
+    const btn = el(
+      "button",
+      {
+        class: `chip${studioMode === mode ? " on" : ""}`,
+        style: "border-color:#2a2a2a; color:" + (studioMode === mode ? "#121212" : "#f3f3f3") +
+          "; background:" + (studioMode === mode ? "#f3f3f3" : "transparent"),
+      },
+      label,
+    );
+    btn.addEventListener("click", () => {
+      if (studioMode !== mode) switchMode(mode);
+    });
+    toggle.appendChild(btn);
+  }
 }
 
 // ── generation (geometry changes) ──
@@ -209,6 +320,16 @@ function renderVariations(): void {
 }
 
 // ── save tray ──
+
+/** Called by corpus-mode when the user hits Save in corpus mode. */
+function saveCorpusItem(config: CorpusConfig, seed: number): void {
+  state.saved.push({ kind: "corpus", config, seed });
+  persist();
+  // Tray is visible in both modes since the corpus save-tray landed — always repaint.
+  renderSaved();
+  flash("Saved to the tray below.");
+}
+
 function persist(): void {
   localStorage.setItem("fai-pattern-saved", JSON.stringify(state.saved));
 }
@@ -227,6 +348,28 @@ function renderSaved(): void {
         metaLeft = "scene";
         metaRight = item.scene.nodes.length === 0 ? "empty" : "edited";
         onOpen = () => openScene(item.scene); // re-opens into the editor (cloned)
+      } else if (item.kind === "corpus") {
+        // Re-generate deterministically using the corpus module.
+        // The module should be loaded (corpus items can only be saved while in corpus
+        // mode, so the dynamic import will have resolved already). If not yet loaded,
+        // the item renders as a blank thumb and refreshes on the next renderSaved call.
+        const corpusMod = _corpusMod;
+        if (!corpusMod) {
+          // Module not loaded yet — skip this item; it renders on next call.
+          return;
+        }
+        const r = corpusMod.generateBannerForTray(item.config, item.seed);
+        svg = r.svg;
+        metaLeft = `seed ${item.seed}`;
+        metaRight = r.plan.templateId ?? "corpus";
+        onOpen = () => {
+          // Switch to corpus mode and restore this item.
+          if (studioMode !== "corpus") {
+            switchMode("corpus");
+          }
+          // Restore via the corpus module (may already be loaded if we just switched).
+          getCorpusMod().then((mod) => mod.openCorpusItem(item.config, item.seed)).catch(() => {});
+        };
       } else {
         const r = generate({ ...item.config, seed: item.seed });
         svg = r.svg;
@@ -264,6 +407,11 @@ function renderSaved(): void {
   if (bad.length) {
     state.saved = state.saved.filter((x) => !bad.includes(x));
     persist();
+    tray.appendChild(el(
+      "div",
+      { class: "tray-note", role: "status" },
+      `${bad.length} saved item(s) couldn't be restored (engine updated)`,
+    ));
   }
 }
 
@@ -482,7 +630,17 @@ document.addEventListener("keydown", (e) => {
   const tag = (e.target as HTMLElement).tagName;
   if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
   e.preventDefault();
-  regen(true);
+  if (studioMode === "corpus") {
+    // Use sync cached module if available (avoids microtask delay); otherwise
+    // queue via promise (module not yet loaded).
+    if (_corpusMod) {
+      _corpusMod.corpusSpacebarReroll();
+    } else {
+      getCorpusMod().then((mod) => mod.corpusSpacebarReroll()).catch(() => {});
+    }
+  } else {
+    regen(true);
+  }
 });
 
 // hand off canvas/controls to the editor when it's open; it reports back here
@@ -514,6 +672,10 @@ try {
       migrated.push({ kind: "scene", v: 1, scene: item.scene as Scene });
       continue;
     }
+    if (item?.kind === "corpus" && item.config && typeof item.seed === "number") {
+      migrated.push({ kind: "corpus", config: item.config as CorpusConfig, seed: item.seed as number });
+      continue;
+    }
     // generated or legacy (no kind): normalize retired color modes
     const config = (item?.config ?? null) as Config | null;
     if (!config || typeof item?.seed !== "number") continue;
@@ -527,5 +689,27 @@ try {
 } catch {
   state.saved = [];
 }
-regen();
-renderSaved();
+
+// Render the mode toggle in the header
+renderModeToggle();
+// Apply visibility based on the stored/default mode
+applyModeVisibility();
+
+if (studioMode === "corpus") {
+  // Boot in corpus mode — show loading state first, then load the module.
+  // Top-level await means `import("./main")` callers (including tests) will
+  // block until corpus-mode is mounted and the first banner is rendered.
+  const canvas = document.getElementById("canvas");
+  if (canvas) canvas.innerHTML = `<p style="padding:20px;color:#666">Loading…</p>`;
+  try {
+    const mod = await getCorpusMod();
+    mod.mountCorpusMode({ flash, onSave: saveCorpusItem });
+    renderSaved(); // persisted tray items must appear on corpus cold boot too
+  } catch (err) {
+    flash(String(err), true);
+  }
+} else {
+  // Boot in classic mode
+  regen();
+  renderSaved();
+}

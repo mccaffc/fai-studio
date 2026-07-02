@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="960" viewBox="0 0 1920 960">
+  <rect width="1920" height="960" fill="#F3F3F3"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="640" y="0"/>
+  <path d="M640 320L960 0L640 2.79753e-05L640 320Z" fill="#4997D0"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="640" y="320"/>
+  <path d="M640 640L960 320L640 320L640 640Z" fill="#F3F3F3"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="1280" y="320"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M1440 480L1600 640L1280 640L1280 320L1600 320L1440 480Z" fill="#F3F3F3"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="960" y="0"/>
+  <path d="M960 1.39876e-05L1280 320L1280 0L960 1.39876e-05Z" fill="#4997D0"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="320" y="320"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M480 480L320 320L640 320L640 640L320 640L480 480Z" fill="#F3F3F3"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="960" y="320"/>
+  <path d="M1280 640L960 320L960 640L1280 640Z" fill="#F3F3F3"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="320" y="640"/>
+  <path d="M640 640 C551.634 640 480 711.634 480 800 L480 960 L640 960 L640 640 Z" fill="#D9D9D6"/>
+  <rect width="320" height="320" fill="#D9D9D6" x="960" y="640"/>
+  <path d="M1200 640L1040 640L1040 960L1200 960V640Z" fill="#F3F3F3"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="1280" y="640"/>
+  <path d="M1280 640 C1368.37 640 1440 711.634 1440 800 L1440 960 L1280 960 L1280 640 Z" fill="#D9D9D6"/>
+  <rect width="320" height="320" fill="#D9D9D6" x="640" y="640"/>
+  <path d="M880 640L720 640L720 960L880 960V640Z" fill="#F3F3F3"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="0" y="640"/>
+  <path d="M-3.51801e-05 640 C88.3655 640 160 711.634 160 800 L160 960 L-3.05176e-05 960 L-3.51801e-05 640 Z" fill="#D9D9D6"/>
+  <rect width="320" height="320" fill="#F3F3F3" x="1600" y="640"/>
+  <path d="M1920 640 C1831.63 640 1760 711.634 1760 800 L1760 960 L1920 960 L1920 640 Z" fill="#D9D9D6"/>
+  <rect width="320" height="320" fill="#4997D0" x="320" y="0"/>
+  <rect width="320" height="320" fill="#4997D0" x="1600" y="0"/>
+  <rect width="320" height="320" fill="#4997D0" x="1280" y="0"/>
+  <rect width="320" height="320" fill="#4997D0" x="0" y="0"/>
+  <rect width="320" height="320" fill="#4997D0" x="0" y="320"/>
+  <path d="M1.18244e-05 640L0 480L320 480L320 640L1.18244e-05 640Z" fill="#F3F3F3"/>
+  <rect width="320" height="320" fill="#4997D0" x="1600" y="320"/>
+  <path d="M1600 640L1600 480L1920 480L1920 640L1600 640Z" fill="#F3F3F3"/>
+</svg>

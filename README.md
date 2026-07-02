@@ -7,6 +7,17 @@ Ground-up rebuild (June 2026) of the legacy Flask banner studio.
   Runs in browser, Node, or a Worker. `npm run build:engine` emits a single-file
   ESM bundle (`dist-engine/index.js`) you can drop into any site or workflow.
   API: `generate(config)`, `reroll`, `variations`, `recolor(scene, color)`, `renderSvg`, `describe`.
+- **Corpus mode** (default since July 2026) — generation backed by a grammar
+  mined from the 50 canonical hand-made banners: `src/engine/corpus/` (zero-dep;
+  baked data modules regenerated via `npm run gen:engine-data`). API:
+  `generateBanner`, `reroll`, `variations`, `recolorPlan` (geometry-frozen
+  recolor), quilt-test curation built in. **Program banners:** \`generateBanner({program})\`
+  (or the studio Program select) yields neutrals-only banners — Cod Gray/Smoke
+  White/Timberwolf + exactly one of the six locked program hues — with the palette
+  law machine-enforced. Freeform regions place real corpus-mined figure assets. The mining/grammar pipeline lives in
+  `tools/mine/` + `tools/grammar/` with the corpus artifacts under `corpus/`
+  (validation + sample sheets + gate records included). Classic mode remains
+  available via the header toggle.
 - **Studio** (`src/studio/` + `index.html`) — static client-side UI: live canvas
   (spacebar rerolls), variations tray, save tray, in-place recolor (color
   changes never re-roll geometry), SVG/PNG/clipboard export with print-safe

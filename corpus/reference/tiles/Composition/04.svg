@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 200 200">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  
+  <polygon points="100 0 200 .03 200 0 100 0" fill="#F3F3F3"/>
+  <path d="M100,0H0c43.29,55.85,75.87,119.23,96.1,186.94l3.9,13.06h100V.03l-.03,99.97c-55.23-.02-99.99-44.79-99.97-100Z" fill="#F3F3F3"/>
+  <path d="M199.97,100l.03-99.97-100-.03c-.02,55.21,44.74,99.98,99.97,100Z" fill="#121212"/>
+  <path d="M0,0v200h100l-3.9-13.06C75.87,119.23,43.29,55.85,0,0Z" fill="#121212"/>
+</svg>
