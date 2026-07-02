@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-02T04:38:58.272Z",
+  "generatedAt": "2026-07-02T08:01:28.672Z",
   "banners": [
     {
       "id": "001",
-      "agreement": 0.9573,
+      "agreement": 0.9996,
       "matchRate": 1,
       "cells": [
         {
@@ -70,7 +70,7 @@
           "col": 4,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.75
+          "agreement": 1
         },
         {
           "col": 5,
@@ -106,7 +106,7 @@
           "col": 4,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.49027777777777776
+          "agreement": 1
         },
         {
           "col": 5,
@@ -233,7 +233,7 @@
     },
     {
       "id": "003",
-      "agreement": 0.9467,
+      "agreement": 0.9906,
       "matchRate": 1,
       "cells": [
         {
@@ -324,7 +324,7 @@
           "col": 2,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.20756944444444445
+          "agreement": 0.9979861111111111
         },
         {
           "col": 3,
@@ -1153,7 +1153,7 @@
     },
     {
       "id": "011",
-      "agreement": 0.9123,
+      "agreement": 0.991,
       "matchRate": 1,
       "cells": [
         {
@@ -1202,7 +1202,7 @@
           "col": 1,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.7788194444444444
+          "agreement": 0.8556944444444444
         },
         {
           "col": 2,
@@ -1244,19 +1244,19 @@
           "col": 2,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5529166666666666
+          "agreement": 0.9994444444444445
         },
         {
           "col": 3,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5529166666666666
+          "agreement": 0.9993055555555556
         },
         {
           "col": 4,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5529166666666666
+          "agreement": 0.9995138888888889
         },
         {
           "col": 5,
@@ -1268,7 +1268,7 @@
     },
     {
       "id": "012",
-      "agreement": 0.9133,
+      "agreement": 0.9298,
       "matchRate": 0.9444,
       "cells": [
         {
@@ -1317,7 +1317,7 @@
           "col": 1,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.7036111111111111
+          "agreement": 0.9999305555555555
         },
         {
           "col": 2,
@@ -1383,7 +1383,7 @@
     },
     {
       "id": "013",
-      "agreement": 0.9445,
+      "agreement": 0.9718,
       "matchRate": 1,
       "cells": [
         {
@@ -1438,7 +1438,7 @@
           "col": 2,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.1542361111111111
+          "agreement": 0.6463194444444444
         },
         {
           "col": 3,
@@ -1498,7 +1498,7 @@
     },
     {
       "id": "014",
-      "agreement": 0.7946,
+      "agreement": 0.939,
       "matchRate": 1,
       "cells": [
         {
@@ -1547,7 +1547,7 @@
           "col": 1,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5934722222222222
+          "agreement": 0.8314583333333333
         },
         {
           "col": 2,
@@ -1565,13 +1565,13 @@
           "col": 4,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.0975
+          "agreement": 1
         },
         {
           "col": 5,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.6567361111111111
+          "agreement": 0.7743055555555556
         },
         {
           "col": 0,
@@ -1583,7 +1583,7 @@
           "col": 1,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.0975
+          "agreement": 1
         },
         {
           "col": 2,
@@ -1601,7 +1601,7 @@
           "col": 4,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5615277777777777
+          "agreement": 1
         },
         {
           "col": 5,
@@ -1613,7 +1613,7 @@
     },
     {
       "id": "015",
-      "agreement": 0.8926,
+      "agreement": 0.9485,
       "matchRate": 1,
       "cells": [
         {
@@ -1650,13 +1650,13 @@
           "col": 5,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.8413888888888889
+          "agreement": 0.9995138888888889
         },
         {
           "col": 0,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.7015277777777778
+          "agreement": 0.97875
         },
         {
           "col": 1,
@@ -1668,7 +1668,7 @@
           "col": 2,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.7015277777777778
+          "agreement": 0.986875
         },
         {
           "col": 3,
@@ -1680,7 +1680,7 @@
           "col": 4,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.7015277777777778
+          "agreement": 0.9869444444444444
         },
         {
           "col": 5,
@@ -1728,14 +1728,14 @@
     },
     {
       "id": "016",
-      "agreement": 0.7639,
+      "agreement": 0.8437,
       "matchRate": 1,
       "cells": [
         {
           "col": 0,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.20847222222222223
+          "agreement": 0.9979861111111111
         },
         {
           "col": 1,
@@ -1795,7 +1795,7 @@
           "col": 4,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5529166666666666
+          "agreement": 1
         },
         {
           "col": 5,
@@ -1813,7 +1813,7 @@
           "col": 1,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.8007638888888889
+          "agreement": 0.9997916666666666
         },
         {
           "col": 2,
@@ -1843,14 +1843,14 @@
     },
     {
       "id": "017",
-      "agreement": 0.5876,
+      "agreement": 0.7216,
       "matchRate": 0.7222,
       "cells": [
         {
           "col": 0,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.5976388888888889
+          "agreement": 1
         },
         {
           "col": 1,
@@ -1892,25 +1892,25 @@
           "col": 1,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5975
+          "agreement": 1
         },
         {
           "col": 2,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5975
+          "agreement": 0.9991666666666666
         },
         {
           "col": 3,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5975
+          "agreement": 1
         },
         {
           "col": 4,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5979166666666667
+          "agreement": 0.9993055555555556
         },
         {
           "col": 5,
@@ -1940,7 +1940,7 @@
           "col": 3,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5976388888888889
+          "agreement": 1
         },
         {
           "col": 4,
@@ -1958,7 +1958,7 @@
     },
     {
       "id": "018",
-      "agreement": 0.6207,
+      "agreement": 0.7288,
       "matchRate": 0.75,
       "cells": [
         {
@@ -1983,7 +1983,7 @@
           "col": 3,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.6266666666666667
+          "agreement": 1
         },
         {
           "col": 4,
@@ -2025,13 +2025,13 @@
           "col": 4,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.43333333333333335
+          "agreement": 1
         },
         {
           "col": 5,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.43333333333333335
+          "agreement": 1
         },
         {
           "col": 0,
@@ -2049,7 +2049,7 @@
           "col": 2,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5611805555555556
+          "agreement": 1
         },
         {
           "col": 3,
@@ -2073,7 +2073,7 @@
     },
     {
       "id": "019",
-      "agreement": 0.6924,
+      "agreement": 0.7772,
       "matchRate": 0.9231,
       "cells": [
         {
@@ -2098,7 +2098,7 @@
           "col": 3,
           "row": 0,
           "kind": "tile",
-          "agreement": 0
+          "agreement": 0.6281944444444445
         },
         {
           "col": 4,
@@ -2134,13 +2134,13 @@
           "col": 3,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.000625
+          "agreement": 0.6283333333333333
         },
         {
           "col": 4,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.35097222222222224
+          "agreement": 0.6205555555555555
         },
         {
           "col": 5,
@@ -2418,14 +2418,14 @@
     },
     {
       "id": "022",
-      "agreement": 0.9527,
+      "agreement": 0.9991,
       "matchRate": 1,
       "cells": [
         {
           "col": 0,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.644375
+          "agreement": 0.9999305555555555
         },
         {
           "col": 1,
@@ -2437,7 +2437,7 @@
           "col": 2,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.5205555555555555
+          "agreement": 0.9997222222222222
         },
         {
           "col": 3,
@@ -2533,14 +2533,14 @@
     },
     {
       "id": "023",
-      "agreement": 0.7174,
+      "agreement": 0.7742,
       "matchRate": 0.8824,
       "cells": [
         {
           "col": 0,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.5538888888888889
+          "agreement": 0.88625
         },
         {
           "col": 1,
@@ -2576,13 +2576,13 @@
           "col": 0,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5320138888888889
+          "agreement": 0.7109722222222222
         },
         {
           "col": 1,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5319444444444444
+          "agreement": 0.7110416666666667
         },
         {
           "col": 2,
@@ -2606,7 +2606,7 @@
           "col": 5,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5538888888888889
+          "agreement": 0.8860416666666666
         },
         {
           "col": 0,
@@ -2648,7 +2648,7 @@
     },
     {
       "id": "024",
-      "agreement": 0.613,
+      "agreement": 0.6534,
       "matchRate": 0.6667,
       "cells": [
         {
@@ -2697,7 +2697,7 @@
           "col": 1,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5538194444444444
+          "agreement": 0.8861111111111111
         },
         {
           "col": 2,
@@ -2715,7 +2715,7 @@
           "col": 4,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5538888888888889
+          "agreement": 0.8860416666666666
         },
         {
           "col": 5,
@@ -2733,7 +2733,7 @@
           "col": 1,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.9375
+          "agreement": 1
         },
         {
           "col": 2,
@@ -2763,7 +2763,7 @@
     },
     {
       "id": "025",
-      "agreement": 0.7274,
+      "agreement": 0.7643,
       "matchRate": 0.75,
       "cells": [
         {
@@ -2836,7 +2836,7 @@
           "col": 5,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5538888888888889
+          "agreement": 0.8860416666666666
         },
         {
           "col": 0,
@@ -2866,7 +2866,7 @@
           "col": 4,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5538888888888889
+          "agreement": 0.8860416666666666
         },
         {
           "col": 5,
@@ -3223,7 +3223,7 @@
     },
     {
       "id": "029",
-      "agreement": 0.9544,
+      "agreement": 0.9986,
       "matchRate": 1,
       "cells": [
         {
@@ -3242,13 +3242,13 @@
           "col": 2,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.8004861111111111
+          "agreement": 0.9995138888888889
         },
         {
           "col": 3,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.8004861111111111
+          "agreement": 0.9992361111111111
         },
         {
           "col": 4,
@@ -3278,13 +3278,13 @@
           "col": 2,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.8004861111111111
+          "agreement": 0.9995833333333334
         },
         {
           "col": 3,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.8004861111111111
+          "agreement": 0.9994444444444445
         },
         {
           "col": 4,
@@ -3683,7 +3683,7 @@
     },
     {
       "id": "033",
-      "agreement": 0.973,
+      "agreement": 0.998,
       "matchRate": 1,
       "cells": [
         {
@@ -3738,7 +3738,7 @@
           "col": 2,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.7727083333333333
+          "agreement": 0.9967361111111112
         },
         {
           "col": 3,
@@ -3786,7 +3786,7 @@
           "col": 4,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.7729166666666667
+          "agreement": 0.9989583333333333
         },
         {
           "col": 5,
@@ -3798,7 +3798,7 @@
     },
     {
       "id": "034",
-      "agreement": 0.9326,
+      "agreement": 0.9548,
       "matchRate": 1,
       "cells": [
         {
@@ -3823,7 +3823,7 @@
           "col": 3,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.599375
+          "agreement": 0.5996527777777778
         },
         {
           "col": 4,
@@ -3859,7 +3859,7 @@
           "col": 3,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.6009722222222222
+          "agreement": 0.9997916666666666
         },
         {
           "col": 4,
@@ -4028,7 +4028,7 @@
     },
     {
       "id": "036",
-      "agreement": 0.8806,
+      "agreement": 0.9639,
       "matchRate": 1,
       "cells": [
         {
@@ -4119,19 +4119,19 @@
           "col": 2,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 3,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 4,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 5,
@@ -4488,7 +4488,7 @@
     },
     {
       "id": "040",
-      "agreement": 0.9781,
+      "agreement": 0.9979,
       "matchRate": 1,
       "cells": [
         {
@@ -4585,7 +4585,7 @@
           "col": 3,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.6429861111111111
+          "agreement": 0.9997916666666666
         },
         {
           "col": 4,
@@ -4718,7 +4718,7 @@
     },
     {
       "id": "042",
-      "agreement": 0.7194,
+      "agreement": 0.948,
       "matchRate": 1,
       "cells": [
         {
@@ -4767,19 +4767,19 @@
           "col": 1,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.19402777777777777
+          "agreement": 0.9997222222222222
         },
         {
           "col": 2,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5472222222222223
+          "agreement": 0.9992361111111111
         },
         {
           "col": 3,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5472222222222223
+          "agreement": 0.9992361111111111
         },
         {
           "col": 4,
@@ -4791,19 +4791,19 @@
           "col": 5,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 0,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 1,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5472222222222223
+          "agreement": 0.9995833333333334
         },
         {
           "col": 2,
@@ -4821,13 +4821,13 @@
           "col": 4,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5472222222222223
+          "agreement": 0.9994444444444445
         },
         {
           "col": 5,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         }
       ]
     },
@@ -5063,14 +5063,14 @@
     },
     {
       "id": "045",
-      "agreement": 0.6781,
+      "agreement": 0.9167,
       "matchRate": 1,
       "cells": [
         {
           "col": 0,
           "row": 0,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 1,
@@ -5106,7 +5106,7 @@
           "col": 0,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 1,
@@ -5118,31 +5118,31 @@
           "col": 2,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 3,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 4,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 5,
           "row": 1,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 0,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.5
+          "agreement": 1
         },
         {
           "col": 1,
@@ -5154,7 +5154,7 @@
           "col": 2,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.35291666666666666
+          "agreement": 0.75
         },
         {
           "col": 3,
@@ -5166,7 +5166,7 @@
           "col": 4,
           "row": 2,
           "kind": "tile",
-          "agreement": 0.35291666666666666
+          "agreement": 0.75
         },
         {
           "col": 5,

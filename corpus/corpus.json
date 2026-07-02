@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "minedAt": "2026-07-02T04:40:09.258Z",
+  "minedAt": "2026-07-02T08:01:37.695Z",
   "banners": [
     {
       "id": "001",
@@ -17,8 +17,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -52,8 +51,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -87,9 +85,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#FFA300",
-            "#121212"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -157,8 +153,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -226,8 +221,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -261,8 +255,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -340,9 +333,8 @@
           "row": 1,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#FFA300",
+          "ink": "#121212",
           "inks": [
-            "#FFA300",
             "#121212"
           ],
           "candidates": [
@@ -411,8 +403,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -446,8 +437,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -481,8 +471,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -516,8 +505,7 @@
           "kind": "tile",
           "ink": "#FFA300",
           "inks": [
-            "#FFA300",
-            "#121212"
+            "#FFA300"
           ],
           "candidates": [
             {
@@ -549,9 +537,8 @@
           "row": 2,
           "ground": "#4997D0",
           "kind": "tile",
-          "ink": "#FFA300",
+          "ink": "#121212",
           "inks": [
-            "#FFA300",
             "#121212"
           ],
           "candidates": [
@@ -638,7 +625,7 @@
             ]
           ],
           "family": "square",
-          "ink": "#FFA300"
+          "ink": "#121212"
         },
         {
           "id": "001-form-4",
@@ -1587,8 +1574,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#4997D0"
+            "#121212"
           ],
           "candidates": [
             {
@@ -1622,8 +1608,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#4997D0"
+            "#121212"
           ],
           "candidates": [
             {
@@ -1860,9 +1845,8 @@
           "row": 2,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#FF4F00",
           "inks": [
-            "#4997D0",
             "#FF4F00"
           ],
           "candidates": [
@@ -1897,8 +1881,7 @@
           "kind": "tile",
           "ink": "#FF4F00",
           "inks": [
-            "#FF4F00",
-            "#4997D0"
+            "#FF4F00"
           ],
           "candidates": [
             {
@@ -1932,8 +1915,7 @@
           "kind": "tile",
           "ink": "#FFA300",
           "inks": [
-            "#FFA300",
-            "#4997D0"
+            "#FFA300"
           ],
           "candidates": [
             {
@@ -2065,15 +2047,23 @@
           "kind": "run",
           "cells": [
             [
+              2,
+              1
+            ],
+            [
               3,
               1
+            ],
+            [
+              2,
+              2
             ],
             [
               3,
               2
             ]
           ],
-          "family": "open",
+          "family": "circle",
           "ink": "#FF4F00"
         },
         {
@@ -2127,8 +2117,7 @@
           "ink": "#121212",
           "inks": [
             "#121212",
-            "#FFA300",
-            "#4997D0"
+            "#FFA300"
           ],
           "candidates": [
             {
@@ -2171,7 +2160,6 @@
           "ink": "#121212",
           "inks": [
             "#121212",
-            "#4997D0",
             "#F3F3F3"
           ],
           "candidates": [
@@ -2242,7 +2230,6 @@
           "ink": "#121212",
           "inks": [
             "#121212",
-            "#F3F3F3",
             "#4997D0"
           ],
           "candidates": [
@@ -2466,8 +2453,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -2536,8 +2522,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FF4F00"
+            "#121212"
           ],
           "candidates": [
             {
@@ -3868,8 +3853,7 @@
           "kind": "freeform",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -3967,8 +3951,7 @@
           "kind": "freeform",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -4032,8 +4015,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -4067,8 +4049,7 @@
           "kind": "freeform",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -4166,8 +4147,7 @@
           "kind": "freeform",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -4728,8 +4708,7 @@
           "kind": "freeform",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -4759,8 +4738,7 @@
           "kind": "freeform",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -5554,8 +5532,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -5993,8 +5970,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -6277,8 +6253,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#4997D0"
+            "#121212"
           ],
           "candidates": [
             {
@@ -6412,10 +6387,10 @@
           "row": 1,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#121212",
           "inks": [
-            "#4997D0",
-            "#121212"
+            "#121212",
+            "#4997D0"
           ],
           "candidates": [
             {
@@ -6651,9 +6626,8 @@
           "row": 2,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#FF4F00",
           "inks": [
-            "#4997D0",
             "#FF4F00"
           ],
           "candidates": [
@@ -6686,11 +6660,9 @@
           "row": 2,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#FF4F00",
           "inks": [
-            "#4997D0",
-            "#FF4F00",
-            "#FFA300"
+            "#FF4F00"
           ],
           "candidates": [
             {
@@ -6722,9 +6694,8 @@
           "row": 2,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#FFA300",
           "inks": [
-            "#4997D0",
             "#FFA300"
           ],
           "candidates": [
@@ -6803,22 +6774,6 @@
           ],
           "family": "curve",
           "ink": "#4997D0"
-        },
-        {
-          "id": "011-form-2",
-          "kind": "run",
-          "cells": [
-            [
-              3,
-              2
-            ],
-            [
-              4,
-              2
-            ]
-          ],
-          "family": "circle",
-          "ink": "#4997D0"
         }
       ],
       "matchRate": 1
@@ -6838,8 +6793,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#121212"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -6977,8 +6931,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#121212"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -7079,9 +7032,8 @@
           "row": 1,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#FFA300",
           "inks": [
-            "#121212",
             "#FFA300"
           ],
           "candidates": [
@@ -7287,8 +7239,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#121212"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -7322,8 +7273,7 @@
           "kind": "tile",
           "ink": "#FF4F00",
           "inks": [
-            "#FF4F00",
-            "#FFA300"
+            "#FF4F00"
           ],
           "candidates": [
             {
@@ -7453,7 +7403,24 @@
           "score": 0.7520267048164044
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "012-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "family": "curve",
+          "ink": "#FFA300"
+        }
+      ],
       "matchRate": 0.9444
     },
     {
@@ -7741,10 +7708,10 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#4997D0",
           "inks": [
-            "#121212",
-            "#4997D0"
+            "#4997D0",
+            "#121212"
           ],
           "candidates": [
             {
@@ -7914,8 +7881,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -8383,10 +8349,10 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#121212",
           "inks": [
-            "#4997D0",
-            "#121212"
+            "#121212",
+            "#4997D0"
           ],
           "candidates": [
             {
@@ -8420,8 +8386,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#4997D0"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -8488,9 +8453,8 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#D9D9D6",
           "inks": [
-            "#4997D0",
             "#D9D9D6"
           ],
           "candidates": [
@@ -8523,10 +8487,10 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#121212",
           "inks": [
-            "#4997D0",
-            "#121212"
+            "#121212",
+            "#4997D0"
           ],
           "candidates": [
             {
@@ -8592,9 +8556,8 @@
           "row": 2,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#F3F3F3",
           "inks": [
-            "#4997D0",
             "#F3F3F3"
           ],
           "candidates": [
@@ -8629,8 +8592,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#4997D0"
+            "#121212"
           ],
           "candidates": [
             {
@@ -8665,7 +8627,6 @@
           "ink": "#F3F3F3",
           "inks": [
             "#F3F3F3",
-            "#4997D0",
             "#FFA300"
           ],
           "candidates": [
@@ -8698,9 +8659,8 @@
           "row": 2,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#4997D0",
+          "ink": "#121212",
           "inks": [
-            "#4997D0",
             "#121212"
           ],
           "candidates": [
@@ -8735,8 +8695,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#4997D0"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -8764,24 +8723,7 @@
           "score": 1
         }
       ],
-      "forms": [
-        {
-          "id": "014-form-1",
-          "kind": "run",
-          "cells": [
-            [
-              4,
-              1
-            ],
-            [
-              5,
-              1
-            ]
-          ],
-          "family": "square",
-          "ink": "#4997D0"
-        }
-      ],
+      "forms": [],
       "matchRate": 1
     },
     {
@@ -8967,9 +8909,8 @@
           "row": 0,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
             "#121212"
           ],
           "candidates": [
@@ -9002,9 +8943,8 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
             "#121212"
           ],
           "candidates": [
@@ -9040,8 +8980,7 @@
           "ink": "#D9D9D6",
           "inks": [
             "#D9D9D6",
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -9073,11 +9012,9 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -9112,8 +9049,7 @@
           "ink": "#D9D9D6",
           "inks": [
             "#D9D9D6",
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -9145,11 +9081,9 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -9184,8 +9118,7 @@
           "ink": "#D9D9D6",
           "inks": [
             "#D9D9D6",
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -9498,9 +9431,8 @@
           "row": 0,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#D9D9D6",
+          "ink": "#121212",
           "inks": [
-            "#D9D9D6",
             "#121212"
           ],
           "candidates": [
@@ -9535,8 +9467,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#121212"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -9582,8 +9513,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#121212"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -9617,8 +9547,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -9698,8 +9627,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#121212"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -9755,9 +9683,8 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#D9D9D6",
           "inks": [
-            "#121212",
             "#D9D9D6"
           ],
           "candidates": [
@@ -9803,8 +9730,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#121212"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -9836,9 +9762,8 @@
           "row": 2,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#D9D9D6",
+          "ink": "#121212",
           "inks": [
-            "#D9D9D6",
             "#121212"
           ],
           "candidates": [
@@ -9944,22 +9869,6 @@
           ],
           "family": "circle",
           "ink": "#D9D9D6"
-        },
-        {
-          "id": "016-form-2",
-          "kind": "run",
-          "cells": [
-            [
-              0,
-              2
-            ],
-            [
-              1,
-              2
-            ]
-          ],
-          "family": "circle",
-          "ink": "#D9D9D6"
         }
       ],
       "matchRate": 1
@@ -9977,9 +9886,8 @@
           "row": 0,
           "ground": "#4997D0",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#D9D9D6",
           "inks": [
-            "#121212",
             "#D9D9D6"
           ],
           "candidates": [
@@ -10218,9 +10126,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#FF4F00",
           "inks": [
-            "#121212",
             "#FF4F00"
           ],
           "candidates": [
@@ -10253,9 +10160,8 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#D9D9D6",
           "inks": [
-            "#121212",
             "#D9D9D6"
           ],
           "candidates": [
@@ -10288,9 +10194,8 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#4997D0",
           "inks": [
-            "#121212",
             "#4997D0"
           ],
           "candidates": [
@@ -10323,9 +10228,8 @@
           "row": 1,
           "ground": "#4997D0",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#FF4F00",
           "inks": [
-            "#121212",
             "#FF4F00"
           ],
           "candidates": [
@@ -10462,8 +10366,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -10495,9 +10398,8 @@
           "row": 2,
           "ground": "#4997D0",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#D9D9D6",
           "inks": [
-            "#121212",
             "#D9D9D6"
           ],
           "candidates": [
@@ -10613,9 +10515,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -10660,10 +10560,8 @@
           "row": 0,
           "ground": "#D9D9D6",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#FFA300",
             "#F3F3F3"
           ],
           "candidates": [
@@ -10696,10 +10594,8 @@
           "row": 0,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#FFA300",
             "#F3F3F3"
           ],
           "candidates": [
@@ -10746,8 +10642,7 @@
           "kind": "tile",
           "ink": "#FFA300",
           "inks": [
-            "#FFA300",
-            "#121212"
+            "#FFA300"
           ],
           "candidates": [
             {
@@ -10815,8 +10710,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -10872,9 +10766,8 @@
           "row": 1,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#FFA300",
+          "ink": "#121212",
           "inks": [
-            "#FFA300",
             "#121212"
           ],
           "candidates": [
@@ -10907,9 +10800,8 @@
           "row": 1,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#FFA300",
+          "ink": "#121212",
           "inks": [
-            "#FFA300",
             "#121212"
           ],
           "candidates": [
@@ -10987,9 +10879,8 @@
           "row": 2,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#FFA300",
+          "ink": "#121212",
           "inks": [
-            "#FFA300",
             "#121212"
           ],
           "candidates": [
@@ -11104,7 +10995,7 @@
             ]
           ],
           "family": "angle",
-          "ink": "#FFA300"
+          "ink": "#121212"
         },
         {
           "id": "018-form-2",
@@ -11139,10 +11030,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300",
-            "#4997D0",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -11189,9 +11077,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#4997D0",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -11223,11 +11109,9 @@
           "row": 0,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#4997D0",
           "inks": [
-            "#121212",
-            "#4997D0",
-            "#F3F3F3"
+            "#4997D0"
           ],
           "candidates": [
             {
@@ -11261,8 +11145,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#4997D0"
+            "#121212"
           ],
           "candidates": [
             {
@@ -11307,10 +11190,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FFA300",
-            "#4997D0",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -11357,9 +11237,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#4997D0",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -11391,10 +11269,8 @@
           "row": 1,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#4997D0",
             "#F3F3F3"
           ],
           "candidates": [
@@ -11427,10 +11303,10 @@
           "row": 1,
           "ground": "#D9D9D6",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#4997D0",
           "inks": [
-            "#121212",
-            "#4997D0"
+            "#4997D0",
+            "#121212"
           ],
           "candidates": [
             {
@@ -11656,22 +11532,6 @@
           "kind": "run",
           "cells": [
             [
-              2,
-              0
-            ],
-            [
-              3,
-              0
-            ]
-          ],
-          "family": "wave",
-          "ink": "#121212"
-        },
-        {
-          "id": "019-form-2",
-          "kind": "run",
-          "cells": [
-            [
               0,
               1
             ],
@@ -11684,23 +11544,7 @@
           "ink": "#121212"
         },
         {
-          "id": "019-form-3",
-          "kind": "run",
-          "cells": [
-            [
-              2,
-              1
-            ],
-            [
-              3,
-              1
-            ]
-          ],
-          "family": "wave",
-          "ink": "#121212"
-        },
-        {
-          "id": "019-form-4",
+          "id": "019-form-2",
           "kind": "run",
           "cells": [
             [
@@ -11733,8 +11577,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -11768,9 +11611,7 @@
           "kind": "tile",
           "ink": "#FFA300",
           "inks": [
-            "#FFA300",
-            "#F3F3F3",
-            "#121212"
+            "#FFA300"
           ],
           "candidates": [
             {
@@ -11805,8 +11646,7 @@
           "ink": "#121212",
           "inks": [
             "#121212",
-            "#F3F3F3",
-            "#4997D0"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -11874,8 +11714,7 @@
           "kind": "tile",
           "ink": "#FF4F00",
           "inks": [
-            "#FF4F00",
-            "#F3F3F3"
+            "#FF4F00"
           ],
           "candidates": [
             {
@@ -11944,8 +11783,7 @@
           "kind": "freeform",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#FF4F00"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -11975,9 +11813,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3",
-            "#FFA300"
+            "#121212"
           ],
           "candidates": [
             {
@@ -12079,8 +11915,7 @@
           "kind": "freeform",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -12144,8 +11979,7 @@
           "kind": "tile",
           "ink": "#4997D0",
           "inks": [
-            "#4997D0",
-            "#121212"
+            "#4997D0"
           ],
           "candidates": [
             {
@@ -12213,8 +12047,7 @@
           "kind": "tile",
           "ink": "#FFA300",
           "inks": [
-            "#FFA300",
-            "#121212"
+            "#FFA300"
           ],
           "candidates": [
             {
@@ -12249,8 +12082,7 @@
           "ink": "#121212",
           "inks": [
             "#121212",
-            "#FF4F00",
-            "#FFA300"
+            "#FF4F00"
           ],
           "candidates": [
             {
@@ -12284,8 +12116,7 @@
           "kind": "tile",
           "ink": "#4997D0",
           "inks": [
-            "#4997D0",
-            "#F3F3F3"
+            "#4997D0"
           ],
           "candidates": [
             {
@@ -13025,9 +12856,8 @@
           "row": 0,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#F3F3F3",
           "inks": [
-            "#FF4F00",
             "#F3F3F3"
           ],
           "candidates": [
@@ -13094,9 +12924,8 @@
           "row": 0,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#4997D0",
           "inks": [
-            "#FF4F00",
             "#4997D0"
           ],
           "candidates": [
@@ -13651,9 +13480,8 @@
           "row": 0,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#F3F3F3",
           "inks": [
-            "#FF4F00",
             "#F3F3F3",
             "#121212"
           ],
@@ -13687,10 +13515,10 @@
           "row": 0,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#4997D0",
+          "ink": "#F3F3F3",
           "inks": [
-            "#4997D0",
             "#F3F3F3",
+            "#4997D0",
             "#121212"
           ],
           "candidates": [
@@ -13834,10 +13662,10 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#121212",
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -13869,10 +13697,10 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#121212",
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -13973,10 +13801,10 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -14008,9 +13836,8 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#F3F3F3",
           "inks": [
-            "#FF4F00",
             "#F3F3F3",
             "#121212"
           ],
@@ -14294,7 +14121,7 @@
             ]
           ],
           "family": "ramp",
-          "ink": "#F3F3F3"
+          "ink": "#121212"
         },
         {
           "id": "023-form-4",
@@ -14360,10 +14187,10 @@
           "row": 0,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -14395,10 +14222,10 @@
           "row": 0,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -14498,10 +14325,10 @@
           "row": 0,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -14533,10 +14360,10 @@
           "row": 0,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -14568,10 +14395,10 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -14603,9 +14430,8 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#F3F3F3",
           "inks": [
-            "#FF4F00",
             "#F3F3F3",
             "#121212"
           ],
@@ -14707,9 +14533,8 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#F3F3F3",
           "inks": [
-            "#FF4F00",
             "#F3F3F3",
             "#121212"
           ],
@@ -14743,10 +14568,10 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -14812,11 +14637,9 @@
           "row": 2,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -14850,8 +14673,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#FF4F00"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -14999,7 +14821,7 @@
               1
             ]
           ],
-          "ink": "#121212"
+          "ink": "#F3F3F3"
         },
         {
           "id": "024-form-2",
@@ -15034,7 +14856,7 @@
               1
             ]
           ],
-          "ink": "#121212"
+          "ink": "#F3F3F3"
         },
         {
           "id": "024-form-4",
@@ -15136,9 +14958,8 @@
           "row": 0,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#FF4F00",
+          "ink": "#F3F3F3",
           "inks": [
-            "#FF4F00",
             "#F3F3F3"
           ],
           "candidates": [
@@ -15353,10 +15174,10 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -15388,9 +15209,8 @@
           "row": 1,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#F3F3F3",
           "inks": [
-            "#FF4F00",
             "#F3F3F3",
             "#121212"
           ],
@@ -15424,9 +15244,8 @@
           "row": 2,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#FF4F00",
+          "ink": "#F3F3F3",
           "inks": [
-            "#FF4F00",
             "#F3F3F3"
           ],
           "candidates": [
@@ -15557,9 +15376,8 @@
           "row": 2,
           "ground": "#FF4F00",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#F3F3F3",
           "inks": [
-            "#FF4F00",
             "#F3F3F3",
             "#121212"
           ],
@@ -15593,10 +15411,10 @@
           "row": 2,
           "ground": "#FF4F00",
           "kind": "freeform",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -15755,8 +15573,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#D9D9D6"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -15790,8 +15607,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#F3F3F3"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -15938,8 +15754,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#D9D9D6"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -16075,8 +15890,7 @@
           "kind": "tile",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#F3F3F3"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -16661,9 +16475,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -16697,8 +16509,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -16733,8 +16544,7 @@
           "ink": "#121212",
           "inks": [
             "#121212",
-            "#FF4F00",
-            "#F3F3F3"
+            "#FF4F00"
           ],
           "candidates": [
             {
@@ -16769,8 +16579,7 @@
           "ink": "#121212",
           "inks": [
             "#121212",
-            "#D9D9D6",
-            "#FF4F00"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -16804,9 +16613,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -17660,9 +17467,8 @@
           "row": 0,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
             "#121212"
           ],
           "candidates": [
@@ -17695,9 +17501,8 @@
           "row": 0,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
             "#121212"
           ],
           "candidates": [
@@ -17762,9 +17567,8 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
             "#121212"
           ],
           "candidates": [
@@ -17797,9 +17601,8 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
             "#121212"
           ],
           "candidates": [
@@ -17967,7 +17770,7 @@
             ]
           ],
           "family": "circle",
-          "ink": "#F3F3F3"
+          "ink": "#121212"
         },
         {
           "id": "029-form-2",
@@ -19399,8 +19202,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -19741,8 +19543,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -19947,8 +19748,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -20195,9 +19995,8 @@
           "row": 1,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#FF4F00",
           "inks": [
-            "#121212",
             "#FF4F00"
           ],
           "candidates": [
@@ -20232,8 +20031,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -20357,8 +20155,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FF4F00"
+            "#121212"
           ],
           "candidates": [
             {
@@ -20424,9 +20221,8 @@
           "row": 2,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#FF4F00",
           "inks": [
-            "#121212",
             "#FF4F00"
           ],
           "candidates": [
@@ -20601,10 +20397,10 @@
           "row": 0,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#F3F3F3",
+            "#121212"
           ],
           "candidates": [
             {
@@ -20783,9 +20579,8 @@
           "row": 1,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#121212",
+          "ink": "#F3F3F3",
           "inks": [
-            "#121212",
             "#F3F3F3"
           ],
           "candidates": [
@@ -20934,8 +20729,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#FF4F00"
+            "#121212"
           ],
           "candidates": [
             {
@@ -21068,22 +20862,6 @@
       "forms": [
         {
           "id": "034-form-1",
-          "kind": "run",
-          "cells": [
-            [
-              2,
-              1
-            ],
-            [
-              3,
-              1
-            ]
-          ],
-          "family": "curve",
-          "ink": "#121212"
-        },
-        {
-          "id": "034-form-2",
           "kind": "frieze",
           "cells": [
             [
@@ -21099,7 +20877,7 @@
           "ink": "#121212"
         },
         {
-          "id": "034-form-3",
+          "id": "034-form-2",
           "kind": "frieze",
           "cells": [
             [
@@ -21115,7 +20893,7 @@
           "ink": "#121212"
         },
         {
-          "id": "034-form-4",
+          "id": "034-form-3",
           "kind": "run",
           "cells": [
             [
@@ -21348,8 +21126,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#D9D9D6"
+            "#121212"
           ],
           "candidates": [
             {
@@ -21690,8 +21467,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -22117,9 +21893,8 @@
           "row": 2,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -22152,9 +21927,8 @@
           "row": 2,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -22187,9 +21961,8 @@
           "row": 2,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -22274,6 +22047,10 @@
           "kind": "frieze",
           "cells": [
             [
+              1,
+              2
+            ],
+            [
               2,
               2
             ],
@@ -22287,7 +22064,7 @@
             ]
           ],
           "family": "rectangle",
-          "ink": "#F3F3F3"
+          "ink": "#D9D9D6"
         }
       ],
       "matchRate": 1
@@ -24576,9 +24353,8 @@
           "row": 2,
           "ground": "#F3F3F3",
           "kind": "tile",
-          "ink": "#F3F3F3",
+          "ink": "#121212",
           "inks": [
-            "#F3F3F3",
             "#121212"
           ],
           "candidates": [
@@ -24675,7 +24451,24 @@
           "score": 0.9981447124304267
         }
       ],
-      "forms": [],
+      "forms": [
+        {
+          "id": "040-form-1",
+          "kind": "run",
+          "cells": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "family": "wave",
+          "ink": "#121212"
+        }
+      ],
       "matchRate": 1
     },
     {
@@ -25520,9 +25313,8 @@
           "row": 1,
           "ground": "#121212",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#FFA300",
           "inks": [
-            "#FF4F00",
             "#FFA300"
           ],
           "candidates": [
@@ -25555,9 +25347,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -25590,9 +25381,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -25627,8 +25417,7 @@
           "kind": "tile",
           "ink": "#FFA300",
           "inks": [
-            "#FFA300",
-            "#FF4F00"
+            "#FFA300"
           ],
           "candidates": [
             {
@@ -25660,9 +25449,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -25695,9 +25483,8 @@
           "row": 2,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -25730,9 +25517,8 @@
           "row": 2,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -25835,9 +25621,8 @@
           "row": 2,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -25870,9 +25655,8 @@
           "row": 2,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -25924,22 +25708,6 @@
         },
         {
           "id": "042-form-2",
-          "kind": "run",
-          "cells": [
-            [
-              1,
-              1
-            ],
-            [
-              1,
-              2
-            ]
-          ],
-          "family": "curve",
-          "ink": "#FF4F00"
-        },
-        {
-          "id": "042-form-3",
           "kind": "frieze",
           "cells": [
             [
@@ -25952,10 +25720,10 @@
             ]
           ],
           "family": "mirror",
-          "ink": "#FF4F00"
+          "ink": "#121212"
         },
         {
-          "id": "042-form-4",
+          "id": "042-form-3",
           "kind": "frieze",
           "cells": [
             [
@@ -26260,9 +26028,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "freeform",
-          "ink": "#4997D0",
+          "ink": "#121212",
           "inks": [
-            "#4997D0",
             "#121212"
           ],
           "candidates": [
@@ -26295,9 +26062,8 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#4997D0",
+          "ink": "#121212",
           "inks": [
-            "#4997D0",
             "#121212"
           ],
           "candidates": [
@@ -26330,9 +26096,8 @@
           "row": 1,
           "ground": "#4997D0",
           "kind": "freeform",
-          "ink": "#4997D0",
+          "ink": "#FF4F00",
           "inks": [
-            "#4997D0",
             "#FF4F00",
             "#121212"
           ],
@@ -26617,11 +26382,31 @@
               0
             ],
             [
+              3,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              5,
+              0
+            ],
+            [
               0,
               1
             ],
             [
               1,
+              1
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              3,
               1
             ],
             [
@@ -26642,52 +26427,6 @@
             ]
           ],
           "ink": "#121212"
-        },
-        {
-          "id": "043-form-2",
-          "kind": "figure",
-          "cells": [
-            [
-              3,
-              0
-            ],
-            [
-              4,
-              0
-            ],
-            [
-              5,
-              0
-            ]
-          ],
-          "ink": "#121212"
-        },
-        {
-          "id": "043-form-3",
-          "kind": "figure",
-          "cells": [
-            [
-              2,
-              1
-            ],
-            [
-              3,
-              1
-            ],
-            [
-              4,
-              1
-            ],
-            [
-              5,
-              1
-            ],
-            [
-              4,
-              2
-            ]
-          ],
-          "ink": "#4997D0"
         }
       ],
       "matchRate": 0
@@ -27381,9 +27120,8 @@
           "row": 0,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -27589,9 +27327,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -27658,9 +27395,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -27693,9 +27429,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -27728,9 +27463,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -27763,9 +27497,8 @@
           "row": 1,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -27798,9 +27531,8 @@
           "row": 2,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FF4F00",
+          "ink": "#121212",
           "inks": [
-            "#FF4F00",
             "#121212"
           ],
           "candidates": [
@@ -27868,9 +27600,8 @@
           "row": 2,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FFA300",
+          "ink": "#FF4F00",
           "inks": [
-            "#FFA300",
             "#FF4F00",
             "#121212"
           ],
@@ -27938,9 +27669,8 @@
           "row": 2,
           "ground": "#FFA300",
           "kind": "tile",
-          "ink": "#FFA300",
+          "ink": "#FF4F00",
           "inks": [
-            "#FFA300",
             "#FF4F00",
             "#121212"
           ],
@@ -28027,23 +27757,7 @@
             ]
           ],
           "family": "lines",
-          "ink": "#FF4F00"
-        },
-        {
-          "id": "045-form-2",
-          "kind": "run",
-          "cells": [
-            [
-              3,
-              2
-            ],
-            [
-              4,
-              2
-            ]
-          ],
-          "family": "angle",
-          "ink": "#FFA300"
+          "ink": "#121212"
         }
       ],
       "matchRate": 1
@@ -28404,8 +28118,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -28609,8 +28322,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {
@@ -28741,9 +28453,8 @@
           "row": 0,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -28774,8 +28485,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#D9D9D6"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -28807,9 +28517,8 @@
           "row": 0,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -28840,8 +28549,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#D9D9D6"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -28873,9 +28581,8 @@
           "row": 0,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -28904,9 +28611,8 @@
           "row": 0,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -28937,8 +28643,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#D9D9D6"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -28970,9 +28675,8 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -29001,9 +28705,8 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -29034,8 +28737,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#D9D9D6"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -29067,9 +28769,8 @@
           "row": 1,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -29100,8 +28801,7 @@
           "kind": "freeform",
           "ink": "#D9D9D6",
           "inks": [
-            "#D9D9D6",
-            "#F3F3F3"
+            "#D9D9D6"
           ],
           "candidates": [
             {
@@ -29133,9 +28833,8 @@
           "row": 2,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -29166,8 +28865,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#D9D9D6"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -29201,8 +28899,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#D9D9D6"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -29236,8 +28933,7 @@
           "kind": "tile",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#D9D9D6"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -29269,9 +28965,8 @@
           "row": 2,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -29300,9 +28995,8 @@
           "row": 2,
           "ground": "#F3F3F3",
           "kind": "freeform",
-          "ink": "#F3F3F3",
+          "ink": "#D9D9D6",
           "inks": [
-            "#F3F3F3",
             "#D9D9D6"
           ],
           "candidates": [
@@ -29345,7 +29039,7 @@
               1
             ]
           ],
-          "ink": "#F3F3F3"
+          "ink": "#D9D9D6"
         },
         {
           "id": "047-form-2",
@@ -29364,6 +29058,10 @@
               1
             ],
             [
+              5,
+              1
+            ],
+            [
               4,
               2
             ],
@@ -29372,7 +29070,7 @@
               2
             ]
           ],
-          "ink": "#F3F3F3"
+          "ink": "#D9D9D6"
         },
         {
           "id": "047-form-3",
@@ -30193,8 +29891,7 @@
           "kind": "freeform",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -30258,8 +29955,7 @@
           "kind": "freeform",
           "ink": "#F3F3F3",
           "inks": [
-            "#F3F3F3",
-            "#121212"
+            "#F3F3F3"
           ],
           "candidates": [
             {
@@ -30561,8 +30257,7 @@
           "kind": "tile",
           "ink": "#121212",
           "inks": [
-            "#121212",
-            "#F3F3F3"
+            "#121212"
           ],
           "candidates": [
             {

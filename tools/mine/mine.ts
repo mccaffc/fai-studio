@@ -14,8 +14,8 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parseSvgElements } from './svg.js';
-import { segmentCells } from './cells.js';
-import { rasterizeMask } from './raster.js';
+import { segmentCells, type CellSlice } from './cells.js';
+import { rasterizeMask, type Viewport } from './raster.js';
 import { buildTileMaskLibrary, matchCell } from './tile-match.js';
 import { ensureBackgroundRect, resolveCssClasses, resolveTransforms } from './preprocess.js';
 import {
@@ -81,6 +81,58 @@ function listBannerFiles(): string[] {
 }
 
 // ---------------------------------------------------------------------------
+// Ink attribution by true pixel coverage
+// ---------------------------------------------------------------------------
+
+/**
+ * For a cell's foreground elements, compute each distinct fill's true pixel
+ * coverage by rasterizing a per-fill mask, then return fills sorted by
+ * coverage descending (ties broken by hex string ascending for determinism),
+ * with zero-coverage fills dropped entirely.
+ *
+ * Exported for unit-testing.
+ */
+export async function computeInksByPixelCoverage(
+  cell: CellSlice,
+  viewport: Viewport,
+  size: number,
+): Promise<string[]> {
+  // Collect distinct fills (excluding 'none' and the cell ground)
+  const distinctFills = new Set<string>();
+  for (const el of cell.foreground) {
+    if (el.fill !== 'none' && el.fill !== cell.ground) {
+      distinctFills.add(el.fill);
+    }
+  }
+
+  if (distinctFills.size === 0) {
+    return [];
+  }
+
+  const coverageMap = new Map<string, number>();
+
+  for (const fill of distinctFills) {
+    const fillMask = await rasterizeMask(
+      cell.foreground,
+      viewport,
+      size,
+      (el) => el.fill === fill,
+    );
+    let count = 0;
+    for (let i = 0; i < fillMask.length; i++) {
+      if (fillMask[i] !== 0) count++;
+    }
+    coverageMap.set(fill, count);
+  }
+
+  // Sort: coverage descending, tie-break hex string ascending
+  return [...coverageMap.entries()]
+    .filter(([, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([fill]) => fill);
+}
+
+// ---------------------------------------------------------------------------
 // Per-banner processing
 // ---------------------------------------------------------------------------
 
@@ -116,14 +168,28 @@ async function processBanner(
 
     const match = matchCell(cellMask, library);
 
+    // Compute true pixel-coverage ink ordering for non-plain cells.
+    // Plain cells have no foreground ink — skip the per-fill rasterization.
+    let inks: string[];
+    if (match.kind === 'plain') {
+      inks = cell.inks; // plain cells carry no foreground inks
+    } else {
+      inks = await computeInksByPixelCoverage(cell, viewport, 64);
+      // Fall back to bbox-ordered inks only if pixel coverage yields nothing
+      // (shouldn't happen in practice, but guards edge cases)
+      if (inks.length === 0 && cell.inks.length > 0) {
+        inks = cell.inks;
+      }
+    }
+
     // Build CellRecon from match (store rotation/flip verbatim)
     let recon: CellRecon = {
       col: cell.col,
       row: cell.row,
       ground: cell.ground,
       kind: match.kind,
-      ink: cell.inks[0],
-      inks: cell.inks,
+      ink: inks[0],
+      inks,
       candidates: match.candidates,
     };
 
