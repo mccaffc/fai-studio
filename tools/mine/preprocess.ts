@@ -227,3 +227,49 @@ function setAttr(attrs: string, name: string, value: number): string {
   const re = new RegExp(`(\\b${name}=")[^"]*(")`, 'g');
   return attrs.replace(re, `$1${formatted}$2`);
 }
+
+// ---------------------------------------------------------------------------
+// Background rect injector
+// Some banners exported from Figma/Illustrator omit the full-canvas background rect,
+// relying on per-cell ground rects or the SVG default (white). segmentCells requires
+// elements[0] to be a rect covering the full canvas. If missing, we inject one.
+// Default color: #FFFFFF (SVG viewer default / white paper).
+// ---------------------------------------------------------------------------
+
+export function ensureBackgroundRect(svgText: string, width = 1920, height = 960): string {
+  // Find the position right after the opening <svg ...> tag (not the <?xml?> declaration)
+  const svgOpenStart = svgText.indexOf('<svg');
+  if (svgOpenStart === -1) return svgText;
+  const svgTagEnd = svgText.indexOf('>', svgOpenStart);
+  if (svgTagEnd === -1) return svgText;
+
+  // Check if the first shape element is a full-canvas rect
+  // We look for the first <rect> or <path> or <circle> or <ellipse> in the content
+  const afterTag = svgText.slice(svgTagEnd + 1);
+  // Strip leading whitespace/comments/defs/style to find the first shape
+  const strippedContent = afterTag
+    .replace(/<!--[\s\S]*?-->/g, '')   // strip comments
+    .replace(/<defs[\s\S]*?<\/defs>/gi, '') // strip defs
+    .trimStart();
+
+  const firstShapeMatch = strippedContent.match(/^<(rect|path|circle|ellipse)\s([^>]*?)\/>/);
+  if (firstShapeMatch && firstShapeMatch[1] === 'rect') {
+    const attrs = firstShapeMatch[2]!;
+    // Check if it's a full-canvas rect
+    const xMatch = attrs.match(/\bx="([^"]*)"/);
+    const yMatch = attrs.match(/\by="([^"]*)"/);
+    const wMatch = attrs.match(/\bwidth="([^"]*)"/);
+    const hMatch = attrs.match(/\bheight="([^"]*)"/);
+    const x = xMatch ? parseFloat(xMatch[1]!) : 0;
+    const y = yMatch ? parseFloat(yMatch[1]!) : 0;
+    const w = wMatch ? parseFloat(wMatch[1]!) : 0;
+    const h = hMatch ? parseFloat(hMatch[1]!) : 0;
+    if (x === 0 && y === 0 && w === width && h === height) {
+      return svgText; // Already has full-canvas rect as first shape
+    }
+  }
+
+  // Inject background rect immediately after the <svg ...> tag
+  const bgRect = `<rect x="0" y="0" width="${width}" height="${height}" fill="#FFFFFF"/>`;
+  return svgText.slice(0, svgTagEnd + 1) + '\n  ' + bgRect + svgText.slice(svgTagEnd + 1);
+}

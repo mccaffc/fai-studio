@@ -93,7 +93,7 @@ describe('matchCell - real banner cells', () => {
       el => el.fill !== c.ground);
     const m = matchCell(mask, lib);
     expect(['tile', 'review']).toContain(m.kind);
-    expect(m.candidates[0].score).toBeGreaterThan(THRESHOLDS.review);
+    expect(m.candidates[0]!.score).toBeGreaterThan(THRESHOLDS.review);
   });
   it('classifies an empty cell as plain', () => {
     const m = matchCell(new Uint8Array(64 * 64), lib);

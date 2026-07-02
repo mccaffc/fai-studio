@@ -9,8 +9,8 @@ describe('segmentCells on banner 009', () => {
   it('global ground is Cod Gray; 18 cells row-major', () => {
     expect(ground).toBe('#121212');
     expect(cells).toHaveLength(18);
-    expect([cells[0].col, cells[0].row]).toEqual([0, 0]);
-    expect([cells[17].col, cells[17].row]).toEqual([5, 2]);
+    expect([cells[0]!.col, cells[0]!.row]).toEqual([0, 0]);
+    expect([cells[17]!.col, cells[17]!.row]).toEqual([5, 2]);
   });
   it('cell (0,0) has Smoke White ground with Cod Gray stripe foreground', () => {
     const c = cells.find(c => c.col === 0 && c.row === 0)!;

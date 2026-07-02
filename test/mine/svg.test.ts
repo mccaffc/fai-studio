@@ -8,8 +8,8 @@ describe('parseSvgElements', () => {
     const { width, height, elements } = parseSvgElements(text);
     expect(width).toBe(1920); expect(height).toBe(960);
     const first = elements[0];
-    expect(first.kind).toBe('rect');
-    expect(first.fill).toBe('#121212');
+    expect(first!.kind).toBe('rect');
+    expect(first!.fill).toBe('#121212');
     expect(elements.length).toBeGreaterThan(50);
     for (const el of elements) if (el.fill !== 'none') expect(el.fill).toMatch(/^#[0-9A-F]{6}$/);
   });
@@ -18,7 +18,7 @@ describe('parseSvgElements', () => {
     const { elements } = parseSvgElements(text);
     const smoke = elements.findIndex(e => e.kind === 'rect' && e.fill === '#F3F3F3');
     expect(smoke).toBeGreaterThan(0);
-    expect(elements[smoke + 1].kind).toBe('path'); // 009's stripes follow their ground rect
+    expect(elements[smoke + 1]!.kind).toBe('path'); // 009's stripes follow their ground rect
   });
   it('skips defs subtree without throwing on transform', () => {
     const svg = `<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
@@ -27,8 +27,8 @@ describe('parseSvgElements', () => {
     </svg>`;
     const { elements } = parseSvgElements(svg);
     expect(elements.length).toBe(1);
-    expect(elements[0].kind).toBe('rect');
-    expect(elements[0].fill).toBe('#121212');
+    expect(elements[0]!.kind).toBe('rect');
+    expect(elements[0]!.fill).toBe('#121212');
   });
   it('throws when shape has no fill and none inherited', () => {
     const svg = `<svg viewBox="0 0 10 10" width="10" height="10" xmlns="http://www.w3.org/2000/svg">

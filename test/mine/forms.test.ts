@@ -64,9 +64,9 @@ describe('detectForms', () => {
     ];
     const forms = detectForms(banner(cells), manifest);
     expect(forms).toHaveLength(1);
-    expect(forms[0].cells).toEqual([[0, 0], [1, 0]]);
-    expect(['run', 'frieze']).toContain(forms[0].kind);
-    expect(forms[0].family).toBe('lines');
+    expect(forms[0]!.cells).toEqual([[0, 0], [1, 0]]);
+    expect(['run', 'frieze']).toContain(forms[0]!.kind);
+    expect(forms[0]!.family).toBe('lines');
   });
 
   it('does not join different inks even with active edges', () => {
@@ -84,7 +84,7 @@ describe('detectForms', () => {
     ];
     const forms = detectForms(banner(cells), manifest);
     expect(forms).toHaveLength(1);
-    expect(forms[0].kind).toBe('figure');
+    expect(forms[0]!.kind).toBe('figure');
   });
 
   it('does not join cells with kind=review', () => {
@@ -121,7 +121,7 @@ describe('detectForms', () => {
     const forms = detectForms(banner(cells), manifest);
     expect(forms).toHaveLength(1);
     // Both rule (a) and rule (c) match; (c) makes it a frieze unless any member is freeform
-    expect(forms[0].kind).toBe('frieze');
+    expect(forms[0]!.kind).toBe('frieze');
   });
 
   it('figure kind wins if any member is freeform', () => {
@@ -130,7 +130,7 @@ describe('detectForms', () => {
       cell(1, 0, { kind: 'freeform', inks: ['#FF4F00'], ink: '#FF4F00' }),
     ];
     const forms = detectForms(banner(cells), manifest);
-    expect(forms[0].kind).toBe('figure');
+    expect(forms[0]!.kind).toBe('figure');
   });
 
   it('FormGroup ids use banner id and n starting at 1', () => {
@@ -139,7 +139,7 @@ describe('detectForms', () => {
       cell(1, 0, { kind: 'tile', tile: 'lines-01', rotation: 0, flip: false, ink: '#F3F3F3' }),
     ];
     const forms = detectForms(banner(cells), manifest);
-    expect(forms[0].id).toBe('T-form-1');
+    expect(forms[0]!.id).toBe('T-form-1');
   });
 
   it('tile with zero-edge does not join horizontally via rule (a)', () => {
@@ -152,6 +152,6 @@ describe('detectForms', () => {
     // So we expect a frieze
     const forms = detectForms(banner(cells), manifest);
     expect(forms).toHaveLength(1);
-    expect(forms[0].kind).toBe('frieze');
+    expect(forms[0]!.kind).toBe('frieze');
   });
 });
