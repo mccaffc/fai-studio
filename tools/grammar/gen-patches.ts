@@ -76,7 +76,11 @@ interface ExtractionNote {
   cells: number;
 }
 
-export const SEED_PATCHES: SeedPatch[] = [
+export // CURATION (Claude, 2026-07-02): all 7 seed patches reviewed on the contact sheet and SHIPPED.
+// Strongest: 036-dome (civic icon), 044-robot (creature face), 023-arcs (line-work hero),
+// 011-discface. 018-house is the weakest (abstract corner) — flagged for the visual gate;
+// trim it there if it stamps poorly in context.
+const SEED_PATCHES: SeedPatch[] = [
   { id: 'patch-036-dome', banner: '036', x: 1, y: 1, w: 4, h: 2 },
   { id: 'patch-037-dome', banner: '037', x: 1, y: 1, w: 4, h: 2 },
   { id: 'patch-042-robot', banner: '042', x: 1, y: 0, w: 3, h: 2 },
