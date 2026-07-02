@@ -14,7 +14,8 @@
     "mine": "esbuild tools/mine/mine.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/mine.mjs && node dist-tools/mine.mjs",
     "mine:extract": "esbuild tools/mine/extract-tile.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/extract-tile.mjs && node dist-tools/extract-tile.mjs",
     "mine:validate": "esbuild tools/mine/validate-sheet.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/validate-sheet.mjs && node dist-tools/validate-sheet.mjs",
-    "grammar:build": "esbuild tools/grammar/build-grammar.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/build-grammar.mjs && node dist-tools/build-grammar.mjs"
+    "grammar:build": "esbuild tools/grammar/build-grammar.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/build-grammar.mjs && node dist-tools/build-grammar.mjs",
+    "mine:regen-edges": "esbuild tools/mine/regen-edges.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/regen-edges.mjs && node dist-tools/regen-edges.mjs"
   },
   "devDependencies": {
     "@types/jsdom": "^28.0.3",

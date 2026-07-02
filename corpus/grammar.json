@@ -2617,39 +2617,44 @@
     },
     "forms": {
       "kinds": {
-        "run": 60,
-        "frieze": 56,
+        "run": 87,
+        "frieze": 34,
         "figure": 10
       },
       "sizes": {
-        "2": 90,
-        "3": 15,
+        "2": 77,
+        "3": 19,
         "4": 11,
-        "5": 1,
-        "6": 8,
-        "13": 1
+        "5": 6,
+        "6": 9,
+        "9": 1,
+        "11": 2,
+        "13": 1,
+        "15": 2,
+        "18": 3
       },
       "byFamily": {
-        "mirror": 5,
-        "ramp": 5,
+        "ramp": 6,
         "square": 7,
-        "lines": 31,
-        "circle": 18,
-        "composition": 3,
-        "wave": 4,
-        "curve": 16,
-        "shape": 7,
-        "open": 5,
+        "lines": 27,
+        "circle": 19,
+        "composition": 4,
+        "wave": 10,
+        "curve": 14,
+        "open": 4,
+        "shape": 6,
+        "mirror": 4,
         "angle": 5,
+        "centric": 1,
+        "rectangle": 6,
         "float": 3,
         "cascade": 2,
-        "rectangle": 2,
         "joint": 3
       },
       "friezeRows": {
-        "0": 17,
-        "1": 15,
-        "2": 24
+        "0": 11,
+        "1": 7,
+        "2": 16
       }
     },
     "plain": {
@@ -2835,11 +2840,11 @@
         "forms": {
           "run": [
             0,
-            5
+            4
           ],
           "frieze": [
             0,
-            3
+            2
           ],
           "figure": [
             0,
@@ -2944,11 +2949,11 @@
         "forms": {
           "run": [
             0,
-            3
+            5
           ],
           "frieze": [
             0,
-            3
+            2
           ],
           "figure": [
             0,
@@ -3001,7 +3006,7 @@
         "forms": {
           "run": [
             0,
-            3
+            4
           ],
           "frieze": [
             0,
@@ -3065,11 +3070,11 @@
         "forms": {
           "run": [
             0,
-            3
+            4
           ],
           "frieze": [
             0,
-            3
+            2
           ],
           "figure": [
             0,
@@ -3119,11 +3124,11 @@
         "forms": {
           "run": [
             0,
-            3
+            4
           ],
           "frieze": [
             0,
-            2
+            1
           ],
           "figure": [
             0,
@@ -3149,9 +3154,9 @@
     "angle-04": {
       "family": "angle",
       "edges": {
-        "top": 0.657,
+        "top": 0.9844,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.0156,
         "left": 1
       },
       "rotations": {
@@ -3165,9 +3170,9 @@
     "angle-05": {
       "family": "angle",
       "edges": {
-        "top": 0.657,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.9844,
+        "right": 0.0156,
+        "bottom": 1,
         "left": 1
       },
       "rotations": {
@@ -3181,9 +3186,9 @@
     "angle-06": {
       "family": "angle",
       "edges": {
-        "top": 0.657,
+        "top": 0.9844,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.5,
         "left": 1
       },
       "rotations": {
@@ -3197,9 +3202,9 @@
     "angle-07": {
       "family": "angle",
       "edges": {
-        "top": 0.657,
+        "top": 0.9844,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.25,
         "left": 1
       },
       "rotations": {
@@ -3213,9 +3218,9 @@
     "angle-08": {
       "family": "angle",
       "edges": {
-        "top": 0.655,
+        "top": 0.9844,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.25,
         "left": 1
       },
       "rotations": {
@@ -3229,9 +3234,9 @@
     "angle-09": {
       "family": "angle",
       "edges": {
-        "top": 0.657,
+        "top": 0.9844,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.5,
         "left": 1
       },
       "rotations": {
@@ -3245,9 +3250,9 @@
     "angle-10": {
       "family": "angle",
       "edges": {
-        "top": 0.655,
+        "top": 0.9844,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.9844,
         "left": 1
       },
       "rotations": {
@@ -3261,10 +3266,10 @@
     "cascade-01": {
       "family": "cascade",
       "edges": {
-        "top": 0.665,
-        "right": 0,
+        "top": 1,
+        "right": 0.0313,
         "bottom": 0,
-        "left": 1
+        "left": 0.0469
       },
       "rotations": {
         "0": 0,
@@ -3277,10 +3282,10 @@
     "cascade-03": {
       "family": "cascade",
       "edges": {
-        "top": 0.665,
-        "right": 0,
+        "top": 1,
+        "right": 0.0781,
         "bottom": 0,
-        "left": 1
+        "left": 0.5
       },
       "rotations": {
         "0": 0,
@@ -3293,10 +3298,10 @@
     "cascade-04": {
       "family": "cascade",
       "edges": {
-        "top": 0.665,
-        "right": 0,
+        "top": 1,
+        "right": 0.1094,
         "bottom": 0,
-        "left": 1
+        "left": 0.75
       },
       "rotations": {
         "0": 0,
@@ -3310,8 +3315,8 @@
       "family": "centric",
       "edges": {
         "top": 0,
-        "right": 0,
-        "bottom": 0,
+        "right": 0.4531,
+        "bottom": 0.4531,
         "left": 0
       },
       "rotations": {
@@ -3325,10 +3330,10 @@
     "circle-02": {
       "family": "circle",
       "edges": {
-        "top": 0.33,
+        "top": 0.5,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.5
       },
       "rotations": {
         "0": 2,
@@ -3341,10 +3346,10 @@
     "circle-03": {
       "family": "circle",
       "edges": {
-        "top": 0.5,
+        "top": 0.75,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.75
       },
       "rotations": {
         "0": 4,
@@ -3357,9 +3362,9 @@
     "circle-04": {
       "family": "circle",
       "edges": {
-        "top": 0.665,
-        "right": 0,
-        "bottom": 0,
+        "top": 1,
+        "right": 0.125,
+        "bottom": 0.125,
         "left": 1
       },
       "rotations": {
@@ -3421,10 +3426,10 @@
     "circle-08": {
       "family": "circle",
       "edges": {
-        "top": 0.085,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.1563,
+        "right": 0.1563,
+        "bottom": 0.1563,
+        "left": 0.1719
       },
       "rotations": {
         "0": 7,
@@ -3438,9 +3443,9 @@
       "family": "circle",
       "edges": {
         "top": 0,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "right": 0.0781,
+        "bottom": 1,
+        "left": 0.0938
       },
       "rotations": {
         "0": 3,
@@ -3455,7 +3460,7 @@
       "edges": {
         "top": 0,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.75,
         "left": 0
       },
       "rotations": {
@@ -3471,7 +3476,7 @@
       "edges": {
         "top": 0,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.6563,
         "left": 0
       },
       "rotations": {
@@ -3485,10 +3490,10 @@
     "circle-13": {
       "family": "circle",
       "edges": {
-        "top": 0.535,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.1563,
+        "right": 0.5781,
+        "bottom": 1,
+        "left": 0.5938
       },
       "rotations": {
         "0": 0,
@@ -3503,8 +3508,8 @@
       "edges": {
         "top": 0,
         "right": 0,
-        "bottom": 0,
-        "left": 1
+        "bottom": 0.5,
+        "left": 0.0938
       },
       "rotations": {
         "0": 1,
@@ -3519,8 +3524,8 @@
       "edges": {
         "top": 0,
         "right": 0,
-        "bottom": 0,
-        "left": 1
+        "bottom": 0.75,
+        "left": 0.1094
       },
       "rotations": {
         "0": 4,
@@ -3533,9 +3538,9 @@
     "composition-01": {
       "family": "composition",
       "edges": {
-        "top": 0,
-        "right": 0,
-        "bottom": 0,
+        "top": 1,
+        "right": 1,
+        "bottom": 1,
         "left": 1
       },
       "rotations": {
@@ -3549,10 +3554,10 @@
     "composition-09": {
       "family": "composition",
       "edges": {
-        "top": 0.573,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.875,
+        "right": 0.875,
+        "bottom": 0.375,
+        "left": 0.375
       },
       "rotations": {
         "0": 3,
@@ -3566,8 +3571,8 @@
       "family": "composition",
       "edges": {
         "top": 0,
-        "right": 0,
-        "bottom": 0,
+        "right": 0.375,
+        "bottom": 0.375,
         "left": 0
       },
       "rotations": {
@@ -3581,10 +3586,10 @@
     "curve-03": {
       "family": "curve",
       "edges": {
-        "top": 0.42,
+        "top": 0.6406,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.6406
       },
       "rotations": {
         "0": 0,
@@ -3597,10 +3602,10 @@
     "curve-04": {
       "family": "curve",
       "edges": {
-        "top": 0.573,
+        "top": 0.875,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.875
       },
       "rotations": {
         "0": 22,
@@ -3613,10 +3618,10 @@
     "curve-05": {
       "family": "curve",
       "edges": {
-        "top": 0.33,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.5,
+        "right": 1,
+        "bottom": 1,
+        "left": 0.5
       },
       "rotations": {
         "0": 2,
@@ -3629,10 +3634,10 @@
     "curve-06": {
       "family": "curve",
       "edges": {
-        "top": 0.165,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.25,
+        "right": 1,
+        "bottom": 1,
+        "left": 0.25
       },
       "rotations": {
         "0": 0,
@@ -3645,10 +3650,10 @@
     "curve-09": {
       "family": "curve",
       "edges": {
-        "top": 0.657,
+        "top": 0.9844,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.5
       },
       "rotations": {
         "0": 0,
@@ -3693,10 +3698,10 @@
     "float-03": {
       "family": "float",
       "edges": {
-        "top": 0,
+        "top": 0.0938,
         "right": 0,
-        "bottom": 0,
-        "left": 1
+        "bottom": 0.0938,
+        "left": 0
       },
       "rotations": {
         "0": 6,
@@ -3709,10 +3714,10 @@
     "float-04": {
       "family": "float",
       "edges": {
-        "top": 0,
+        "top": 0.0938,
         "right": 0,
-        "bottom": 0,
-        "left": 1
+        "bottom": 0.0938,
+        "left": 0
       },
       "rotations": {
         "0": 1,
@@ -3725,9 +3730,9 @@
     "float-05": {
       "family": "float",
       "edges": {
-        "top": 0.058,
+        "top": 0.125,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.125,
         "left": 0
       },
       "rotations": {
@@ -3741,9 +3746,9 @@
     "float-06": {
       "family": "float",
       "edges": {
-        "top": 0.058,
+        "top": 0.125,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.125,
         "left": 0
       },
       "rotations": {
@@ -3757,9 +3762,9 @@
     "float-07": {
       "family": "float",
       "edges": {
-        "top": 0.058,
+        "top": 0.125,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.125,
         "left": 0
       },
       "rotations": {
@@ -3773,10 +3778,10 @@
     "joint-01": {
       "family": "joint",
       "edges": {
-        "top": 0.665,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 1,
+        "right": 0.5,
+        "bottom": 0.9688,
+        "left": 0.5
       },
       "rotations": {
         "0": 0,
@@ -3789,9 +3794,9 @@
     "joint-02": {
       "family": "joint",
       "edges": {
-        "top": 0.657,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.9844,
+        "right": 0.75,
+        "bottom": 0.7656,
         "left": 1
       },
       "rotations": {
@@ -3805,10 +3810,10 @@
     "joint-05": {
       "family": "joint",
       "edges": {
-        "top": 0.655,
-        "right": 0,
+        "top": 0.9844,
+        "right": 0.0156,
         "bottom": 0,
-        "left": 1
+        "left": 0.9844
       },
       "rotations": {
         "0": 0,
@@ -3821,10 +3826,10 @@
     "joint-06": {
       "family": "joint",
       "edges": {
-        "top": 0.328,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.4844,
+        "right": 0.5,
+        "bottom": 0.5,
+        "left": 0.5
       },
       "rotations": {
         "0": 1,
@@ -3837,10 +3842,10 @@
     "joint-08": {
       "family": "joint",
       "edges": {
-        "top": 0.33,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.5,
+        "right": 0.5,
+        "bottom": 0.5,
+        "left": 0.5
       },
       "rotations": {
         "0": 1,
@@ -3853,9 +3858,9 @@
     "lines-01": {
       "family": "lines",
       "edges": {
-        "top": 0.315,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
         "left": 0
       },
       "rotations": {
@@ -3869,9 +3874,9 @@
     "lines-02": {
       "family": "lines",
       "edges": {
-        "top": 0.315,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
         "left": 0
       },
       "rotations": {
@@ -3885,9 +3890,9 @@
     "lines-03": {
       "family": "lines",
       "edges": {
-        "top": 0.315,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
         "left": 0
       },
       "rotations": {
@@ -3901,10 +3906,10 @@
     "lines-04": {
       "family": "lines",
       "edges": {
-        "top": 0.315,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.5,
+        "right": 0.5,
+        "bottom": 0.875,
+        "left": 0.875
       },
       "rotations": {
         "0": 11,
@@ -3917,9 +3922,9 @@
     "lines-06": {
       "family": "lines",
       "edges": {
-        "top": 0.15,
+        "top": 0.25,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.25,
         "left": 0
       },
       "rotations": {
@@ -3933,10 +3938,10 @@
     "lines-09": {
       "family": "lines",
       "edges": {
-        "top": 0.15,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.2656,
+        "right": 0.2656,
+        "bottom": 0.9063,
+        "left": 0.9063
       },
       "rotations": {
         "0": 5,
@@ -3949,9 +3954,9 @@
     "lines-10": {
       "family": "lines",
       "edges": {
-        "top": 0.135,
+        "top": 0.2656,
         "right": 0,
-        "bottom": 0,
+        "bottom": 0.2656,
         "left": 0
       },
       "rotations": {
@@ -3981,9 +3986,9 @@
     "lines-12": {
       "family": "lines",
       "edges": {
-        "top": 0.325,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
         "left": 1
       },
       "rotations": {
@@ -3997,10 +4002,10 @@
     "merge-02": {
       "family": "merge",
       "edges": {
-        "top": 0.085,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.1563,
+        "right": 0.5781,
+        "bottom": 0.5,
+        "left": 0.5938
       },
       "rotations": {
         "0": 4,
@@ -4061,9 +4066,9 @@
     "mirror-01": {
       "family": "mirror",
       "edges": {
-        "top": 0.03,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.0469,
+        "right": 1,
+        "bottom": 0.0469,
         "left": 0
       },
       "rotations": {
@@ -4077,9 +4082,9 @@
     "mirror-02": {
       "family": "mirror",
       "edges": {
-        "top": 0.165,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.25,
+        "right": 1,
+        "bottom": 0.25,
         "left": 0
       },
       "rotations": {
@@ -4093,9 +4098,9 @@
     "mirror-03": {
       "family": "mirror",
       "edges": {
-        "top": 0.165,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.25,
+        "right": 1,
+        "bottom": 0.25,
         "left": 0
       },
       "rotations": {
@@ -4109,9 +4114,9 @@
     "mirror-04": {
       "family": "mirror",
       "edges": {
-        "top": 0.33,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
         "left": 0
       },
       "rotations": {
@@ -4125,10 +4130,10 @@
     "open-01": {
       "family": "open",
       "edges": {
-        "top": 0.573,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.875,
+        "right": 0.875,
+        "bottom": 0.875,
+        "left": 0.875
       },
       "rotations": {
         "0": 12,
@@ -4141,10 +4146,10 @@
     "open-02": {
       "family": "open",
       "edges": {
-        "top": 0.33,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.5,
+        "right": 0.875,
+        "bottom": 0.875,
+        "left": 0.5
       },
       "rotations": {
         "0": 0,
@@ -4157,10 +4162,10 @@
     "open-04": {
       "family": "open",
       "edges": {
-        "top": 0.573,
+        "top": 0.875,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.875
       },
       "rotations": {
         "0": 3,
@@ -4173,10 +4178,10 @@
     "open-05": {
       "family": "open",
       "edges": {
-        "top": 0.33,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.5,
+        "right": 0.875,
+        "bottom": 0.875,
+        "left": 0.5
       },
       "rotations": {
         "0": 1,
@@ -4189,10 +4194,10 @@
     "open-09": {
       "family": "open",
       "edges": {
-        "top": 0.268,
+        "top": 0.4219,
         "right": 0,
-        "bottom": 0,
-        "left": 1
+        "bottom": 0.0625,
+        "left": 0.9219
       },
       "rotations": {
         "0": 3,
@@ -4205,10 +4210,10 @@
     "ramp-01": {
       "family": "ramp",
       "edges": {
-        "top": 0.665,
-        "right": 0,
+        "top": 1,
+        "right": 0.25,
         "bottom": 0,
-        "left": 1
+        "left": 0.5
       },
       "rotations": {
         "0": 0,
@@ -4221,10 +4226,10 @@
     "ramp-02": {
       "family": "ramp",
       "edges": {
-        "top": 0.665,
-        "right": 0,
+        "top": 1,
+        "right": 0.5,
         "bottom": 0,
-        "left": 1
+        "left": 0.75
       },
       "rotations": {
         "0": 0,
@@ -4237,9 +4242,9 @@
     "ramp-04": {
       "family": "ramp",
       "edges": {
-        "top": 0.665,
-        "right": 0,
-        "bottom": 0,
+        "top": 1,
+        "right": 0.5,
+        "bottom": 0.0156,
         "left": 1
       },
       "rotations": {
@@ -4253,10 +4258,10 @@
     "rectangle-03": {
       "family": "rectangle",
       "edges": {
-        "top": 0.665,
-        "right": 0,
+        "top": 1,
+        "right": 0.5,
         "bottom": 0,
-        "left": 1
+        "left": 0.5
       },
       "rotations": {
         "0": 0,
@@ -4270,9 +4275,9 @@
       "family": "rectangle",
       "edges": {
         "top": 0,
-        "right": 0,
+        "right": 0.25,
         "bottom": 0,
-        "left": 1
+        "left": 0.25
       },
       "rotations": {
         "0": 0,
@@ -4286,9 +4291,9 @@
       "family": "rectangle",
       "edges": {
         "top": 0,
-        "right": 0,
+        "right": 0.5,
         "bottom": 0,
-        "left": 1
+        "left": 0.5
       },
       "rotations": {
         "0": 2,
@@ -4302,9 +4307,9 @@
       "family": "rectangle",
       "edges": {
         "top": 0,
-        "right": 0,
+        "right": 0.75,
         "bottom": 0,
-        "left": 1
+        "left": 0.75
       },
       "rotations": {
         "0": 0,
@@ -4317,10 +4322,10 @@
     "shape-01": {
       "family": "shape",
       "edges": {
-        "top": 0.085,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.1719,
+        "right": 0.1563,
+        "bottom": 0.1563,
+        "left": 0.1875
       },
       "rotations": {
         "0": 2,
@@ -4333,10 +4338,10 @@
     "shape-02": {
       "family": "shape",
       "edges": {
-        "top": 0.198,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.4375,
+        "right": 0.1875,
+        "bottom": 0.4375,
+        "left": 0.5938
       },
       "rotations": {
         "0": 14,
@@ -4349,10 +4354,10 @@
     "square-01": {
       "family": "square",
       "edges": {
-        "top": 0.165,
+        "top": 0.25,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.25
       },
       "rotations": {
         "0": 2,
@@ -4365,10 +4370,10 @@
     "square-02": {
       "family": "square",
       "edges": {
-        "top": 0.33,
+        "top": 0.5,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.5
       },
       "rotations": {
         "0": 0,
@@ -4381,10 +4386,10 @@
     "square-03": {
       "family": "square",
       "edges": {
-        "top": 0.5,
+        "top": 0.75,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.75
       },
       "rotations": {
         "0": 1,
@@ -4397,10 +4402,10 @@
     "square-04": {
       "family": "square",
       "edges": {
-        "top": 0.63,
+        "top": 0.9531,
         "right": 0,
         "bottom": 0,
-        "left": 1
+        "left": 0.9531
       },
       "rotations": {
         "0": 7,
@@ -4413,9 +4418,9 @@
     "square-05": {
       "family": "square",
       "edges": {
-        "top": 0.657,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.9844,
+        "right": 0.5,
+        "bottom": 0.5156,
         "left": 1
       },
       "rotations": {
@@ -4431,8 +4436,8 @@
       "edges": {
         "top": 0,
         "right": 0,
-        "bottom": 0,
-        "left": 1
+        "bottom": 0.9688,
+        "left": 0.9688
       },
       "rotations": {
         "0": 3,
@@ -4445,10 +4450,10 @@
     "wave-02": {
       "family": "wave",
       "edges": {
-        "top": 0.018,
-        "right": 0,
-        "bottom": 0,
-        "left": 1
+        "top": 0.0469,
+        "right": 1,
+        "bottom": 1,
+        "left": 0.0469
       },
       "rotations": {
         "0": 6,
@@ -4463,8 +4468,8 @@
       "edges": {
         "top": 0,
         "right": 0,
-        "bottom": 0,
-        "left": 1
+        "bottom": 0.4844,
+        "left": 0.9531
       },
       "rotations": {
         "0": 5,
@@ -4477,9 +4482,9 @@
     "wave-06": {
       "family": "wave",
       "edges": {
-        "top": 0.323,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.4844,
+        "right": 0.4844,
+        "bottom": 1,
         "left": 1
       },
       "rotations": {
@@ -4493,9 +4498,9 @@
     "wave-08": {
       "family": "wave",
       "edges": {
-        "top": 0.362,
-        "right": 0,
-        "bottom": 0,
+        "top": 0.5469,
+        "right": 1,
+        "bottom": 0.5469,
         "left": 0
       },
       "rotations": {
@@ -4568,5 +4573,5 @@
       "#FFA300"
     ]
   },
-  "builtAt": "2026-07-02T09:05:51.907Z"
+  "builtAt": "2026-07-02T09:12:37.038Z"
 }

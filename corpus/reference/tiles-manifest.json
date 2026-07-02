@@ -118,10 +118,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.64,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9688,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.25
       },
       "corner_touch": {
         "tl": true,
@@ -132,7 +132,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -155,10 +155,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.655,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -169,7 +169,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -192,10 +192,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.75
       },
       "corner_touch": {
         "tl": true,
@@ -206,7 +206,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -229,10 +229,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0.0156,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -243,7 +243,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -266,10 +266,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0.0156,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -280,7 +280,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -303,10 +303,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0.0156,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -317,7 +317,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -340,10 +340,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0.0156,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -354,7 +354,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -377,10 +377,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0.5,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -391,7 +391,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -414,10 +414,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0.25,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -428,7 +428,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -451,10 +451,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.655,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0.25,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -465,7 +465,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -488,10 +488,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0.5,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -502,7 +502,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -525,10 +525,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0.5,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -539,7 +539,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -562,10 +562,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.655,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0.9844,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -576,7 +576,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -599,10 +599,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.0313,
+        "bottom": 0,
+        "left": 0.0469
       },
       "corner_touch": {
         "tl": true,
@@ -613,7 +613,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -636,10 +636,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.0625,
+        "bottom": 0,
+        "left": 0.25
       },
       "corner_touch": {
         "tl": true,
@@ -650,7 +650,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -673,10 +673,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.0781,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -687,7 +687,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -710,10 +710,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.1094,
+        "bottom": 0,
+        "left": 0.75
       },
       "corner_touch": {
         "tl": true,
@@ -724,7 +724,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -747,10 +747,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.64,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9688,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.0469
       },
       "corner_touch": {
         "tl": true,
@@ -761,7 +761,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -784,10 +784,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.655,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.25
       },
       "corner_touch": {
         "tl": true,
@@ -798,7 +798,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -821,10 +821,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -835,7 +835,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -858,10 +858,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.662,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.0156,
+        "bottom": 0,
+        "left": 0.75
       },
       "corner_touch": {
         "tl": true,
@@ -872,7 +872,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -895,10 +895,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0.1719,
+        "bottom": 0.1719,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -909,7 +909,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "right",
       "renderable": true,
@@ -932,10 +932,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0.3125,
+        "bottom": 0.3125,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -946,7 +946,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "right",
       "renderable": true,
@@ -969,10 +969,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0.4531,
+        "bottom": 0.4531,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -983,7 +983,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "right",
       "renderable": true,
@@ -1006,10 +1006,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.085,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.1719,
+        "right": 0.5938,
+        "bottom": 0.5938,
+        "left": 0.1719
       },
       "corner_touch": {
         "tl": false,
@@ -1020,7 +1020,7 @@
       "symmetry": "none",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -1043,10 +1043,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.165,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.25,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.25
       },
       "corner_touch": {
         "tl": true,
@@ -1057,7 +1057,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -1080,10 +1080,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -1094,7 +1094,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -1117,10 +1117,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.5,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.75,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.75
       },
       "corner_touch": {
         "tl": true,
@@ -1131,7 +1131,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -1154,10 +1154,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.125,
+        "bottom": 0.125,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -1168,7 +1168,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -1191,10 +1191,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -1205,7 +1205,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "center",
       "renderable": true,
@@ -1228,10 +1228,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -1242,7 +1242,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "center",
       "renderable": true,
@@ -1265,10 +1265,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -1279,7 +1279,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "center",
       "renderable": true,
@@ -1302,10 +1302,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.085,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.1563,
+        "right": 0.1563,
+        "bottom": 0.1563,
+        "left": 0.1719
       },
       "corner_touch": {
         "tl": false,
@@ -1316,7 +1316,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -1339,10 +1339,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0.0781,
+        "bottom": 1,
+        "left": 0.0938
       },
       "corner_touch": {
         "tl": false,
@@ -1353,7 +1353,7 @@
       "symmetry": "horizontal",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "down",
       "renderable": true,
@@ -1376,10 +1376,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0.75,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -1390,7 +1390,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "down",
       "renderable": true,
@@ -1413,10 +1413,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0.75,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -1427,7 +1427,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "down",
       "renderable": true,
@@ -1450,10 +1450,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0.6563,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -1464,7 +1464,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "down",
       "renderable": true,
@@ -1487,10 +1487,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.535,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.1563,
+        "right": 0.5781,
+        "bottom": 1,
+        "left": 0.5938
       },
       "corner_touch": {
         "tl": true,
@@ -1501,7 +1501,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 3,
       "dominant_direction": "outward",
       "renderable": true,
@@ -1524,10 +1524,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0.5,
+        "left": 0.0938
       },
       "corner_touch": {
         "tl": false,
@@ -1538,7 +1538,7 @@
       "symmetry": "horizontal",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -1561,10 +1561,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0.75,
+        "left": 0.1094
       },
       "corner_touch": {
         "tl": false,
@@ -1575,7 +1575,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -1598,10 +1598,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 1,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -1635,10 +1635,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 1,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -1672,10 +1672,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 1,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -1709,10 +1709,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.333,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 1,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -1746,10 +1746,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.05,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 1,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": false,
@@ -1784,9 +1784,9 @@
       },
       "edge_coverage": {
         "top": 0.022,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "right": 0,
+        "bottom": 0,
+        "left": 1
       },
       "corner_touch": {
         "tl": false,
@@ -1820,10 +1820,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.04,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 1,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": false,
@@ -1857,10 +1857,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.04,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.0938,
+        "right": 0,
+        "bottom": 0.0938,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -1875,7 +1875,7 @@
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
-      "raster_fill": 1.0,
+      "raster_fill": 1,
       "fg_centroid": [
         0.4948,
         0.4948
@@ -1894,10 +1894,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.573,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.875,
+        "right": 0.875,
+        "bottom": 0.375,
+        "left": 0.375
       },
       "corner_touch": {
         "tl": false,
@@ -1912,7 +1912,7 @@
       "path_count": 2,
       "dominant_direction": "outward",
       "renderable": true,
-      "raster_fill": 1.0,
+      "raster_fill": 1,
       "fg_centroid": [
         0.4948,
         0.4948
@@ -1931,10 +1931,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0.375,
+        "bottom": 0.375,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -1949,7 +1949,7 @@
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
-      "raster_fill": 1.0,
+      "raster_fill": 1,
       "fg_centroid": [
         0.4948,
         0.4948
@@ -1968,10 +1968,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.41,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.625,
+        "right": 1,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -1986,7 +1986,7 @@
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
-      "raster_fill": 1.0,
+      "raster_fill": 1,
       "fg_centroid": [
         0.4948,
         0.4948
@@ -2005,10 +2005,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.083,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.1875,
+        "right": 1,
+        "bottom": 0.1875,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -2019,7 +2019,7 @@
       "symmetry": "none",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 3,
       "dominant_direction": "outward",
       "renderable": true,
@@ -2042,10 +2042,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.12,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.1875,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.1875
       },
       "corner_touch": {
         "tl": true,
@@ -2056,7 +2056,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -2079,10 +2079,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.268,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.4219,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.4219
       },
       "corner_touch": {
         "tl": true,
@@ -2093,7 +2093,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -2116,10 +2116,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.42,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.6406,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.6406
       },
       "corner_touch": {
         "tl": true,
@@ -2130,7 +2130,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -2153,10 +2153,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.573,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.875,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.875
       },
       "corner_touch": {
         "tl": true,
@@ -2167,7 +2167,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -2190,10 +2190,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 1,
+        "bottom": 1,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -2204,7 +2204,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -2227,10 +2227,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.165,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.25,
+        "right": 1,
+        "bottom": 1,
+        "left": 0.25
       },
       "corner_touch": {
         "tl": false,
@@ -2241,7 +2241,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "down",
       "renderable": true,
@@ -2264,10 +2264,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.03,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.0469,
+        "right": 1,
+        "bottom": 1,
+        "left": 0.0469
       },
       "corner_touch": {
         "tl": false,
@@ -2278,7 +2278,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "right",
       "renderable": true,
@@ -2301,10 +2301,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0.9844,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -2315,7 +2315,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -2338,10 +2338,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -2352,7 +2352,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -2375,10 +2375,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.647,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -2389,7 +2389,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -2412,10 +2412,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -2426,7 +2426,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "center",
       "renderable": true,
@@ -2449,10 +2449,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -2463,7 +2463,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "center",
       "renderable": true,
@@ -2486,10 +2486,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.0938,
+        "right": 0,
+        "bottom": 0.0938,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -2500,7 +2500,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "center",
       "renderable": true,
@@ -2523,10 +2523,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.0938,
+        "right": 0,
+        "bottom": 0.0938,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -2537,7 +2537,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -2560,10 +2560,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.058,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.125,
+        "right": 0,
+        "bottom": 0.125,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -2574,7 +2574,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -2597,10 +2597,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.058,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.125,
+        "right": 0,
+        "bottom": 0.125,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -2611,7 +2611,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -2634,10 +2634,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.058,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.125,
+        "right": 0,
+        "bottom": 0.125,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -2648,7 +2648,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -2671,10 +2671,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -2685,7 +2685,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "center",
       "renderable": true,
@@ -2708,10 +2708,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.5,
+        "bottom": 0.9688,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -2722,7 +2722,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "up",
       "renderable": true,
@@ -2745,10 +2745,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0.75,
+        "bottom": 0.7656,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -2759,7 +2759,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "outward",
       "renderable": true,
@@ -2782,10 +2782,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0.3125,
+        "bottom": 0.3281,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -2796,7 +2796,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "outward",
       "renderable": true,
@@ -2819,10 +2819,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0.5,
+        "bottom": 0.5156,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -2833,7 +2833,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "outward",
       "renderable": true,
@@ -2856,10 +2856,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.655,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0.0156,
+        "bottom": 0,
+        "left": 0.9844
       },
       "corner_touch": {
         "tl": true,
@@ -2870,7 +2870,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "outward",
       "renderable": true,
@@ -2893,10 +2893,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.328,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.4844,
+        "right": 0.5,
+        "bottom": 0.5,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -2907,7 +2907,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -2930,10 +2930,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0.5,
+        "bottom": 0.5156,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -2944,7 +2944,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 3,
       "dominant_direction": "outward",
       "renderable": true,
@@ -2967,10 +2967,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0.5,
+        "bottom": 0.5,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -2981,7 +2981,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3004,10 +3004,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.315,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3018,7 +3018,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 4,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3041,10 +3041,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.315,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3055,7 +3055,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 5,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3078,10 +3078,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.315,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3092,7 +3092,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 5,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3115,10 +3115,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.315,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0.5,
+        "bottom": 0.875,
+        "left": 0.875
       },
       "corner_touch": {
         "tl": false,
@@ -3129,7 +3129,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 6,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3152,10 +3152,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.15,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.25,
+        "right": 0,
+        "bottom": 0.25,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3166,7 +3166,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 5,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3189,10 +3189,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.15,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.25,
+        "right": 0,
+        "bottom": 0.25,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3203,7 +3203,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 6,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3226,10 +3226,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.15,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.2656,
+        "right": 0.3281,
+        "bottom": 0.9063,
+        "left": 0.9063
       },
       "corner_touch": {
         "tl": false,
@@ -3240,7 +3240,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 9,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3263,10 +3263,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.15,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.2656,
+        "right": 0.2656,
+        "bottom": 0.9063,
+        "left": 0.9063
       },
       "corner_touch": {
         "tl": false,
@@ -3277,7 +3277,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 7,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3300,10 +3300,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.135,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.2656,
+        "right": 0,
+        "bottom": 0.2656,
+        "left": 0
       },
       "corner_touch": {
         "tl": true,
@@ -3314,7 +3314,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 10,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3337,10 +3337,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3351,7 +3351,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -3374,10 +3374,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.325,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -3388,7 +3388,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 5,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3411,10 +3411,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.058,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.125,
+        "right": 0.5,
+        "bottom": 0.5,
+        "left": 0.125
       },
       "corner_touch": {
         "tl": false,
@@ -3429,7 +3429,7 @@
       "path_count": 5,
       "dominant_direction": "outward",
       "renderable": true,
-      "raster_fill": 1.0,
+      "raster_fill": 1,
       "fg_centroid": [
         0.4948,
         0.4948
@@ -3439,7 +3439,7 @@
       "id": "lines-Clear",
       "filename": "Lines/Clear.svg",
       "shape_family": "lines",
-      "visual_weight": 0.0,
+      "visual_weight": 0,
       "weight_band": "light",
       "edge_type": {
         "top": false,
@@ -3448,10 +3448,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3481,10 +3481,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.085,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.1563,
+        "right": 0.0781,
+        "bottom": 0,
+        "left": 0.0938
       },
       "corner_touch": {
         "tl": false,
@@ -3495,7 +3495,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -3518,10 +3518,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.085,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.1563,
+        "right": 0.5781,
+        "bottom": 0.5,
+        "left": 0.5938
       },
       "corner_touch": {
         "tl": false,
@@ -3532,7 +3532,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 6,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3555,10 +3555,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.375,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5938,
+        "right": 0.5781,
+        "bottom": 0.5,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -3569,7 +3569,7 @@
       "symmetry": "none",
       "complexity": "moderate",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 3,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3592,10 +3592,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.03,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.0469,
+        "right": 1,
+        "bottom": 0.0469,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3606,7 +3606,7 @@
       "symmetry": "vertical",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "right",
       "renderable": true,
@@ -3629,10 +3629,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.165,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.25,
+        "right": 1,
+        "bottom": 0.25,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3643,7 +3643,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "right",
       "renderable": true,
@@ -3666,10 +3666,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.165,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.25,
+        "right": 1,
+        "bottom": 0.25,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3680,7 +3680,7 @@
       "symmetry": "none",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 3,
       "dominant_direction": "right",
       "renderable": true,
@@ -3703,10 +3703,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.5,
+        "right": 1,
+        "bottom": 0.5,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -3717,7 +3717,7 @@
       "symmetry": "vertical",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 4,
       "dominant_direction": "right",
       "renderable": true,
@@ -3740,10 +3740,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.573,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.875,
+        "right": 0.875,
+        "bottom": 0.875,
+        "left": 0.875
       },
       "corner_touch": {
         "tl": true,
@@ -3754,7 +3754,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 3,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3777,10 +3777,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0.875,
+        "bottom": 0.875,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -3791,7 +3791,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 3,
       "dominant_direction": "outward",
       "renderable": true,
@@ -3814,10 +3814,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -3828,7 +3828,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "left",
       "renderable": true,
@@ -3851,10 +3851,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.573,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.875,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.875
       },
       "corner_touch": {
         "tl": true,
@@ -3865,7 +3865,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "left",
       "renderable": true,
@@ -3888,10 +3888,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0.875,
+        "bottom": 0.875,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -3902,7 +3902,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -3925,10 +3925,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.573,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.875,
+        "right": 0.875,
+        "bottom": 0.875,
+        "left": 0.875
       },
       "corner_touch": {
         "tl": true,
@@ -3939,7 +3939,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -3962,10 +3962,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.573,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.875,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.875
       },
       "corner_touch": {
         "tl": true,
@@ -3976,7 +3976,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "left",
       "renderable": true,
@@ -3999,10 +3999,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.268,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.4219,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.4219
       },
       "corner_touch": {
         "tl": true,
@@ -4013,7 +4013,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "left",
       "renderable": true,
@@ -4036,10 +4036,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.268,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.4219,
+        "right": 0,
+        "bottom": 0.0625,
+        "left": 0.9219
       },
       "corner_touch": {
         "tl": true,
@@ -4050,7 +4050,7 @@
       "symmetry": "horizontal",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 2,
       "dominant_direction": "left",
       "renderable": true,
@@ -4073,10 +4073,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.25,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -4087,7 +4087,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -4110,10 +4110,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.5,
+        "bottom": 0,
+        "left": 0.75
       },
       "corner_touch": {
         "tl": true,
@@ -4124,7 +4124,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -4147,10 +4147,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.0469,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -4161,7 +4161,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -4184,10 +4184,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.5,
+        "bottom": 0.0156,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -4198,7 +4198,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -4221,10 +4221,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -4235,7 +4235,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -4258,10 +4258,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.75
       },
       "corner_touch": {
         "tl": true,
@@ -4272,7 +4272,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -4295,10 +4295,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0,
+        "bottom": 0.0156,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -4309,7 +4309,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -4332,10 +4332,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0,
+        "bottom": 0.0156,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -4346,7 +4346,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -4369,10 +4369,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.0469,
+        "bottom": 0,
+        "left": 0.0469
       },
       "corner_touch": {
         "tl": true,
@@ -4383,7 +4383,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -4406,10 +4406,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.25,
+        "bottom": 0,
+        "left": 0.25
       },
       "corner_touch": {
         "tl": true,
@@ -4420,7 +4420,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -4443,10 +4443,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.5,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -4457,7 +4457,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -4480,10 +4480,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.665,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 1,
+        "right": 0.75,
+        "bottom": 0,
+        "left": 0.75
       },
       "corner_touch": {
         "tl": true,
@@ -4494,7 +4494,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "up",
       "renderable": true,
@@ -4517,10 +4517,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0.0625,
+        "bottom": 0,
+        "left": 0.0625
       },
       "corner_touch": {
         "tl": false,
@@ -4531,7 +4531,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -4554,10 +4554,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0.25,
+        "bottom": 0,
+        "left": 0.25
       },
       "corner_touch": {
         "tl": false,
@@ -4568,7 +4568,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -4591,10 +4591,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0.5,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": false,
@@ -4605,7 +4605,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -4628,10 +4628,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0.75,
+        "bottom": 0,
+        "left": 0.75
       },
       "corner_touch": {
         "tl": false,
@@ -4642,7 +4642,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -4665,10 +4665,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.085,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.1719,
+        "right": 0.1563,
+        "bottom": 0.1563,
+        "left": 0.1875
       },
       "corner_touch": {
         "tl": false,
@@ -4679,7 +4679,7 @@
       "symmetry": "none",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -4702,10 +4702,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.198,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.4375,
+        "right": 0.1875,
+        "bottom": 0.4375,
+        "left": 0.5938
       },
       "corner_touch": {
         "tl": true,
@@ -4716,7 +4716,7 @@
       "symmetry": "none",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 6,
       "dominant_direction": "left",
       "renderable": true,
@@ -4739,10 +4739,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.165,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.25,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.25
       },
       "corner_touch": {
         "tl": true,
@@ -4753,7 +4753,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -4776,10 +4776,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.33,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.5,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.5
       },
       "corner_touch": {
         "tl": true,
@@ -4790,7 +4790,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -4813,10 +4813,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.5,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.75,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.75
       },
       "corner_touch": {
         "tl": true,
@@ -4827,7 +4827,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -4850,10 +4850,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.63,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9531,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.9531
       },
       "corner_touch": {
         "tl": true,
@@ -4864,7 +4864,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -4887,10 +4887,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.657,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.9844,
+        "right": 0.5,
+        "bottom": 0.5156,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -4901,7 +4901,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 3,
       "dominant_direction": "outward",
       "renderable": true,
@@ -4924,10 +4924,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -4938,7 +4938,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "neutral",
       "renderable": true,
@@ -4961,10 +4961,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -4975,7 +4975,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "center",
       "renderable": true,
@@ -4998,10 +4998,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -5012,7 +5012,7 @@
       "symmetry": "both",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "center",
       "renderable": true,
@@ -5035,10 +5035,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0.9688,
+        "left": 0.9688
       },
       "corner_touch": {
         "tl": true,
@@ -5049,7 +5049,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -5072,10 +5072,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.018,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.0469,
+        "right": 1,
+        "bottom": 1,
+        "left": 0.0469
       },
       "corner_touch": {
         "tl": false,
@@ -5086,7 +5086,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -5109,10 +5109,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.9375
       },
       "corner_touch": {
         "tl": true,
@@ -5123,7 +5123,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -5146,10 +5146,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0.9688
       },
       "corner_touch": {
         "tl": true,
@@ -5160,7 +5160,7 @@
       "symmetry": "none",
       "complexity": "simple",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -5183,10 +5183,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0.4844,
+        "left": 0.9531
       },
       "corner_touch": {
         "tl": true,
@@ -5197,7 +5197,7 @@
       "symmetry": "horizontal",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -5220,10 +5220,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.323,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0.4844,
+        "right": 0.4844,
+        "bottom": 1,
+        "left": 1
       },
       "corner_touch": {
         "tl": true,
@@ -5234,7 +5234,7 @@
       "symmetry": "none",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "outward",
       "renderable": true,
@@ -5257,10 +5257,10 @@
         "left": true
       },
       "edge_coverage": {
-        "top": 0.0,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 1.0
+        "top": 0,
+        "right": 0,
+        "bottom": 0.9531,
+        "left": 0.4844
       },
       "corner_touch": {
         "tl": false,
@@ -5271,7 +5271,7 @@
       "symmetry": "horizontal",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "left",
       "renderable": true,
@@ -5294,10 +5294,10 @@
         "left": false
       },
       "edge_coverage": {
-        "top": 0.362,
-        "right": 0.0,
-        "bottom": 0.0,
-        "left": 0.0
+        "top": 0.5469,
+        "right": 1,
+        "bottom": 0.5469,
+        "left": 0
       },
       "corner_touch": {
         "tl": false,
@@ -5308,7 +5308,7 @@
       "symmetry": "vertical",
       "complexity": "complex",
       "has_clippath": false,
-      "has_background_rect": false,
+      "has_background_rect": true,
       "path_count": 1,
       "dominant_direction": "right",
       "renderable": true,
