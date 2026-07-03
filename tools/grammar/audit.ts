@@ -12,6 +12,10 @@ import { mulberry32, type Rng } from './rng.js';
 import type { Grammar } from './grammar-schema.js';
 import type { GroundSchemeKind } from './stats.js';
 import type { BannerRecon, CellRecon } from '../mine/schema.js';
+import { scoreComposition, passesCompositionFloors, COMPOSITION_FLOORS } from '../../src/engine/corpus/composition.js';
+import { samplePlan } from '../../src/engine/corpus/sample.js';
+import { GRAMMAR as ENGINE_GRAMMAR } from '../../src/engine/corpus/data/grammar.js';
+import { TILES } from '../../src/engine/corpus/data/tiles.js';
 
 const ROOT = process.cwd();
 const GRAMMAR_PATH = join(ROOT, 'corpus', 'grammar.json');
@@ -57,12 +61,23 @@ function main(): void {
   const accentInks = new Set(grammar.palette.accentOrder);
   let zeroFormPlans = 0;
   let zeroAccentPlans = 0;
+  // Composition tracking across the 60-plan run.
+  const compSums = { focalDominance: 0, balance: 0, negativeSpaceCluster: 0, rhythmQuality: 0 };
+  let compFloorsPassCount = 0;
 
   for (const seed of SEEDS) {
     const template = chooseTemplateForSeed(grammar, seed);
     increment(templateCounts, template.id);
 
     const { plan, diag } = sampleWithDiagnostics(grammar, seed);
+    // Composition scoring: sample via the engine (uses the baked grammar/tiles).
+    const enginePlan = samplePlan(ENGINE_GRAMMAR, seed, {});
+    const comp = scoreComposition(enginePlan, TILES);
+    compSums.focalDominance += comp.focalDominance;
+    compSums.balance += comp.balance;
+    compSums.negativeSpaceCluster += comp.negativeSpaceCluster;
+    compSums.rhythmQuality += comp.rhythmQuality;
+    if (passesCompositionFloors(comp)) compFloorsPassCount += 1;
     diagTotals.adjacencyHits += diag.adjacencyHits;
     diagTotals.adjacencyFallbacks += diag.adjacencyFallbacks;
     diagTotals.fillAdjacencyHits += diag.fillAdjacencyHits;
@@ -152,6 +167,13 @@ function main(): void {
     longestRunMean: mean(longestRuns),
     longestRunMax: longestRuns.length > 0 ? Math.max(...longestRuns) : 0,
     acceptances,
+    compMeans: {
+      focalDominance: compSums.focalDominance / SEEDS.length,
+      balance: compSums.balance / SEEDS.length,
+      negativeSpaceCluster: compSums.negativeSpaceCluster / SEEDS.length,
+      rhythmQuality: compSums.rhythmQuality / SEEDS.length,
+    },
+    compFloorsPassRate: compFloorsPassCount / SEEDS.length,
   });
 
   if (acceptances.some(result => !result.pass)) {
@@ -293,6 +315,8 @@ function printReport(input: {
   longestRunMean: number;
   longestRunMax: number;
   acceptances: Acceptance[];
+  compMeans: { focalDominance: number; balance: number; negativeSpaceCluster: number; rhythmQuality: number };
+  compFloorsPassRate: number;
 }): void {
   console.log('Grammar sampler audit');
   console.log(`Seeds: ${SEEDS[0]}-${SEEDS[SEEDS.length - 1]} (${SEEDS.length} plans)`);
@@ -339,6 +363,14 @@ function printReport(input: {
   console.log(`  friezes placed: ${input.diagTotals.friezesPlaced}`);
   console.log(`  run paths: mean ${(input.diagTotals.runPathsTotal / SEEDS.length).toFixed(2)} per plan`);
   console.log(`  longest run: mean ${input.longestRunMean.toFixed(2)} / max ${input.longestRunMax}`);
+  console.log('');
+
+  console.log('Composition means (60-plan run, engine sampler)');
+  console.log(`  focalDominance  mean: ${input.compMeans.focalDominance.toFixed(3)}  (floor ≥ ${COMPOSITION_FLOORS.focalDominance})`);
+  console.log(`  balance         mean: ${input.compMeans.balance.toFixed(3)}  (display-only)`);
+  console.log(`  negSpaceCluster mean: ${input.compMeans.negativeSpaceCluster.toFixed(3)}  (display-only)`);
+  console.log(`  rhythmQuality   mean: ${input.compMeans.rhythmQuality.toFixed(3)}  (floor ≥ ${COMPOSITION_FLOORS.rhythmQuality})`);
+  console.log(`  floors pass-rate: ${formatPercent(input.compFloorsPassRate)} (${Math.round(input.compFloorsPassRate * 60)}/60)`);
   console.log('');
 
   console.log('Acceptance');

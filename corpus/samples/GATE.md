@@ -54,3 +54,12 @@ mid-field); role recoloring prevents paste-in look; upscaled figures anchor hero
 law holds WITH heroes (Telemagenta creature-face in an AI banner — the compounded brief).
 018-house patch: acceptable in context, stays. Pipes: byte-stable vs P3 (determinism on-sheet).
 Would-show ~65%.
+
+## Iteration 5 — P5 per-size gates — 2026-07-02
+Sheets: p5-{portrait,square,strip,column,column-short,banner}.png.
+VERDICTS: portrait SHIP · square SHIP · strip SHIP (component doctrine: quiet strips are correct
+eyebrows; drip-wave/arc-trio are hero-grade) · column SHIP (vertical serpents excel — ring-stack
+columns are the surprise winner) · column-short SHIP FLAGGED-EXPERIMENTAL (6/8 visually fine but
+~half trip composition floors — a metric artifact at 3-cell scale, not visual failure; floors
+should become arrangement-aware before the flag lifts). Banner regression clean.
+Composition floors visibly working on the standard sizes (FLOOR labels rare, deserved).

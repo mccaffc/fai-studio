@@ -172,9 +172,13 @@ function figureTransform(cell: CellPlan, asset: FigureAsset, span: [number, numb
   const rectH = span[1] * cellPx;
   const tx = cell.col * cellPx;
   const ty = cell.row * cellPx;
-  const sx = rectW / viewW;
-  const sy = rectH / viewH;
-  return `translate(${num(tx)},${num(ty)}) scale(${num(sx)},${num(sy)})`;
+  // Figures must NEVER distort: uniform scale, centered (letterbox) if the
+  // span's aspect ever drifts from the asset's. By construction (aspect-true
+  // spans in the sampler) sx === sy; this is the independent second guard.
+  const s = Math.min(rectW / viewW, rectH / viewH);
+  const ox = (rectW - viewW * s) / 2;
+  const oy = (rectH - viewH * s) / 2;
+  return `translate(${num(tx + ox)},${num(ty + oy)}) scale(${num(s)},${num(s)})`;
 }
 
 function cellKey(cell: Pick<CellPlan, 'col' | 'row'>): string {

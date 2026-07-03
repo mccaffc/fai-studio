@@ -21,7 +21,16 @@
  * test/engine-corpus/purity.test.ts.
  */
 
+// Explicit accent knobs accept the corpus accents AND the six program hues:
+// program hues stay OUT of the auto rotation (wayfinding discipline + corpus
+// truth) but are deliberately choosable (Chris, 2026-07-02).
+const PROGRAM_HUES = ['#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'];
+function isAllowedExplicitAccent(accent: string, order: readonly string[]): boolean {
+  return order.includes(accent) || PROGRAM_HUES.includes(accent);
+}
+
 import type {
+  ArrangementId,
   BannerPlan,
   CellPlan,
   EngineGrammar,
@@ -30,6 +39,7 @@ import type {
   Template,
   VariantKey,
 } from './types.js';
+import { ARRANGEMENTS } from './types.js';
 import { detectForms, orientEdges } from './forms.js';
 import { profileIoU } from './profiles.js';
 import { mulberry32, type Rng } from './rng.js';
@@ -70,9 +80,10 @@ export interface SampleResult {
   diag: SampleDiagnostics;
 }
 
-const COLS = 6;
-const ROWS = 3;
-const CELL_COUNT = COLS * ROWS;
+const CELL_PX = 320;
+const BANNER_CELL_COUNT = ARRANGEMENTS.banner.cols * ARRANGEMENTS.banner.rows;
+const SOURCE_STAT_MAX_COL = ARRANGEMENTS.banner.cols - 1;
+const SOURCE_STAT_MAX_ROW = ARRANGEMENTS.banner.rows - 1;
 const EPS = 1e-9;
 const DOMINANT_FAMILY_QUOTA = 0.18;
 const LINEWORK_STEERING_STRENGTH = 1;
@@ -141,6 +152,17 @@ interface Placement {
   flip: boolean;
 }
 
+interface GridDims {
+  cols: number;
+  rows: number;
+  cellCount: number;
+}
+
+interface RelativeGridStats {
+  plainPositionWeights: Record<string, number>;
+  friezeRowWeights: Record<string, number>;
+}
+
 export function samplePlan(
   grammar: EngineGrammar,
   seed: number,
@@ -169,14 +191,16 @@ export function sampleWithDiagnostics(
     runPaths: [],
   };
   const rng = mulberry32(seed);
+  const dims = dimsForArrangement(knobs.arrangement);
+  const relativeStats = relativeGridStats(grammar, dims);
   const template = chooseTemplate(grammar, rng, knobs.template);
   const globalGround = drawGlobalGround(grammar, rng);
   const groundScheme = drawGroundScheme(grammar, template, rng);
-  const cells = makeDraftCells(generateGrounds(grammar, rng, groundScheme, globalGround));
+  const cells = makeDraftCells(generateGrounds(grammar, rng, groundScheme, globalGround, dims), dims);
 
   const dominantFamily = drawDominantFamily(grammar, template, rng);
-  let targetDistinct = drawIntegerRange(template.spec.distinctTiles, rng);
-  if (template.spec.distinctTiles[1] > 0 && targetDistinct === 0) {
+  let targetDistinct = Math.min(dims.cellCount, drawIntegerRange(template.spec.distinctTiles, rng));
+  if (dims.cellCount > 0 && template.spec.distinctTiles[1] > 0 && targetDistinct === 0) {
     targetDistinct = 1;
   }
   let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct);
@@ -185,50 +209,51 @@ export function sampleWithDiagnostics(
   }
   targetDistinct = workingSet.length;
 
-  const friezeCount = drawIntegerRange(template.spec.forms.frieze, rng);
-  placeFriezes(cells, grammar, rng, workingSet, friezeCount, diag);
+  const friezeCount = scaleFormCount(drawIntegerRange(template.spec.forms.frieze, rng), dims);
+  placeFriezes(cells, grammar, rng, workingSet, friezeCount, relativeStats, diag);
 
   const rawRunCount = drawIntegerRange(template.spec.forms.run, rng);
-  const runCount = template.spec.forms.run[1] > 0 ? Math.max(1, rawRunCount) : 0;
+  const bannerRunCount = template.spec.forms.run[1] > 0 ? Math.max(1, rawRunCount) : 0;
+  const runCount = scaleFormCount(bannerRunCount, dims);
   for (let i = 0; i < runCount; i += 1) {
     placeRun(cells, grammar, rng, workingSet, template, diag);
   }
 
-  const figureSize = plannedFigureSize(template, knobs, rng);
+  const figureSize = plannedFigureSize(template, knobs, rng, dims);
   if (figureSize > 0) {
     const placedPatch = shouldPlacePatch(template.id, rng)
       ? placePatch(cells, grammar, rng, knobs.accent, patches, globalGround, diag)
       : false;
     if (!placedPatch) {
-      placeFigure(cells, grammar, rng, figureSize, knobs.accent, figures, template.id);
+      placeFigure(cells, grammar, rng, figureSize, knobs.accent, figures, dims, template.id);
     }
-  } else if (knobs.accent && !grammar.palette.accentOrder.includes(knobs.accent)) {
+  } else if (knobs.accent && !isAllowedExplicitAccent(knobs.accent, grammar.palette.accentOrder)) {
     throw new Error(`Unknown accent ink: ${knobs.accent}`);
   }
 
   const usedTiles = usedTileSet(cells);
   const emptyBeforePlain = cells.filter(cell => cell.kind === undefined).length;
   const requiredTileCells = Math.max(0, targetDistinct - usedTiles.size);
-  const basePlainTarget = plainTargetCount(template, knobs.density ?? 0.5);
+  const basePlainTarget = plainTargetCount(template, knobs.density ?? 0.5, dims);
   const plainTarget = Math.max(0, Math.min(basePlainTarget, emptyBeforePlain - requiredTileCells));
-  placePlainCells(cells, grammar, rng, plainTarget);
+  placePlainCells(cells, relativeStats, rng, plainTarget);
 
   fillTileCells(cells, grammar, rng, workingSet, template, diag);
   applyAccentZoning(cells, grammar, rng, template, knobs, diag);
-  enforceAccentBudget(cells, grammar);
+  enforceAccentBudget(cells, grammar, knobs.accent);
   ensureAccentPresence(cells, grammar, rng);
   // Run last: cap rhythm-template run length AFTER every ink mutation, so the
   // accent passes can't re-merge a split run.
-  splitRhythmRuns(cells, grammar, template);
+  splitRhythmRuns(cells, grammar, template, dims);
   applyLogomarkGuard(cells);
 
   const finalCells = finalizeCells(cells);
   const plan: BannerPlan = {
     id: `sample-${seed}`,
-    width: 1920,
-    height: 960,
-    cols: COLS,
-    rows: ROWS,
+    width: dims.cols * CELL_PX,
+    height: dims.rows * CELL_PX,
+    cols: dims.cols,
+    rows: dims.rows,
     ground: globalGround,
     cells: finalCells,
     forms: [],
@@ -260,6 +285,74 @@ function chooseTemplate(grammar: EngineGrammar, rng: Rng, id: string | undefined
   );
 }
 
+function dimsForArrangement(arrangement: ArrangementId | undefined): GridDims {
+  const id = arrangement ?? 'banner';
+  const dims = ARRANGEMENTS[id];
+  if (!dims) throw new Error(`Unknown arrangement: ${String(arrangement)}`);
+  return { cols: dims.cols, rows: dims.rows, cellCount: dims.cols * dims.rows };
+}
+
+function scaleFormCount(count: number, dims: GridDims): number {
+  return Math.max(0, Math.round(count * (dims.cellCount / BANNER_CELL_COUNT)));
+}
+
+function relativeGridStats(grammar: EngineGrammar, dims: GridDims): RelativeGridStats {
+  return {
+    plainPositionWeights: relativePlainPositionWeights(grammar, dims),
+    friezeRowWeights: relativeFriezeRowWeights(grammar, dims),
+  };
+}
+
+/**
+ * Mined plain-position stats are keyed to the source 6×3 corpus grid. Convert
+ * each source key once per sample to relative coordinates:
+ *   colFrac = col / 5, rowBand = row / 2,
+ * then map to the nearest target cell. When several source cells collapse onto
+ * one target cell (narrow grids), their weights are summed.
+ */
+function relativePlainPositionWeights(grammar: EngineGrammar, dims: GridDims): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const sourceKey of Object.keys(grammar.stats.plain.positions).sort()) {
+    const parsed = parsePositionKey(sourceKey);
+    if (!parsed) continue;
+    const colFrac = SOURCE_STAT_MAX_COL > 0 ? parsed.col / SOURCE_STAT_MAX_COL : 0;
+    const rowBand = SOURCE_STAT_MAX_ROW > 0 ? parsed.row / SOURCE_STAT_MAX_ROW : 0;
+    const col = nearestTargetIndex(colFrac, dims.cols);
+    const row = nearestTargetIndex(rowBand, dims.rows);
+    const targetKey = `${col},${row}`;
+    out[targetKey] = (out[targetKey] ?? 0) + (grammar.stats.plain.positions[sourceKey] ?? 0);
+  }
+  return out;
+}
+
+/**
+ * Frieze row stats are also source-grid relative: source rows 0/1/2 are treated
+ * as top/middle/bottom bands and mapped to the nearest target row.
+ */
+function relativeFriezeRowWeights(grammar: EngineGrammar, dims: GridDims): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const sourceKey of Object.keys(grammar.stats.forms.friezeRows).sort()) {
+    if (!/^[0-2]$/.test(sourceKey)) continue;
+    const sourceRow = Number(sourceKey);
+    const rowBand = SOURCE_STAT_MAX_ROW > 0 ? sourceRow / SOURCE_STAT_MAX_ROW : 0;
+    const row = nearestTargetIndex(rowBand, dims.rows);
+    const targetKey = String(row);
+    out[targetKey] = (out[targetKey] ?? 0) + (grammar.stats.forms.friezeRows[sourceKey] ?? 0);
+  }
+  return out;
+}
+
+function nearestTargetIndex(fraction: number, count: number): number {
+  if (count <= 1) return 0;
+  return Math.max(0, Math.min(count - 1, Math.round(fraction * (count - 1))));
+}
+
+function parsePositionKey(value: string): { col: number; row: number } | null {
+  const match = value.match(/^(\d+),(\d+)$/);
+  if (!match) return null;
+  return { col: Number(match[1]), row: Number(match[2]) };
+}
+
 function drawGlobalGround(grammar: EngineGrammar, rng: Rng): string {
   return drawWeightedRecord(
     grammar.palette.globalGrounds,
@@ -287,8 +380,9 @@ function generateGrounds(
   rng: Rng,
   scheme: GroundSchemeKind,
   globalGround: string,
+  dims: GridDims,
 ): string[] {
-  const grounds = Array.from({ length: CELL_COUNT }, () => globalGround);
+  const grounds = Array.from({ length: dims.cellCount }, () => globalGround);
   const pool = groundPool(grammar, globalGround);
 
   switch (scheme) {
@@ -297,25 +391,27 @@ function generateGrounds(
 
     case 'checker': {
       const second = drawGroundFromPool(pool, rng, new Set([globalGround]));
-      forEachPosition((col, row, idx) => {
+      forEachPosition(dims, (col, row, idx) => {
         grounds[idx] = (col + row) % 2 === 0 ? globalGround : second;
       });
       return grounds;
     }
 
     case 'banded-rows': {
+      if (dims.rows <= 1) return grounds;
       const distinct = drawDistinctGrounds(pool, rng, Math.min(3, Math.max(2, pool.length)));
       const offset = distinct.length > 1 ? rng.int(0, distinct.length - 1) : 0;
-      forEachPosition((_col, row, idx) => {
+      forEachPosition(dims, (_col, row, idx) => {
         grounds[idx] = distinct[(row + offset) % distinct.length] ?? globalGround;
       });
       return grounds;
     }
 
     case 'banded-cols': {
+      if (dims.cols <= 1) return grounds;
       const distinct = drawDistinctGrounds(pool, rng, Math.min(3, Math.max(2, pool.length)));
       const offset = distinct.length > 1 ? rng.int(0, distinct.length - 1) : 0;
-      forEachPosition((col, _row, idx) => {
+      forEachPosition(dims, (col, _row, idx) => {
         grounds[idx] = distinct[(col + offset) % distinct.length] ?? globalGround;
       });
       return grounds;
@@ -329,10 +425,10 @@ function generateGrounds(
       );
       const occupied = new Set<string>();
       for (const ground of offGrounds) {
-        const rect = drawRegionRect(rng, occupied);
+        const rect = drawRegionRect(rng, occupied, dims);
         for (let row = rect.row; row < rect.row + rect.h; row += 1) {
           for (let col = rect.col; col < rect.col + rect.w; col += 1) {
-            grounds[indexFor(col, row)] = ground;
+            grounds[indexFor(dims, col, row)] = ground;
             occupied.add(`${col},${row}`);
           }
         }
@@ -341,7 +437,7 @@ function generateGrounds(
     }
 
     case 'scatter': {
-      forEachPosition((_col, _row, idx) => {
+      forEachPosition(dims, (_col, _row, idx) => {
         if (rng.chance(0.2)) {
           grounds[idx] = drawGroundFromPool(pool, rng, new Set([globalGround]));
         }
@@ -383,15 +479,18 @@ function drawDistinctGrounds(pool: string[], rng: Rng, count: number): string[] 
   return selected.length > 0 ? selected : ['#F3F3F3'];
 }
 
-function drawRegionRect(rng: Rng, occupied: Set<string>): { col: number; row: number; w: number; h: number } {
-  let fallback = { col: 0, row: 0, w: 2, h: 1 };
+function drawRegionRect(rng: Rng, occupied: Set<string>, dims: GridDims): { col: number; row: number; w: number; h: number } {
+  const maxW = Math.max(1, Math.min(3, dims.cols));
+  const maxH = Math.max(1, Math.min(3, dims.rows));
+  const minArea = Math.min(2, dims.cellCount);
+  let fallback = { col: 0, row: 0, w: Math.min(2, dims.cols), h: 1 };
   for (let attempt = 0; attempt < 16; attempt += 1) {
-    const w = rng.int(1, 3);
-    const h = rng.int(1, 3);
+    const w = rng.int(1, maxW);
+    const h = rng.int(1, maxH);
     const area = w * h;
-    if (area < 2 || area > 6) continue;
-    const col = rng.int(0, COLS - w);
-    const row = rng.int(0, ROWS - h);
+    if (area < minArea || area > 6) continue;
+    const col = rng.int(0, dims.cols - w);
+    const row = rng.int(0, dims.rows - h);
     const rect = { col, row, w, h };
     fallback = rect;
     if (!rectCells(rect).some(([c, r]) => occupied.has(`${c},${r}`))) {
@@ -515,16 +614,19 @@ function placeFriezes(
   rng: Rng,
   workingSet: string[],
   count: number,
+  relativeStats: RelativeGridStats,
   diag: SampleDiagnostics,
 ): void {
+  const dims = dimsForCells(cells);
+  if (dims.cols < 2) return;
   const capable = friezePlacements(grammar, workingSet);
   if (capable.length === 0) return;
 
   for (let i = 0; i < count; i += 1) {
-    const row = drawFriezeRow(grammar, rng);
+    const row = drawFriezeRow(relativeStats, rng);
     if (!rowIsFree(cells, row)) continue;
     const placement = weightedChoice(rng, capable);
-    const rowCells = Array.from({ length: COLS }, (_v, col) => cellAt(cells, col, row));
+    const rowCells = Array.from({ length: dims.cols }, (_v, col) => cellAt(cells, col, row));
     const ink = drawInkForCells(grammar, rng, rowCells);
     for (const cell of rowCells) {
       assignTile(cell, { tile: placement.tile, rotation: placement.rotation, flip: cell.col % 2 === 1 }, ink);
@@ -553,8 +655,8 @@ function friezePlacements(grammar: EngineGrammar, workingSet: string[]): Weighte
   return entries;
 }
 
-function drawFriezeRow(grammar: EngineGrammar, rng: Rng): number {
-  const rowKey = drawWeightedRecord(grammar.stats.forms.friezeRows, rng, key => /^[0-2]$/.test(key), '1');
+function drawFriezeRow(relativeStats: RelativeGridStats, rng: Rng): number {
+  const rowKey = drawWeightedRecord(relativeStats.friezeRowWeights, rng, key => /^\d+$/.test(key), '0');
   return Number(rowKey);
 }
 
@@ -820,7 +922,7 @@ function placePatch(
   globalGround: string,
   diag: SampleDiagnostics,
 ): boolean {
-  if (knobAccent && !grammar.palette.accentOrder.includes(knobAccent)) {
+  if (knobAccent && !isAllowedExplicitAccent(knobAccent, grammar.palette.accentOrder)) {
     throw new Error(`Unknown accent ink: ${knobAccent}`);
   }
 
@@ -860,18 +962,19 @@ function choosePatchPlacement(
   patches: readonly IconicPatch[],
   rng: Rng,
 ): { patch: IconicPatch; col: number; row: number } | null {
+  const dims = dimsForCells(cells);
   const usablePatches = [...patches]
-    .filter(patch => patch.w >= 2 && patch.h >= 2 && patch.w <= 4 && patch.h <= 3)
+    .filter(patch => patch.w >= 2 && patch.h >= 2 && patch.w <= 4 && patch.h <= 3 && patch.w <= dims.cols && patch.h <= dims.rows)
     .sort((a, b) => compareCodepoint(a.id, b.id));
   if (usablePatches.length === 0) return null;
 
   const sizes = [...new Map(usablePatches.map(patch => [`${patch.w}x${patch.h}`, { w: patch.w, h: patch.h }])).values()]
     .sort((a, b) => (b.w * b.h) - (a.w * a.h) || b.w - a.w || b.h - a.h);
 
-  for (let row = 0; row < ROWS; row += 1) {
-    for (let col = 0; col < COLS; col += 1) {
+  for (let row = 0; row < dims.rows; row += 1) {
+    for (let col = 0; col < dims.cols; col += 1) {
       for (const size of sizes) {
-        if (col + size.w > COLS || row + size.h > ROWS) continue;
+        if (col + size.w > dims.cols || row + size.h > dims.rows) continue;
         if (!rectIsFree(cells, col, row, size.w, size.h)) continue;
         const candidates = usablePatches.filter(patch => patch.w === size.w && patch.h === size.h);
         const patch = weightedChoice(
@@ -1075,15 +1178,15 @@ function fallbackPlacement(grammar: EngineGrammar, current: Placement, dir: Dire
   return placementsJoin(grammar, current, next, dir) ? next : null;
 }
 
-function plannedFigureSize(template: Template, knobs: SampleKnobs, rng: Rng): number {
+function plannedFigureSize(template: Template, knobs: SampleKnobs, rng: Rng, dims: GridDims): number {
   if (knobs.figures === false) return 0;
   if (template.spec.forms.figure[1] <= 0) return 0;
   // Figures span 2–6 cells for most templates, drawn from the template's
-  // figureShare range × 18 and clamped to [2, 6]. figure-field allows up to 9
+  // figureShare range × cellCount and clamped to [2, 6]. figure-field allows up to 9
   // cells (3×3 max region) to enable hero upscale placement.
   const heroCap = template.id === 'figure-field' ? 9 : 6;
-  const maxCells = Math.min(heroCap, Math.floor(template.spec.figureShare[1] * CELL_COUNT + EPS));
-  const minCells = Math.max(2, Math.ceil(template.spec.figureShare[0] * CELL_COUNT - EPS));
+  const maxCells = Math.min(heroCap, dims.cellCount, Math.floor(template.spec.figureShare[1] * dims.cellCount + EPS));
+  const minCells = Math.max(2, Math.ceil(template.spec.figureShare[0] * dims.cellCount - EPS));
   if (maxCells < minCells) return 0;
   if (knobs.figures !== true && !rng.chance(0.55)) return 0;
   return rng.int(minCells, maxCells);
@@ -1096,9 +1199,10 @@ function placeFigure(
   size: number,
   knobAccent: string | undefined,
   figures: readonly FigureAsset[],
+  dims: GridDims,
   templateId = '',
 ): boolean {
-  if (knobAccent && !grammar.palette.accentOrder.includes(knobAccent)) {
+  if (knobAccent && !isAllowedExplicitAccent(knobAccent, grammar.palette.accentOrder)) {
     throw new Error(`Unknown accent ink: ${knobAccent}`);
   }
 
@@ -1115,17 +1219,27 @@ function placeFigure(
     if (!ink) continue;
     const bounds = figureRegionBounds(region);
     if (!regionCoversBounds(region, bounds)) continue;
-    const anchor = region.find(cell => cell.col === bounds.col && cell.row === bounds.row);
-    const asset = anchor ? chooseFigureAsset(figures, bounds.w, bounds.h, rng) : undefined;
+    const chosen = chooseFigureAsset(figures, bounds.w, bounds.h, dims, rng);
     for (const cell of region) {
       cell.kind = 'freeform';
       cell.ink = ink;
       cell.inks = [ink];
     }
-    if (anchor && asset) {
-      anchor.figureId = asset.id;
-      anchor.figureAnchor = true;
-      anchor.figureSpan = [bounds.w, bounds.h];
+    if (chosen) {
+      const { asset, k } = chosen;
+      const spanW = k * asset.w;
+      const spanH = k * asset.h;
+      // Center the aspect-true span within the region on integer cell offsets;
+      // uncovered member cells stay freeform (they render as ground — negative
+      // space around the icon, the canonical read).
+      const offCol = bounds.col + Math.floor((bounds.w - spanW) / 2);
+      const offRow = bounds.row + Math.floor((bounds.h - spanH) / 2);
+      const anchor = region.find(cell => cell.col === offCol && cell.row === offRow);
+      if (anchor) {
+        anchor.figureId = asset.id;
+        anchor.figureAnchor = true;
+        anchor.figureSpan = [spanW, spanH];
+      }
     }
     return true;
   }
@@ -1134,8 +1248,8 @@ function placeFigure(
 }
 
 function figureRegionBounds(region: DraftCell[]): { col: number; row: number; w: number; h: number } {
-  let minCol = COLS;
-  let minRow = ROWS;
+  let minCol = Number.POSITIVE_INFINITY;
+  let minRow = Number.POSITIVE_INFINITY;
   let maxCol = 0;
   let maxRow = 0;
   for (const cell of region) {
@@ -1170,8 +1284,9 @@ function chooseFigureAsset(
   figures: readonly FigureAsset[],
   regionW: number,
   regionH: number,
+  dims: GridDims,
   rng: Rng,
-): FigureAsset | undefined {
+): { asset: FigureAsset; k: number } | undefined {
   // Candidate pool: exact(k=1) ∪ upscaled(k≥2) ∪ fits-within.
   // An asset (w, h) qualifies at integer scale k when regionW===k*w && regionH===k*h.
   // Upscaled candidates (k≥2) are weighted 2× their base weight (hero bias).
@@ -1179,11 +1294,13 @@ function chooseFigureAsset(
   interface Candidate { asset: FigureAsset; k: number }
   const candidateEntries: Array<Weighted<Candidate>> = [];
   const addedIds = new Set<string>();
+  const oneDimensionalCanvas = dims.cols === 1 || dims.rows === 1;
 
   for (const asset of [...figures].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0)) {
     const baseWeight = 1 / (Math.abs(asset.inkShare - 0.4) + EPS);
     // Integer-scale candidates (k≥1)
     for (let k = 1; k * asset.w <= regionW && k * asset.h <= regionH; k += 1) {
+      if (oneDimensionalCanvas && !(asset.w === 1 && asset.h === 1 && k === 1)) continue;
       if (k * asset.w === regionW && k * asset.h === regionH) {
         const heroBias = k >= 2 ? 2 : 1;
         candidateEntries.push({
@@ -1199,19 +1316,24 @@ function chooseFigureAsset(
   // fits-within fallback (if no exact/upscale match)
   if (candidateEntries.length === 0) {
     for (const asset of [...figures].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0)) {
+      if (oneDimensionalCanvas && !(asset.w === 1 && asset.h === 1)) continue;
       if (asset.w <= regionW && asset.h <= regionH) {
+        // Aspect-true: the largest integer scale that fits BOTH axes. The span
+        // becomes k*(w,h) — NEVER the region rect — so figures cannot stretch
+        // out of proportion (Chris's report, 2026-07-02).
+        const k = oneDimensionalCanvas ? 1 : Math.max(1, Math.min(Math.floor(regionW / asset.w), Math.floor(regionH / asset.h)));
         const baseWeight = 1 / (Math.abs(asset.inkShare - 0.4) + EPS);
         candidateEntries.push({
-          value: { asset, k: 1 },
+          value: { asset, k },
           weight: baseWeight,
-          sortKey: `${asset.id}@1`,
+          sortKey: `${asset.id}@${k}`,
         });
       }
     }
   }
 
   if (candidateEntries.length === 0) return undefined;
-  return weightedChoice(rng, candidateEntries).asset;
+  return weightedChoice(rng, candidateEntries);
 }
 
 /**
@@ -1302,16 +1424,16 @@ function chooseAccent(
   );
 }
 
-function plainTargetCount(template: Template, density: number): number {
+function plainTargetCount(template: Template, density: number, dims: GridDims): number {
   const d = Math.max(0, Math.min(1, density));
   const [lo, hi] = template.spec.plainShare;
   const targetShare = lo + (hi - lo) * ((1 - d) ** 2);
-  const minCount = Math.ceil(lo * CELL_COUNT - EPS);
-  const maxCount = Math.floor(hi * CELL_COUNT + EPS);
-  return Math.max(minCount, Math.min(maxCount, Math.round(targetShare * CELL_COUNT)));
+  const minCount = Math.ceil(lo * dims.cellCount - EPS);
+  const maxCount = Math.floor(hi * dims.cellCount + EPS);
+  return Math.max(minCount, Math.min(maxCount, Math.round(targetShare * dims.cellCount)));
 }
 
-function placePlainCells(cells: DraftCell[], grammar: EngineGrammar, rng: Rng, count: number): void {
+function placePlainCells(cells: DraftCell[], relativeStats: RelativeGridStats, rng: Rng, count: number): void {
   for (let i = 0; i < count; i += 1) {
     const empty = cells.filter(cell => cell.kind === undefined).sort(compareCells);
     if (empty.length === 0) return;
@@ -1319,7 +1441,7 @@ function placePlainCells(cells: DraftCell[], grammar: EngineGrammar, rng: Rng, c
       rng,
       empty.map(candidate => ({
         value: candidate,
-        weight: grammar.stats.plain.positions[positionKey(candidate)] ?? 1,
+        weight: relativeStats.plainPositionWeights[positionKey(candidate)] ?? 1,
         sortKey: positionKey(candidate),
       })),
     );
@@ -1652,19 +1774,19 @@ const NEUTRAL_INKS_SET = new Set(['#121212', '#FFFFFF', '#F3F3F3', '#D9D9D6']);
  * family metric) is untouched too. No-op on the serpentine / mined-length
  * templates, which are allowed their long runs.
  */
-function splitRhythmRuns(cells: DraftCell[], grammar: EngineGrammar, template: Template): void {
+function splitRhythmRuns(cells: DraftCell[], grammar: EngineGrammar, template: Template, dims: GridDims): void {
   if (!RHYTHM_TEMPLATES.has(template.id)) return;
 
   // Measure runs exactly as detectForms will (union over rules a/c/d), find the
   // largest run form over the cap, and re-ink its highest-degree member to break
   // its joins. Each pass strictly removes one cell from the offending run, so the
   // loop terminates (bounded by cell count).
-  for (let guard = 0; guard < CELL_COUNT; guard += 1) {
+  for (let guard = 0; guard < dims.cellCount; guard += 1) {
     const runs = detectRunGroups(cells, grammar);
     const worst = runs.filter(group => group.length > RHYTHM_RUN_CAP).sort((a, b) => b.length - a.length)[0];
     if (!worst) return;
     const positions = new Set(worst.map(positionKey));
-    const target = pickSplitCell(worst.map(c => cells[indexFor(c.col, c.row)]!), positions);
+    const target = pickSplitCell(worst.map(c => cellAt(cells, c.col, c.row)), positions);
     const replacement = splitInk(target, cells);
     target.ink = replacement;
     target.inks = [replacement];
@@ -1769,8 +1891,9 @@ function splitInk(target: DraftCell, cells: DraftCell[]): string {
   return neutralForGround(target.ground);
 }
 
-export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar): void {
+export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar, extraAccent?: string): void {
   const accents = new Set(grammar.palette.accentOrder);
+  if (extraAccent) accents.add(extraAccent); // explicit program-hue accents count toward the budget too
   const nonPlain = cells.filter(cell => cell.kind !== 'plain');
   const maxAccent = Math.floor(nonPlain.length * 0.35 + EPS);
   // Patch-accent cells strip LAST, and all-or-nothing: an iconic patch's accent
@@ -1858,9 +1981,9 @@ function finalizeCells(cells: DraftCell[]): CellPlan[] {
   });
 }
 
-function makeDraftCells(grounds: string[]): DraftCell[] {
+function makeDraftCells(grounds: string[], dims: GridDims): DraftCell[] {
   const cells: DraftCell[] = [];
-  forEachPosition((col, row, idx) => {
+  forEachPosition(dims, (col, row, idx) => {
     cells.push({ col, row, ground: grounds[idx] ?? '#F3F3F3' });
   });
   return cells;
@@ -1933,7 +2056,8 @@ function isRotation(value: number): value is Rotation {
 }
 
 function rowIsFree(cells: DraftCell[], row: number): boolean {
-  for (let col = 0; col < COLS; col += 1) {
+  const dims = dimsForCells(cells);
+  for (let col = 0; col < dims.cols; col += 1) {
     if (cellAt(cells, col, row).kind !== undefined) return false;
   }
   return true;
@@ -1958,8 +2082,9 @@ function isPlacedTile(cell: DraftCell | undefined): cell is DraftCell & Required
 }
 
 function maybeCellAt(cells: DraftCell[], col: number, row: number): DraftCell | undefined {
-  if (col < 0 || col >= COLS || row < 0 || row >= ROWS) return undefined;
-  return cells[indexFor(col, row)];
+  const dims = dimsForCells(cells);
+  if (col < 0 || col >= dims.cols || row < 0 || row >= dims.rows) return undefined;
+  return cells[indexFor(dims, col, row)];
 }
 
 function cellAt(cells: DraftCell[], col: number, row: number): DraftCell {
@@ -1968,8 +2093,8 @@ function cellAt(cells: DraftCell[], col: number, row: number): DraftCell {
   return cell;
 }
 
-function indexFor(col: number, row: number): number {
-  return row * COLS + col;
+function indexFor(dims: Pick<GridDims, 'cols'>, col: number, row: number): number {
+  return row * dims.cols + col;
 }
 
 function positionKey(cell: Pick<DraftCell, 'col' | 'row'>): string {
@@ -1980,12 +2105,22 @@ function compareCells(a: Pick<DraftCell, 'col' | 'row'>, b: Pick<DraftCell, 'col
   return a.row - b.row || a.col - b.col;
 }
 
-function forEachPosition(fn: (col: number, row: number, idx: number) => void): void {
-  for (let row = 0; row < ROWS; row += 1) {
-    for (let col = 0; col < COLS; col += 1) {
-      fn(col, row, indexFor(col, row));
+function forEachPosition(dims: GridDims, fn: (col: number, row: number, idx: number) => void): void {
+  for (let row = 0; row < dims.rows; row += 1) {
+    for (let col = 0; col < dims.cols; col += 1) {
+      fn(col, row, indexFor(dims, col, row));
     }
   }
+}
+
+function dimsForCells(cells: readonly Pick<DraftCell, 'col' | 'row'>[]): GridDims {
+  let cols = 0;
+  let rows = 0;
+  for (const cell of cells) {
+    cols = Math.max(cols, cell.col + 1);
+    rows = Math.max(rows, cell.row + 1);
+  }
+  return { cols, rows, cellCount: cols * rows };
 }
 
 function neutralForGround(ground: string): string {
@@ -2099,7 +2234,7 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
 
   const knobs: SampleKnobs = { accent };
   applyAccentZoning(cells, grammar, rng, template, knobs, diag);
-  enforceAccentBudget(cells, grammar);
+  enforceAccentBudget(cells, grammar, knobs.accent);
 
   const finalCells = finalizeCells(cells);
   return {

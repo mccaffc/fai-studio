@@ -1,7 +1,7 @@
 /**
  * forms.ts — multi-cell form detection for banner plans (engine, zero-dep).
  *
- * Runs union-find over the 18 cells of a plan and emits FormGroup records for
+ * Runs union-find over the cells of a plan and emits FormGroup records for
  * connected groups of ≥ 2 cells, using four join rules:
  *
  *  (a) Both kind==='tile', same ink, and the shared edge has edge coverage ≥ 0.25
