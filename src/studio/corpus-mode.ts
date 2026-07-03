@@ -12,8 +12,9 @@ import {
   variations as engineVariations,
   recolorPlan,
   describePlan,
+  ARRANGEMENTS,
 } from "../engine/corpus/index.js";
-import type { CorpusResult } from "../engine/corpus/index.js";
+import type { CorpusResult, ArrangementId } from "../engine/corpus/index.js";
 import { PROGRAMS } from "../engine/corpus/programs.js";
 import type { ProgramId } from "../engine/corpus/programs.js";
 
@@ -31,6 +32,16 @@ const CORPUS_ACCENTS: Array<[string, string]> = [
   ["Celestial Blue", "#4997D0"],
   ["Chrome Yellow", "#FFA300"],
 ];
+
+// Arrangement labels shown in the size select: id → label with dims
+const ARRANGEMENT_LABELS: Record<string, string> = {
+  banner:       "Banner 6×3",
+  portrait:     "Portrait 2×3",
+  square:       "Square 3×3",
+  strip:        "Strip 3×1",
+  column:       "Column 1×6",
+  "column-short": "Column short 1×3",
+};
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -55,6 +66,7 @@ interface PersistedCorpusConfig {
   density?: number;
   figures?: boolean;
   program?: string;
+  arrangement?: string;
 }
 
 function loadCorpusConfig(): PersistedCorpusConfig {
@@ -74,6 +86,7 @@ function saveCorpusConfig(): void {
     density: state.config.density,
     figures: state.config.figures,
     program: state.config.program,
+    arrangement: state.config.arrangement,
   };
   try {
     localStorage.setItem(LS_CORPUS_CONFIG, JSON.stringify(persisted));
@@ -86,12 +99,13 @@ interface CorpusState {
   current: CorpusResult | null;
   vars: CorpusResult[];
   config: {
-    template: string; // "" = auto
-    accent: string;   // "" = auto
+    template: string;     // "" = auto
+    accent: string;       // "" = auto
     density: number;
     figures: boolean;
     seed: number;
-    program: string;  // "" = none, else ProgramId
+    program: string;      // "" = none, else ProgramId
+    arrangement: string;  // "" = banner (default), else ArrangementId
   };
 }
 
@@ -110,6 +124,12 @@ function makeDefaultConfig() {
     template = "";
   }
 
+  // Validate arrangement ID: only adopt if it exists in ARRANGEMENTS
+  let arrangement = saved.arrangement ?? "";
+  if (arrangement && !Object.prototype.hasOwnProperty.call(ARRANGEMENTS, arrangement)) {
+    arrangement = "";
+  }
+
   return {
     template,
     accent: saved.accent ?? "",
@@ -117,6 +137,7 @@ function makeDefaultConfig() {
     figures: saved.figures ?? true,
     seed: (Math.random() * 0xffffffff) >>> 0,
     program,
+    arrangement,
   };
 }
 
@@ -138,7 +159,10 @@ function triggerDownload(url: string, filename: string): void {
 function corpusSvgFilename(ext: string): string {
   const tmpl = state.current?.plan.templateId ?? (state.config.template || "auto");
   const seed = state.current?.seed ?? 0;
-  return `fai-corpus-${tmpl}-${seed}.${ext}`;
+  // Include arrangement dims (cols×rows·320) in filename so exports self-describe.
+  const plan = state.current?.plan;
+  const dims = plan ? `${plan.cols * 320}x${plan.rows * 320}` : "1920x960";
+  return `fai-corpus-${tmpl}-${dims}-${seed}.${ext}`;
 }
 
 function corpusDownloadSvg(): void {
@@ -205,6 +229,7 @@ function buildCorpusConfig() {
     density: state.config.density,
     figures: state.config.figures,
     program: (state.config.program as ProgramId) || undefined,
+    arrangement: (state.config.arrangement as ArrangementId) || undefined,
   };
 }
 
@@ -262,6 +287,19 @@ function renderCorpusCanvas(): void {
   const canvas = $("#canvas");
   if (!canvas) return;
   canvas.innerHTML = state.current.svg;
+  // Adapt the canvas container to the arrangement's aspect ratio so it doesn't
+  // letterbox on non-banner sizes. The SVG carries its own dims; we just clamp
+  // max-width/height so the container fits naturally.
+  const svgEl = canvas.querySelector("svg");
+  if (svgEl) {
+    const w = parseFloat(svgEl.getAttribute("width") ?? "0");
+    const h = parseFloat(svgEl.getAttribute("height") ?? "0");
+    if (w > 0 && h > 0) {
+      svgEl.style.maxWidth = "100%";
+      svgEl.style.height = "auto";
+      svgEl.style.display = "block";
+    }
+  }
 
   const acts = $("#canvas-actions");
   if (!acts) return;
@@ -398,6 +436,25 @@ function renderCorpusControls(): void {
     root.appendChild(g);
     return g;
   };
+
+  // Arrangement (Size) — at top of panel
+  {
+    const g = group("Size");
+    const sel = el("select", { "data-corpus-arrangement": "" }) as HTMLSelectElement;
+    for (const id of Object.keys(ARRANGEMENTS) as ArrangementId[]) {
+      const o = document.createElement("option");
+      o.value = id;
+      o.textContent = ARRANGEMENT_LABELS[id] ?? id;
+      // Default is banner (empty string maps to banner)
+      if (id === (state.config.arrangement || "banner")) o.selected = true;
+      sel.appendChild(o);
+    }
+    sel.addEventListener("change", () => {
+      state.config.arrangement = sel.value === "banner" ? "" : sel.value;
+      corpusRegen(false);
+    });
+    g.appendChild(sel);
+  }
 
   // Template
   {
@@ -593,6 +650,7 @@ export function openCorpusItem(config: import("../engine/corpus/index.js").Corpu
       figures: config.figures ?? true,
       seed,
       program: config.program ?? "",
+      arrangement: config.arrangement ?? "",
     };
     saveCorpusConfig();
     state.current = generateBanner({ ...config, seed });

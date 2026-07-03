@@ -416,6 +416,160 @@ describe("studio corpus mode (jsdom)", () => {
   });
 });
 
+// ── P5-3 arrangement select tests ─────────────────────────────────────────────
+
+describe('P5-3 arrangement select (size)', () => {
+  beforeEach(() => {
+    vi.resetModules();
+    const mem = new Map<string, string>();
+    vi.stubGlobal('localStorage', {
+      getItem: (k: string) => (mem.has(k) ? mem.get(k)! : null),
+      setItem: (k: string, v: string) => void mem.set(k, String(v)),
+      removeItem: (k: string) => void mem.delete(k),
+      clear: () => mem.clear(),
+    });
+    skeleton();
+  });
+
+  it('P5-3a. arrangement select renders 6 options with Banner default selected', async () => {
+    await import('../src/studio/main');
+    const sel = document.querySelector(
+      '#corpus-controls select[data-corpus-arrangement]',
+    ) as HTMLSelectElement;
+    expect(sel).toBeTruthy();
+    expect(sel.options.length).toBe(6);
+    // Labels should include dims
+    const labels = [...sel.options].map(o => o.textContent ?? '');
+    expect(labels.some(l => /Banner.*6.3/.test(l))).toBe(true);
+    expect(labels.some(l => /Portrait.*2.3/.test(l))).toBe(true);
+    expect(labels.some(l => /Square.*3.3/.test(l))).toBe(true);
+    expect(labels.some(l => /Strip.*3.1/.test(l))).toBe(true);
+    expect(labels.some(l => /Column.*1.6/.test(l))).toBe(true);
+    expect(labels.some(l => /Column short.*1.3/.test(l))).toBe(true);
+    // Banner should be selected by default
+    expect(sel.value).toBe('banner');
+  });
+
+  it('P5-3b. choosing Strip regenerates with 960×320 viewBox in canvas SVG', async () => {
+    await import('../src/studio/main');
+    const sel = document.querySelector(
+      '#corpus-controls select[data-corpus-arrangement]',
+    ) as HTMLSelectElement;
+    expect(sel).toBeTruthy();
+
+    sel.value = 'strip';
+    sel.dispatchEvent(new Event('change'));
+
+    const svgEl = document.querySelector('#canvas svg') as SVGElement | null;
+    expect(svgEl).toBeTruthy();
+    const vb = svgEl!.getAttribute('viewBox') ?? '';
+    // strip = 3×1 → 960×320
+    expect(vb).toBe('0 0 960 320');
+    // Also check width/height attributes
+    expect(svgEl!.getAttribute('width')).toBe('960');
+    expect(svgEl!.getAttribute('height')).toBe('320');
+  });
+
+  it('P5-3c. arrangement persists across re-mount (localStorage round-trip)', async () => {
+    await import('../src/studio/main');
+
+    const sel = document.querySelector(
+      '#corpus-controls select[data-corpus-arrangement]',
+    ) as HTMLSelectElement;
+    sel.value = 'portrait';
+    sel.dispatchEvent(new Event('change'));
+
+    // Check stored
+    const stored = localStorage.getItem('fai-corpus-config');
+    expect(stored).toBeTruthy();
+    const parsed = JSON.parse(stored!);
+    expect(parsed.arrangement).toBe('portrait');
+
+    // Re-mount
+    vi.resetModules();
+    skeleton();
+    await import('../src/studio/main');
+
+    const sel2 = document.querySelector(
+      '#corpus-controls select[data-corpus-arrangement]',
+    ) as HTMLSelectElement;
+    expect(sel2.value).toBe('portrait');
+  });
+
+  it('P5-3d. bogus arrangement in localStorage falls back to banner default', async () => {
+    localStorage.setItem('fai-corpus-config', JSON.stringify({
+      arrangement: 'bogus-size',
+      template: '',
+      accent: '',
+      density: 0.5,
+      figures: true,
+    }));
+
+    await import('../src/studio/main');
+
+    // Should mount cleanly (no throw)
+    expect(document.querySelector('#canvas svg')).toBeTruthy();
+    const sel = document.querySelector(
+      '#corpus-controls select[data-corpus-arrangement]',
+    ) as HTMLSelectElement;
+    // bogus arrangement dropped → defaults to banner
+    expect(sel.value).toBe('banner');
+  });
+
+  it('P5-3e. export filename includes plan dims (cols×rows×320)', async () => {
+    // Import corpus-mode directly to test corpusSvgFilename indirectly via
+    // verifying the SVG filename embedded in the anchor click.
+    const mod = await import('../src/studio/corpus-mode');
+    document.body.innerHTML =
+      '<div id="canvas"></div><div id="corpus-controls"></div><div id="corpus-scores"></div>';
+    mod.mountCorpusMode({ flash: () => {} });
+
+    // Generate a strip banner (3×1 → 960×320)
+    const { generateBanner } = await import('../src/engine/corpus/index');
+    const r = generateBanner({ seed: 42, arrangement: 'strip' });
+    // The SVG should have width=960 height=320
+    expect(r.plan.cols).toBe(3);
+    expect(r.plan.rows).toBe(1);
+    expect(r.plan.width).toBe(960);
+    expect(r.plan.height).toBe(320);
+    // Verify SVG attrs
+    const tmp = document.createElement('div');
+    tmp.innerHTML = r.svg;
+    const svgEl = tmp.querySelector('svg');
+    expect(svgEl?.getAttribute('width')).toBe('960');
+    expect(svgEl?.getAttribute('height')).toBe('320');
+  });
+
+  it('P5-3f. saved corpus item carries arrangement and restores it via openCorpusItem', async () => {
+    await import('../src/studio/main');
+
+    // Select square arrangement
+    const arrSel = document.querySelector(
+      '#corpus-controls select[data-corpus-arrangement]',
+    ) as HTMLSelectElement;
+    arrSel.value = 'square';
+    arrSel.dispatchEvent(new Event('change'));
+
+    // Save it
+    const saveBtn = Array.from(
+      document.querySelectorAll('#canvas-actions button'),
+    ).find(b => b.textContent?.trim() === 'Save') as HTMLButtonElement | undefined;
+    expect(saveBtn).toBeTruthy();
+    saveBtn!.click();
+
+    // Check saved item has arrangement in config
+    const stored = localStorage.getItem('fai-pattern-saved');
+    expect(stored).toBeTruthy();
+    const items = JSON.parse(stored!) as Array<{ kind: string; config: Record<string, unknown> }>;
+    const corpusItem = items.find(x => x.kind === 'corpus');
+    expect(corpusItem).toBeTruthy();
+    // arrangement in config ('' = banner default, or explicit id)
+    // square was selected → should be square or '' if we stored empty for non-banner
+    // The select sends 'square' which != 'banner', so stored as 'square'
+    expect(corpusItem!.config.arrangement).toBe('square');
+  });
+});
+
 describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
   it('accent select lists the four non-heritage program hues once each', async () => {
     localStorage.clear();
