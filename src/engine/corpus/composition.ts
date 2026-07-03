@@ -290,6 +290,35 @@ function scoreRhythmQuality(plan: BannerPlan): number {
 }
 
 // ---------------------------------------------------------------------------
+// COMPOSITION_FLOORS — signed thresholds (Claude, 2026-07-02)
+// ---------------------------------------------------------------------------
+
+/**
+ * COMPOSITION_FLOORS — signed by Claude 2026-07-02 from the calibration run
+ * (.superpowers/sdd/task-p5-0-report.md). Calibration law: no criterion gates
+ * unless ≥90% of the 50 canon banners pass.
+ * - focalDominance ≥ 1.0  (92% canon; fails only zero-form banners)
+ * - rhythmQuality  ≥ 0.1  (90% canon)
+ * balance and negativeSpaceCluster are DISPLAY-ONLY: 60% of canon score 0 on
+ * balance (dense fields center their ink mass — that's canonical, not static),
+ * and 29/50 canon have zero quiet cells (density is canonical). They are
+ * poster-register criteria misapplied to component fields — candidates for the
+ * exuberant-register (bauhaus.md) gate set, never for banner curation.
+ */
+export const COMPOSITION_FLOORS = { focalDominance: 1.0, rhythmQuality: 0.1 } as const;
+
+/**
+ * passesCompositionFloors — returns true if the plan scores at or above the
+ * signed COMPOSITION_FLOORS thresholds on every gated criterion.
+ */
+export function passesCompositionFloors(scores: CompositionScores): boolean {
+  return (
+    scores.focalDominance >= COMPOSITION_FLOORS.focalDominance &&
+    scores.rhythmQuality >= COMPOSITION_FLOORS.rhythmQuality
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Public entry
 // ---------------------------------------------------------------------------
 

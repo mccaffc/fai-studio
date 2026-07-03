@@ -341,6 +341,13 @@ function renderCorpusScores(): void {
   const programSuffix = state.config.program && PROGRAMS[state.config.program as ProgramId]
     ? ` · program ${PROGRAMS[state.config.program as ProgramId].name}`
     : "";
+  // Composition tooltip: all four metrics (dom/bal/neg/rhy) for full detail.
+  const compTooltip =
+    `dom ${s.focalDominance.toFixed(1)} · ` +
+    `bal ${s.balance.toFixed(2)} · ` +
+    `neg ${s.negativeSpaceCluster.toFixed(2)} · ` +
+    `rhy ${s.rhythmQuality.toFixed(2)}` +
+    (s.floorsPass ? '' : ' [COMP FAIL]');
   el.innerHTML =
     `conn ${s.connectedness.toFixed(2)} · ` +
     `line ${s.lineworkShare.toFixed(2)} · ` +
@@ -348,6 +355,7 @@ function renderCorpusScores(): void {
     `acc ${s.accentShare.toFixed(2)} · ` +
     tmpl +
     programSuffix +
+    ` · <span title="${compTooltip}">dom ${s.focalDominance.toFixed(1)} · rhy ${s.rhythmQuality.toFixed(2)}</span>` +
     quiltBadge;
 }
 

@@ -21,6 +21,8 @@ import { scorePlan } from './score.js';
 import { renderPlanSvg } from './render.js';
 import { PROGRAMS, applyProgramPalette } from './programs.js';
 import type { ProgramId } from './programs.js';
+import { scoreComposition, passesCompositionFloors, COMPOSITION_FLOORS } from './composition.js';
+import type { CompositionScores } from './composition.js';
 
 // GRAMMAR is typed as EngineGrammar (with Template[] templates) directly in
 // the generated file; no cast needed.
@@ -32,6 +34,8 @@ const GRAMMAR: EngineGrammar = GRAMMAR_RAW;
 
 export type { BannerPlan } from './types.js';
 export type { RubricScores } from './score.js';
+export type { CompositionScores } from './composition.js';
+export { COMPOSITION_FLOORS } from './composition.js';
 export type { ProgramId } from './programs.js';
 export { PROGRAMS } from './programs.js';
 
@@ -67,7 +71,10 @@ export interface CorpusConfig {
 export interface CorpusResult {
   svg: string;
   plan: BannerPlan;
-  scores: RubricScores;
+  scores: RubricScores & CompositionScores & {
+    /** true when the plan passes all COMPOSITION_FLOORS thresholds. */
+    floorsPass: boolean;
+  };
   /** The seed that produced this result. */
   seed: number;
   /** Number of attempts made (1 = first try passed). */
@@ -93,7 +100,9 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
 
   interface Attempt {
     plan: BannerPlan;
-    scores: RubricScores;
+    rubric: RubricScores;
+    comp: CompositionScores;
+    floorsPass: boolean;
     svg: string;
     seed: number;
   }
@@ -108,14 +117,17 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
       const hue = PROGRAMS[config.program].hue;
       plan = applyProgramPalette(plan, hue);
     }
-    const scores = scorePlan(plan, FAMILIES);
+    const rubric = scorePlan(plan, FAMILIES);
+    const comp = scoreComposition(plan, TILES);
+    const floorsPass = passesCompositionFloors(comp);
     const svg = renderPlanSvg(plan, TILES);
-    attempts.push({ plan, scores, svg, seed: attemptSeed });
-    if (!scores.quiltFail) {
+    attempts.push({ plan, rubric, comp, floorsPass, svg, seed: attemptSeed });
+    // Prefer candidates passing quilt AND floors; continue if quilt fails.
+    if (!rubric.quiltFail && floorsPass) {
       return {
         svg,
         plan,
-        scores,
+        scores: { ...rubric, ...comp, floorsPass },
         seed: attemptSeed,
         attempts: i + 1,
         config,
@@ -123,18 +135,26 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
     }
   }
 
-  // All failed quilt — return best: prefer lowest quiltFail score
-  // (they all have quiltFail=true here), then highest connectedness.
+  // Fallback ordering: quilt+floors pass > quilt-pass only > best (floors desc,
+  // quiltFail asc, connectedness desc).
   const best = attempts.reduce<Attempt>((prev, curr) => {
-    if (!prev.scores.quiltFail && curr.scores.quiltFail) return prev;
-    if (prev.scores.quiltFail && !curr.scores.quiltFail) return curr;
-    return curr.scores.connectedness > prev.scores.connectedness ? curr : prev;
+    const prevBoth = !prev.rubric.quiltFail && prev.floorsPass;
+    const currBoth = !curr.rubric.quiltFail && curr.floorsPass;
+    if (prevBoth && !currBoth) return prev;
+    if (!prevBoth && currBoth) return curr;
+    // Both or neither pass quilt+floors; prefer quilt-pass.
+    if (!prev.rubric.quiltFail && curr.rubric.quiltFail) return prev;
+    if (prev.rubric.quiltFail && !curr.rubric.quiltFail) return curr;
+    // Among same quilt status: floors-pass first, then connectedness.
+    if (prev.floorsPass && !curr.floorsPass) return prev;
+    if (!prev.floorsPass && curr.floorsPass) return curr;
+    return curr.rubric.connectedness > prev.rubric.connectedness ? curr : prev;
   }, attempts[0]!);
 
   return {
     svg: best.svg,
     plan: best.plan,
-    scores: best.scores,
+    scores: { ...best.rubric, ...best.comp, floorsPass: best.floorsPass },
     seed: best.seed,
     attempts: maxAttempts,
     config,
@@ -234,12 +254,14 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
     newConfig = { ...prev.config, accent };
   }
 
-  const scores = scorePlan(newPlan, FAMILIES);
+  const rubric = scorePlan(newPlan, FAMILIES);
+  const comp = scoreComposition(newPlan, TILES);
+  const floorsPass = passesCompositionFloors(comp);
   const svg = renderPlanSvg(newPlan, TILES);
   return {
     svg,
     plan: newPlan,
-    scores,
+    scores: { ...rubric, ...comp, floorsPass },
     seed: prev.seed,
     attempts: prev.attempts,
     config: newConfig,
@@ -258,6 +280,7 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
  */
 export function describePlan(plan: BannerPlan, config?: Pick<CorpusConfig, 'program'>): string {
   const scores = scorePlan(plan, FAMILIES);
+  const comp = scoreComposition(plan, TILES);
 
   const uniqueTiles = new Set(plan.cells.filter(c => c.kind === 'tile' && c.tile).map(c => c.tile!)).size;
   const runs = plan.forms.filter(f => f.kind === 'run');
@@ -286,6 +309,14 @@ export function describePlan(plan: BannerPlan, config?: Pick<CorpusConfig, 'prog
   // Append program name when config.program is provided.
   if (config?.program && PROGRAMS[config.program]) {
     base += ` · program ${PROGRAMS[config.program].name}`;
+  }
+
+  // Append composition floor failures when any gated criterion fails.
+  const failNames: string[] = [];
+  if (comp.focalDominance < COMPOSITION_FLOORS.focalDominance) failNames.push('focalDominance');
+  if (comp.rhythmQuality < COMPOSITION_FLOORS.rhythmQuality) failNames.push('rhythmQuality');
+  if (failNames.length > 0) {
+    base += ` · comp:FAIL(${failNames.join(',')})`;
   }
 
   return base;
