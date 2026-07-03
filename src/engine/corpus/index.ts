@@ -12,7 +12,7 @@
  * first, then highest connectedness).
  */
 
-import type { BannerPlan, EngineGrammar } from './types.js';
+import type { BannerPlan, CorpusConfig, EngineGrammar } from './types.js';
 import type { RubricScores } from './score.js';
 import { GRAMMAR as GRAMMAR_RAW } from './data/grammar.js';
 import { TILES } from './data/tiles.js';
@@ -33,6 +33,8 @@ const GRAMMAR: EngineGrammar = GRAMMAR_RAW;
 // ---------------------------------------------------------------------------
 
 export type { BannerPlan } from './types.js';
+export type { ArrangementId, CorpusConfig } from './types.js';
+export { ARRANGEMENTS } from './types.js';
 export type { RubricScores } from './score.js';
 export type { CompositionScores } from './composition.js';
 export { COMPOSITION_FLOORS } from './composition.js';
@@ -43,30 +45,6 @@ export { PROGRAMS } from './programs.js';
 const FAMILIES: Record<string, string> = Object.fromEntries(
   Object.entries(TILES).map(([id, tile]) => [id, tile.family]),
 );
-
-export interface CorpusConfig {
-  /** Initial seed. Defaults to 1. */
-  seed?: number;
-  /** Pin a template by id (e.g. 'pipe-field'). If absent, auto-selected. */
-  template?: string;
-  /** Accent color hex (must be in grammar.palette.accentOrder). */
-  accent?: string;
-  /** 0..1 plain-cell density knob. */
-  density?: number;
-  /** Force figures on/off. */
-  figures?: boolean;
-  /**
-   * Maximum generation attempts before giving up and returning best-found.
-   * Defaults to 8.
-   */
-  maxAttempts?: number;
-  /**
-   * Program id — when set, the palette is remapped to the 3 neutrals + that
-   * program's hue (no #FFFFFF, no #FF4F00, no second accent). The accent
-   * config option is ignored when program is set.
-   */
-  program?: import('./programs.js').ProgramId;
-}
 
 export interface CorpusResult {
   svg: string;
@@ -96,6 +74,7 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
     accent: config.accent,
     density: config.density,
     figures: config.figures,
+    arrangement: config.arrangement,
   };
 
   interface Attempt {

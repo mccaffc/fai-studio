@@ -15,8 +15,8 @@ export interface ManifestTile {
 export type Hex = string; // '#RRGGBB' uppercase
 
 export interface CellRecon {
-  col: number;              // 0..5
-  row: number;              // 0..2
+  col: number;              // 0..cols-1
+  row: number;              // 0..rows-1
   ground: Hex;              // resolved backing color of this cell
   kind: 'tile' | 'plain' | 'freeform' | 'review';
   tile?: string;            // manifest id, when kind==='tile'
@@ -38,9 +38,9 @@ export interface FormGroup {
 
 export interface BannerRecon {
   id: string;               // '009'
-  width: 1920; height: 960; cols: 6; rows: 3;
+  width: number; height: number; cols: number; rows: number;
   ground: Hex;              // full-canvas ground
-  cells: CellRecon[];       // always 18, row-major
+  cells: CellRecon[];       // always cols*rows, row-major
   forms: FormGroup[];
   matchRate: number;        // fraction of non-plain cells with kind==='tile'
 }

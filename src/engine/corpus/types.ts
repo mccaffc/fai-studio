@@ -16,13 +16,24 @@
 
 export type Hex = string; // '#RRGGBB' uppercase
 
+export type ArrangementId = 'banner' | 'portrait' | 'square' | 'strip' | 'column' | 'column-short';
+
+export const ARRANGEMENTS: Record<ArrangementId, { cols: number; rows: number }> = {
+  banner: { cols: 6, rows: 3 },
+  portrait: { cols: 2, rows: 3 },
+  square: { cols: 3, rows: 3 },
+  strip: { cols: 3, rows: 1 },
+  column: { cols: 1, rows: 6 },
+  'column-short': { cols: 1, rows: 3 },
+};
+
 // ---------------------------------------------------------------------------
 // Plan types (structural twins of tools/mine/schema.ts)
 // ---------------------------------------------------------------------------
 
 export interface CellPlan {
-  col: number;              // 0..5
-  row: number;              // 0..2
+  col: number;              // 0..plan.cols-1
+  row: number;              // 0..plan.rows-1
   ground: Hex;              // resolved backing color of this cell
   kind: 'tile' | 'plain' | 'freeform' | 'review';
   tile?: string;            // catalog id, when kind==='tile'
@@ -48,9 +59,9 @@ export interface FormGroup {
 
 export interface BannerPlan {
   id: string;               // '009' or 'sample-<seed>'
-  width: 1920; height: 960; cols: 6; rows: 3;
+  width: number; height: number; cols: number; rows: number;
   ground: Hex;              // full-canvas ground
-  cells: CellPlan[];        // always 18, row-major
+  cells: CellPlan[];        // always cols*rows, row-major
   forms: FormGroup[];
   matchRate: number;        // fraction of non-plain cells with kind==='tile'
   /** Template name used to generate this plan (set by samplePlan / corpus API). */
@@ -66,6 +77,23 @@ export interface SampleKnobs {
   accent?: string;
   density?: number;
   figures?: boolean;
+  arrangement?: ArrangementId;
+}
+
+export interface CorpusConfig extends SampleKnobs {
+  /** Initial seed. Defaults to 1. */
+  seed?: number;
+  /**
+   * Maximum generation attempts before giving up and returning best-found.
+   * Defaults to 8.
+   */
+  maxAttempts?: number;
+  /**
+   * Program id — when set, the palette is remapped to the 3 neutrals + that
+   * program's hue (no #FFFFFF, no #FF4F00, no second accent). The accent
+   * config option is ignored when program is set.
+   */
+  program?: import('./programs.js').ProgramId;
 }
 
 // ---------------------------------------------------------------------------
