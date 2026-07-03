@@ -10,6 +10,7 @@
  * 6. optional figure region/accent
  * 7. plain positions
  * 8. tile fills: tile, rotation, flip, ink per remaining cell
+ * 9. optional mirror symmetry after post-fill forms are known
  *
  * Every object-backed weighted draw iterates sorted keys. Arrays whose order is
  * semantic, such as palette.accentOrder, carry explicit sort keys before draw.
@@ -69,6 +70,7 @@ export interface SampleDiagnostics {
   fillAdjacencyHits: number;
   friezesPlaced: number;
   patchesPlaced: number;
+  mirrored: boolean;
   /** Largest 'run'-form cell count in the final plan (from plan.forms). */
   longestRun: number;
   /**
@@ -109,6 +111,20 @@ const SERPENTINE_TURN_WEIGHT = 0.2;
 const RHYTHM_RUN_CAP = 6;
 const RHYTHM_TEMPLATES = new Set(['repeat-rhythm', 'checker-motif']);
 
+// P6 Task 1 mirror calibration from corpus/corpus.json, pair-match metric
+// tile+ink >= 70% across (c,r)/(cols-1-c,r) pairs:
+// 024 figure-field 1.000; 029 figure-field 1.000; 031 repeat-rhythm 1.000;
+// 037 figure-field 1.000; 038 repeat-rhythm 1.000; 039 pipe-field 1.000;
+// 048 pipe-field 1.000; 005 pipe-field 0.889; 008 pipe-field 0.889;
+// 036 figure-field 0.889; 050 mixed-quilt 0.889; 028 arc-mosaic 0.778.
+// Eligible templates: arc-mosaic, figure-field, mixed-quilt, pipe-field,
+// repeat-rhythm. checker-motif had no >=70% canon near-mirror exemplar.
+// Single probability draw; deterministic rollbacks below pull the accepted
+// output rate back into the canon 24% band.
+const MIRROR_RATE = 0.50;
+const MIRROR_TEMPLATE_IDS = new Set(['arc-mosaic', 'figure-field', 'mixed-quilt', 'pipe-field', 'repeat-rhythm']);
+const MIRROR_MAX_BLACK_INK_SHARE = 0.85;
+
 const BRAND_FILLS = new Set([
   '#121212',
   '#F3F3F3',
@@ -148,6 +164,7 @@ interface DraftCell {
   figureSpan?: [number, number];
   patchId?: string;
   patchInkRole?: PatchInkRole;
+  patchSpan?: [number, number];
 }
 
 interface Placement {
@@ -193,6 +210,7 @@ export function sampleWithDiagnostics(
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
     patchesPlaced: 0,
+    mirrored: false,
     longestRun: 0,
     runPaths: [],
   };
@@ -255,6 +273,14 @@ export function sampleWithDiagnostics(
   splitRhythmRuns(cells, grammar, template, dims);
   applyLogomarkGuard(cells);
   syncAccentDiagnostics(cells, grammar, knobs.accent, diag);
+  // P6 mirror runs after the full current post-fill pipeline, including the
+  // first form detection pass. If accepted, only the accent budget and forms
+  // are recomputed; zoning is intentionally not re-run against mirrored ink.
+  void detectForms(draftPlanForForms(cells, dims), grammar.tileCatalog, FAMILIES);
+  applyMirror(cells, grammar, dims, rng, template, knobs.accent, diag);
+  if (diag.mirrored) {
+    syncAccentDiagnostics(cells, grammar, knobs.accent, diag);
+  }
 
   const finalCells = finalizeCells(cells);
   const plan: BannerPlan = {
@@ -950,7 +976,10 @@ function placePatch(
     const resolved = resolvePatchCell(patchCell, grammar, rng, globalGround, shifted, patchAccent);
     target.kind = resolved.kind;
     target.ground = resolved.ground;
-    if (isAnchor) target.patchId = patch.id;
+    if (isAnchor) {
+      target.patchId = patch.id;
+      target.patchSpan = [patch.w, patch.h];
+    }
     if (resolved.kind === 'tile') {
       target.tile = resolved.tile;
       target.rotation = resolved.rotation;
@@ -1967,6 +1996,342 @@ function syncAccentDiagnostics(
   if (diag.accentsUsed.length === 0) diag.accentZone = 'none';
 }
 
+interface DraftCellState {
+  ground: string;
+  kind?: CellPlan['kind'];
+  tile?: string;
+  rotation?: Rotation;
+  flip?: boolean;
+  ink?: string;
+  inks?: string[];
+  score?: number;
+  figureId?: string;
+  figureAnchor?: boolean;
+  figureSpan?: [number, number];
+  patchId?: string;
+  patchInkRole?: PatchInkRole;
+  patchSpan?: [number, number];
+}
+
+interface MirroredSpanAnchor {
+  col: number;
+  row: number;
+  id: string;
+  span: [number, number];
+}
+
+function applyMirror(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  dims: GridDims,
+  rng: Rng,
+  template: Template,
+  extraAccent: string | undefined,
+  diag: SampleDiagnostics,
+): void {
+  if (dims.cols < 2) return;
+  if (!MIRROR_TEMPLATE_IDS.has(template.id)) return;
+  if (hasCenterlineCrossingSpan(cells, dims)) return;
+  if (rng.next() >= MIRROR_RATE) return;
+
+  const half = Math.floor(dims.cols / 2);
+  const rightStart = dims.cols - half;
+  const cellSnapshots = snapshotDraftCells(cells);
+  const mirroredFigureAnchors = mirroredFigureAnchorStates(cells, dims, half);
+  const mirroredPatchAnchors = mirroredPatchAnchorStates(cells, dims, half);
+  const originalRunPaths = cloneRunPaths(diag.runPaths);
+
+  for (let row = 0; row < dims.rows; row += 1) {
+    for (let col = 0; col < half; col += 1) {
+      const source = cellAt(cells, col, row);
+      const target = cellAt(cells, dims.cols - 1 - col, row);
+      writeDraftState(target, mirrorDraftState(source));
+    }
+  }
+
+  for (const cell of cells) {
+    if (cell.col < rightStart) continue;
+    setDraftOptional(cell, 'figureId', undefined);
+    setDraftOptional(cell, 'figureAnchor', undefined);
+    setDraftOptional(cell, 'figureSpan', undefined);
+    setDraftOptional(cell, 'patchId', undefined);
+    setDraftOptional(cell, 'patchSpan', undefined);
+  }
+  for (const anchor of mirroredFigureAnchors) {
+    const cell = cellAt(cells, anchor.col, anchor.row);
+    cell.figureId = anchor.id;
+    cell.figureAnchor = true;
+    cell.figureSpan = [...anchor.span];
+  }
+  for (const anchor of mirroredPatchAnchors) {
+    const cell = cellAt(cells, anchor.col, anchor.row);
+    cell.patchId = anchor.id;
+    cell.patchSpan = [...anchor.span];
+  }
+
+  if (!centerlineSeamsSafe(cells, grammar, dims)) {
+    restoreDraftCells(cellSnapshots);
+    return;
+  }
+  enforceAccentBudget(cells, grammar, extraAccent);
+  if (pairMatchRateForCells(cells, dims) < 0.70) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  if (!mirroredFeaturesRespectTemplate(cells, dims, template)) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  if (!mirroredFormsRespectTemplate(cells, grammar, dims, template)) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  if (blackInkShare(cells) > MIRROR_MAX_BLACK_INK_SHARE) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  const validRunPaths = validRunPathsForCells(cells, grammar, diag.runPaths);
+  if (diag.runPaths.length > 0 && validRunPaths.length === 0) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+
+  diag.runPaths = validRunPaths;
+  diag.mirrored = true;
+}
+
+function hasCenterlineCrossingSpan(cells: DraftCell[], dims: GridDims): boolean {
+  for (const cell of cells) {
+    if (cell.figureAnchor && cell.figureSpan && spanCrossesMirrorAxis(cell.col, cell.figureSpan[0], dims.cols)) {
+      return true;
+    }
+    if (cell.patchId && cell.patchSpan && spanCrossesMirrorAxis(cell.col, cell.patchSpan[0], dims.cols)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function snapshotDraftCells(cells: DraftCell[]): Array<[DraftCell, DraftCellState]> {
+  return cells.map(cell => [cell, readDraftState(cell)]);
+}
+
+function restoreDraftCells(snapshots: Array<[DraftCell, DraftCellState]>): void {
+  for (const [cell, state] of snapshots) writeDraftState(cell, state);
+}
+
+function spanCrossesMirrorAxis(col: number, width: number, cols: number): boolean {
+  if (width <= 1) return false;
+  const end = col + width;
+  if (cols % 2 === 0) {
+    const half = cols / 2;
+    return col < half && end > half;
+  }
+  const center = Math.floor(cols / 2);
+  return col <= center && end > center;
+}
+
+function mirroredFigureAnchorStates(cells: DraftCell[], dims: GridDims, half: number): MirroredSpanAnchor[] {
+  return cells
+    .filter(cell => cell.col < half && cell.figureAnchor && cell.figureId && cell.figureSpan)
+    .sort(compareCells)
+    .map(cell => ({
+      col: dims.cols - (cell.col + cell.figureSpan![0]),
+      row: cell.row,
+      id: cell.figureId!,
+      span: [...cell.figureSpan!] as [number, number],
+    }));
+}
+
+function mirroredPatchAnchorStates(cells: DraftCell[], dims: GridDims, half: number): MirroredSpanAnchor[] {
+  return cells
+    .filter(cell => cell.col < half && cell.patchId && cell.patchSpan)
+    .sort(compareCells)
+    .map(cell => ({
+      col: dims.cols - (cell.col + cell.patchSpan![0]),
+      row: cell.row,
+      id: cell.patchId!,
+      span: [...cell.patchSpan!] as [number, number],
+    }));
+}
+
+function centerlineSeamsSafe(cells: DraftCell[], grammar: EngineGrammar, dims: GridDims): boolean {
+  if (dims.cols % 2 !== 0) return true;
+  const leftCol = dims.cols / 2 - 1;
+  const rightCol = dims.cols / 2;
+  for (let row = 0; row < dims.rows; row += 1) {
+    const left = cellAt(cells, leftCol, row);
+    const right = cellAt(cells, rightCol, row);
+    if (!isPlacedTile(left) || !isPlacedTile(right)) continue;
+    const leftEntry = grammar.tileCatalog[left.tile];
+    const rightEntry = grammar.tileCatalog[right.tile];
+    if (!leftEntry || !rightEntry) return false;
+    const leftEdges = orientEdges(leftEntry.edges, left.rotation, left.flip);
+    const rightEdges = orientEdges(rightEntry.edges, right.rotation, right.flip);
+    const leftActive = leftEdges.right >= 0.25;
+    const rightActive = rightEdges.left >= 0.25;
+    if (!leftActive && !rightActive) continue;
+    if (!leftActive || !rightActive) return false;
+    if (!placementsJoin(
+      grammar,
+      { tile: left.tile, rotation: left.rotation, flip: left.flip },
+      { tile: right.tile, rotation: right.rotation, flip: right.flip },
+      'h',
+    )) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function mirroredFormsRespectTemplate(cells: DraftCell[], grammar: EngineGrammar, dims: GridDims, template: Template): boolean {
+  if (!RHYTHM_TEMPLATES.has(template.id)) return true;
+  const forms = detectForms(draftPlanForForms(cells, dims), grammar.tileCatalog, FAMILIES);
+  return forms.every(form => form.kind !== 'run' || form.cells.length <= RHYTHM_RUN_CAP);
+}
+
+function mirroredFeaturesRespectTemplate(cells: DraftCell[], dims: GridDims, template: Template): boolean {
+  const tileCells = cells.filter(cell => cell.kind === 'tile' && cell.tile);
+  const distinctTiles = new Set(tileCells.map(cell => cell.tile!)).size;
+  const plainShare = cells.filter(cell => cell.kind === 'plain').length / dims.cellCount;
+  const figureShare = cells.filter(cell => cell.kind === 'freeform').length / dims.cellCount;
+  const linework = tileCells.filter(cell => LINEWORK_FAMILIES.has(FAMILIES[cell.tile!] ?? '')).length;
+  const lineworkShare = tileCells.length > 0 ? linework / tileCells.length : 0;
+  return inRange(distinctTiles, template.spec.distinctTiles) &&
+    inRange(plainShare, template.spec.plainShare) &&
+    inRange(figureShare, template.spec.figureShare) &&
+    inRange(lineworkShare, template.spec.lineworkShare, 0.15);
+}
+
+function inRange(value: number, range: [number, number], tolerance = 0): boolean {
+  return value >= range[0] - tolerance && value <= range[1] + tolerance;
+}
+
+function pairMatchRateForCells(cells: DraftCell[], dims: GridDims): number {
+  let matched = 0;
+  let total = 0;
+  for (let row = 0; row < dims.rows; row += 1) {
+    for (let col = 0; col < Math.floor(dims.cols / 2); col += 1) {
+      const left = cellAt(cells, col, row);
+      const right = cellAt(cells, dims.cols - 1 - col, row);
+      total += 1;
+      if ((left.tile ?? '') === (right.tile ?? '') && (left.ink ?? '') === (right.ink ?? '')) {
+        matched += 1;
+      }
+    }
+  }
+  return total === 0 ? 1 : matched / total;
+}
+
+function blackInkShare(cells: DraftCell[]): number {
+  let total = 0;
+  let black = 0;
+  for (const cell of cells) {
+    if (cell.kind === 'plain' || !cell.ink) continue;
+    total += 1;
+    if (cell.ink === '#121212') black += 1;
+  }
+  return total === 0 ? 0 : black / total;
+}
+
+function cloneRunPaths(runPaths: [number, number][][]): [number, number][][] {
+  return runPaths.map(path => path.map(([col, row]) => [col, row]));
+}
+
+function validRunPathsForCells(cells: DraftCell[], grammar: EngineGrammar, runPaths: [number, number][][]): [number, number][][] {
+  return runPaths.filter(runPath => runPathIsValidForCells(cells, grammar, runPath));
+}
+
+function runPathIsValidForCells(cells: DraftCell[], grammar: EngineGrammar, runPath: [number, number][]): boolean {
+  for (let i = 0; i < runPath.length - 1; i += 1) {
+    const [prevCol, prevRow] = runPath[i]!;
+    const [nextCol, nextRow] = runPath[i + 1]!;
+    const dist = Math.abs(nextCol - prevCol) + Math.abs(nextRow - prevRow);
+    if (dist !== 1) return false;
+    const prevCell = maybeCellAt(cells, prevCol, prevRow);
+    const nextCell = maybeCellAt(cells, nextCol, nextRow);
+    if (!isPlacedTile(prevCell) || !isPlacedTile(nextCell)) return false;
+    const dir: Direction = prevRow === nextRow ? 'h' : 'v';
+    const isForward = (dir === 'h' && nextCol > prevCol) || (dir === 'v' && nextRow > prevRow);
+    const a = isForward ? prevCell : nextCell;
+    const b = isForward ? nextCell : prevCell;
+    if (!placementsJoin(
+      grammar,
+      { tile: a.tile, rotation: a.rotation, flip: a.flip },
+      { tile: b.tile, rotation: b.rotation, flip: b.flip },
+      dir,
+    )) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function mirrorDraftState(source: DraftCell): DraftCellState {
+  const state = readDraftState(source);
+  if (source.kind === 'tile' && source.tile) {
+    state.rotation = mirrorRotation(source.rotation ?? 0);
+    state.flip = !(source.flip ?? false);
+  }
+  return state;
+}
+
+function mirrorRotation(rotation: Rotation): Rotation {
+  if (rotation === 90) return 270;
+  if (rotation === 270) return 90;
+  return rotation;
+}
+
+function readDraftState(cell: DraftCell): DraftCellState {
+  return {
+    ground: cell.ground,
+    kind: cell.kind,
+    tile: cell.tile,
+    rotation: cell.rotation,
+    flip: cell.flip,
+    ink: cell.ink,
+    inks: cell.inks ? [...cell.inks] : undefined,
+    score: cell.score,
+    figureId: cell.figureId,
+    figureAnchor: cell.figureAnchor,
+    figureSpan: cell.figureSpan ? [...cell.figureSpan] : undefined,
+    patchId: cell.patchId,
+    patchInkRole: cell.patchInkRole,
+    patchSpan: cell.patchSpan ? [...cell.patchSpan] : undefined,
+  };
+}
+
+function writeDraftState(cell: DraftCell, state: DraftCellState): void {
+  cell.ground = state.ground;
+  setDraftOptional(cell, 'kind', state.kind);
+  setDraftOptional(cell, 'tile', state.tile);
+  setDraftOptional(cell, 'rotation', state.rotation);
+  setDraftOptional(cell, 'flip', state.flip);
+  setDraftOptional(cell, 'ink', state.ink);
+  setDraftOptional(cell, 'inks', state.inks ? [...state.inks] : undefined);
+  setDraftOptional(cell, 'score', state.score);
+  setDraftOptional(cell, 'figureId', state.figureId);
+  setDraftOptional(cell, 'figureAnchor', state.figureAnchor);
+  setDraftOptional(cell, 'figureSpan', state.figureSpan ? [...state.figureSpan] : undefined);
+  setDraftOptional(cell, 'patchId', state.patchId);
+  setDraftOptional(cell, 'patchInkRole', state.patchInkRole);
+  setDraftOptional(cell, 'patchSpan', state.patchSpan ? [...state.patchSpan] : undefined);
+}
+
+function setDraftOptional<K extends keyof DraftCell>(cell: DraftCell, key: K, value: DraftCell[K] | undefined): void {
+  const record = cell as unknown as Record<string, unknown>;
+  if (value === undefined) {
+    delete record[String(key)];
+  } else {
+    record[String(key)] = value;
+  }
+}
+
 /**
  * splitRhythmRuns — cap run-form length on the rhythm templates.
  *
@@ -2119,22 +2484,51 @@ export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar, 
     .filter(cell => cell.ink && accents.has(cell.ink))
     .sort((a, b) => stripRank(a) - stripRank(b) || compareCells(a, b));
   const excess = accentCells.length - maxAccent;
+  const stripCells = chooseAccentBudgetStripCells(accentCells, Math.max(0, excess));
+  const stripSet = new Set(stripCells);
   let patchTouched = false;
-  for (let i = 0; i < excess; i += 1) {
-    const cell = accentCells[i]!;
+  for (const cell of stripCells) {
     if (cell.patchInkRole === 'accent') patchTouched = true;
     const ink = neutralForGround(cell.ground);
     cell.ink = ink;
     cell.inks = [ink];
   }
   if (patchTouched) {
-    for (const cell of accentCells.slice(Math.max(excess, 0))) {
+    for (const cell of accentCells) {
+      if (stripSet.has(cell)) continue;
       if (cell.patchInkRole !== 'accent' || !cell.ink || !accents.has(cell.ink)) continue;
       const ink = neutralForGround(cell.ground);
       cell.ink = ink;
       cell.inks = [ink];
     }
   }
+}
+
+function chooseAccentBudgetStripCells(accentCells: DraftCell[], excess: number): DraftCell[] {
+  if (excess <= 0) return [];
+  const counts = new Map<string, number>();
+  for (const cell of accentCells) {
+    if (!cell.ink) continue;
+    counts.set(cell.ink, (counts.get(cell.ink) ?? 0) + 1);
+  }
+
+  const selected: DraftCell[] = [];
+  const selectedSet = new Set<DraftCell>();
+  for (const cell of accentCells) {
+    if (selected.length >= excess) break;
+    const ink = cell.ink;
+    if (!ink || (counts.get(ink) ?? 0) <= 1) continue;
+    selected.push(cell);
+    selectedSet.add(cell);
+    counts.set(ink, (counts.get(ink) ?? 0) - 1);
+  }
+  for (const cell of accentCells) {
+    if (selected.length >= excess) break;
+    if (selectedSet.has(cell)) continue;
+    selected.push(cell);
+    selectedSet.add(cell);
+  }
+  return selected;
 }
 
 function ensureAccentPresence(cells: DraftCell[], grammar: EngineGrammar, rng: Rng): void {
@@ -2189,7 +2583,7 @@ function finalizeCells(cells: DraftCell[]): CellPlan[] {
     if (cell.kind === undefined) {
       throw new Error(`Unresolved sampled cell ${positionKey(cell)}`);
     }
-    const { patchInkRole: _patchInkRole, ...publicCell } = cell;
+    const { patchInkRole: _patchInkRole, patchSpan: _patchSpan, ...publicCell } = cell;
     return publicCell as CellPlan;
   });
 }
@@ -2443,6 +2837,7 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
     patchesPlaced: 0,
+    mirrored: false,
     longestRun: 0,
     runPaths: [],
   };
