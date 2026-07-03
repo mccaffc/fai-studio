@@ -71,7 +71,7 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
 
   const knobs = {
     template: config.template,
-    accent: config.accent,
+    accent: config.program ? PROGRAMS[config.program].hue : config.accent,
     density: config.density,
     figures: config.figures,
     arrangement: config.arrangement,

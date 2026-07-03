@@ -21,6 +21,7 @@ const ROOT = process.cwd();
 const GRAMMAR_PATH = join(ROOT, 'corpus', 'grammar.json');
 const SEEDS = Array.from({ length: 60 }, (_value, index) => 5000 + index);
 const CELL_COUNT = 18;
+const CANON_ACCENT_DISTRIBUTION = [0.22, 0.20, 0.16, 0.42] as const;
 const GROUND_SCHEME_KINDS: GroundSchemeKind[] = [
   'uniform',
   'checker',
@@ -50,6 +51,7 @@ function main(): void {
   const groundSchemeCounts = emptyGroundSchemeCounts();
   const kindCounts = { plain: 0, freeform: 0, tile: 0 };
   const distinctCounts: number[] = [];
+  const accentCountBuckets = [0, 0, 0, 0];
   const diagTotals = {
     adjacencyHits: 0,
     adjacencyFallbacks: 0,
@@ -88,8 +90,13 @@ function main(): void {
     if (plan.forms.length === 0) zeroFormPlans += 1;
 
     const distinct = new Set<string>();
-    let hasAccent = false;
+    const visibleAccents = new Set<string>();
     for (const cell of plan.cells) {
+      if (accentInks.has(cell.ground)) visibleAccents.add(cell.ground);
+      if (cell.ink && accentInks.has(cell.ink)) visibleAccents.add(cell.ink);
+      for (const ink of cell.inks ?? []) {
+        if (accentInks.has(ink)) visibleAccents.add(ink);
+      }
       if (cell.kind === 'plain') {
         kindCounts.plain += 1;
         continue;
@@ -98,14 +105,14 @@ function main(): void {
       if (cell.kind === 'tile') kindCounts.tile += 1;
       if (cell.ink) {
         increment(inkCounts, cell.ink);
-        if (accentInks.has(cell.ink)) hasAccent = true;
       }
       if (cell.kind === 'tile' && cell.tile) {
         distinct.add(cell.tile);
         increment(familyCounts, grammar.tileCatalog[cell.tile]?.family ?? 'unknown');
       }
     }
-    if (!hasAccent) zeroAccentPlans += 1;
+    if (visibleAccents.size === 0) zeroAccentPlans += 1;
+    accentCountBuckets[Math.min(3, visibleAccents.size)] += 1;
     distinctCounts.push(distinct.size);
     groundSchemeCounts[classifyGroundScheme(plan)] += 1;
   }
@@ -121,6 +128,7 @@ function main(): void {
   const corpusUniformShare = share(corpusGroundSchemes.uniform, sumValues(corpusGroundSchemes));
   const samplePlainShare = share(kindCounts.plain, SEEDS.length * CELL_COUNT);
   const corpusPlainShare = corpusPlainCellShare(grammar);
+  const sampleMultiAccentShare = share(accentCountBuckets[2] + accentCountBuckets[3], SEEDS.length);
 
   const acceptances: Acceptance[] = [
     {
@@ -139,9 +147,9 @@ function main(): void {
       detail: `${formatPercent(samplePlainShare)} sample vs ${formatPercent(corpusPlainShare)} corpus (${formatPointDiff(samplePlainShare - corpusPlainShare)})`,
     },
     {
-      label: 'zero-accent plans <= 5/60',
-      pass: zeroAccentPlans <= 5,
-      detail: `${zeroAccentPlans}/60`,
+      label: 'sampled {2,3}-accent plans >= 40%',
+      pass: sampleMultiAccentShare >= 0.40,
+      detail: `${formatPercent(sampleMultiAccentShare)} sample (${accentCountBuckets[2] + accentCountBuckets[3]}/60) vs 58.0% canon`,
     },
     {
       label: 'friezesPlaced > 0 across the 60',
@@ -160,6 +168,7 @@ function main(): void {
     groundSchemeCounts,
     corpusGroundSchemes,
     kindCounts,
+    accentCountBuckets,
     distinctMean: mean(distinctCounts),
     zeroFormPlans,
     zeroAccentPlans,
@@ -308,6 +317,7 @@ function printReport(input: {
   groundSchemeCounts: Record<GroundSchemeKind, number>;
   corpusGroundSchemes: Record<GroundSchemeKind, number>;
   kindCounts: { plain: number; freeform: number; tile: number };
+  accentCountBuckets: number[];
   distinctMean: number;
   zeroFormPlans: number;
   zeroAccentPlans: number;
@@ -343,6 +353,14 @@ function printReport(input: {
 
   console.log('Ground schemes (sample vs corpus)');
   printShareTable(input.groundSchemeCounts, input.corpusGroundSchemes, GROUND_SCHEME_KINDS);
+  console.log('');
+
+  console.log('Accent-count distribution (sample vs canon)');
+  for (let bucket = 0; bucket < CANON_ACCENT_DISTRIBUTION.length; bucket += 1) {
+    const sampled = input.accentCountBuckets[bucket] ?? 0;
+    const canon = CANON_ACCENT_DISTRIBUTION[bucket]!;
+    console.log(`  ${pad(`${bucket} accents`, 15)} ${padCount(sampled)} ${formatPercent(share(sampled, SEEDS.length))} sample | ${formatPercent(canon)} canon`);
+  }
   console.log('');
 
   const totalCells = SEEDS.length * CELL_COUNT;
