@@ -141,6 +141,9 @@ describe('core arrangements', () => {
         if (!scores.quiltFail) passes += 1;
       }
       rates[arrangement] = passes / SAMPLE_SEEDS.length;
+      // 50% is a SANITY floor, deliberately below the plan's 60% aspiration: rates are
+      // measured honestly and the per-size VISUAL gate decides shipping (GATE.md iter 5 —
+      // column-short landed at 0.50 and ships flagged-experimental). Adjudicated 2026-07-02.
       expect(rates[arrangement], `${arrangement} quilt-pass rate`).toBeGreaterThanOrEqual(0.5);
     }
     console.log(`[arrangements] quilt-pass rates ${JSON.stringify(rates)}`);
