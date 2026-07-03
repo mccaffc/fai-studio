@@ -40,7 +40,7 @@ const ARRANGEMENT_LABELS: Record<string, string> = {
   square:       "Square 3×3",
   strip:        "Strip 3×1",
   column:       "Column 1×6",
-  "column-short": "Column short 1×3",
+  "column-short": "Column short (experimental) 1×3",
 };
 
 // ── helpers ──────────────────────────────────────────────────────────────────
