@@ -62,6 +62,9 @@ const LINEWORK_FAMILIES = new Set(['lines', 'circle', 'curve', 'wave']);
 
 export interface SampleDiagnostics {
   adjacencyHits: number;
+  /** Mode of the FIRST accent zone at placement time. Not recomputed by later
+   *  passes (mirror/budget can remove or reshape zones); only the accent COUNT
+   *  is re-synced — treat this as a placement diagnostic, not final-plan truth. */
   accentZone: 'ink' | 'ground' | 'figure' | 'none';
   accentZonesPlaced: number;
   accentsUsed: string[];
@@ -877,8 +880,18 @@ function tryPlacePhraseLine(
   if (!start || !next) return false;
 
   const snapshots = line.cells.map(cell => [cell, readDraftState(cell)] as [DraftCell, DraftCellState]);
+  // Aborted phrase attempts restore the grid but the draw helpers also bump
+  // adjacency counters — snapshot those too, so ghost phrases don't pollute them.
+  const savedAdjacencyHits = diag.adjacencyHits;
+  const savedAdjacencyFallbacks = diag.adjacencyFallbacks;
+  const rollBack = (): false => {
+    restoreDraftCells(snapshots);
+    diag.adjacencyHits = savedAdjacencyHits;
+    diag.adjacencyFallbacks = savedAdjacencyFallbacks;
+    return false;
+  };
   const pair = drawRunPair(grammar, rng, workingSet, line.dir, diag);
-  if (!pair) return false;
+  if (!pair) return rollBack();
 
   const ink = drawInkForCells(grammar, rng, line.cells);
   assignTile(start, pair[0], ink);
@@ -890,8 +903,7 @@ function tryPlacePhraseLine(
     const candidate = line.cells[i]!;
     const placement = drawNextRunPlacement(grammar, rng, workingSet, currentPlacement, line.dir, diag);
     if (!placement) {
-      restoreDraftCells(snapshots);
-      return false;
+      return rollBack();
     }
     assignTile(candidate, placement, ink);
     runPath.push([candidate.col, candidate.row]);
@@ -899,8 +911,7 @@ function tryPlacePhraseLine(
   }
 
   if (!draftLineworkShareInRange(cells, grammar, template)) {
-    restoreDraftCells(snapshots);
-    return false;
+    return rollBack();
   }
 
   diag.runPaths.push(runPath);
@@ -2222,6 +2233,16 @@ function applyMirror(
     return;
   }
   enforceAccentBudget(cells, grammar, extraAccent);
+  // Forced-accent survival: the mirror copies the left half over the right, so a
+  // zone living entirely in the right half is erased wholesale — and the budget
+  // pass can strip what remains. Presence of the forced accent is a contract of
+  // forced mode (ensureAccentPresence already ran); a mirror that breaks it
+  // rolls back instead.
+  if (extraAccent && !cellsCarryAccent(cells, extraAccent)) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
   if (pairMatchRateForCells(cells, dims) < 0.70) {
     restoreDraftCells(cellSnapshots);
     diag.runPaths = originalRunPaths;
@@ -2694,6 +2715,14 @@ function chooseAccentBudgetStripCells(accentCells: DraftCell[], excess: number):
  * The candidate weighting uses the same accentInkEntriesForGround totals + positionKey
  * sortKey as before, but the ink is always the forced accent (not a mined draw).
  */
+function cellsCarryAccent(cells: readonly DraftCell[], accent: string): boolean {
+  return cells.some(cell =>
+    cell.ground === accent ||
+    cell.ink === accent ||
+    (cell.inks ?? []).includes(accent),
+  );
+}
+
 function ensureAccentPresence(cells: DraftCell[], grammar: EngineGrammar, rng: Rng, accent: string): void {
   const nonPlain = cells.filter(cell => cell.kind !== 'plain');
   // Presence check: forced accent visible as ground, ink, or in inks[].

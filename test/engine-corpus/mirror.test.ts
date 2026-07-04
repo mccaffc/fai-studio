@@ -158,6 +158,21 @@ describe('mirror symmetry sampler op', () => {
     expect(second.diag).toEqual(first!.diag);
   });
 
+  it('never erases the forced accent (mirror rolls back instead, 500 seeds)', () => {
+    // Regression: the mirror copies the left half over the right, so a forced-accent
+    // zone living entirely in the right half was erased wholesale (86/2000 seeds
+    // pre-fix). Presence of the forced accent is a contract of forced mode.
+    for (let i = 0; i < 500; i += 1) {
+      const seed = 200_000 + i;
+      const { plan } = sampleWithDiagnostics(GRAMMAR, seed, { accent: '#FF4F00' });
+      const present = plan.cells.some(cell =>
+        cell.ground === '#FF4F00' ||
+        cell.ink === '#FF4F00' ||
+        (cell.inks ?? []).includes('#FF4F00'));
+      expect(present, `seed ${seed}: forced accent absent from every cell`).toBe(true);
+    }
+  });
+
   it('preserves the program palette law when a program-hue plan mirrors', () => {
     const hue = PROGRAMS['science-innovation'].hue;
     let mirroredProgramPlan: BannerPlan | null = null;
