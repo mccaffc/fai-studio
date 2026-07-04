@@ -265,7 +265,7 @@ export function sampleWithDiagnostics(
   fillTileCells(cells, grammar, rng, workingSet, template, diag);
   applyAccentZoning(cells, grammar, rng, template, knobs, diag);
   enforceAccentBudget(cells, grammar, knobs.accent);
-  if (knobs.accent) ensureAccentPresence(cells, grammar, rng);
+  if (knobs.accent) ensureAccentPresence(cells, grammar, rng, knobs.accent);
   // Run last: cap rhythm-template run length AFTER every ink mutation, so the
   // accent passes can't re-merge a split run.
   splitRhythmRuns(cells, grammar, template, dims);
@@ -2531,28 +2531,51 @@ function chooseAccentBudgetStripCells(accentCells: DraftCell[], excess: number):
   return selected;
 }
 
-function ensureAccentPresence(cells: DraftCell[], grammar: EngineGrammar, rng: Rng): void {
-  const accents = new Set(grammar.palette.accentOrder);
+/**
+ * ensureAccentPresence — called ONLY when knobs.accent is set (forced/program mode).
+ *
+ * In forced mode the accent may be entirely in cell.ground (ground-mode zone path).
+ * We must recognize that as "presence" — otherwise we inject a stray mined accent
+ * on top of the forced one, producing a second accent the user never picked.
+ *
+ * Presence check: any non-plain cell carries the forced accent as ground, ink, or
+ * in inks[]. Ground-as-accent (applyGroundZoneCell path) fully satisfies visibility.
+ *
+ * Injection: if truly absent, inject the FORCED accent as ink into one candidate
+ * cell. Candidate cells whose ground === accent are excluded (ink==ground → invisible).
+ * The candidate weighting uses the same accentInkEntriesForGround totals + positionKey
+ * sortKey as before, but the ink is always the forced accent (not a mined draw).
+ */
+function ensureAccentPresence(cells: DraftCell[], grammar: EngineGrammar, rng: Rng, accent: string): void {
   const nonPlain = cells.filter(cell => cell.kind !== 'plain');
-  if (nonPlain.some(cell => cell.ink && accents.has(cell.ink))) return;
+  // Presence check: forced accent visible as ground, ink, or in inks[].
+  const accentPresent = nonPlain.some(cell =>
+    cell.ground === accent ||
+    cell.ink === accent ||
+    (cell.inks ?? []).includes(accent),
+  );
+  if (accentPresent) return;
   if (Math.floor(nonPlain.length * 0.35 + EPS) <= 0) return;
 
-  const candidates: Weighted<{ cell: DraftCell; entries: Weighted<string>[] }>[] = [];
+  // Candidate cells: exclude those whose ground === accent (ink==ground → invisible).
+  const candidates: Weighted<DraftCell>[] = [];
   for (const cell of nonPlain.sort(compareCells)) {
+    if (cell.ground === accent) continue;
     const entries = accentInkEntriesForGround(grammar, cell.ground);
-    if (entries.length === 0) continue;
+    const totalWeight = entries.reduce((sum, entry) => sum + entry.weight, 0);
+    if (totalWeight <= 0) continue;
     candidates.push({
-      value: { cell, entries },
-      weight: entries.reduce((sum, entry) => sum + entry.weight, 0),
+      value: cell,
+      weight: totalWeight,
       sortKey: positionKey(cell),
     });
   }
   if (candidates.length === 0) return;
 
-  const { cell, entries } = weightedChoice(rng, candidates);
-  const ink = weightedChoice(rng, entries);
-  cell.ink = ink;
-  cell.inks = [ink];
+  // One RNG draw (cell selection); ink is always the forced accent.
+  const cell = weightedChoice(rng, candidates);
+  cell.ink = accent;
+  cell.inks = [accent];
 }
 
 function accentInkEntriesForGround(grammar: EngineGrammar, ground: string): Weighted<string>[] {

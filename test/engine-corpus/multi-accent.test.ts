@@ -42,6 +42,54 @@ function cellCarriesAccent(cell: CellPlan, predicate: (hex: string) => boolean):
   return predicate(cell.ground) || (cell.ink !== undefined && predicate(cell.ink)) || (cell.inks ?? []).some(predicate);
 }
 
+describe('mode isolation — forced-accent single-zone invariant', () => {
+  // Regression: when knobs.accent is set (forced / program mode), applyAccentZoning
+  // must place AT MOST ONE accent zone (targetAccentCount is hardcoded to 1).
+  // This test runs 30 seeds with knobs.accent forced and asserts the never->1 bound.
+  const FORCED_ACCENT = '#FF4F00'; // canonical orange, already used by the auto tests above
+  const FORCED_SEED_COUNT = 30;
+  const FORCED_SEED_OFFSET = 90_000;
+
+  it('places never more than 1 accent zone when knobs.accent is forced (30 seeds)', () => {
+    let exactlyOne = 0;
+    for (let i = 0; i < FORCED_SEED_COUNT; i += 1) {
+      const seed = FORCED_SEED_OFFSET + i;
+      const { diag } = sampleWithDiagnostics(GRAMMAR, seed, { accent: FORCED_ACCENT });
+      // Load-bearing assertion: forced mode must NEVER produce more than 1 zone.
+      expect(diag.accentZonesPlaced, `seed ${seed}: accentZonesPlaced=${diag.accentZonesPlaced} must not exceed 1`).toBeLessThanOrEqual(1);
+      if (diag.accentZonesPlaced === 1) exactlyOne += 1;
+    }
+    // Softer bound: placement should succeed the large majority of the time.
+    expect(
+      exactlyOne / FORCED_SEED_COUNT,
+      `only ${exactlyOne}/${FORCED_SEED_COUNT} seeds placed exactly 1 zone; expected ≥80%`,
+    ).toBeGreaterThanOrEqual(0.80);
+  });
+
+  it('produces no second accent color in plan cells when knobs.accent is forced (30 seeds)', () => {
+    // User-visible property: forced accent mode must never render a color the user didn't pick.
+    // Non-neutral colors in ground/ink/inks[] must be a subset of {FORCED_ACCENT}.
+    const NEUTRALS = new Set(['#121212', '#FFFFFF', '#F3F3F3', '#D9D9D6']);
+    for (let i = 0; i < FORCED_SEED_COUNT; i += 1) {
+      const seed = FORCED_SEED_OFFSET + i;
+      const { plan } = sampleWithDiagnostics(GRAMMAR, seed, { accent: FORCED_ACCENT });
+      const nonNeutralColors = new Set<string>();
+      for (const cell of plan.cells) {
+        if (!NEUTRALS.has(cell.ground)) nonNeutralColors.add(cell.ground);
+        if (cell.ink && !NEUTRALS.has(cell.ink)) nonNeutralColors.add(cell.ink);
+        for (const ink of cell.inks ?? []) {
+          if (!NEUTRALS.has(ink)) nonNeutralColors.add(ink);
+        }
+      }
+      const unexpectedColors = [...nonNeutralColors].filter(color => color !== FORCED_ACCENT);
+      expect(
+        unexpectedColors,
+        `seed ${seed}: unexpected non-neutral color(s) in forced-accent plan: ${unexpectedColors.join(', ')}`,
+      ).toHaveLength(0);
+    }
+  });
+});
+
 describe('multi-accent auto zoning', () => {
   it('matches the canon-calibrated 0/1/2/3 accent distribution over 200 auto seeds', () => {
     const buckets = [0, 0, 0, 0];
