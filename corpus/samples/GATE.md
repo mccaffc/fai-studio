@@ -63,3 +63,31 @@ columns are the surprise winner) · column-short SHIP FLAGGED-EXPERIMENTAL (6/8 
 ~half trip composition floors — a metric artifact at 3-cell scale, not visual failure; floors
 should become arrangement-aware before the flag lifts). Banner regression clean.
 Composition floors visibly working on the standard sizes (FLOOR labels rare, deserved).
+
+## Iteration 6 — P6 gate (multi-accent auto + mirror + rhythm phrasing), 2026-07-04
+
+Sheet: seeds 810000–810011, auto mode, banner 6×3. Claude eyes on all 12 (single-banner renders).
+
+**Exit criteria: PASS.** Multi-accent 9/12 (exit ≥4); mirrored 4/12 (exit ≥2, canon 24% → 33% in-window);
+no regression (no stretching, no palette violations, seams join, figures aspect-true).
+
+Per-seed: ★ = would show unedited.
+- 810000 ★ figure-field, MIRRORED — blue ring quadrants flank a white figure block, orange ring foot. Full-palette + symmetry working together.
+- 810001 mixed-quilt — 3-accent quilt; canon-legal register, busy but coherent. Borderline.
+- 810002 ★ pipe-field, MIRRORED — blue diamond field, disc toggles, full orange/yellow disc row (a full-line phrase).
+- 810003 ★ pipe-field — STACKED full-row phrases: yellow arc rainbows / orange drop row / blue semi row. Best of sheet; the rhythm-phrasing deliverable made visible.
+- 810004 ★ arc-mosaic, MIRRORED — three full rows of white semis, single chrome-yellow cell. Quiet register, strong focal dominance.
+- 810005 ★ figure-field, 0-accent — monochrome ring-quadrant field, dense and connected (canon-legal: 11/50 canon are neutral-only).
+- 810006 figure-field — face-adjacent figure (scallop brow, orange eyes), 3 accents; bottom-right reads loose. Borderline.
+- 810007 mixed-quilt, 0-accent — b/w stripe-family quilt. Fine, not thrilling. Borderline.
+- 810008 ★ pipe-field, MIRRORED — orange dot colonnade, blue disc corners, full row of yellow arc targets. Symmetric, full-palette, hero-grade.
+- 810009 pipe-field — dot-serpentine + yellow discs + blue scallops; busy but connected. Show-able.
+- 810010 ★ pipe-field — stripe colonnade field with orange/blue/yellow; strong Bauhaus register.
+- 810011 repeat-rhythm — orange quarter-disc row + dome row; corner blue reads stray. Borderline.
+
+Would-show: 7/12 unedited (58%) + 5 borderline, 0 failures. Consistent with iteration-4/5 (~65% incl.
+borderlines) — no regression, and the full-palette complaint (auto sheets reading heritage-only) is
+resolved: 7/12 plans carry all three heritage accents, 9/12 carry ≥2.
+
+The mirror rate landing above canon in-window (4/12 vs 24%) is sampling noise at n=12 (probe: 20%/200).
+Rhythm phrasing visibly present (810002/810003/810004/810008 all carry full-line phrases).

@@ -10,6 +10,7 @@
  * 6. optional figure region/accent
  * 7. plain positions
  * 8. tile fills: tile, rotation, flip, ink per remaining cell
+ * 9. optional mirror symmetry after post-fill forms are known
  *
  * Every object-backed weighted draw iterates sorted keys. Arrays whose order is
  * semantic, such as palette.accentOrder, carry explicit sort keys before draw.
@@ -34,6 +35,7 @@ import type {
   BannerPlan,
   CellPlan,
   EngineGrammar,
+  FormGroup,
   GroundSchemeKind,
   SampleKnobs,
   Template,
@@ -60,11 +62,18 @@ const LINEWORK_FAMILIES = new Set(['lines', 'circle', 'curve', 'wave']);
 
 export interface SampleDiagnostics {
   adjacencyHits: number;
+  /** Mode of the FIRST accent zone at placement time. Not recomputed by later
+   *  passes (mirror/budget can remove or reshape zones); only the accent COUNT
+   *  is re-synced — treat this as a placement diagnostic, not final-plan truth. */
   accentZone: 'ink' | 'ground' | 'figure' | 'none';
+  accentZonesPlaced: number;
+  accentsUsed: string[];
+  accentWarmSide?: 'left' | 'right';
   adjacencyFallbacks: number;
   fillAdjacencyHits: number;
   friezesPlaced: number;
   patchesPlaced: number;
+  mirrored: boolean;
   /** Largest 'run'-form cell count in the final plan (from plan.forms). */
   longestRun: number;
   /**
@@ -87,6 +96,11 @@ const SOURCE_STAT_MAX_ROW = ARRANGEMENTS.banner.rows - 1;
 const EPS = 1e-9;
 const DOMINANT_FAMILY_QUOTA = 0.18;
 const LINEWORK_STEERING_STRENGTH = 1;
+// Shipped NEUTRAL (0 = uniform draw over the template's distinctTiles range).
+// The hook is the seam for steering rhythmQuality toward the canon p50 (0.595);
+// every non-zero value tried in P6 broke figure/patch/multi-accent/template
+// gates, so steering waits for a calibration pass that can move those together.
+const FILL_VARIETY_STEERING_STRENGTH = 0;
 
 // --- Serpentine run growth (P2 Task 2) ------------------------------------
 // The connected-surface templates grow canon-length runs that TURN CORNERS
@@ -95,6 +109,8 @@ const LINEWORK_STEERING_STRENGTH = 1;
 // use mined-length targets but straight growth (no turns).
 const SERPENTINE_TEMPLATES = new Set(['pipe-field', 'arc-mosaic']);
 const MINED_LENGTH_TEMPLATES = new Set(['pipe-field', 'arc-mosaic', 'figure-field', 'mixed-quilt']);
+const PHRASE_COMPLETION_WEIGHT = 2;
+const PHRASE_TEMPLATES = new Set(['arc-mosaic', 'checker-motif', 'pipe-field', 'repeat-rhythm']);
 // Direction-draw weights at each serpentine step: keep straight most of the
 // time, turn either way a fifth of the time each.
 const SERPENTINE_CONTINUE_WEIGHT = 0.6;
@@ -104,6 +120,20 @@ const SERPENTINE_TURN_WEIGHT = 0.2;
 // minimal interior cell of any longer same-ink run to break the join.
 const RHYTHM_RUN_CAP = 6;
 const RHYTHM_TEMPLATES = new Set(['repeat-rhythm', 'checker-motif']);
+
+// P6 Task 1 mirror calibration from corpus/corpus.json, pair-match metric
+// tile+ink >= 70% across (c,r)/(cols-1-c,r) pairs:
+// 024 figure-field 1.000; 029 figure-field 1.000; 031 repeat-rhythm 1.000;
+// 037 figure-field 1.000; 038 repeat-rhythm 1.000; 039 pipe-field 1.000;
+// 048 pipe-field 1.000; 005 pipe-field 0.889; 008 pipe-field 0.889;
+// 036 figure-field 0.889; 050 mixed-quilt 0.889; 028 arc-mosaic 0.778.
+// Eligible templates: arc-mosaic, figure-field, mixed-quilt, pipe-field,
+// repeat-rhythm. checker-motif had no >=70% canon near-mirror exemplar.
+// Single probability draw; deterministic rollbacks below pull the accepted
+// output rate back into the canon 24% band.
+const MIRROR_RATE = 0.50;
+const MIRROR_TEMPLATE_IDS = new Set(['arc-mosaic', 'figure-field', 'mixed-quilt', 'pipe-field', 'repeat-rhythm']);
+const MIRROR_MAX_BLACK_INK_SHARE = 0.85;
 
 const BRAND_FILLS = new Set([
   '#121212',
@@ -144,6 +174,7 @@ interface DraftCell {
   figureSpan?: [number, number];
   patchId?: string;
   patchInkRole?: PatchInkRole;
+  patchSpan?: [number, number];
 }
 
 interface Placement {
@@ -183,10 +214,13 @@ export function sampleWithDiagnostics(
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
     accentZone: 'none',
+    accentZonesPlaced: 0,
+    accentsUsed: [],
     adjacencyFallbacks: 0,
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
     patchesPlaced: 0,
+    mirrored: false,
     longestRun: 0,
     runPaths: [],
   };
@@ -199,7 +233,7 @@ export function sampleWithDiagnostics(
   const cells = makeDraftCells(generateGrounds(grammar, rng, groundScheme, globalGround, dims), dims);
 
   const dominantFamily = drawDominantFamily(grammar, template, rng);
-  let targetDistinct = Math.min(dims.cellCount, drawIntegerRange(template.spec.distinctTiles, rng));
+  let targetDistinct = Math.min(dims.cellCount, drawFillVarietyTarget(template.spec.distinctTiles, rng));
   if (dims.cellCount > 0 && template.spec.distinctTiles[1] > 0 && targetDistinct === 0) {
     targetDistinct = 1;
   }
@@ -241,11 +275,22 @@ export function sampleWithDiagnostics(
   fillTileCells(cells, grammar, rng, workingSet, template, diag);
   applyAccentZoning(cells, grammar, rng, template, knobs, diag);
   enforceAccentBudget(cells, grammar, knobs.accent);
-  ensureAccentPresence(cells, grammar, rng);
+  if (knobs.accent) ensureAccentPresence(cells, grammar, rng, knobs.accent);
   // Run last: cap rhythm-template run length AFTER every ink mutation, so the
   // accent passes can't re-merge a split run.
   splitRhythmRuns(cells, grammar, template, dims);
+  splitNoSpineRunForms(cells, grammar, dims);
+  splitRhythmRuns(cells, grammar, template, dims);
   applyLogomarkGuard(cells);
+  syncAccentDiagnostics(cells, grammar, knobs.accent, diag);
+  // P6 mirror runs after the full current post-fill pipeline, including the
+  // first form detection pass. If accepted, only the accent budget and forms
+  // are recomputed; zoning is intentionally not re-run against mirrored ink.
+  void detectForms(draftPlanForForms(cells, dims), grammar.tileCatalog, FAMILIES);
+  applyMirror(cells, grammar, dims, rng, template, knobs.accent, diag);
+  if (diag.mirrored) {
+    syncAccentDiagnostics(cells, grammar, knobs.accent, diag);
+  }
 
   const finalCells = finalizeCells(cells);
   const plan: BannerPlan = {
@@ -696,13 +741,30 @@ function placeRun(
   template: Template,
   diag: SampleDiagnostics,
 ): boolean {
-  const targetLength = MINED_LENGTH_TEMPLATES.has(template.id)
+  const rawTargetLength = MINED_LENGTH_TEMPLATES.has(template.id)
     ? drawRunTargetLength(grammar, rng)
     : rng.int(2, 3);
   const serpentine = SERPENTINE_TEMPLATES.has(template.id);
+  const dims = dimsForCells(cells);
+  const phraseOptions = PHRASE_TEMPLATES.has(template.id) ? phraseLineOptions(cells, dims) : [];
+  let protectedPhraseCells = new Set<string>();
+  if (phraseOptions.length > 0) {
+    const phraseSelected = weightedChoice(rng, [
+      { value: false, weight: 1, sortKey: 'normal' },
+      { value: true, weight: PHRASE_COMPLETION_WEIGHT, sortKey: 'phrase' },
+    ]);
+    if (phraseSelected && placePhraseRun(cells, grammar, rng, workingSet, phraseOptions, template, diag)) {
+      return true;
+    }
+    if (!phraseSelected) {
+      protectedPhraseCells = phraseLineCellKeys(phraseOptions);
+    }
+  }
 
   const starts = cells
-    .filter(cell => cell.kind === undefined && (isFree(cells, cell.col + 1, cell.row) || isFree(cells, cell.col, cell.row + 1)))
+    .filter(cell => cell.kind === undefined &&
+      !protectedPhraseCells.has(positionKey(cell)) &&
+      (isFree(cells, cell.col + 1, cell.row) || isFree(cells, cell.col, cell.row + 1)))
     .sort(compareCells);
   if (starts.length === 0) return false;
 
@@ -736,16 +798,148 @@ function placeRun(
     // Start recording the run path: seed pair in order [start, next].
     const runPath: [number, number][] = [[start.col, start.row], [next.col, next.row]];
 
-    let heading: Step = dir === 'h' ? 'right' : 'down';
+    const heading: Step = dir === 'h' ? 'right' : 'down';
     const grown = serpentine
-      ? growSerpentine(cells, grammar, rng, workingSet, next, pair[1], ink, heading, targetLength, diag, runPath)
-      : growStraight(cells, grammar, rng, workingSet, next, pair[1], ink, dir, targetLength, diag, runPath);
+      ? growSerpentine(cells, grammar, rng, workingSet, next, pair[1], ink, heading, rawTargetLength, diag, runPath)
+      : growStraight(cells, grammar, rng, workingSet, next, pair[1], ink, dir, rawTargetLength, diag, runPath);
     void grown;
     diag.runPaths.push(runPath);
     return true;
   }
 
   return false;
+}
+
+interface PhraseLineOption {
+  dir: Direction;
+  cells: DraftCell[];
+  sortKey: string;
+}
+
+function phraseLineCellKeys(options: readonly PhraseLineOption[]): Set<string> {
+  const keys = new Set<string>();
+  for (const option of options) {
+    for (const cell of option.cells) keys.add(positionKey(cell));
+  }
+  return keys;
+}
+
+function phraseLineOptions(cells: DraftCell[], dims: GridDims): PhraseLineOption[] {
+  const options: PhraseLineOption[] = [];
+  if (new Set(cells.map(cell => cell.ground)).size <= 1) return options;
+  if (dims.cols >= 2) {
+    for (let row = 0; row < dims.rows; row += 1) {
+      if (freeCellsInRow(cells, row, dims) < dims.cols - 1) continue;
+      const line = Array.from({ length: dims.cols }, (_value, col) => cellAt(cells, col, row));
+      if (!line.every(cell => cell.kind === undefined)) continue;
+      options.push({ dir: 'h', cells: line, sortKey: `h-${String(row).padStart(2, '0')}` });
+    }
+  }
+  if (dims.rows >= 2) {
+    for (let col = 0; col < dims.cols; col += 1) {
+      if (freeCellsInColumn(cells, col, dims) < dims.rows - 1) continue;
+      const line = Array.from({ length: dims.rows }, (_value, row) => cellAt(cells, col, row));
+      if (!line.every(cell => cell.kind === undefined)) continue;
+      options.push({ dir: 'v', cells: line, sortKey: `v-${String(col).padStart(2, '0')}` });
+    }
+  }
+  return options.sort((a, b) => compareCodepoint(a.sortKey, b.sortKey));
+}
+
+function placePhraseRun(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  rng: Rng,
+  workingSet: string[],
+  options: readonly PhraseLineOption[],
+  template: Template,
+  diag: SampleDiagnostics,
+): boolean {
+  let remaining = [...options];
+  while (remaining.length > 0) {
+    const line = weightedChoice(
+      rng,
+      remaining.map(option => ({ value: option, weight: 1, sortKey: option.sortKey })),
+    );
+    if (tryPlacePhraseLine(cells, grammar, rng, workingSet, line, template, diag)) return true;
+    remaining = remaining.filter(option => option !== line);
+  }
+  return false;
+}
+
+function tryPlacePhraseLine(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  rng: Rng,
+  workingSet: string[],
+  line: PhraseLineOption,
+  template: Template,
+  diag: SampleDiagnostics,
+): boolean {
+  const [start, next] = line.cells;
+  if (!start || !next) return false;
+
+  const snapshots = line.cells.map(cell => [cell, readDraftState(cell)] as [DraftCell, DraftCellState]);
+  // Aborted phrase attempts restore the grid but the draw helpers also bump
+  // adjacency counters — snapshot those too, so ghost phrases don't pollute them.
+  const savedAdjacencyHits = diag.adjacencyHits;
+  const savedAdjacencyFallbacks = diag.adjacencyFallbacks;
+  const rollBack = (): false => {
+    restoreDraftCells(snapshots);
+    diag.adjacencyHits = savedAdjacencyHits;
+    diag.adjacencyFallbacks = savedAdjacencyFallbacks;
+    return false;
+  };
+  const pair = drawRunPair(grammar, rng, workingSet, line.dir, diag);
+  if (!pair) return rollBack();
+
+  const ink = drawInkForCells(grammar, rng, line.cells);
+  assignTile(start, pair[0], ink);
+  assignTile(next, pair[1], ink);
+  const runPath: [number, number][] = [[start.col, start.row], [next.col, next.row]];
+  let currentPlacement = pair[1];
+
+  for (let i = 2; i < line.cells.length; i += 1) {
+    const candidate = line.cells[i]!;
+    const placement = drawNextRunPlacement(grammar, rng, workingSet, currentPlacement, line.dir, diag);
+    if (!placement) {
+      return rollBack();
+    }
+    assignTile(candidate, placement, ink);
+    runPath.push([candidate.col, candidate.row]);
+    currentPlacement = placement;
+  }
+
+  if (!draftLineworkShareInRange(cells, grammar, template)) {
+    return rollBack();
+  }
+
+  diag.runPaths.push(runPath);
+  return true;
+}
+
+function draftLineworkShareInRange(cells: DraftCell[], grammar: EngineGrammar, template: Template): boolean {
+  const tileCells = cells.filter(cell => cell.kind === 'tile' && cell.tile);
+  if (tileCells.length === 0) return true;
+  const linework = tileCells.filter(cell => isLineworkTile(grammar, cell.tile!)).length;
+  const share = linework / tileCells.length;
+  return inRange(share, template.spec.lineworkShare, 0.15);
+}
+
+function freeCellsInRow(cells: DraftCell[], row: number, dims: GridDims): number {
+  let count = 0;
+  for (let col = 0; col < dims.cols; col += 1) {
+    if (isFree(cells, col, row)) count += 1;
+  }
+  return count;
+}
+
+function freeCellsInColumn(cells: DraftCell[], col: number, dims: GridDims): number {
+  let count = 0;
+  for (let row = 0; row < dims.rows; row += 1) {
+    if (isFree(cells, col, row)) count += 1;
+  }
+  return count;
 }
 
 /** Old short straight growth (the rhythm-template fallback path). */
@@ -941,7 +1135,10 @@ function placePatch(
     const resolved = resolvePatchCell(patchCell, grammar, rng, globalGround, shifted, patchAccent);
     target.kind = resolved.kind;
     target.ground = resolved.ground;
-    if (isAnchor) target.patchId = patch.id;
+    if (isAnchor) {
+      target.patchId = patch.id;
+      target.patchSpan = [patch.w, patch.h];
+    }
     if (resolved.kind === 'tile') {
       target.tile = resolved.tile;
       target.rotation = resolved.rotation;
@@ -1659,14 +1856,24 @@ function dominantGround(grounds: string[]): string {
 }
 
 
+type AccentSide = 'left' | 'right';
+type AccentMode = 'ink' | 'ground' | 'figure';
+
+const CANON_ACCENT_COUNT_WEIGHTS: Weighted<number>[] = [
+  { value: 0, weight: 0.18, sortKey: '0' },
+  { value: 1, weight: 0.18, sortKey: '1' },
+  { value: 2, weight: 0.16, sortKey: '2' },
+  { value: 3, weight: 0.48, sortKey: '3' },
+];
+const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300']);
+const COOL_ACCENTS_SET = new Set(['#4997D0']);
+
 /**
- * Accent zoning (visual-gate iteration 1): the corpus carries its accent on
- * ONE form or ground region — never scattered singles. Draw one accent + one
- * zone; de-scatter every accent ink outside it. Modes: 'ink' recolors a
- * same-tile flood's inks to the accent; 'ground' turns the zone's grounds
- * into a colored block (canonical black-on-orange move); 'figure' adopts an
- * existing freeform figure as the zone. A second zone fires at p=0.2 on the
- * large templates (mixed-quilt / figure-field), echoing two-accent banners.
+ * Accent zoning (P6 Task 0): auto/full-palette mode draws a single
+ * canon-calibrated accent-count bucket, then allocates that many DISTINCT
+ * heritage accents as coherent zones. Explicit accent knobs keep the previous
+ * one-zone behavior. De-scatter strips accent inks AND grounds outside all
+ * zones, so the 0-accent bucket produces a fully neutral banner.
  */
 function applyAccentZoning(
   cells: DraftCell[],
@@ -1676,91 +1883,623 @@ function applyAccentZoning(
   knobs: SampleKnobs,
   diag: SampleDiagnostics,
 ): void {
-  const accents = grammar.palette.accentOrder.filter(a => BRAND_FILLS.has(a));
-  if (accents.length === 0) return;
-  const drawAccentInk = (): string => {
-    if (knobs.accent) return knobs.accent;
-    return weightedChoice(rng, accents.map((a, i) => ({ value: a, weight: accents.length - i, sortKey: a })))!;
-  };
+  const accentChoices = grammar.palette.accentOrder
+    .map((accent, index) => ({ accent, index }))
+    .filter(({ accent }) => BRAND_FILLS.has(accent));
+  const corpusAccents = accentChoices.map(choice => choice.accent);
+  if (corpusAccents.length === 0) return;
 
+  const forcedAccent = knobs.accent;
+  const targetAccentCount = forcedAccent ? 1 : weightedChoice(rng, CANON_ACCENT_COUNT_WEIGHTS);
+  const warmSide: AccentSide | undefined = forcedAccent
+    ? undefined
+    : (rng.next() < 0.5 ? 'left' : 'right');
+  diag.accentWarmSide = warmSide;
+
+  const allAccents = new Set(corpusAccents);
+  if (forcedAccent) allAccents.add(forcedAccent);
+  if (targetAccentCount === 0) {
+    descatterAccentsOutsideZones(cells, allAccents, []);
+    return;
+  }
+
+  const selectedAccents = forcedAccent
+    ? [forcedAccent]
+    : drawDistinctAccentInks(rng, accentChoices, targetAccentCount);
   const zones: Set<DraftCell>[] = [];
-  const zoneAccents: string[] = [];
+  const zoneModes: AccentMode[] = [];
+  const occupied = new Set<DraftCell>();
   const patchAccentCells = cells
-    .filter(c => c.kind === 'tile' && c.patchInkRole === 'accent' && c.ink && accents.includes(c.ink))
+    .filter(c => c.kind === 'tile' && c.patchInkRole === 'accent')
     .sort(compareCells);
 
-  const figureCells = cells.filter(c => c.kind === 'freeform');
-  if (patchAccentCells.length > 0) {
-    zones.push(new Set(patchAccentCells));
-    zoneAccents.push(patchAccentCells[0]!.ink ?? drawAccentInk());
-    diag.accentZone = 'ink';
-  } else if (figureCells.length > 0 && rng.next() < 0.5) {
-    // adopt the figure as the accent zone (its ink is already an accent by construction)
-    zones.push(new Set(figureCells));
-    zoneAccents.push(figureCells[0]!.ink ?? drawAccentInk());
-    diag.accentZone = 'figure';
-  } else {
-    const accent = drawAccentInk();
-    const anchors = cells
-      .filter(c => c.kind === 'tile' && c.tile)
-      .sort(compareCells);
-    if (anchors.length === 0) return;
-    const anchor = weightedChoice(rng, anchors.map(c => ({ value: c, weight: 1, sortKey: `${c.col},${c.row}` })))!;
-    // same-tile flood from the anchor (captures a run/frieze segment), cap 6
-    const zone = new Set<DraftCell>([anchor]);
-    const queue = [anchor];
-    while (queue.length > 0 && zone.size < 6) {
-      const cur = queue.shift()!;
-      for (const n of cells) {
-        if (zone.size >= 6 || zone.has(n) || n.kind !== 'tile' || n.tile !== cur.tile) continue;
-        const adj = Math.abs(n.col - cur.col) + Math.abs(n.row - cur.row) === 1;
-        if (adj) { zone.add(n); queue.push(n); }
-      }
-    }
-    const mode = rng.next() < 0.6 ? 'ink' : 'ground';
-    if (mode === 'ink') {
-      for (const c of zone) if (accent !== c.ground) { c.ink = accent; c.inks = [accent]; }
-      diag.accentZone = 'ink';
-    } else {
-      for (const c of zone) {
-        c.ground = accent;
-        const ink = c.ink === accent || c.ink === undefined ? '#121212' : c.ink;
-        c.ink = NEUTRAL_INKS_SET.has(ink) ? ink : '#121212';
-        if (c.ink === accent) c.ink = '#121212';
-        c.inks = c.ink ? [c.ink] : [];
-      }
-      diag.accentZone = 'ground';
-    }
-    zones.push(zone);
-    zoneAccents.push(accent);
-  }
+  for (const accent of selectedAccents) {
+    const preferredSide = preferredSideForAccent(accent, warmSide);
+    const patchZone = zones.length === 0
+      ? takePatchAccentZone(patchAccentCells, occupied, accent, allAccents)
+      : null;
+    const figureZone = patchZone === null
+      ? takeFigureAccentZone(cells, occupied, rng, accent, allAccents)
+      : null;
+    const placed = patchZone ?? figureZone ?? takeTileAccentZone(cells, grammar, occupied, rng, accent, allAccents, preferredSide);
+    if (placed === null) continue;
 
-  // optional second zone on large templates
-  if ((template.id === 'mixed-quilt' || template.id === 'figure-field') && rng.next() < 0.2) {
-    const accent2 = drawAccentInk();
-    const outside = cells.filter(c => c.kind === 'tile' && c.tile && !zones[0]!.has(c)).sort(compareCells);
-    if (outside.length > 0) {
-      const a2 = weightedChoice(rng, outside.map(c => ({ value: c, weight: 1, sortKey: `${c.col},${c.row}` })))!;
-      const z2 = new Set<DraftCell>([a2]);
-      if (accent2 !== a2.ground) { a2.ink = accent2; a2.inks = [accent2]; }
-      zones.push(z2); zoneAccents.push(accent2);
+    zones.push(placed.zone);
+    zoneModes.push(placed.mode);
+    for (const cell of placed.zone) {
+      occupied.add(cell);
     }
   }
 
-  // de-scatter: accent inks outside all zones revert to neutral
-  const accentSet = new Set(accents);
-  const inZone = new Set<DraftCell>(); for (const z of zones) for (const c of z) inZone.add(c);
-  for (const c of cells) if (c.kind === 'freeform') inZone.add(c);
-  for (const c of cells) {
-    if (c.kind === 'plain' || inZone.has(c)) continue;
-    if (c.ink && accentSet.has(c.ink)) {
-      const ink = neutralForGround(c.ground);
-      c.ink = ink; c.inks = [ink];
-    }
-  }
+  diag.accentZone = zoneModes[0] ?? 'none';
+  diag.accentZonesPlaced = zones.length;
+  diag.accentsUsed = selectedAccents.slice(0, zones.length);
+  void template; // retained in the signature for rezone compatibility and future template-specific zoning.
+  descatterAccentsOutsideZones(cells, allAccents, zones);
 }
 
 const NEUTRAL_INKS_SET = new Set(['#121212', '#FFFFFF', '#F3F3F3', '#D9D9D6']);
+
+function drawDistinctAccentInks(
+  rng: Rng,
+  choices: readonly { accent: string; index: number }[],
+  count: number,
+): string[] {
+  let remaining = [...choices];
+  const selected: string[] = [];
+  while (remaining.length > 0 && selected.length < count) {
+    const picked = weightedChoice(
+      rng,
+      remaining.map(({ accent, index }) => ({
+        value: { accent, index },
+        weight: choices.length - index,
+        sortKey: accent,
+      })),
+    );
+    selected.push(picked.accent);
+    remaining = remaining.filter(choice => choice.accent !== picked.accent);
+  }
+  return selected;
+}
+
+function preferredSideForAccent(accent: string, warmSide: AccentSide | undefined): AccentSide | undefined {
+  if (warmSide === undefined) return undefined;
+  if (WARM_ACCENTS_SET.has(accent)) return warmSide;
+  if (COOL_ACCENTS_SET.has(accent)) return warmSide === 'left' ? 'right' : 'left';
+  return undefined;
+}
+
+function takePatchAccentZone(
+  patchAccentCells: readonly DraftCell[],
+  occupied: Set<DraftCell>,
+  accent: string,
+  allAccents: Set<string>,
+): { zone: Set<DraftCell>; mode: AccentMode } | null {
+  const cells = patchAccentCells.filter(cell => !occupied.has(cell));
+  if (cells.length === 0) return null;
+  const zone = new Set(cells);
+  for (const cell of zone) applyInkZoneCell(cell, accent, allAccents);
+  return { zone, mode: 'ink' };
+}
+
+function takeFigureAccentZone(
+  cells: DraftCell[],
+  occupied: Set<DraftCell>,
+  rng: Rng,
+  accent: string,
+  allAccents: Set<string>,
+): { zone: Set<DraftCell>; mode: AccentMode } | null {
+  const figureCells = cells.filter(c => c.kind === 'freeform' && !occupied.has(c)).sort(compareCells);
+  if (figureCells.length === 0 || rng.next() >= 0.5) return null;
+  const zone = new Set(figureCells);
+  for (const cell of zone) applyInkZoneCell(cell, accent, allAccents);
+  return { zone, mode: 'figure' };
+}
+
+function takeTileAccentZone(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  occupied: Set<DraftCell>,
+  rng: Rng,
+  accent: string,
+  allAccents: Set<string>,
+  preferredSide: AccentSide | undefined,
+): { zone: Set<DraftCell>; mode: AccentMode } | null {
+  const dims = dimsForCells(cells);
+  const anchors = cells
+    .filter(c => c.kind === 'tile' && c.tile && !occupied.has(c))
+    .sort(compareCells);
+  if (anchors.length === 0) return null;
+
+  const anchor = weightedChoice(
+    rng,
+    anchors.map(c => ({
+      value: c,
+      weight: anchorSideWeight(c, preferredSide, dims),
+      sortKey: `${c.col},${c.row}`,
+    })),
+  );
+  const zone = sameTileFlood(cells, anchor, occupied);
+  let mode: AccentMode = rng.next() < 0.6 ? 'ink' : 'ground';
+  if (mode === 'ink' && zone.size >= 3 && !zoneHasSpineEdge(grammar, zone)) {
+    mode = 'ground';
+  }
+  if (mode === 'ink') {
+    for (const cell of zone) applyInkZoneCell(cell, accent, allAccents);
+  } else {
+    for (const cell of zone) applyGroundZoneCell(cell, accent);
+  }
+  return { zone, mode };
+}
+
+function zoneHasSpineEdge(grammar: EngineGrammar, zone: Set<DraftCell>): boolean {
+  const cells = [...zone];
+  const keys = new Set(cells.map(positionKey));
+  for (const here of cells) {
+    if (here.kind !== 'tile' || !here.tile) continue;
+    for (const [dc, dr, dir] of [[1, 0, 'h'], [0, 1, 'v']] as const) {
+      const there = cells.find(cell => cell.col === here.col + dc && cell.row === here.row + dr);
+      if (!there || !keys.has(positionKey(there)) || there.kind !== 'tile' || !there.tile) continue;
+      if (placementsJoin(
+        grammar,
+        { tile: here.tile, rotation: here.rotation ?? 0, flip: here.flip ?? false },
+        { tile: there.tile, rotation: there.rotation ?? 0, flip: there.flip ?? false },
+        dir,
+      )) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function anchorSideWeight(cell: DraftCell, side: AccentSide | undefined, dims: GridDims): number {
+  if (side === undefined) return 1;
+  const onPreferredSide = side === 'left' ? cell.col < dims.cols / 2 : cell.col >= dims.cols / 2;
+  return onPreferredSide ? 3 : 1;
+}
+
+function sameTileFlood(cells: DraftCell[], anchor: DraftCell, occupied: Set<DraftCell>): Set<DraftCell> {
+  const zone = new Set<DraftCell>([anchor]);
+  const queue = [anchor];
+  while (queue.length > 0 && zone.size < 6) {
+    const cur = queue.shift()!;
+    for (const next of cells) {
+      if (zone.size >= 6 || zone.has(next) || occupied.has(next)) continue;
+      if (next.kind !== 'tile' || next.tile !== cur.tile) continue;
+      const adjacent = Math.abs(next.col - cur.col) + Math.abs(next.row - cur.row) === 1;
+      if (!adjacent) continue;
+      zone.add(next);
+      queue.push(next);
+    }
+  }
+  return zone;
+}
+
+function applyInkZoneCell(cell: DraftCell, accent: string, allAccents: Set<string>): void {
+  if (allAccents.has(cell.ground) && cell.ground !== accent) {
+    cell.ground = neutralGroundForInk(cell.ink);
+  }
+  if (accent === cell.ground) {
+    const ink = neutralForGround(cell.ground);
+    cell.ink = ink;
+    cell.inks = [ink];
+    return;
+  }
+  cell.ink = accent;
+  cell.inks = [accent];
+}
+
+function applyGroundZoneCell(cell: DraftCell, accent: string): void {
+  cell.ground = accent;
+  const ink = cell.ink === accent || cell.ink === undefined ? '#121212' : cell.ink;
+  cell.ink = NEUTRAL_INKS_SET.has(ink) ? ink : '#121212';
+  if (cell.ink === accent) cell.ink = '#121212';
+  cell.inks = cell.ink ? [cell.ink] : [];
+}
+
+function descatterAccentsOutsideZones(
+  cells: DraftCell[],
+  allAccents: Set<string>,
+  zones: readonly Set<DraftCell>[],
+): void {
+  const inZone = new Set<DraftCell>();
+  for (const zone of zones) {
+    for (const cell of zone) inZone.add(cell);
+  }
+  for (const cell of cells) {
+    if (inZone.has(cell)) continue;
+    stripCellAccents(cell, allAccents);
+  }
+}
+
+function stripCellAccents(cell: DraftCell, allAccents: Set<string>): void {
+  if (allAccents.has(cell.ground)) {
+    cell.ground = neutralGroundForInk(cell.ink);
+  }
+  if (cell.ink && allAccents.has(cell.ink)) {
+    cell.ink = neutralForGround(cell.ground);
+  }
+  if ((cell.inks ?? []).some(ink => allAccents.has(ink))) {
+    cell.inks = cell.ink ? [cell.ink] : [];
+  }
+  if (cell.ink === cell.ground) {
+    cell.ink = neutralForGround(cell.ground);
+    cell.inks = [cell.ink];
+  }
+}
+
+function neutralGroundForInk(ink: string | undefined): string {
+  return ink === '#121212' || ink === undefined ? '#F3F3F3' : '#121212';
+}
+
+function syncAccentDiagnostics(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  extraAccent: string | undefined,
+  diag: SampleDiagnostics,
+): void {
+  const accentOrder = [...grammar.palette.accentOrder];
+  if (extraAccent && !accentOrder.includes(extraAccent)) accentOrder.push(extraAccent);
+  const accentSet = new Set(accentOrder);
+  const used = new Set<string>();
+  for (const cell of cells) {
+    if (accentSet.has(cell.ground)) used.add(cell.ground);
+    if (cell.ink && accentSet.has(cell.ink)) used.add(cell.ink);
+    for (const ink of cell.inks ?? []) {
+      if (accentSet.has(ink)) used.add(ink);
+    }
+  }
+  diag.accentsUsed = accentOrder.filter(accent => used.has(accent));
+  diag.accentZonesPlaced = diag.accentsUsed.length;
+  if (diag.accentsUsed.length === 0) diag.accentZone = 'none';
+}
+
+interface DraftCellState {
+  ground: string;
+  kind?: CellPlan['kind'];
+  tile?: string;
+  rotation?: Rotation;
+  flip?: boolean;
+  ink?: string;
+  inks?: string[];
+  score?: number;
+  figureId?: string;
+  figureAnchor?: boolean;
+  figureSpan?: [number, number];
+  patchId?: string;
+  patchInkRole?: PatchInkRole;
+  patchSpan?: [number, number];
+}
+
+interface MirroredSpanAnchor {
+  col: number;
+  row: number;
+  id: string;
+  span: [number, number];
+}
+
+function applyMirror(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  dims: GridDims,
+  rng: Rng,
+  template: Template,
+  extraAccent: string | undefined,
+  diag: SampleDiagnostics,
+): void {
+  if (dims.cols < 2) return;
+  if (!MIRROR_TEMPLATE_IDS.has(template.id)) return;
+  if (hasCenterlineCrossingSpan(cells, dims)) return;
+  if (rng.next() >= MIRROR_RATE) return;
+
+  const half = Math.floor(dims.cols / 2);
+  const rightStart = dims.cols - half;
+  const cellSnapshots = snapshotDraftCells(cells);
+  const mirroredFigureAnchors = mirroredFigureAnchorStates(cells, dims, half);
+  const mirroredPatchAnchors = mirroredPatchAnchorStates(cells, dims, half);
+  const originalRunPaths = cloneRunPaths(diag.runPaths);
+
+  for (let row = 0; row < dims.rows; row += 1) {
+    for (let col = 0; col < half; col += 1) {
+      const source = cellAt(cells, col, row);
+      const target = cellAt(cells, dims.cols - 1 - col, row);
+      writeDraftState(target, mirrorDraftState(source));
+    }
+  }
+
+  for (const cell of cells) {
+    if (cell.col < rightStart) continue;
+    setDraftOptional(cell, 'figureId', undefined);
+    setDraftOptional(cell, 'figureAnchor', undefined);
+    setDraftOptional(cell, 'figureSpan', undefined);
+    setDraftOptional(cell, 'patchId', undefined);
+    setDraftOptional(cell, 'patchSpan', undefined);
+  }
+  for (const anchor of mirroredFigureAnchors) {
+    const cell = cellAt(cells, anchor.col, anchor.row);
+    cell.figureId = anchor.id;
+    cell.figureAnchor = true;
+    cell.figureSpan = [...anchor.span];
+  }
+  for (const anchor of mirroredPatchAnchors) {
+    const cell = cellAt(cells, anchor.col, anchor.row);
+    cell.patchId = anchor.id;
+    cell.patchSpan = [...anchor.span];
+  }
+
+  if (!centerlineSeamsSafe(cells, grammar, dims)) {
+    restoreDraftCells(cellSnapshots);
+    return;
+  }
+  enforceAccentBudget(cells, grammar, extraAccent);
+  // Forced-accent survival: the mirror copies the left half over the right, so a
+  // zone living entirely in the right half is erased wholesale — and the budget
+  // pass can strip what remains. Presence of the forced accent is a contract of
+  // forced mode (ensureAccentPresence already ran); a mirror that breaks it
+  // rolls back instead.
+  if (extraAccent && !cellsCarryAccent(cells, extraAccent)) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  if (pairMatchRateForCells(cells, dims) < 0.70) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  if (!mirroredFeaturesRespectTemplate(cells, dims, template)) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  if (!mirroredFormsRespectTemplate(cells, grammar, dims, template)) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  if (blackInkShare(cells) > MIRROR_MAX_BLACK_INK_SHARE) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  const validRunPaths = validRunPathsForCells(cells, grammar, diag.runPaths);
+  if (diag.runPaths.length > 0 && validRunPaths.length === 0) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+
+  diag.runPaths = validRunPaths;
+  diag.mirrored = true;
+}
+
+function hasCenterlineCrossingSpan(cells: DraftCell[], dims: GridDims): boolean {
+  for (const cell of cells) {
+    if (cell.figureAnchor && cell.figureSpan && spanCrossesMirrorAxis(cell.col, cell.figureSpan[0], dims.cols)) {
+      return true;
+    }
+    if (cell.patchId && cell.patchSpan && spanCrossesMirrorAxis(cell.col, cell.patchSpan[0], dims.cols)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function snapshotDraftCells(cells: DraftCell[]): Array<[DraftCell, DraftCellState]> {
+  return cells.map(cell => [cell, readDraftState(cell)]);
+}
+
+function restoreDraftCells(snapshots: Array<[DraftCell, DraftCellState]>): void {
+  for (const [cell, state] of snapshots) writeDraftState(cell, state);
+}
+
+function spanCrossesMirrorAxis(col: number, width: number, cols: number): boolean {
+  if (width <= 1) return false;
+  const end = col + width;
+  if (cols % 2 === 0) {
+    const half = cols / 2;
+    return col < half && end > half;
+  }
+  const center = Math.floor(cols / 2);
+  return col <= center && end > center;
+}
+
+function mirroredFigureAnchorStates(cells: DraftCell[], dims: GridDims, half: number): MirroredSpanAnchor[] {
+  return cells
+    .filter(cell => cell.col < half && cell.figureAnchor && cell.figureId && cell.figureSpan)
+    .sort(compareCells)
+    .map(cell => ({
+      col: dims.cols - (cell.col + cell.figureSpan![0]),
+      row: cell.row,
+      id: cell.figureId!,
+      span: [...cell.figureSpan!] as [number, number],
+    }));
+}
+
+function mirroredPatchAnchorStates(cells: DraftCell[], dims: GridDims, half: number): MirroredSpanAnchor[] {
+  return cells
+    .filter(cell => cell.col < half && cell.patchId && cell.patchSpan)
+    .sort(compareCells)
+    .map(cell => ({
+      col: dims.cols - (cell.col + cell.patchSpan![0]),
+      row: cell.row,
+      id: cell.patchId!,
+      span: [...cell.patchSpan!] as [number, number],
+    }));
+}
+
+function centerlineSeamsSafe(cells: DraftCell[], grammar: EngineGrammar, dims: GridDims): boolean {
+  if (dims.cols % 2 !== 0) return true;
+  const leftCol = dims.cols / 2 - 1;
+  const rightCol = dims.cols / 2;
+  for (let row = 0; row < dims.rows; row += 1) {
+    const left = cellAt(cells, leftCol, row);
+    const right = cellAt(cells, rightCol, row);
+    if (!isPlacedTile(left) || !isPlacedTile(right)) continue;
+    const leftEntry = grammar.tileCatalog[left.tile];
+    const rightEntry = grammar.tileCatalog[right.tile];
+    if (!leftEntry || !rightEntry) return false;
+    const leftEdges = orientEdges(leftEntry.edges, left.rotation, left.flip);
+    const rightEdges = orientEdges(rightEntry.edges, right.rotation, right.flip);
+    const leftActive = leftEdges.right >= 0.25;
+    const rightActive = rightEdges.left >= 0.25;
+    if (!leftActive && !rightActive) continue;
+    if (!leftActive || !rightActive) return false;
+    if (!placementsJoin(
+      grammar,
+      { tile: left.tile, rotation: left.rotation, flip: left.flip },
+      { tile: right.tile, rotation: right.rotation, flip: right.flip },
+      'h',
+    )) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function mirroredFormsRespectTemplate(cells: DraftCell[], grammar: EngineGrammar, dims: GridDims, template: Template): boolean {
+  if (!RHYTHM_TEMPLATES.has(template.id)) return true;
+  const forms = detectForms(draftPlanForForms(cells, dims), grammar.tileCatalog, FAMILIES);
+  return forms.every(form => form.kind !== 'run' || form.cells.length <= RHYTHM_RUN_CAP);
+}
+
+function mirroredFeaturesRespectTemplate(cells: DraftCell[], dims: GridDims, template: Template): boolean {
+  const tileCells = cells.filter(cell => cell.kind === 'tile' && cell.tile);
+  const distinctTiles = new Set(tileCells.map(cell => cell.tile!)).size;
+  const plainShare = cells.filter(cell => cell.kind === 'plain').length / dims.cellCount;
+  const figureShare = cells.filter(cell => cell.kind === 'freeform').length / dims.cellCount;
+  const linework = tileCells.filter(cell => LINEWORK_FAMILIES.has(FAMILIES[cell.tile!] ?? '')).length;
+  const lineworkShare = tileCells.length > 0 ? linework / tileCells.length : 0;
+  return inRange(distinctTiles, template.spec.distinctTiles) &&
+    inRange(plainShare, template.spec.plainShare) &&
+    inRange(figureShare, template.spec.figureShare) &&
+    inRange(lineworkShare, template.spec.lineworkShare, 0.15);
+}
+
+function inRange(value: number, range: [number, number], tolerance = 0): boolean {
+  return value >= range[0] - tolerance && value <= range[1] + tolerance;
+}
+
+function pairMatchRateForCells(cells: DraftCell[], dims: GridDims): number {
+  let matched = 0;
+  let total = 0;
+  for (let row = 0; row < dims.rows; row += 1) {
+    for (let col = 0; col < Math.floor(dims.cols / 2); col += 1) {
+      const left = cellAt(cells, col, row);
+      const right = cellAt(cells, dims.cols - 1 - col, row);
+      total += 1;
+      if ((left.tile ?? '') === (right.tile ?? '') && (left.ink ?? '') === (right.ink ?? '')) {
+        matched += 1;
+      }
+    }
+  }
+  return total === 0 ? 1 : matched / total;
+}
+
+function blackInkShare(cells: DraftCell[]): number {
+  let total = 0;
+  let black = 0;
+  for (const cell of cells) {
+    if (cell.kind === 'plain' || !cell.ink) continue;
+    total += 1;
+    if (cell.ink === '#121212') black += 1;
+  }
+  return total === 0 ? 0 : black / total;
+}
+
+function cloneRunPaths(runPaths: [number, number][][]): [number, number][][] {
+  return runPaths.map(path => path.map(([col, row]) => [col, row]));
+}
+
+function validRunPathsForCells(cells: DraftCell[], grammar: EngineGrammar, runPaths: [number, number][][]): [number, number][][] {
+  return runPaths.filter(runPath => runPathIsValidForCells(cells, grammar, runPath));
+}
+
+function runPathIsValidForCells(cells: DraftCell[], grammar: EngineGrammar, runPath: [number, number][]): boolean {
+  for (let i = 0; i < runPath.length - 1; i += 1) {
+    const [prevCol, prevRow] = runPath[i]!;
+    const [nextCol, nextRow] = runPath[i + 1]!;
+    const dist = Math.abs(nextCol - prevCol) + Math.abs(nextRow - prevRow);
+    if (dist !== 1) return false;
+    const prevCell = maybeCellAt(cells, prevCol, prevRow);
+    const nextCell = maybeCellAt(cells, nextCol, nextRow);
+    if (!isPlacedTile(prevCell) || !isPlacedTile(nextCell)) return false;
+    const dir: Direction = prevRow === nextRow ? 'h' : 'v';
+    const isForward = (dir === 'h' && nextCol > prevCol) || (dir === 'v' && nextRow > prevRow);
+    const a = isForward ? prevCell : nextCell;
+    const b = isForward ? nextCell : prevCell;
+    if (!placementsJoin(
+      grammar,
+      { tile: a.tile, rotation: a.rotation, flip: a.flip },
+      { tile: b.tile, rotation: b.rotation, flip: b.flip },
+      dir,
+    )) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function mirrorDraftState(source: DraftCell): DraftCellState {
+  const state = readDraftState(source);
+  if (source.kind === 'tile' && source.tile) {
+    state.rotation = mirrorRotation(source.rotation ?? 0);
+    state.flip = !(source.flip ?? false);
+  }
+  return state;
+}
+
+function mirrorRotation(rotation: Rotation): Rotation {
+  if (rotation === 90) return 270;
+  if (rotation === 270) return 90;
+  return rotation;
+}
+
+function readDraftState(cell: DraftCell): DraftCellState {
+  return {
+    ground: cell.ground,
+    kind: cell.kind,
+    tile: cell.tile,
+    rotation: cell.rotation,
+    flip: cell.flip,
+    ink: cell.ink,
+    inks: cell.inks ? [...cell.inks] : undefined,
+    score: cell.score,
+    figureId: cell.figureId,
+    figureAnchor: cell.figureAnchor,
+    figureSpan: cell.figureSpan ? [...cell.figureSpan] : undefined,
+    patchId: cell.patchId,
+    patchInkRole: cell.patchInkRole,
+    patchSpan: cell.patchSpan ? [...cell.patchSpan] : undefined,
+  };
+}
+
+function writeDraftState(cell: DraftCell, state: DraftCellState): void {
+  cell.ground = state.ground;
+  setDraftOptional(cell, 'kind', state.kind);
+  setDraftOptional(cell, 'tile', state.tile);
+  setDraftOptional(cell, 'rotation', state.rotation);
+  setDraftOptional(cell, 'flip', state.flip);
+  setDraftOptional(cell, 'ink', state.ink);
+  setDraftOptional(cell, 'inks', state.inks ? [...state.inks] : undefined);
+  setDraftOptional(cell, 'score', state.score);
+  setDraftOptional(cell, 'figureId', state.figureId);
+  setDraftOptional(cell, 'figureAnchor', state.figureAnchor);
+  setDraftOptional(cell, 'figureSpan', state.figureSpan ? [...state.figureSpan] : undefined);
+  setDraftOptional(cell, 'patchId', state.patchId);
+  setDraftOptional(cell, 'patchInkRole', state.patchInkRole);
+  setDraftOptional(cell, 'patchSpan', state.patchSpan ? [...state.patchSpan] : undefined);
+}
+
+function setDraftOptional<K extends keyof DraftCell>(cell: DraftCell, key: K, value: DraftCell[K] | undefined): void {
+  const record = cell as unknown as Record<string, unknown>;
+  if (value === undefined) {
+    delete record[String(key)];
+  } else {
+    record[String(key)] = value;
+  }
+}
 
 /**
  * splitRhythmRuns — cap run-form length on the rhythm templates.
@@ -1782,113 +2521,121 @@ function splitRhythmRuns(cells: DraftCell[], grammar: EngineGrammar, template: T
   // its joins. Each pass strictly removes one cell from the offending run, so the
   // loop terminates (bounded by cell count).
   for (let guard = 0; guard < dims.cellCount; guard += 1) {
-    const runs = detectRunGroups(cells, grammar);
-    const worst = runs.filter(group => group.length > RHYTHM_RUN_CAP).sort((a, b) => b.length - a.length)[0];
+    const runs = detectRunFormsForDraft(cells, grammar, dims);
+    const worst = runs.filter(form => form.cells.length > RHYTHM_RUN_CAP).sort((a, b) => b.cells.length - a.cells.length)[0];
     if (!worst) return;
-    const positions = new Set(worst.map(positionKey));
-    const target = pickSplitCell(worst.map(c => cellAt(cells, c.col, c.row)), positions);
-    const replacement = splitInk(target, cells);
-    target.ink = replacement;
-    target.inks = [replacement];
+    const group = draftCellsForForm(cells, worst);
+    const mutation = chooseBestSplitMutation(cells, grammar, dims, group, forms =>
+      Math.max(0, ...forms.map(form => form.cells.length)),
+    );
+    if (!mutation) return;
+    mutation.cell.ink = mutation.ink;
+    mutation.cell.inks = [mutation.ink];
   }
 }
 
-/**
- * Connected run groups over the current draft cells, mirroring detectForms'
- * union rules for run membership: rule (a) same-ink + active shared edges,
- * rule (c) same-tile-same-rotation-same-ink frieze pairs (row-adjacent, no edge
- * requirement), and rule (d) inverted ink/ground + active shared edges.
- */
-function detectRunGroups(cells: DraftCell[], grammar: EngineGrammar): DraftCell[][] {
-  const tileCells = cells.filter(cell => cell.kind === 'tile' && cell.tile && cell.ink).sort(compareCells);
-  const seen = new Set<string>();
-  const groups: DraftCell[][] = [];
-  for (const start of tileCells) {
-    if (seen.has(positionKey(start))) continue;
-    const group: DraftCell[] = [];
-    const stack = [start];
-    seen.add(positionKey(start));
-    while (stack.length > 0) {
-      const cur = stack.pop()!;
-      group.push(cur);
-      for (const n of tileCells) {
-        if (seen.has(positionKey(n))) continue;
-        if (Math.abs(n.col - cur.col) + Math.abs(n.row - cur.row) !== 1) continue;
-        if (runJoin(grammar, cur, n)) {
-          seen.add(positionKey(n));
-          stack.push(n);
-        }
+function splitNoSpineRunForms(cells: DraftCell[], grammar: EngineGrammar, dims: GridDims): void {
+  for (let guard = 0; guard < dims.cellCount; guard += 1) {
+    const runs = detectRunFormsForDraft(cells, grammar, dims);
+    const worst = runs
+      .filter(form => form.cells.length >= 3 && !formHasSpineEdge(cells, grammar, form))
+      .sort((a, b) => b.cells.length - a.cells.length)[0];
+    if (!worst) return;
+    const group = draftCellsForForm(cells, worst);
+    const mutation = chooseBestSplitMutation(cells, grammar, dims, group, forms =>
+      Math.max(0, ...forms
+        .filter(form => form.cells.length >= 3 && !formHasSpineEdge(cells, grammar, form))
+        .map(form => form.cells.length)),
+    );
+    if (!mutation) return;
+    mutation.cell.ink = mutation.ink;
+    mutation.cell.inks = [mutation.ink];
+  }
+}
+
+function detectRunFormsForDraft(cells: DraftCell[], grammar: EngineGrammar, dims: GridDims): FormGroup[] {
+  return detectForms(draftPlanForForms(cells, dims), grammar.tileCatalog, FAMILIES)
+    .filter(form => form.kind === 'run');
+}
+
+function draftCellsForForm(cells: DraftCell[], form: FormGroup): DraftCell[] {
+  return form.cells.map(([col, row]) => cellAt(cells, col, row));
+}
+
+function chooseBestSplitMutation(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  dims: GridDims,
+  group: DraftCell[],
+  score: (forms: FormGroup[]) => number,
+): { cell: DraftCell; ink: string } | null {
+  const baseline = score(detectRunFormsForDraft(cells, grammar, dims));
+  let best: { cell: DraftCell; ink: string; score: number } | null = null;
+  for (const cell of [...group].sort(compareCells)) {
+    const originalInk = cell.ink;
+    const originalInks = cell.inks ? [...cell.inks] : undefined;
+    for (const ink of NEUTRAL_PREFS) {
+      if (ink === cell.ground || ink === originalInk) continue;
+      cell.ink = ink;
+      cell.inks = [ink];
+      const candidateScore = score(detectRunFormsForDraft(cells, grammar, dims));
+      if (
+        candidateScore < baseline &&
+        (best === null ||
+          candidateScore < best.score ||
+          (candidateScore === best.score && (compareCells(cell, best.cell) < 0 ||
+            (compareCells(cell, best.cell) === 0 && compareCodepoint(ink, best.ink) < 0))))
+      ) {
+        best = { cell, ink, score: candidateScore };
       }
     }
-    groups.push(group);
+    cell.ink = originalInk;
+    cell.inks = originalInks;
   }
-  return groups;
+  return best;
 }
 
-/**
- * Do two placed tile cells join as a run under detectForms? Rule (a): same ink
- * + both shared edges active (≥ 0.25). Rule (c): same tile+rotation+ink,
- * row-adjacent (no edge requirement). Rule (d): inverted ink/ground + active
- * edges. Any of the three unions them into one run group.
- */
-function runJoin(grammar: EngineGrammar, a: DraftCell, b: DraftCell): boolean {
-  if (!a.tile || !b.tile) return false;
-  const dir: Direction = a.row === b.row ? 'h' : 'v';
-  // Rule (c): same-tile-same-rotation-same-ink frieze pair (horizontal only).
-  if (
-    dir === 'h' &&
-    a.tile === b.tile &&
-    (a.rotation ?? 0) === (b.rotation ?? 0) &&
-    a.ink && a.ink === b.ink
-  ) {
-    return true;
+function formHasSpineEdge(cells: DraftCell[], grammar: EngineGrammar, form: FormGroup): boolean {
+  const positions = new Set(form.cells.map(([col, row]) => `${col},${row}`));
+  for (const [col, row] of form.cells) {
+    const here = cellAt(cells, col, row);
+    if (here.kind !== 'tile' || !here.tile) continue;
+    for (const [dc, dr, dir] of [[1, 0, 'h'], [0, 1, 'v']] as const) {
+      const thereKey = `${col + dc},${row + dr}`;
+      if (!positions.has(thereKey)) continue;
+      const there = cellAt(cells, col + dc, row + dr);
+      if (there.kind !== 'tile' || !there.tile) continue;
+      const ruleC = dir === 'h' &&
+        here.tile === there.tile &&
+        (here.rotation ?? 0) === (there.rotation ?? 0) &&
+        here.ink === there.ink;
+      const ruleD = here.ink === there.ground && here.ground === there.ink;
+      if (ruleC || ruleD) continue;
+      if (placementsJoin(
+        grammar,
+        { tile: here.tile, rotation: here.rotation ?? 0, flip: here.flip ?? false },
+        { tile: there.tile, rotation: there.rotation ?? 0, flip: there.flip ?? false },
+        dir,
+      )) {
+        return true;
+      }
+    }
   }
-  const sameInk = a.ink === b.ink;
-  const inverted = a.ink === b.ground && a.ground === b.ink;
-  if (!sameInk && !inverted) return false;
-  const [first, second] = dir === 'h'
-    ? (a.col < b.col ? [a, b] : [b, a])
-    : (a.row < b.row ? [a, b] : [b, a]);
-  const eFirst = orientEdges(grammar.tileCatalog[first!.tile!]?.edges ?? ZERO_EDGES, (first!.rotation ?? 0) as Rotation, first!.flip ?? false);
-  const eSecond = orientEdges(grammar.tileCatalog[second!.tile!]?.edges ?? ZERO_EDGES, (second!.rotation ?? 0) as Rotation, second!.flip ?? false);
-  const covFirst = dir === 'h' ? eFirst.right : eFirst.bottom;
-  const covSecond = dir === 'h' ? eSecond.left : eSecond.top;
-  return covFirst >= 0.25 && covSecond >= 0.25;
+  return false;
 }
 
-const ZERO_EDGES = { top: 0, right: 0, bottom: 0, left: 0 };
-
-/** Pick the split target: the member with the most in-group neighbors (ties → row-major). */
-function pickSplitCell(group: DraftCell[], positions: Set<string>): DraftCell {
-  return [...group]
-    .sort(compareCells)
-    .reduce((best, cell) => {
-      const degree = [[1, 0], [-1, 0], [0, 1], [0, -1]]
-        .filter(([dc, dr]) => positions.has(`${cell.col + dc!},${cell.row + dr!}`)).length;
-      const bestDegree = [[1, 0], [-1, 0], [0, 1], [0, -1]]
-        .filter(([dc, dr]) => positions.has(`${best.col + dc!},${best.row + dr!}`)).length;
-      return degree > bestDegree ? cell : best;
-    }, group[0]!);
-}
-
-/**
- * A neutral ink that breaks the target's run joins to all its component
- * neighbors: distinct from the run ink (kills rule-a) and never equal to a
- * neighbor's ground (kills rule-d), while still contrasting the target's ground.
- */
-function splitInk(target: DraftCell, cells: DraftCell[]): string {
-  const tileNeighbors = neighbors(cells, target).filter(n => n.kind === 'tile');
-  const neighborGrounds = tileNeighbors.map(n => n.ground);
-  const neighborInks = tileNeighbors.map(n => n.ink ?? '');
-  const forbidden = new Set<string>([target.ground, target.ink ?? '', ...neighborGrounds, ...neighborInks]);
-  for (const ink of NEUTRAL_PREFS) {
-    if (!forbidden.has(ink)) return ink;
-  }
-  // Fall back to any neutral that at least contrasts the target's ground.
-  for (const ink of NEUTRAL_PREFS) {
-    if (ink !== target.ground) return ink;
-  }
-  return neutralForGround(target.ground);
+function draftPlanForForms(cells: DraftCell[], dims: GridDims): BannerPlan {
+  return {
+    id: 'draft-form-detect',
+    width: dims.cols * CELL_PX,
+    height: dims.rows * CELL_PX,
+    cols: dims.cols,
+    rows: dims.rows,
+    ground: cells[0]?.ground ?? '#F3F3F3',
+    cells: finalizeCells([...cells]),
+    forms: [],
+    matchRate: 1,
+  };
 }
 
 export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar, extraAccent?: string): void {
@@ -1906,16 +2653,18 @@ export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar, 
     .filter(cell => cell.ink && accents.has(cell.ink))
     .sort((a, b) => stripRank(a) - stripRank(b) || compareCells(a, b));
   const excess = accentCells.length - maxAccent;
+  const stripCells = chooseAccentBudgetStripCells(accentCells, Math.max(0, excess));
+  const stripSet = new Set(stripCells);
   let patchTouched = false;
-  for (let i = 0; i < excess; i += 1) {
-    const cell = accentCells[i]!;
+  for (const cell of stripCells) {
     if (cell.patchInkRole === 'accent') patchTouched = true;
     const ink = neutralForGround(cell.ground);
     cell.ink = ink;
     cell.inks = [ink];
   }
   if (patchTouched) {
-    for (const cell of accentCells.slice(Math.max(excess, 0))) {
+    for (const cell of accentCells) {
+      if (stripSet.has(cell)) continue;
       if (cell.patchInkRole !== 'accent' || !cell.ink || !accents.has(cell.ink)) continue;
       const ink = neutralForGround(cell.ground);
       cell.ink = ink;
@@ -1924,28 +2673,88 @@ export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar, 
   }
 }
 
-function ensureAccentPresence(cells: DraftCell[], grammar: EngineGrammar, rng: Rng): void {
-  const accents = new Set(grammar.palette.accentOrder);
+function chooseAccentBudgetStripCells(accentCells: DraftCell[], excess: number): DraftCell[] {
+  if (excess <= 0) return [];
+  const counts = new Map<string, number>();
+  for (const cell of accentCells) {
+    if (!cell.ink) continue;
+    counts.set(cell.ink, (counts.get(cell.ink) ?? 0) + 1);
+  }
+
+  const selected: DraftCell[] = [];
+  const selectedSet = new Set<DraftCell>();
+  for (const cell of accentCells) {
+    if (selected.length >= excess) break;
+    const ink = cell.ink;
+    if (!ink || (counts.get(ink) ?? 0) <= 1) continue;
+    selected.push(cell);
+    selectedSet.add(cell);
+    counts.set(ink, (counts.get(ink) ?? 0) - 1);
+  }
+  for (const cell of accentCells) {
+    if (selected.length >= excess) break;
+    if (selectedSet.has(cell)) continue;
+    selected.push(cell);
+    selectedSet.add(cell);
+  }
+  return selected;
+}
+
+/**
+ * ensureAccentPresence — called ONLY when knobs.accent is set (forced/program mode).
+ *
+ * In forced mode the accent may be entirely in cell.ground (ground-mode zone path).
+ * We must recognize that as "presence" — otherwise we inject a stray mined accent
+ * on top of the forced one, producing a second accent the user never picked.
+ *
+ * Presence check: any non-plain cell carries the forced accent as ground, ink, or
+ * in inks[]. Ground-as-accent (applyGroundZoneCell path) fully satisfies visibility.
+ *
+ * Injection: if truly absent, inject the FORCED accent as ink into one candidate
+ * cell. Candidate cells whose ground === accent are excluded (ink==ground → invisible).
+ * The candidate weighting uses the same accentInkEntriesForGround totals + positionKey
+ * sortKey as before, but the ink is always the forced accent (not a mined draw).
+ */
+function cellsCarryAccent(cells: readonly DraftCell[], accent: string): boolean {
+  return cells.some(cell =>
+    cell.ground === accent ||
+    cell.ink === accent ||
+    (cell.inks ?? []).includes(accent),
+  );
+}
+
+function ensureAccentPresence(cells: DraftCell[], grammar: EngineGrammar, rng: Rng, accent: string): void {
   const nonPlain = cells.filter(cell => cell.kind !== 'plain');
-  if (nonPlain.some(cell => cell.ink && accents.has(cell.ink))) return;
+  // Presence check: forced accent visible as ground, ink, or in inks[].
+  const accentPresent = nonPlain.some(cell =>
+    cell.ground === accent ||
+    cell.ink === accent ||
+    (cell.inks ?? []).includes(accent),
+  );
+  if (accentPresent) return;
   if (Math.floor(nonPlain.length * 0.35 + EPS) <= 0) return;
 
-  const candidates: Weighted<{ cell: DraftCell; entries: Weighted<string>[] }>[] = [];
+  // Defensive: exclude cells whose ground === accent (ink==ground → invisible).
+  // Unreachable by construction today — the presence check above counts grounds,
+  // so reaching this loop implies no non-plain cell carries the accent as ground.
+  const candidates: Weighted<DraftCell>[] = [];
   for (const cell of nonPlain.sort(compareCells)) {
+    if (cell.ground === accent) continue;
     const entries = accentInkEntriesForGround(grammar, cell.ground);
-    if (entries.length === 0) continue;
+    const totalWeight = entries.reduce((sum, entry) => sum + entry.weight, 0);
+    if (totalWeight <= 0) continue;
     candidates.push({
-      value: { cell, entries },
-      weight: entries.reduce((sum, entry) => sum + entry.weight, 0),
+      value: cell,
+      weight: totalWeight,
       sortKey: positionKey(cell),
     });
   }
   if (candidates.length === 0) return;
 
-  const { cell, entries } = weightedChoice(rng, candidates);
-  const ink = weightedChoice(rng, entries);
-  cell.ink = ink;
-  cell.inks = [ink];
+  // One RNG draw (cell selection); ink is always the forced accent.
+  const cell = weightedChoice(rng, candidates);
+  cell.ink = accent;
+  cell.inks = [accent];
 }
 
 function accentInkEntriesForGround(grammar: EngineGrammar, ground: string): Weighted<string>[] {
@@ -1976,7 +2785,7 @@ function finalizeCells(cells: DraftCell[]): CellPlan[] {
     if (cell.kind === undefined) {
       throw new Error(`Unresolved sampled cell ${positionKey(cell)}`);
     }
-    const { patchInkRole: _patchInkRole, ...publicCell } = cell;
+    const { patchInkRole: _patchInkRole, patchSpan: _patchSpan, ...publicCell } = cell;
     return publicCell as CellPlan;
   });
 }
@@ -2154,6 +2963,24 @@ function drawIntegerRange(range: [number, number], rng: Rng): number {
   return rng.int(lo, hi);
 }
 
+function drawFillVarietyTarget(range: [number, number], rng: Rng): number {
+  const lo = Math.ceil(range[0] - EPS);
+  const hi = Math.floor(range[1] + EPS);
+  if (hi <= lo) return lo;
+  return weightedChoice(
+    rng,
+    Array.from({ length: hi - lo + 1 }, (_value, index) => {
+      const value = lo + index;
+      const position = (value - lo) / (hi - lo); // hi > lo guaranteed by the early return
+      return {
+        value,
+        weight: 1 + position * FILL_VARIETY_STEERING_STRENGTH,
+        sortKey: String(value).padStart(3, '0'),
+      };
+    }),
+  );
+}
+
 function drawWeightedRecord(
   record: Record<string, number>,
   rng: Rng,
@@ -2224,10 +3051,13 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
     accentZone: 'none',
+    accentZonesPlaced: 0,
+    accentsUsed: [],
     adjacencyFallbacks: 0,
     fillAdjacencyHits: 0,
     friezesPlaced: 0,
     patchesPlaced: 0,
+    mirrored: false,
     longestRun: 0,
     runPaths: [],
   };
