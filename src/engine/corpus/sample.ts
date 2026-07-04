@@ -93,6 +93,7 @@ const SOURCE_STAT_MAX_ROW = ARRANGEMENTS.banner.rows - 1;
 const EPS = 1e-9;
 const DOMINANT_FAMILY_QUOTA = 0.18;
 const LINEWORK_STEERING_STRENGTH = 1;
+const FILL_VARIETY_STEERING_STRENGTH = 0;
 
 // --- Serpentine run growth (P2 Task 2) ------------------------------------
 // The connected-surface templates grow canon-length runs that TURN CORNERS
@@ -101,6 +102,8 @@ const LINEWORK_STEERING_STRENGTH = 1;
 // use mined-length targets but straight growth (no turns).
 const SERPENTINE_TEMPLATES = new Set(['pipe-field', 'arc-mosaic']);
 const MINED_LENGTH_TEMPLATES = new Set(['pipe-field', 'arc-mosaic', 'figure-field', 'mixed-quilt']);
+const PHRASE_COMPLETION_WEIGHT = 2;
+const PHRASE_TEMPLATES = new Set(['arc-mosaic', 'checker-motif', 'pipe-field', 'repeat-rhythm']);
 // Direction-draw weights at each serpentine step: keep straight most of the
 // time, turn either way a fifth of the time each.
 const SERPENTINE_CONTINUE_WEIGHT = 0.6;
@@ -223,7 +226,7 @@ export function sampleWithDiagnostics(
   const cells = makeDraftCells(generateGrounds(grammar, rng, groundScheme, globalGround, dims), dims);
 
   const dominantFamily = drawDominantFamily(grammar, template, rng);
-  let targetDistinct = Math.min(dims.cellCount, drawIntegerRange(template.spec.distinctTiles, rng));
+  let targetDistinct = Math.min(dims.cellCount, drawFillVarietyTarget(template.spec.distinctTiles, rng));
   if (dims.cellCount > 0 && template.spec.distinctTiles[1] > 0 && targetDistinct === 0) {
     targetDistinct = 1;
   }
@@ -731,13 +734,30 @@ function placeRun(
   template: Template,
   diag: SampleDiagnostics,
 ): boolean {
-  const targetLength = MINED_LENGTH_TEMPLATES.has(template.id)
+  const rawTargetLength = MINED_LENGTH_TEMPLATES.has(template.id)
     ? drawRunTargetLength(grammar, rng)
     : rng.int(2, 3);
   const serpentine = SERPENTINE_TEMPLATES.has(template.id);
+  const dims = dimsForCells(cells);
+  const phraseOptions = PHRASE_TEMPLATES.has(template.id) ? phraseLineOptions(cells, dims) : [];
+  let protectedPhraseCells = new Set<string>();
+  if (phraseOptions.length > 0) {
+    const phraseSelected = weightedChoice(rng, [
+      { value: false, weight: 1, sortKey: 'normal' },
+      { value: true, weight: PHRASE_COMPLETION_WEIGHT, sortKey: 'phrase' },
+    ]);
+    if (phraseSelected && placePhraseRun(cells, grammar, rng, workingSet, phraseOptions, template, diag)) {
+      return true;
+    }
+    if (!phraseSelected) {
+      protectedPhraseCells = phraseLineCellKeys(phraseOptions);
+    }
+  }
 
   const starts = cells
-    .filter(cell => cell.kind === undefined && (isFree(cells, cell.col + 1, cell.row) || isFree(cells, cell.col, cell.row + 1)))
+    .filter(cell => cell.kind === undefined &&
+      !protectedPhraseCells.has(positionKey(cell)) &&
+      (isFree(cells, cell.col + 1, cell.row) || isFree(cells, cell.col, cell.row + 1)))
     .sort(compareCells);
   if (starts.length === 0) return false;
 
@@ -771,16 +791,140 @@ function placeRun(
     // Start recording the run path: seed pair in order [start, next].
     const runPath: [number, number][] = [[start.col, start.row], [next.col, next.row]];
 
-    let heading: Step = dir === 'h' ? 'right' : 'down';
+    const heading: Step = dir === 'h' ? 'right' : 'down';
     const grown = serpentine
-      ? growSerpentine(cells, grammar, rng, workingSet, next, pair[1], ink, heading, targetLength, diag, runPath)
-      : growStraight(cells, grammar, rng, workingSet, next, pair[1], ink, dir, targetLength, diag, runPath);
+      ? growSerpentine(cells, grammar, rng, workingSet, next, pair[1], ink, heading, rawTargetLength, diag, runPath)
+      : growStraight(cells, grammar, rng, workingSet, next, pair[1], ink, dir, rawTargetLength, diag, runPath);
     void grown;
     diag.runPaths.push(runPath);
     return true;
   }
 
   return false;
+}
+
+interface PhraseLineOption {
+  dir: Direction;
+  cells: DraftCell[];
+  sortKey: string;
+}
+
+function phraseLineCellKeys(options: readonly PhraseLineOption[]): Set<string> {
+  const keys = new Set<string>();
+  for (const option of options) {
+    for (const cell of option.cells) keys.add(positionKey(cell));
+  }
+  return keys;
+}
+
+function phraseLineOptions(cells: DraftCell[], dims: GridDims): PhraseLineOption[] {
+  const options: PhraseLineOption[] = [];
+  if (new Set(cells.map(cell => cell.ground)).size <= 1) return options;
+  if (dims.cols >= 2) {
+    for (let row = 0; row < dims.rows; row += 1) {
+      if (freeCellsInRow(cells, row, dims) < dims.cols - 1) continue;
+      const line = Array.from({ length: dims.cols }, (_value, col) => cellAt(cells, col, row));
+      if (!line.every(cell => cell.kind === undefined)) continue;
+      options.push({ dir: 'h', cells: line, sortKey: `h-${String(row).padStart(2, '0')}` });
+    }
+  }
+  if (dims.rows >= 2) {
+    for (let col = 0; col < dims.cols; col += 1) {
+      if (freeCellsInColumn(cells, col, dims) < dims.rows - 1) continue;
+      const line = Array.from({ length: dims.rows }, (_value, row) => cellAt(cells, col, row));
+      if (!line.every(cell => cell.kind === undefined)) continue;
+      options.push({ dir: 'v', cells: line, sortKey: `v-${String(col).padStart(2, '0')}` });
+    }
+  }
+  return options.sort((a, b) => compareCodepoint(a.sortKey, b.sortKey));
+}
+
+function placePhraseRun(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  rng: Rng,
+  workingSet: string[],
+  options: readonly PhraseLineOption[],
+  template: Template,
+  diag: SampleDiagnostics,
+): boolean {
+  let remaining = [...options];
+  while (remaining.length > 0) {
+    const line = weightedChoice(
+      rng,
+      remaining.map(option => ({ value: option, weight: 1, sortKey: option.sortKey })),
+    );
+    if (tryPlacePhraseLine(cells, grammar, rng, workingSet, line, template, diag)) return true;
+    remaining = remaining.filter(option => option !== line);
+  }
+  return false;
+}
+
+function tryPlacePhraseLine(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  rng: Rng,
+  workingSet: string[],
+  line: PhraseLineOption,
+  template: Template,
+  diag: SampleDiagnostics,
+): boolean {
+  const [start, next] = line.cells;
+  if (!start || !next) return false;
+
+  const snapshots = line.cells.map(cell => [cell, readDraftState(cell)] as [DraftCell, DraftCellState]);
+  const pair = drawRunPair(grammar, rng, workingSet, line.dir, diag);
+  if (!pair) return false;
+
+  const ink = drawInkForCells(grammar, rng, line.cells);
+  assignTile(start, pair[0], ink);
+  assignTile(next, pair[1], ink);
+  const runPath: [number, number][] = [[start.col, start.row], [next.col, next.row]];
+  let currentPlacement = pair[1];
+
+  for (let i = 2; i < line.cells.length; i += 1) {
+    const candidate = line.cells[i]!;
+    const placement = drawNextRunPlacement(grammar, rng, workingSet, currentPlacement, line.dir, diag);
+    if (!placement) {
+      restoreDraftCells(snapshots);
+      return false;
+    }
+    assignTile(candidate, placement, ink);
+    runPath.push([candidate.col, candidate.row]);
+    currentPlacement = placement;
+  }
+
+  if (!draftLineworkShareInRange(cells, grammar, template)) {
+    restoreDraftCells(snapshots);
+    return false;
+  }
+
+  diag.runPaths.push(runPath);
+  return true;
+}
+
+function draftLineworkShareInRange(cells: DraftCell[], grammar: EngineGrammar, template: Template): boolean {
+  const tileCells = cells.filter(cell => cell.kind === 'tile' && cell.tile);
+  if (tileCells.length === 0) return true;
+  const linework = tileCells.filter(cell => isLineworkTile(grammar, cell.tile!)).length;
+  const share = linework / tileCells.length;
+  return inRange(share, template.spec.lineworkShare, 0.15);
+}
+
+function freeCellsInRow(cells: DraftCell[], row: number, dims: GridDims): number {
+  let count = 0;
+  for (let col = 0; col < dims.cols; col += 1) {
+    if (isFree(cells, col, row)) count += 1;
+  }
+  return count;
+}
+
+function freeCellsInColumn(cells: DraftCell[], col: number, dims: GridDims): number {
+  let count = 0;
+  for (let row = 0; row < dims.rows; row += 1) {
+    if (isFree(cells, col, row)) count += 1;
+  }
+  return count;
 }
 
 /** Old short straight growth (the rhythm-template fallback path). */
@@ -1701,10 +1845,10 @@ type AccentSide = 'left' | 'right';
 type AccentMode = 'ink' | 'ground' | 'figure';
 
 const CANON_ACCENT_COUNT_WEIGHTS: Weighted<number>[] = [
-  { value: 0, weight: 0.22, sortKey: '0' },
-  { value: 1, weight: 0.20, sortKey: '1' },
+  { value: 0, weight: 0.18, sortKey: '0' },
+  { value: 1, weight: 0.18, sortKey: '1' },
   { value: 2, weight: 0.16, sortKey: '2' },
-  { value: 3, weight: 0.42, sortKey: '3' },
+  { value: 3, weight: 0.48, sortKey: '3' },
 ];
 const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300']);
 const COOL_ACCENTS_SET = new Set(['#4997D0']);
@@ -2782,6 +2926,24 @@ function drawIntegerRange(range: [number, number], rng: Rng): number {
   const hi = Math.floor(range[1] + EPS);
   if (hi <= lo) return lo;
   return rng.int(lo, hi);
+}
+
+function drawFillVarietyTarget(range: [number, number], rng: Rng): number {
+  const lo = Math.ceil(range[0] - EPS);
+  const hi = Math.floor(range[1] + EPS);
+  if (hi <= lo) return lo;
+  return weightedChoice(
+    rng,
+    Array.from({ length: hi - lo + 1 }, (_value, index) => {
+      const value = lo + index;
+      const position = hi === lo ? 0 : (value - lo) / (hi - lo);
+      return {
+        value,
+        weight: 1 + position * FILL_VARIETY_STEERING_STRENGTH,
+        sortKey: String(value).padStart(3, '0'),
+      };
+    }),
+  );
 }
 
 function drawWeightedRecord(
