@@ -93,6 +93,10 @@ const SOURCE_STAT_MAX_ROW = ARRANGEMENTS.banner.rows - 1;
 const EPS = 1e-9;
 const DOMINANT_FAMILY_QUOTA = 0.18;
 const LINEWORK_STEERING_STRENGTH = 1;
+// Shipped NEUTRAL (0 = uniform draw over the template's distinctTiles range).
+// The hook is the seam for steering rhythmQuality toward the canon p50 (0.595);
+// every non-zero value tried in P6 broke figure/patch/multi-accent/template
+// gates, so steering waits for a calibration pass that can move those together.
 const FILL_VARIETY_STEERING_STRENGTH = 0;
 
 // --- Serpentine run growth (P2 Task 2) ------------------------------------
@@ -2938,7 +2942,7 @@ function drawFillVarietyTarget(range: [number, number], rng: Rng): number {
     rng,
     Array.from({ length: hi - lo + 1 }, (_value, index) => {
       const value = lo + index;
-      const position = hi === lo ? 0 : (value - lo) / (hi - lo);
+      const position = (value - lo) / (hi - lo); // hi > lo guaranteed by the early return
       return {
         value,
         weight: 1 + position * FILL_VARIETY_STEERING_STRENGTH,
