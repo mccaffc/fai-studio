@@ -72,7 +72,7 @@ describe('mode isolation — forced-accent single-zone invariant', () => {
     const NEUTRALS = new Set(['#121212', '#FFFFFF', '#F3F3F3', '#D9D9D6']);
     for (let i = 0; i < FORCED_SEED_COUNT; i += 1) {
       const seed = FORCED_SEED_OFFSET + i;
-      const { plan } = sampleWithDiagnostics(GRAMMAR, seed, { accent: FORCED_ACCENT });
+      const { plan, diag } = sampleWithDiagnostics(GRAMMAR, seed, { accent: FORCED_ACCENT });
       const nonNeutralColors = new Set<string>();
       for (const cell of plan.cells) {
         if (!NEUTRALS.has(cell.ground)) nonNeutralColors.add(cell.ground);
@@ -86,6 +86,15 @@ describe('mode isolation — forced-accent single-zone invariant', () => {
         unexpectedColors,
         `seed ${seed}: unexpected non-neutral color(s) in forced-accent plan: ${unexpectedColors.join(', ')}`,
       ).toHaveLength(0);
+      // Presence, not just exclusivity: a regression that silently disabled both
+      // zoning and injection would leave nonNeutralColors empty and still pass
+      // the subset assertion above.
+      if (diag.accentZonesPlaced === 1) {
+        expect(
+          nonNeutralColors.has(FORCED_ACCENT),
+          `seed ${seed}: zone reported placed but the forced accent appears in no cell`,
+        ).toBe(true);
+      }
     }
   });
 });

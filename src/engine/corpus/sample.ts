@@ -2701,7 +2701,9 @@ function ensureAccentPresence(cells: DraftCell[], grammar: EngineGrammar, rng: R
   if (accentPresent) return;
   if (Math.floor(nonPlain.length * 0.35 + EPS) <= 0) return;
 
-  // Candidate cells: exclude those whose ground === accent (ink==ground → invisible).
+  // Defensive: exclude cells whose ground === accent (ink==ground → invisible).
+  // Unreachable by construction today — the presence check above counts grounds,
+  // so reaching this loop implies no non-plain cell carries the accent as ground.
   const candidates: Weighted<DraftCell>[] = [];
   for (const cell of nonPlain.sort(compareCells)) {
     if (cell.ground === accent) continue;
