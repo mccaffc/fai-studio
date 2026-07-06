@@ -127,3 +127,16 @@ In-browser (aside, localhost:4310), desktop 1440 + emulated 375. **PASS.**
   not CSS; verified via DOM measurements instead.)
 - Accepted deviation: caption uses --line instead of --soft (this checkout's --soft is the panel bg;
   implementer's reasoning correct, contrast verified on screen).
+
+## Gate B — P8 corpus editor smoke, 2026-07-06
+
+In-browser (aside, localhost:4310, desktop). **PASS after one controller fix.**
+- Functional loop verified end-to-end: Edit entry → cell select (clean 2px orange outline) →
+  re-ink to Electric Violet (only the selected cell changed) → Undo restores → Exit restores
+  generate mode + panel → Save delivers edited:true with the edited plan into the tray.
+- DEFECT found by eye and fixed inline: the 11-fill Ink/Ground swatch rows rendered as 2px slivers —
+  `.canvas-actions button { width: auto }` outranked `.accent-swatch`'s width (class+element vs class).
+  Fix: each fill row owns a full line (`.fill-row`, flex-basis 100%) + two-class width rule.
+  Re-verified on screen: two full rows of square swatches, correct active states.
+- Accepted for v1: family/tile selects stretch full-width under the wrap layout — heavy but readable,
+  grid-like, consistent with the IBM register. Revisit only if editing gets daily use.
