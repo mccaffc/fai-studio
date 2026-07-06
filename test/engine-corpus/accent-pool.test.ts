@@ -84,6 +84,7 @@ describe('accent-pool knob', () => {
     expect(() => generateBanner(configWithPool({ seed: 1, accentPool: ['#FF4F00'], paletteMode: 'full' }))).toThrow(/accentPool.*paletteMode/i);
     expect(() => generateBanner(configWithPool({ seed: 1, accentPool: [] }))).toThrow(/accentPool.*empty/i);
     expect(() => generateBanner(configWithPool({ seed: 1, accentPool: ['#FF4F00', '#ABCDEF'] }))).toThrow(/Unknown accent.*#ABCDEF/i);
+    expect(() => generateBanner(configWithPool({ seed: 1, accentPool: ['#FF4F00', '#FF4F00'] }))).toThrow(/duplicate/i);
   });
 
   it('rolls back mirrors that erase any selected pool member over 300 seeds', () => {
