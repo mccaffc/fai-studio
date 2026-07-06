@@ -347,3 +347,15 @@ body.mode-editor #saved { display: none; }
   .tray { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
   h2 .hint { display: none; }
 }
+
+/* corpus editor: fill rows own a full line of the actions strip */
+.canvas-actions { flex-wrap: wrap; }
+.fill-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-basis: 100%;
+}
+.fill-row .accent-swatches { margin-top: 0; }
+/* two-class selector outranks `.canvas-actions button { width: auto }` */
+.fill-row .accent-swatch { flex-shrink: 0; width: 28px; height: 28px; }

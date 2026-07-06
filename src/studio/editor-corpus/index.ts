@@ -287,10 +287,14 @@ function appendSwatches(
   active: string | undefined,
   fn: (hex: string) => void,
 ): void {
-  acts.appendChild(el("span", { class: "sub" }, label));
+  // Each fill row takes a full line of the actions strip — eleven 28px swatches
+  // can't share a row with the selects without being crushed.
+  const line = el("div", { class: "fill-row" });
+  line.appendChild(el("span", { class: "sub" }, label));
   const row = el("div", { class: "accent-swatches", role: "group", "aria-label": label });
   for (const hex of FILLS) row.appendChild(makeSwatch(hex, active === hex, attr, () => fn(hex)));
-  acts.appendChild(row);
+  line.appendChild(row);
+  acts.appendChild(line);
 }
 
 function renderInspector(): void {
