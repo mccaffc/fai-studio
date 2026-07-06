@@ -54,8 +54,8 @@ const ORANGE      = '#FF4F00';
 /** The 3 program-mode neutral fills (no #FFFFFF). */
 const PROGRAM_NEUTRALS = new Set([COD_GRAY, SMOKE_WHITE, TIMBERWOLF]);
 
-/** Classic accent inks that the transform replaces with the program hue. */
-const CLASSIC_ACCENTS = new Set([ORANGE, '#4997D0', '#FFA300']);
+/** Locked accent-pool fills that the transform replaces with the program hue. */
+const ACCENT_POOL = new Set([ORANGE, '#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B']);
 
 // ---------------------------------------------------------------------------
 // Luminance helpers (WCAG relative luminance, no external deps)
@@ -66,7 +66,7 @@ function sRGBtoLin(c: number): number {
   return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
 }
 
-function relativeLuminance(hex: string): number {
+export function relativeLuminance(hex: string): number {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
@@ -112,14 +112,14 @@ export function hueFailsContrastOnGround(hue: string, ground: string): boolean {
  *   grammar.palette.accentOrder (corpus accents). There is no code path in
  *   sample.ts that produces #FF4F00 as a non-zone ground. See sample.ts
  *   applyAccentZoning / 'ground' branch.
- * - any other classic accent used as ground → hue
+ * - any other locked accent-pool fill used as ground → hue
  * - prevHue (prior program hue being replaced) → hue
  * - neutrals and current hue → unchanged
  */
 function remapGround(ground: string, hue: string, prevHue?: string): string {
   if (ground === WHITE) return SMOKE_WHITE;
   if (ground === ORANGE) return hue;            // orange accent ground → hue
-  if (CLASSIC_ACCENTS.has(ground)) return hue;  // other corpus accent as ground → hue
+  if (ACCENT_POOL.has(ground)) return hue;      // other accent-pool ground → hue
   if (prevHue && ground === prevHue) return hue; // reclaim prior program hue (C1)
   // Neutral or already the program hue → unchanged
   return ground;
@@ -127,13 +127,13 @@ function remapGround(ground: string, hue: string, prevHue?: string): string {
 
 /**
  * Remap an ink value under the program palette law:
- * - any classic accent (#FF4F00 / #4997D0 / #FFA300) → hue
+ * - any locked accent-pool ink → hue
  * - #FFFFFF → #F3F3F3
  * - prevHue (prior program hue being replaced) → hue
  * - neutrals and current hue → unchanged
  */
 function remapInk(ink: string, hue: string, prevHue?: string): string {
-  if (CLASSIC_ACCENTS.has(ink)) return hue;
+  if (ACCENT_POOL.has(ink)) return hue;
   if (ink === WHITE) return SMOKE_WHITE;
   if (prevHue && ink === prevHue) return hue;   // reclaim prior program hue (C1)
   return ink;
@@ -166,7 +166,7 @@ function neutralMaxContrast(ground: string): string {
  * Transform rules (deterministic, in order):
  *  1. Remap global ground and all cell grounds (#FFFFFF→#F3F3F3,
  *     accent-as-ground → hue, prevHue-as-ground → hue).
- *  2. Remap all inks (classic accents → hue; #FFFFFF → #F3F3F3;
+ *  2. Remap all inks (locked accent-pool fills → hue; #FFFFFF → #F3F3F3;
  *     prevHue → hue when provided).
  *  3. Contrast pass per cell (3a before 3b):
  *     a. if ink === ground → flip ink to the neutral maximising contrast

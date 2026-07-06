@@ -8,7 +8,7 @@ import {
   resolvePalette,
   renderSvg,
 } from "../src/engine/index";
-import { BRAND, PROPOSAL } from "../src/engine/color/brand";
+import { BRAND, MASTER_FILLS, PROGRAM_HUES, PROPOSAL } from "../src/engine/color/brand";
 import { contrastOK } from "../src/engine/compose/constraints";
 import { violatesLogomark } from "../src/engine/render/logo-guard";
 import type { Scene } from "../src/engine/types";
@@ -30,6 +30,24 @@ describe("determinism", () => {
 });
 
 describe("color modes", () => {
+  it("exports locked master fills and program hues with final names", () => {
+    expect(MASTER_FILLS).toEqual({
+      internationalOrange: "#FF4F00",
+      codGray: "#121212",
+      white: "#FFFFFF",
+      smokeWhite: "#F3F3F3",
+      timberwolf: "#D9D9D6",
+    });
+    expect(PROGRAM_HUES).toEqual({
+      chromeYellow: "#FFA300",
+      electricViolet: "#8265DB",
+      telemagenta: "#D63A8C",
+      signalGreen: "#268B41",
+      celestialBlue: "#4997D0",
+      frontierIndigo: "#3A4A6B",
+    });
+  });
+
   it("duotone is pure black & white", () => {
     const p = resolvePalette({ mode: "duotone" });
     expect(p.accents).toEqual([]);

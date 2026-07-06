@@ -199,6 +199,8 @@ describe('degenerate ground-scheme fallbacks', () => {
   it("banded-rows on a 1-high 'strip' falls back to uniform grounds", () => {
     const grammar = grammarForOnlyGroundScheme('banded-rows');
     const plan = samplePlan(grammar, 12, { arrangement: 'strip', template: 'pipe-field', figures: false });
-    expect(new Set(plan.cells.map(cell => cell.ground))).toEqual(new Set([plan.ground]));
+    // P7 accent contrast may re-ground an ink-mode accent zone to Cod Gray
+    // after the degenerate ground scheme has fallen back to the global ground.
+    expect(new Set(plan.cells.map(cell => cell.ground))).toEqual(new Set([plan.ground, '#121212']));
   });
 });

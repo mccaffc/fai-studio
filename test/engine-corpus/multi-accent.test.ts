@@ -5,20 +5,20 @@ import { sampleWithDiagnostics } from '../../src/engine/corpus/sample.js';
 import type { BannerPlan, CellPlan, EngineGrammar } from '../../src/engine/corpus/types.js';
 
 const GRAMMAR = RAW_GRAMMAR as unknown as EngineGrammar;
-const HERITAGE_ACCENTS = ['#FF4F00', '#FFA300', '#4997D0'] as const;
-const HERITAGE_SET = new Set<string>(HERITAGE_ACCENTS);
-const WARM_ACCENTS = new Set<string>(['#FF4F00', '#FFA300']);
-const COOL_ACCENT = '#4997D0';
+const ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const ACCENT_POOL_SET = new Set<string>(ACCENT_POOL);
+const WARM_ACCENTS = new Set<string>(['#FF4F00', '#FFA300', '#D63A8C']);
+const COOL_ACCENTS = new Set<string>(['#4997D0', '#8265DB', '#268B41', '#3A4A6B']);
 const CANON_TARGET = [0.22, 0.20, 0.16, 0.42] as const;
 const SAMPLE_COUNT = 200;
 
 function visibleAccentSet(plan: BannerPlan): Set<string> {
   const accents = new Set<string>();
   for (const cell of plan.cells) {
-    if (HERITAGE_SET.has(cell.ground)) accents.add(cell.ground);
-    if (cell.ink && HERITAGE_SET.has(cell.ink)) accents.add(cell.ink);
+    if (ACCENT_POOL_SET.has(cell.ground)) accents.add(cell.ground);
+    if (cell.ink && ACCENT_POOL_SET.has(cell.ink)) accents.add(cell.ink);
     for (const ink of cell.inks ?? []) {
-      if (HERITAGE_SET.has(ink)) accents.add(ink);
+      if (ACCENT_POOL_SET.has(ink)) accents.add(ink);
     }
   }
   return accents;
@@ -27,7 +27,7 @@ function visibleAccentSet(plan: BannerPlan): Set<string> {
 function accentInkShare(plan: BannerPlan): number {
   const nonPlain = plan.cells.filter(cell => cell.kind !== 'plain');
   const accentInkCells = nonPlain.filter(cell =>
-    (cell.ink && HERITAGE_SET.has(cell.ink)) || (cell.inks ?? []).some(ink => HERITAGE_SET.has(ink)),
+    (cell.ink && ACCENT_POOL_SET.has(cell.ink)) || (cell.inks ?? []).some(ink => ACCENT_POOL_SET.has(ink)),
   );
   return accentInkCells.length / Math.max(1, nonPlain.length);
 }
@@ -98,6 +98,27 @@ describe('mode isolation — forced-accent single-zone invariant', () => {
 });
 
 describe('multi-accent auto zoning', () => {
+  it('draws auto accents only from the 7-hue locked pool and reaches every hue over 400 seeds', () => {
+    const seen = new Set<string>();
+
+    for (let i = 0; i < 400; i += 1) {
+      const seed = 10_000 + i;
+      const { plan, diag } = sampleWithDiagnostics(GRAMMAR, seed);
+      const visible = visibleAccentSet(plan);
+
+      for (const accent of visible) {
+        expect(ACCENT_POOL_SET.has(accent), `seed ${seed}: unexpected accent ${accent}`).toBe(true);
+        seen.add(accent);
+      }
+      for (const accent of diag.accentsUsed) {
+        expect(ACCENT_POOL_SET.has(accent), `seed ${seed}: unexpected diagnostic accent ${accent}`).toBe(true);
+        seen.add(accent);
+      }
+    }
+
+    expect([...seen].sort(), `seen accents: ${[...seen].sort().join(', ')}`).toEqual([...ACCENT_POOL].sort());
+  });
+
   it('matches the canon-calibrated 0/1/2/3 accent distribution over 200 auto seeds', () => {
     const buckets = [0, 0, 0, 0];
     const actuals: number[] = [];
@@ -108,7 +129,7 @@ describe('multi-accent auto zoning', () => {
       const accentCount = visible.size;
       actuals.push(accentCount);
 
-      expect([...visible].every(accent => HERITAGE_SET.has(accent)), `seed ${20_000 + i}`).toBe(true);
+      expect([...visible].every(accent => ACCENT_POOL_SET.has(accent)), `seed ${20_000 + i}`).toBe(true);
       expect(diag.accentZonesPlaced, `seed ${20_000 + i}`).toBe(accentCount);
       expect(new Set(diag.accentsUsed), `seed ${20_000 + i}`).toEqual(visible);
       expect(accentInkShare(plan), `seed ${20_000 + i}`).toBeLessThanOrEqual(0.35);
@@ -134,11 +155,11 @@ describe('multi-accent auto zoning', () => {
       const { plan, diag } = sampleWithDiagnostics(GRAMMAR, 40_000 + i, { figures: false });
       const visible = visibleAccentSet(plan);
       const hasWarm = [...visible].some(accent => WARM_ACCENTS.has(accent));
-      const hasCool = visible.has(COOL_ACCENT);
+      const hasCool = [...visible].some(accent => COOL_ACCENTS.has(accent));
       if (!hasWarm || !hasCool || diag.accentWarmSide === undefined) continue;
 
       const warmCentroid = accentCentroid(plan, accent => WARM_ACCENTS.has(accent));
-      const coolCentroid = accentCentroid(plan, accent => accent === COOL_ACCENT);
+      const coolCentroid = accentCentroid(plan, accent => COOL_ACCENTS.has(accent));
       expect(warmCentroid).not.toBeNull();
       expect(coolCentroid).not.toBeNull();
       checked += 1;
@@ -152,6 +173,24 @@ describe('multi-accent auto zoning', () => {
 
     expect(checked, 'need enough mixed-temperature plans to verify side bias').toBeGreaterThanOrEqual(20);
     expect(warmOnWarmSide / checked, `${warmOnWarmSide}/${checked}`).toBeGreaterThanOrEqual(0.60);
+  });
+
+  it('uses light ink for Frontier Indigo ground zones with readable contrast', () => {
+    let checked = 0;
+    const frontierIndigo = '#3A4A6B';
+
+    for (let i = 0; i < 160; i += 1) {
+      const seed = 50_000 + i;
+      const { plan } = sampleWithDiagnostics(GRAMMAR, seed, { accent: frontierIndigo, figures: false });
+      const zoneCells = plan.cells.filter(cell => cell.ground === frontierIndigo);
+      if (zoneCells.length === 0) continue;
+      checked += zoneCells.length;
+      for (const cell of zoneCells) {
+        expect(cell.ink, `seed ${seed} cell ${cell.col},${cell.row}`).toBe('#F3F3F3');
+      }
+    }
+
+    expect(checked, 'need at least one Frontier Indigo ground-zone cell').toBeGreaterThan(0);
   });
 
   it('is deterministic for multi-accent auto diagnostics and plans', () => {
