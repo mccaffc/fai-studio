@@ -4,8 +4,8 @@
  * "vertical hex leaks into full mode" bug is structurally impossible.
  *
  * Modes (per Chris, June 2026): duotone = pure black & white; vertical =
- * b&w + ONE chosen accent (any hex); full = the whole palette — brand fills
- * and proposal hues on the same level.
+ * b&w + ONE chosen accent (any hex); full = the whole palette — master fills
+ * and program hues on the same level.
  */
 import type { ColorConfig, ColorMode, ResolvedPalette } from "../types";
 import { ALL_ACCENTS, BRAND } from "./brand";

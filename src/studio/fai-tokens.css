@@ -1,0 +1,106 @@
+/* FAI design tokens — the shared FAI design-system vocabulary.
+ *
+ * These are the SAME variable names used in the Paper design files
+ * ("FAI — Master Template" / "FAI 2025 Annual Report"), so a Paper design and
+ * this app's UI speak one vocabulary. Regenerate from the Paper master template
+ * with get_tokens({format:"css"}). Canonical color values also live as TS
+ * constants in ../engine/color/brand.ts (BRAND / PROGRAM) — keep the two in sync.
+ * 76 tokens; last synced 2026-07-01.
+ *
+ * Palette rule: the 11 permitted fills only (5 master + 6 program wayfinding).
+ * --color-brand (orange) is fixed and owns the chevron; --color-accent is the
+ * one per-surface knob (repoint to a program hue for program work).
+ */
+:root {
+  /* Palette — 11 permitted fills */
+  --color-cod-gray: #121212;
+  --color-white: #FFFFFF;
+  --color-smoke-white: #F3F3F3;
+  --color-timberwolf: #D9D9D6;
+  --color-orange: #FF4F00;
+  --color-chrome-yellow: #FFA300;
+  --color-electric-violet: #8265DB;
+  --color-telemagenta: #D63A8C;
+  --color-signal-green: #268B41;
+  --color-celestial-blue: #4997D0;
+  --color-frontier-indigo: #3A4A6B;
+
+  /* Semantic roles (alias the palette) */
+  --color-bg: var(--color-white);
+  --color-bg-subtle: var(--color-smoke-white);
+  --color-bg-inverse: var(--color-cod-gray);
+  --color-text: var(--color-cod-gray);
+  --color-text-inverse: var(--color-white);
+  --color-text-muted: rgb(18 18 18 / 60%);
+  --color-hairline: var(--color-timberwolf);
+  --color-brand: var(--color-orange);
+  --color-accent: var(--color-orange);
+  --color-text-on-dark: var(--color-smoke-white);
+  --color-text-on-dark-muted: var(--color-timberwolf);
+
+  /* Type families */
+  --font-display: Schmalfette Grotesk;
+  --font-serif: IBM Plex Serif;
+  --font-sans: IBM Plex Sans;
+  --font-condensed: IBM Plex Sans Condensed;
+  --font-mono: IBM Plex Mono;
+
+  /* Type scale */
+  --text-runner: 15px;
+  --text-tag: 20px;
+  --text-label: 22px;
+  --text-body: 26px;
+  --text-lead: 30px;
+  --text-heading: 36px;
+  --text-title: 52px;
+  --text-display-sm: 96px;
+  --text-display-md: 128px;
+  --text-display-lg: 168px;
+  --text-display: 318px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --tracking-normal: 0em;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
+
+  --leading-runner: 18px;
+  --leading-tag: 24px;
+  --leading-label: 28px;
+  --leading-heading: 36px;
+  --leading-lead: 42px;
+  --leading-title: 58px;
+  --leading-display: 271px;
+
+  /* Layout — IBM 2x grid (8px mini-unit) */
+  --spacing-01: 2px;
+  --spacing-02: 4px;
+  --spacing-03: 8px;
+  --spacing-04: 12px;
+  --spacing-05: 16px;
+  --spacing-06: 24px;
+  --spacing-07: 32px;
+  --spacing-08: 40px;
+  --spacing-09: 48px;
+  --spacing-10: 64px;
+  --spacing-11: 80px;
+  --spacing-12: 96px;
+  --spacing-13: 160px;
+
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  --breakpoint-sm: 320px;
+  --breakpoint-md: 672px;
+  --breakpoint-lg: 1056px;
+  --breakpoint-xlg: 1312px;
+  --breakpoint-max: 1584px;
+
+  --container-narrow: 672px;
+  --container-wide: 1056px;
+  --container-max: 1584px;
+}

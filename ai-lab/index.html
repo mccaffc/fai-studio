@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FAI · AI Composition Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{ --ink:#121212; --panel:#1a1a1a; --line:#2a2a2a; --smoke:#f3f3f3; --wolf:#d9d9d6; --mut:#8a8a8a; --orange:#ff4f00; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--ink); color:var(--smoke); font-family:"IBM Plex Sans",system-ui,sans-serif; }
+  header{ display:flex; align-items:center; justify-content:space-between; padding:14px 22px; border-bottom:1px solid var(--line); }
+  header .t{ font-weight:600; } header .t b{ color:var(--orange); }
+  header .badge{ font-family:"IBM Plex Mono",monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--mut); border:1px solid var(--line); padding:4px 9px; }
+  main{ display:grid; grid-template-columns:340px 1fr; min-height:calc(100vh - 57px); }
+  aside{ border-right:1px solid var(--line); padding:20px; display:flex; flex-direction:column; gap:16px; overflow:auto; }
+  label{ display:block; font-family:"IBM Plex Mono",monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--mut); margin-bottom:7px; }
+  select,textarea,button{ width:100%; background:#0e0e0e; color:var(--smoke); border:1px solid var(--line); border-radius:0; padding:9px 11px; font-family:inherit; font-size:14px; }
+  textarea{ resize:vertical; min-height:80px; line-height:1.45; }
+  .row{ display:flex; gap:10px; } .row>div{ flex:1; }
+  .swatches{ display:flex; flex-wrap:wrap; gap:6px; }
+  .sw{ display:flex; align-items:center; gap:6px; border:1px solid var(--line); padding:4px 8px 4px 5px; cursor:pointer; font-size:12px; user-select:none; }
+  .sw .dot{ width:14px; height:14px; border:1px solid #0006; } .sw.off{ opacity:.4; } .sw.on{ border-color:var(--smoke); }
+  .grp{ font-family:"IBM Plex Mono",monospace; font-size:10px; color:#666; text-transform:uppercase; letter-spacing:.06em; margin:6px 0 4px; }
+  .presets{ display:flex; flex-wrap:wrap; gap:6px; } .presets button{ width:auto; flex:0 0 auto; font-family:"IBM Plex Mono",monospace; font-size:11px; padding:5px 9px; color:var(--wolf); cursor:pointer; }
+  .presets button:hover{ border-color:var(--orange); color:var(--smoke); }
+  #go{ background:var(--orange); color:var(--ink); font-weight:600; text-transform:uppercase; letter-spacing:.05em; font-size:13px; padding:13px; cursor:pointer; border:none; }
+  #go:disabled{ opacity:.5; cursor:wait; }
+  .keywarn{ font-size:12px; color:#ffb38a; border:1px solid #5a2a18; padding:8px 10px; display:none; }
+  section.stage{ padding:24px; display:flex; flex-direction:column; gap:14px; min-width:0; }
+  #art{ background:repeating-conic-gradient(#161616 0 25%, #1c1c1c 0 50%) 50%/26px 26px; border:1px solid var(--line); min-height:220px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  #art svg{ width:100%; height:auto; display:block; max-height:64vh; } #art.square,#art.portrait,#art.column{ max-width:600px; }
+  .meta .title{ font-size:17px; font-weight:600; } .meta .title b{ color:var(--orange); }
+  .meta .rat{ color:var(--wolf); font-size:14px; line-height:1.5; max-width:72ch; margin-top:4px; }
+  .think{ margin-top:8px; font-size:13px; color:var(--mut); line-height:1.55; max-width:80ch; border-left:2px solid var(--line); padding-left:10px; white-space:pre-wrap; }
+  .think summary{ cursor:pointer; font-family:"IBM Plex Mono",monospace; font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:#666; margin-bottom:5px; }
+  .stats{ font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--mut); display:flex; gap:16px; flex-wrap:wrap; margin-top:8px; } .stats b{ color:var(--smoke); font-weight:500; }
+  h2{ font-size:12px; font-family:"IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.08em; color:var(--mut); margin:6px 0 0; font-weight:500; }
+  .tray{ display:flex; gap:10px; flex-wrap:wrap; }
+  .card{ width:188px; border:1px solid var(--line); cursor:pointer; background:#0e0e0e; } .card:hover{ border-color:var(--orange); }
+  .card .thumb svg{ width:100%; height:auto; display:block; } .card .cap{ padding:6px 8px; font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--mut); display:flex; justify-content:space-between; gap:6px; } .card .cap b{ color:var(--wolf); font-weight:400; }
+</style>
+</head>
+<body>
+<header>
+  <div class="t">FAI · <b>AI</b> Composition Lab</div>
+  <div class="badge">studio engine · routed via OpenRouter</div>
+</header>
+<main>
+  <aside>
+    <div class="keywarn" id="keywarn">⚠ OPENROUTER_API_KEY not set — restart the server with the key in the env.</div>
+    <div><label>Model</label><select id="model"></select></div>
+    <div class="row">
+      <div><label>Arrangement</label><select id="arrangement"></select></div>
+      <div><label>Shape family</label><select id="family"></select></div>
+    </div>
+    <div><label>Palette in play</label><div class="swatches" id="palette"></div></div>
+    <div><label>Brief</label><textarea id="brief">Institutional gravity meeting startup energy — confident, distinctive, unmistakably FAI.</textarea>
+      <div class="presets" id="presets" style="margin-top:8px"></div></div>
+    <button id="go">Generate · Iterate</button>
+    <div class="stats" id="session" style="margin-top:auto"></div>
+  </aside>
+  <section class="stage">
+    <div id="art" class="banner"><span style="color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:13px">pick options, then Generate</span></div>
+    <div class="meta" id="meta"></div>
+    <h2>History <span style="color:#555">· click to revisit · lock a family + press Generate to iterate</span></h2>
+    <div class="tray" id="history"></div>
+  </section>
+</main>
+
+<script type="module">
+import { renderSvg, ARRANGEMENTS, get, findLogomarkPair, RECIPES } from "./engine.bundle.mjs";
+
+const $ = (id) => document.getElementById(id);
+const PRESETS = {
+  "Open":    { brief: "Institutional gravity meeting startup energy — confident, distinctive, unmistakably FAI." },
+  "Civic":   { brief: "American governance and civic institutions — a dome, columns, a radiating sky." },
+  "Figure":  { brief: "A single bold figure-ground subject commanding the frame — reads at a glance." },
+  "Flow":    { brief: "Energy, water, infrastructure flowing — motion and current." },
+  "Radiant": { brief: "Something that radiates — a sun, a beacon, a burst of light." },
+  // FAI programs — each sets its wayfinding hue
+  "Tech & Statecraft": { brief: "Technology & Statecraft — networks, signal, statecraft.", palette: ["yellow", "ink", "white", "smoke"] },
+  "Governance":        { brief: "American Governance — institutions, deliberation, the republic.", palette: ["violet", "ink", "white", "smoke"] },
+  "AI":                { brief: "Artificial Intelligence — cognition, models, emergence.", palette: ["magenta", "ink", "white", "smoke"] },
+  "Energy":            { brief: "Energy & Infrastructure — power, grid, the build-out.", palette: ["green", "ink", "white", "smoke"] },
+  "Science":           { brief: "Science & Innovation — discovery, the frontier, light.", palette: ["blue", "ink", "white", "smoke"] },
+  "Legal":             { brief: "Frontier Legal Defense — rule of law, shield, structure.", palette: ["indigo", "ink", "white", "smoke"] },
+};
+let META = null, sessionCost = 0, sessionN = 0; const history = [];
+
+async function init() {
+  META = await fetch("/api/meta").then((r) => r.json());
+  if (!META.keyPresent) $("keywarn").style.display = "block";
+  // models (grouped)
+  const groups = {}; for (const m of META.models) (groups[m.group] ||= []).push(m);
+  for (const g of Object.keys(groups)) { const og = document.createElement("optgroup"); og.label = g; for (const m of groups[g]) { const o = document.createElement("option"); o.value = m.id; o.textContent = m.label; og.appendChild(o); } $("model").appendChild(og); }
+  // arrangements
+  for (const [k, v] of Object.entries(META.arrangements)) { const o = document.createElement("option"); o.value = k; o.textContent = k + " · " + v; $("arrangement").appendChild(o); }
+  // families
+  const all = document.createElement("option"); all.value = "all"; all.textContent = "All families (mix)"; $("family").appendChild(all);
+  for (const f of META.families) { const o = document.createElement("option"); o.value = f.id; o.textContent = f.label; $("family").appendChild(o); }
+  // palette swatches (default on: orange, ink, white, smoke)
+  const on = new Set(["orange", "ink", "white", "smoke"]); const pal = $("palette");
+  for (const [grp, names] of Object.entries(META.colorGroups)) {
+    const g = document.createElement("div"); g.className = "grp"; g.textContent = grp; g.style.width = "100%"; pal.appendChild(g);
+    for (const name of names) {
+      const el = document.createElement("div"); el.className = "sw " + (on.has(name) ? "on" : "off"); el.dataset.name = name;
+      el.innerHTML = `<span class="dot" style="background:${META.colors[name]}"></span>${name}`;
+      el.onclick = () => { el.classList.toggle("on"); el.classList.toggle("off"); };
+      pal.appendChild(el);
+    }
+  }
+  const pr = $("presets");
+  for (const [k, p] of Object.entries(PRESETS)) {
+    const b = document.createElement("button"); b.textContent = k;
+    b.onclick = () => {
+      $("brief").value = p.brief;
+      if (p.palette) document.querySelectorAll(".sw").forEach((e) => { const onn = p.palette.includes(e.dataset.name); e.classList.toggle("on", onn); e.classList.toggle("off", !onn); });
+    };
+    pr.appendChild(b);
+  }
+}
+
+function chosenPalette() { return [...document.querySelectorAll(".sw.on")].map((e) => e.dataset.name); }
+
+function buildScene(plan) {
+  const C = META.colors, px = 200;
+  const spec = ARRANGEMENTS[plan.arrangement] || ARRANGEMENTS.banner;
+  const W = spec.cols * px, H = spec.rows * px, groundHex = C[plan.ground] || C.ink;
+  const nodes = []; let nid = 0;
+  const push = (primitive, col, row, span, rot, flip, fillName, gName) => {
+    let def; try { def = get(primitive); } catch { return; } // skip unknown keys
+    col = Math.max(0, Math.min(spec.cols - span, col | 0));
+    row = Math.max(0, Math.min(spec.rows - span, row | 0));
+    const g = (gName && C[gName]) ? gName : null;
+    nodes.push({ id: "n" + (nid++), primitive, category: def.category,
+      cell: { x: col * px, y: row * px, w: px * span, h: px * span },
+      rot: [0, 90, 180, 270].includes(rot) ? rot : 0, flip: !!flip,
+      role: "ink", accentIndex: 0, color: C[fillName] || C.smoke,
+      groundRole: g ? "accent" : "canvas", ground: g ? C[g] : groundHex, form: "f" + nid });
+  };
+  for (const n of (plan.nodes || [])) {
+    if (n.recipe) {
+      const rec = RECIPES.find((r) => r.key === n.recipe);
+      if (!rec) continue;
+      for (const p of rec.place(rec.w)) push(p.primitive, (n.col | 0) + p.dc, (n.row | 0) + p.dr, 1, p.rot, p.flip, n.fill, n.ground);
+    } else if (n.primitive) {
+      push(n.primitive, n.col, n.row, Math.max(1, Math.min(4, (n.span | 0) || 1)), n.rot, n.flip, n.fill, n.ground);
+    }
+  }
+  for (let t = 0; t < 8; t++) { const p = findLogomarkPair(nodes); if (!p) break; if (t < 7) p[1].flip = !p[1].flip; else nodes.splice(nodes.indexOf(p[1]), 1); }
+  return { width: W, height: H, ground: groundHex, palette: { ground: groundHex, ink: C.smoke, accents: [], ui: { accentPicker: false } }, nodes, seed: 1, config: {} };
+}
+
+function svgFor(plan) { try { return renderSvg(buildScene(plan)); } catch (e) { return null; } }
+
+function show(res) {
+  const art = $("art"); art.className = res.plan?.arrangement || "banner";
+  if (!res.ok) { art.innerHTML = `<span style="color:#ffb38a;font-family:'IBM Plex Mono',monospace;padding:20px">${res.error}</span>`; $("meta").innerHTML = ""; return; }
+  const svg = svgFor(res.plan);
+  if (!(res.plan.nodes || []).length) art.innerHTML = `<span style="color:#ffb38a;font-family:'IBM Plex Mono',monospace;padding:20px">model returned no usable shapes — press Generate to retry (or pick another model)</span>`;
+  else art.innerHTML = svg || `<span style="color:#ffb38a;padding:20px">render failed</span>`;
+  const fams = [...new Set((res.plan.nodes || []).map((n) => (n.primitive || "").split("/")[0]))].join(" · ");
+  const esc = (s) => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  $("meta").innerHTML = `<div class="title">"<b>${esc(res.plan.title) || "untitled"}</b>" · ${res.label}</div>
+    <div class="rat">${esc(res.plan.rationale)}</div>
+    ${res.reasoning ? `<details class="think" open><summary>design reasoning</summary>${esc(res.reasoning)}</details>` : ""}
+    <div class="stats"><span>${res.plan.arrangement} · ground <b>${res.plan.ground}</b></span><span>nodes <b>${(res.plan.nodes||[]).length}</b></span><span>families <b>${fams}</b></span><span>tokens <b>${res.inTok}/${res.outTok}</b></span><span>cost <b>$${res.costUSD.toFixed(5)}</b></span><span>latency <b>${(res.ms/1000).toFixed(1)}s</b></span></div>`;
+  history.unshift({ res, svg }); renderHistory();
+}
+function renderHistory() {
+  const t = $("history"); t.innerHTML = "";
+  for (const h of history.slice(0, 24)) {
+    const c = document.createElement("div"); c.className = "card";
+    c.innerHTML = `<div class="thumb">${h.svg || ""}</div><div class="cap"><b>${h.res.label.split(" — ")[0]}</b><span>$${h.res.costUSD.toFixed(4)} · ${(h.res.ms/1000).toFixed(0)}s</span></div>`;
+    c.onclick = () => show(h.res); t.appendChild(c);
+  }
+}
+
+$("go").onclick = async () => {
+  const btn = $("go"); btn.disabled = true; const was = btn.textContent; btn.textContent = "Generating…";
+  $("art").innerHTML = `<span style="color:var(--mut);font-family:'IBM Plex Mono',monospace">…${$("model").selectedOptions[0].text.split(" — ")[0]} composing</span>`;
+  try {
+    const res = await fetch("/api/plan", { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ model: $("model").value, arrangement: $("arrangement").value, family: $("family").value, palette: chosenPalette(), brief: $("brief").value.trim() }) }).then((r) => r.json());
+    show(res);
+    if (res.ok) { sessionCost += res.costUSD; sessionN++; $("session").innerHTML = `session: <b>${sessionN}</b> gens · <b>$${sessionCost.toFixed(4)}</b>`; }
+  } catch (e) { $("art").innerHTML = `<span style="color:#ffb38a">${e}</span>`; }
+  btn.disabled = false; btn.textContent = was;
+};
+
+init();
+</script>
+</body>
+</html>

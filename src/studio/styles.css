@@ -1,8 +1,11 @@
+@import "./fai-tokens.css";
+
 :root {
-  --ink: #121212;
-  --accent: #ff4f00;
-  --line: #d9d9d6;
-  --soft: #f3f3f3;
+  /* Local UI aliases → canonical FAI design tokens (see fai-tokens.css). */
+  --ink: var(--color-text);
+  --accent: var(--color-accent);
+  --line: var(--color-hairline);
+  --soft: var(--color-bg-subtle);
 }
 * { box-sizing: border-box; }
 body {

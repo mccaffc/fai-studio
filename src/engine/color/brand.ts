@@ -12,26 +12,30 @@ export const BRAND = {
 
 export const BRAND_HEXES: readonly string[] = Object.values(BRAND);
 
-/** Proposal hues — extended mode only (unratified). */
-export const PROPOSAL = {
-  irisViolet: "#8265DB",
-  telemagenta: "#D63A8C",
-  signalGreen: "#268B41",
-  slateIndigo: "#3A4A6B",
+/** Program wayfinding hues — FINAL, locked 2026-06-18 (one per policy program).
+ *  Wayfinding use only (eyebrow/tag, hairline, runner, data-viz, single accent);
+ *  never a master-brand ground, never recoloring the chevron. Chrome Yellow &
+ *  Celestial Blue are program hues too, but live in BRAND above (the engine's
+ *  warm/cool sets and isBrandHex predate the 2026 palette lock). */
+export const PROGRAM = {
+  electricViolet: "#8265DB", // American Governance
+  telemagenta: "#D63A8C", // Artificial Intelligence
+  signalGreen: "#268B41", // Energy & Infrastructure
+  frontierIndigo: "#3A4A6B", // Frontier Legal Defense
 } as const;
 
-export const PROPOSAL_HEXES: readonly string[] = Object.values(PROPOSAL);
+export const PROGRAM_HEXES: readonly string[] = Object.values(PROGRAM);
 
 export const WARM: ReadonlySet<string> = new Set([
   BRAND.internationalOrange,
   BRAND.chromeYellow,
-  PROPOSAL.telemagenta,
+  PROGRAM.telemagenta,
 ]);
 export const COOL: ReadonlySet<string> = new Set([
   BRAND.celestialBlue,
-  PROPOSAL.irisViolet,
-  PROPOSAL.signalGreen,
-  PROPOSAL.slateIndigo,
+  PROGRAM.electricViolet,
+  PROGRAM.signalGreen,
+  PROGRAM.frontierIndigo,
 ]);
 export const NEUTRAL: ReadonlySet<string> = new Set([
   BRAND.codGray,
@@ -40,18 +44,18 @@ export const NEUTRAL: ReadonlySet<string> = new Set([
   BRAND.timberwolf,
 ]);
 
-/** The full accent palette — brand fills and proposal hues on the same level.
+/** The full accent palette — master fills and program hues on the same level.
  *  Index order matters: it is the accent-slot order nodes reference.
  *  Even slots warm, odd slots cool (zoning picks by parity). */
 export const ALL_ACCENTS: readonly string[] = [
   BRAND.internationalOrange, // 0 warm lead
   BRAND.celestialBlue, // 1 cool lead
   BRAND.chromeYellow, // 2 warm
-  PROPOSAL.irisViolet, // 3 cool
-  PROPOSAL.telemagenta, // 4 warm
-  PROPOSAL.signalGreen, // 5 cool
+  PROGRAM.electricViolet, // 3 cool
+  PROGRAM.telemagenta, // 4 warm
+  PROGRAM.signalGreen, // 5 cool
   BRAND.timberwolf, // 6
-  PROPOSAL.slateIndigo, // 7
+  PROGRAM.frontierIndigo, // 7
 ];
 
 function lum(hex: string): number {

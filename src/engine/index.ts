@@ -17,7 +17,7 @@ import { ARRANGEMENTS } from "./grid/arrangements";
 import { layoutGrid } from "./grid/layout";
 import { mulberry32 } from "./rng";
 import { CATEGORY_META } from "./primitives/index";
-import { ALL_ACCENTS, BRAND, PROPOSAL } from "./color/brand";
+import { ALL_ACCENTS, BRAND, PROGRAM } from "./color/brand";
 
 export const VERSION = "0.1.0";
 
@@ -94,7 +94,7 @@ export function describe() {
     arrangements: ARRANGEMENTS,
     categories: CATEGORY_META,
     brand: BRAND,
-    proposal: PROPOSAL,
+    program: PROGRAM,
     allAccents: ALL_ACCENTS,
     defaults: defaultConfig(),
   };
@@ -109,5 +109,5 @@ export { ARRANGEMENTS } from "./grid/arrangements";
 export { byCategory, get, CATEGORY_META } from "./primitives/index";
 export type { PrimitiveDef } from "./primitives/index";
 export { findLogomarkPair, violatesLogomark } from "./render/logo-guard";
-export { ALL_ACCENTS, BRAND, PROPOSAL } from "./color/brand";
+export { ALL_ACCENTS, BRAND, PROGRAM } from "./color/brand";
 export type * from "./types";

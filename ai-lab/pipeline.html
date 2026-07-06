@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>FAI · Banner Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{ --ink:#121212; --panel:#1a1a1a; --line:#2a2a2a; --smoke:#f3f3f3; --wolf:#d9d9d6; --mut:#8a8a8a; --orange:#ff4f00; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{ margin:0; background:var(--ink); color:var(--smoke); font-family:"IBM Plex Sans",system-ui,sans-serif; }
+  header{ padding:12px 18px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  header .t{ font-weight:600; } header .t b{ color:var(--orange); }
+  .price{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--mut); text-align:right; line-height:1.5; }
+  .price b{ color:var(--smoke); font-weight:500; } .price .bar{ display:inline-block; width:64px; height:5px; background:#222; border:1px solid var(--line); vertical-align:middle; margin-left:6px; } .price .bar i{ display:block; height:100%; background:var(--orange); }
+  .wrap{ max-width:1120px; margin:0 auto; padding:14px 18px 70px; }
+  label{ display:block; font-family:"IBM Plex Mono",monospace; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--mut); margin:14px 0 6px; }
+  select,textarea,input{ width:100%; background:#0e0e0e; color:var(--smoke); border:1px solid var(--line); border-radius:0; padding:11px 12px; font-family:inherit; font-size:16px; }
+  textarea{ resize:vertical; min-height:64px; line-height:1.45; }
+  .rowflex{ display:flex; gap:8px; align-items:flex-end; } .rowflex>*{ flex:1; }
+  .mini{ width:auto; flex:0 0 auto; background:#0e0e0e; color:var(--wolf); border:1px solid var(--line); padding:11px 13px; font-family:"IBM Plex Mono",monospace; font-size:12px; cursor:pointer; white-space:nowrap; }
+  .mini:hover{ border-color:var(--orange); color:var(--smoke); }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ display:flex; align-items:center; gap:7px; border:1px solid var(--line); padding:8px 11px; font-size:14px; cursor:pointer; user-select:none; }
+  .chip .dot{ width:15px; height:15px; border:1px solid #0006; } .chip.off{ opacity:.4; } .chip.on{ border-color:var(--smoke); }
+  .seg{ display:flex; border:1px solid var(--line); width:fit-content; }
+  .seg button{ background:#0e0e0e; color:var(--wolf); border:0; padding:10px 16px; font-family:"IBM Plex Mono",monospace; font-size:13px; cursor:pointer; }
+  .seg button.on{ background:var(--smoke); color:var(--ink); }
+  #go{ width:100%; margin-top:18px; background:var(--orange); color:var(--ink); border:0; padding:15px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; font-size:15px; cursor:pointer; }
+  #go:disabled{ opacity:.5; }
+  .keywarn{ font-size:13px; color:#ffb38a; border:1px solid #5a2a18; padding:9px 11px; margin-top:12px; display:none; }
+  h2{ font-size:12px; font-family:"IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.08em; color:var(--mut); margin:26px 0 10px; font-weight:500; border-top:1px solid var(--line); padding-top:16px; }
+  h2 b{ color:var(--smoke); } h2 .x{ float:right; cursor:pointer; color:#666; font-size:11px; }
+  .intent{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:10px; }
+  .concept{ border:1px solid var(--line); padding:11px 12px; }
+  .concept .c{ font-weight:600; font-size:15px; } .concept .m{ font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--mut); margin-top:5px; display:flex; align-items:center; gap:7px; } .concept .m .dot{ width:12px; height:12px; }
+  .results,.saved{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+  .card{ border:1px solid var(--line); background:#0e0e0e; } .card.top{ border-color:var(--orange); }
+  .card .art svg{ width:100%; height:auto; display:block; }
+  .card .meta{ padding:9px 11px; }
+  .card .name{ font-weight:600; font-size:14px; display:flex; justify-content:space-between; align-items:center; gap:8px; } .card .name .rank{ color:var(--orange); font-family:"IBM Plex Mono",monospace; }
+  .card .acts{ display:flex; gap:6px; } .card .acts button{ background:none; border:1px solid var(--line); color:var(--wolf); cursor:pointer; font-size:13px; padding:2px 8px; } .card .acts button:hover{ border-color:var(--orange); color:var(--smoke); }
+  .chips2{ display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; }
+  .pill{ font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--wolf); border:1px solid var(--line); padding:2px 6px; }
+  .pill.score{ color:var(--ink); background:var(--smoke); border-color:var(--smoke); } .pill.bad{ color:#ffb38a; border-color:#5a2a18; }
+  .status{ font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--mut); margin-top:10px; }
+  .reason{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:#caa; margin-top:5px; }
+  @media (max-width:560px){ .results,.saved{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="t">FAI · <b>Banner</b> Pipeline</div>
+  <div class="price" id="price">—</div>
+</header>
+<div class="wrap">
+  <div class="keywarn" id="keywarn">⚠ OPENROUTER_API_KEY not set on the server.</div>
+
+  <label>Team prompt</label>
+  <div class="rowflex">
+    <select id="team"></select>
+    <button class="mini" id="savebrief" title="Save the current brief to this team list">★ Save</button>
+  </div>
+
+  <label>Brief — what's this banner for?</label>
+  <textarea id="brief">A masthead banner for an AI research team's publication.</textarea>
+
+  <div class="rowflex" style="margin-top:6px">
+    <div><label>Model</label><select id="model"></select></div>
+    <div style="flex:0 0 auto"><label>Format</label><div class="seg" id="arr"><button data-v="banner" class="on">Banner</button><button data-v="square">Square</button></div></div>
+  </div>
+
+  <label>Accent colors in play</label>
+  <div class="chips" id="accents"></div>
+
+  <button id="go">Run pipeline</button>
+
+  <div id="out" style="display:none">
+    <h2>1 · Intent <b id="intentlabel"></b></h2>
+    <div class="intent" id="intent"></div>
+    <h2>2 · Illuminate → 3 · Curate <b id="curatelabel"></b></h2>
+    <div class="results" id="results"></div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div id="savedwrap" style="display:none">
+    <h2>★ Saved <span class="x" id="clearsaved">clear all</span> <b id="savedcount"></b></h2>
+    <div class="saved" id="saved"></div>
+  </div>
+</div>
+
+<script type="module">
+import { runPipeline } from "./pipeline-core.mjs";
+const COLORS = { orange:"#FF4F00", yellow:"#FFA300", blue:"#4997D0", violet:"#8265DB", magenta:"#D63A8C", green:"#268B41", indigo:"#3A4A6B", ink:"#121212", white:"#FFFFFF", smoke:"#F3F3F3", timberwolf:"#D9D9D6" };
+const ACCENTS = ["orange","yellow","blue","violet","magenta","green","indigo"];
+const TEAM = [
+  {name:"— pick a starting point —", brief:null},
+  {name:"Program · Tech & Statecraft", brief:"Technology & Statecraft — big sweeping signal lines, networks, statecraft.", accent:"yellow", sig:["arcs","bars"]},
+  {name:"Program · American Governance", brief:"American Governance — arches, domes, the architecture of institutions.", accent:"violet", sig:["arcs","discs"]},
+  {name:"Program · Artificial Intelligence", brief:"Artificial Intelligence — eyes, lenses, perception, cognition.", accent:"magenta", sig:["capsules","discs"]},
+  {name:"Program · Energy & Infrastructure", brief:"Energy & Infrastructure — waves, current, power, the grid.", accent:"green", sig:["waves","triangles"]},
+  {name:"Program · Science & Innovation", brief:"Science & Innovation — concentric rings, orbits, the lens, discovery.", accent:"blue", sig:["discs","arcs"]},
+  {name:"Program · Frontier Legal Defense", brief:"Frontier Legal Defense — grids, lattices, structure, rule of law.", accent:"indigo", sig:["frames","bars"]},
+  {name:"Use · Report cover", brief:"A cover banner for a policy report — serious, institutional.", accent:"orange"},
+  {name:"Use · Event web header", brief:"A web header for an FAI event — energetic, welcoming.", accent:"orange"},
+  {name:"Use · Social thumbnail", brief:"A square social thumbnail that reads at a glance.", accent:"orange"},
+  {name:"Use · Section divider strip", brief:"A slim decorative divider strip of repeating geometric marks.", accent:"orange"},
+];
+const $ = (id) => document.getElementById(id);
+const LS = { get:(k,d)=>{try{const v=localStorage.getItem("fai-ailab-"+k);return v==null?d:JSON.parse(v);}catch{return d;}}, set:(k,v)=>{try{localStorage.setItem("fai-ailab-"+k,JSON.stringify(v));}catch{}} };
+let arrangement = "banner";
+let spend = LS.get("spend", 0);
+let activeSig = null; // program shape signature, set when a program team-prompt is chosen
+
+function teamItems(){ return TEAM.concat(LS.get("briefs", [])); }
+function setAccents(names){ document.querySelectorAll("#accents .chip").forEach(e=>{const on=names.includes(e.dataset.name); e.classList.toggle("on",on); e.classList.toggle("off",!on);}); }
+function chosenAccents(){ return [...document.querySelectorAll("#accents .chip.on")].map(e=>e.dataset.name); }
+function saveSettings(){ LS.set("settings", { model:$("model").value, arrangement, accents:chosenAccents(), brief:$("brief").value }); }
+
+function renderTeam(){ const sel=$("team"); sel.innerHTML=""; teamItems().forEach((t,i)=>{ const o=document.createElement("option"); o.value=i; o.textContent=t.name; sel.appendChild(o); }); }
+function renderPrice(usage){
+  let s = `this tool: <b>$${spend.toFixed(4)}</b>`;
+  if(usage && usage.ok && usage.limit){ const pct=Math.min(100,(usage.usage/usage.limit)*100); s += ` · studio key <b>$${(usage.usage||0).toFixed(2)}</b>/$${usage.limit}<span class="bar"><i style="width:${pct}%"></i></span>`; }
+  else if(usage && usage.ok){ s += ` · studio key <b>$${(usage.usage||0).toFixed(2)}</b>`; }
+  $("price").innerHTML = s;
+}
+async function refreshUsage(){ try{ renderPrice(await fetch("/api/usage").then(r=>r.json())); }catch{ renderPrice(null); } }
+
+function init(){
+  // restore settings
+  const st = LS.get("settings", {});
+  if(st.brief) $("brief").value = st.brief;
+  arrangement = st.arrangement || "banner";
+  // models
+  fetch("/api/meta").then(r=>r.json()).then(meta=>{
+    if(!meta.keyPresent) $("keywarn").style.display="block";
+    const groups={}; for(const m of meta.models)(groups[m.group]||=[]).push(m);
+    for(const g of Object.keys(groups)){ const og=document.createElement("optgroup"); og.label=g; for(const m of groups[g]){ const o=document.createElement("option"); o.value=m.id; o.textContent=m.label; og.appendChild(o);} $("model").appendChild(og);}
+    $("model").value = st.model || "google/gemini-3.5-flash"; // default cheap — model size barely matters here
+    if(!$("model").value) $("model").selectedIndex=0;
+  }).catch(()=>{});
+  // accents
+  const box=$("accents"); for(const name of ACCENTS){ const el=document.createElement("div"); el.className="chip off"; el.dataset.name=name; el.innerHTML=`<span class="dot" style="background:${COLORS[name]}"></span>${name}`; el.onclick=()=>{el.classList.toggle("on");el.classList.toggle("off");saveSettings();}; box.appendChild(el); }
+  setAccents(st.accents && st.accents.length ? st.accents : ["orange"]);
+  // format
+  $("arr").querySelectorAll("button").forEach(b=>{ b.classList.toggle("on",b.dataset.v===arrangement); b.onclick=()=>{ arrangement=b.dataset.v; $("arr").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b)); saveSettings(); }; });
+  // team prompts
+  renderTeam();
+  $("team").onchange=()=>{ const t=teamItems()[+$("team").value]; activeSig = (t&&t.sig)||null; if(t&&t.brief){ $("brief").value=t.brief; if(t.accent) setAccents([t.accent]); if(t.square) arrangement="square"; saveSettings(); } };
+  $("savebrief").onclick=()=>{ const name=prompt("Name this brief for the team list:"); if(!name)return; const briefs=LS.get("briefs",[]); briefs.push({name:"Saved · "+name, brief:$("brief").value, accent:chosenAccents()[0]}); LS.set("briefs",briefs); renderTeam(); };
+  renderPrice(null); refreshUsage();
+  renderSaved();
+}
+
+// ── saved favorites (memory) ──
+function getSaved(){ return LS.get("saved", []); }
+function addSaved(item){ const a=getSaved(); a.unshift(item); LS.set("saved", a.slice(0,40)); renderSaved(); }
+function downloadSVG(svg,name){ const b=new Blob([svg],{type:"image/svg+xml"}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=(name||"fai-banner").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+".svg"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); }
+function renderSaved(){
+  const a=getSaved(); $("savedwrap").style.display = a.length?"block":"none"; $("savedcount").textContent = a.length?`· ${a.length}`:"";
+  const box=$("saved"); box.innerHTML="";
+  a.forEach((it,i)=>{ const card=document.createElement("div"); card.className="card";
+    card.innerHTML=`<div class="art">${it.svg}</div><div class="meta"><div class="name"><span>${it.concept||"saved"}</span><span class="acts"><button data-dl="${i}">⬇</button><button data-rm="${i}">✕</button></span></div><div class="chips2"><span class="pill">${it.model||""}</span>${it.score!=null?`<span class="pill score">${it.score}</span>`:""}</div></div>`;
+    box.appendChild(card); });
+  box.querySelectorAll("[data-dl]").forEach(b=>b.onclick=()=>{const it=getSaved()[+b.dataset.dl]; downloadSVG(it.svg, it.concept);});
+  box.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{const a=getSaved(); a.splice(+b.dataset.rm,1); LS.set("saved",a); renderSaved();});
+}
+$("clearsaved").onclick=()=>{ if(confirm("Clear all saved banners?")){ LS.set("saved",[]); renderSaved(); } };
+
+function renderIntent(briefs){
+  const box=$("intent"); box.innerHTML="";
+  for(const b of briefs){ const d=document.createElement("div"); d.className="concept"; const cats=(b.categories||[]).join(" · ");
+    d.innerHTML=`<div class="c">${b.concept||"—"}</div><div class="m"><span class="dot" style="background:${COLORS[b.accent]||'#777'}"></span>${cats} · density ${b.density??"?"}</div>`; box.appendChild(d); }
+}
+function renderResults(pipe){
+  const box=$("results"); box.innerHTML="";
+  pipe.candidates.slice(0,9).forEach((c,i)=>{
+    const s=c.score; const card=document.createElement("div"); card.className="card"+(i<3&&!s.reject?" top":"");
+    const pills=[`<span class="pill score">${s.total}</span>`,`<span class="pill">cover ${Math.round(s.coverage*100)}%</span>`,`<span class="pill">variety ${s.variety}</span>`,`<span class="pill">accent ${Math.round(s.accentShare*100)}%</span>`];
+    if(s.rhythm) pills.push(`<span class="pill">rhythm</span>`); if(s.reject) pills.push(`<span class="pill bad">rejected</span>`);
+    card.innerHTML=`<div class="art">${c.svg}</div><div class="meta"><div class="name"><span><span class="rank">#${i+1}</span> ${c.plan.concept||"untitled"}</span><span class="acts"><button class="sv">★</button><button class="dl">⬇</button></span></div><div class="chips2">${pills.join("")}</div>${s.reject?`<div class="reason">${s.reasons.join(" · ")}</div>`:""}</div>`;
+    card.querySelector(".sv").onclick=()=>addSaved({svg:c.svg, concept:c.plan.concept, model:c.modelLabel, score:s.total});
+    card.querySelector(".dl").onclick=()=>downloadSVG(c.svg, c.plan.concept);
+    box.appendChild(card);
+  });
+}
+
+$("go").onclick = async ()=>{
+  const btn=$("go"); btn.disabled=true; const was=btn.textContent; btn.textContent="Art-directing…"; $("out").style.display="none"; saveSettings();
+  try{
+    const palette=[...chosenAccents(),"ink","white","smoke"];
+    const res=await fetch("/api/pipeline",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({model:$("model").value,arrangement,palette,brief:$("brief").value.trim(),signature:activeSig})}).then(r=>r.json());
+    if(!res.ok||!(res.briefs&&res.briefs.length)){ alert("Intent step failed: "+(res.error||"no concepts")); btn.disabled=false; btn.textContent=was; return; }
+    spend += (res.costUSD||0); LS.set("spend", spend); renderPrice(null); refreshUsage();
+    $("out").style.display="block";
+    $("intentlabel").textContent=`· ${res.label} · $${res.costUSD.toFixed(4)} · ${(res.ms/1000).toFixed(1)}s`;
+    renderIntent(res.briefs);
+    btn.textContent="Illuminating + curating…";
+    const pipe=runPipeline(res.briefs,6);
+    pipe.candidates.forEach(c=>c.modelLabel=res.label);
+    renderResults(pipe);
+    $("curatelabel").textContent=`· ${pipe.total} variations, ${pipe.total-pipe.rejected} kept`;
+    $("status").textContent=`Top ${Math.min(9,pipe.candidates.length)} dense components, ranked by the component gate (calibrated to the canonical set). ${pipe.rejected} rejected (blank / monotone). ★ to save, ⬇ to download SVG.`;
+  }catch(e){ alert("Error: "+e.message); }
+  btn.disabled=false; btn.textContent=was;
+};
+init();
+</script>
+</body>
+</html>
