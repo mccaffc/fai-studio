@@ -98,7 +98,7 @@ describe('program family bias', () => {
     // 8 = the P8 greyscale-gate calibration (3 left T&S unrecognizable without
     // its hue). This pin exists to catch accidental drift, not to freeze tuning.
     expect(PROGRAM_FAMILY_BIAS).toBe(8);
-    expect(PROGRAM_TEMPLATE_BIAS).toBe(5);
+    expect(PROGRAM_TEMPLATE_BIAS).toBe(9); // P9 greyscale-gate calibration
     expect(PROGRAM_FAMILY_FLOOR).toBe(0.6);
     for (const program of PROGRAM_IDS) {
       expect(PROGRAM_FAMILY_MAP[program].length, `${program} family map`).toBeGreaterThan(0);

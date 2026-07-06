@@ -47,8 +47,11 @@ export const PROGRAMS: Record<ProgramId, { name: string; hue: string }> = {
  *  mapped families carry the sheet while non-mapped tiles stay reachable. */
 export const PROGRAM_FAMILY_BIAS = 8;
 
-/** Program-mode template-register multiplier for mapped corpus templates. */
-export const PROGRAM_TEMPLATE_BIAS = 5;
+/** Program-mode template-register multiplier for mapped corpus templates.
+ *  Calibrated at the P9 greyscale gate: 5 left T&S and Energy at 4/6 blind
+ *  nameability (off-template leak seeds trading each other's stripe register);
+ *  9 closes the leak while unmapped templates stay reachable. */
+export const PROGRAM_TEMPLATE_BIAS = 9;
 
 /** Program-mode minimum mapped-family share in the working tile set. */
 export const PROGRAM_FAMILY_FLOOR = 0.6;

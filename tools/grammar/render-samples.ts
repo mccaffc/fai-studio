@@ -21,6 +21,9 @@ import {
   PROGRAMS,
   PROGRAM_FAMILY_BIAS,
   PROGRAM_FAMILY_MAP,
+  PROGRAM_TEMPLATE_BIAS,
+  PROGRAM_TEMPLATE_MAP,
+  PROGRAM_FAMILY_FLOOR,
   applyProgramPalette,
   type ProgramId,
 } from '../../src/engine/corpus/programs.js';
@@ -168,6 +171,8 @@ async function main(): Promise<void> {
     if (!prog) throw new Error(`Unknown program: ${cli.program}`);
     knobs.accent = prog.hue;
     knobs.familyBias = { families: PROGRAM_FAMILY_MAP[programId], multiplier: PROGRAM_FAMILY_BIAS };
+    knobs.templateBias = { ids: PROGRAM_TEMPLATE_MAP[programId], multiplier: PROGRAM_TEMPLATE_BIAS };
+    knobs.familyFloor = { families: PROGRAM_FAMILY_MAP[programId], minShare: PROGRAM_FAMILY_FLOOR };
   }
 
   mkdirSync(OUT_DIR, { recursive: true });
