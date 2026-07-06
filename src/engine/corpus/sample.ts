@@ -167,6 +167,12 @@ const ACCENT_POOL: readonly Weighted<string>[] = [
 ] as const;
 const ACCENT_POOL_SET = new Set<string>(ACCENT_POOL_HEXES);
 
+interface AccentRequest {
+  forcedAccent?: string;
+  poolChoices?: readonly Weighted<string>[];
+  poolAccents: readonly string[];
+}
+
 interface DraftCell {
   col: number;
   row: number;
@@ -220,9 +226,7 @@ export function sampleWithDiagnostics(
   figures: readonly FigureAsset[] = FIGURES,
   patches: readonly IconicPatch[] = PATCHES,
 ): SampleResult {
-  if (knobs.paletteMode === 'full' && knobs.accent) {
-    throw new Error('paletteMode full cannot be combined with accent');
-  }
+  const accentRequest = resolveAccentRequest(knobs, grammar.palette.accentOrder);
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
     accentZone: 'none',
@@ -268,46 +272,48 @@ export function sampleWithDiagnostics(
   const figureSize = plannedFigureSize(template, knobs, rng, dims);
   if (figureSize > 0) {
     const placedPatch = shouldPlacePatch(template.id, rng)
-      ? placePatch(cells, grammar, rng, knobs.accent, patches, globalGround, diag)
+      ? placePatch(cells, grammar, rng, accentRequest.forcedAccent, patches, globalGround, diag)
       : false;
     if (!placedPatch) {
-      placeFigure(cells, grammar, rng, figureSize, knobs.accent, figures, dims, template.id);
+      placeFigure(cells, grammar, rng, figureSize, accentRequest.forcedAccent, figures, dims, template.id);
     }
-  } else if (knobs.accent && !isAllowedExplicitAccent(knobs.accent, grammar.palette.accentOrder)) {
-    throw new Error(`Unknown accent ink: ${knobs.accent}`);
   }
 
   const usedTiles = usedTileSet(cells);
   const emptyBeforePlain = cells.filter(cell => cell.kind === undefined).length;
   const requiredTileCells = Math.max(0, targetDistinct - usedTiles.size);
   const basePlainTarget = plainTargetCount(template, knobs.density ?? 0.5, dims);
-  const plainTarget = Math.max(0, Math.min(basePlainTarget, emptyBeforePlain - requiredTileCells));
+  const requiredAccentCells = accentRequest.poolChoices
+    ? Math.min(dims.cellCount, accentRequest.poolAccents.length)
+    : 0;
+  const maxPlainForAccentPool = dims.cellCount - requiredAccentCells;
+  const plainTarget = Math.max(0, Math.min(basePlainTarget, emptyBeforePlain - requiredTileCells, maxPlainForAccentPool));
   placePlainCells(cells, relativeStats, rng, plainTarget);
 
   fillTileCells(cells, grammar, rng, workingSet, template, diag);
-  const accentBudgetCap = accentBudgetCapForKnobs(knobs);
-  applyAccentZoning(cells, grammar, rng, template, knobs, diag);
-  enforceAccentBudget(cells, grammar, knobs.accent, accentBudgetCap);
-  if (knobs.accent) ensureAccentPresence(cells, grammar, rng, knobs.accent);
+  const accentBudgetCap = accentBudgetCapForRequest(accentRequest);
+  applyAccentZoning(cells, grammar, rng, template, accentRequest, diag);
+  enforceAccentBudget(cells, grammar, accentRequest.forcedAccent, accentBudgetCap);
+  if (accentRequest.forcedAccent) ensureAccentPresence(cells, grammar, rng, accentRequest.forcedAccent);
   // Run last: cap rhythm-template run length AFTER every ink mutation, so the
   // accent passes can't re-merge a split run.
   splitRhythmRuns(cells, grammar, template, dims);
   splitNoSpineRunForms(cells, grammar, dims);
   splitRhythmRuns(cells, grammar, template, dims);
   applyLogomarkGuard(cells);
-  syncAccentDiagnostics(cells, grammar, knobs.accent, diag);
+  syncAccentDiagnostics(cells, grammar, accentRequest.forcedAccent, diag);
   // P6 mirror runs after the full current post-fill pipeline, including the
   // first form detection pass. If accepted, only the accent budget and forms
   // are recomputed; zoning is intentionally not re-run against mirrored ink.
   void detectForms(draftPlanForForms(cells, dims), grammar.tileCatalog, FAMILIES);
-  applyMirror(cells, grammar, dims, rng, template, knobs.accent, diag, accentBudgetCap);
+  applyMirror(cells, grammar, dims, rng, template, accentRequest.forcedAccent, diag, accentBudgetCap, accentSurvivors(accentRequest));
   if (diag.mirrored) {
-    syncAccentDiagnostics(cells, grammar, knobs.accent, diag);
+    syncAccentDiagnostics(cells, grammar, accentRequest.forcedAccent, diag);
   }
-  if (knobs.paletteMode === 'full') {
-    ensureFullPaletteMinimum(cells, rng);
-    enforceAccentBudget(cells, grammar, knobs.accent, accentBudgetCap);
-    syncAccentDiagnostics(cells, grammar, knobs.accent, diag);
+  if (accentRequest.poolChoices) {
+    enforceAccentBudget(cells, grammar, accentRequest.forcedAccent, accentBudgetCap);
+    ensureAccentPoolMinimum(cells, rng, accentRequest.poolChoices, minimumDistinctAccentCount(cells, accentRequest.poolAccents), accentBudgetCap);
+    syncAccentDiagnostics(cells, grammar, accentRequest.forcedAccent, diag);
   }
   enforceAccentGroundContrast(cells);
 
@@ -1880,45 +1886,113 @@ const CANON_ACCENT_COUNT_WEIGHTS: Weighted<number>[] = [
   { value: 2, weight: 0.16, sortKey: '2' },
   { value: 3, weight: 0.48, sortKey: '3' },
 ];
-const FULL_ACCENT_COUNT_WEIGHTS: Weighted<number>[] = [
-  { value: 5, weight: 1, sortKey: '5' },
-  { value: 6, weight: 1, sortKey: '6' },
-  { value: 7, weight: 1, sortKey: '7' },
-];
-const FULL_MIN_DISTINCT_ACCENTS = 4;
 const AUTO_ACCENT_BUDGET_CAP = 0.35;
 const FULL_ACCENT_BUDGET_CAP = 0.5;
 const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300', '#D63A8C']);
 const COOL_ACCENTS_SET = new Set(['#4997D0', '#8265DB', '#268B41', '#3A4A6B']);
 
-function accentBudgetCapForKnobs(knobs: Pick<SampleKnobs, 'paletteMode'>): number {
-  return knobs.paletteMode === 'full' ? FULL_ACCENT_BUDGET_CAP : AUTO_ACCENT_BUDGET_CAP;
+function resolveAccentRequest(knobs: SampleKnobs, explicitAccentOrder: readonly string[]): AccentRequest {
+  const paletteMode = knobs.paletteMode ?? 'auto';
+  if (paletteMode !== 'auto' && paletteMode !== 'full') {
+    throw new Error(`Unknown paletteMode: ${String(knobs.paletteMode)}`);
+  }
+  if (paletteMode === 'full' && knobs.accent) {
+    throw new Error('paletteMode full cannot be combined with accent');
+  }
+
+  const accentPool = validateAccentPool(knobs.accentPool);
+  if (accentPool && knobs.accent) {
+    throw new Error('accentPool cannot be combined with accent');
+  }
+  if (accentPool && paletteMode === 'full') {
+    throw new Error('accentPool cannot be combined with paletteMode full');
+  }
+  if (knobs.accent && !isAllowedExplicitAccent(knobs.accent, explicitAccentOrder)) {
+    throw new Error(`Unknown accent ink: ${knobs.accent}`);
+  }
+  if (accentPool && accentPool.length === 1) {
+    return { forcedAccent: accentPool[0], poolAccents: [] };
+  }
+  if (accentPool) {
+    return {
+      poolChoices: accentChoicesForPool(accentPool),
+      poolAccents: accentPool,
+    };
+  }
+  if (knobs.accent) {
+    return { forcedAccent: knobs.accent, poolAccents: [] };
+  }
+  if (paletteMode === 'full') {
+    return {
+      poolChoices: ACCENT_POOL,
+      poolAccents: [...ACCENT_POOL_HEXES],
+    };
+  }
+  return { poolAccents: [] };
+}
+
+function validateAccentPool(accentPool: string[] | undefined): string[] | undefined {
+  if (accentPool === undefined) return undefined;
+  if (!Array.isArray(accentPool) || accentPool.length === 0) {
+    throw new Error('accentPool cannot be empty');
+  }
+  const seen = new Set<string>();
+  for (const accent of accentPool) {
+    if (!ACCENT_POOL_SET.has(accent)) {
+      throw new Error(`Unknown accent in accentPool: ${accent}`);
+    }
+    if (seen.has(accent)) {
+      throw new Error(`accentPool cannot contain duplicate accent: ${accent}`);
+    }
+    seen.add(accent);
+  }
+  return [...accentPool];
+}
+
+function accentChoicesForPool(accentPool: readonly string[]): readonly Weighted<string>[] {
+  const selected = new Set(accentPool);
+  return ACCENT_POOL.filter(entry => selected.has(entry.value));
+}
+
+function accentBudgetCapForRequest(request: AccentRequest): number {
+  return request.poolAccents.length >= 3 ? FULL_ACCENT_BUDGET_CAP : AUTO_ACCENT_BUDGET_CAP;
+}
+
+function accentSurvivors(request: AccentRequest): readonly string[] {
+  return request.poolAccents.length > 0 ? request.poolAccents : request.forcedAccent ? [request.forcedAccent] : [];
+}
+
+function minimumDistinctAccentCount(cells: readonly DraftCell[], poolAccents: readonly string[]): number {
+  const placeableCells = cells.filter(cell => cell.kind !== 'plain').length;
+  return Math.min(poolAccents.length, placeableCells);
 }
 
 /**
  * Accent zoning (P6 Task 0): auto mode draws a single
  * canon-calibrated accent-count bucket, then allocates that many DISTINCT
- * locked accent-pool hues as coherent zones. Explicit accent knobs keep the previous
- * one-zone behavior. De-scatter strips accent inks AND grounds outside all
- * zones, so the 0-accent bucket produces a fully neutral banner.
+ * locked accent-pool hues as coherent zones. User pools and full mode share the
+ * pool path, with target count equal to pool size. Explicit accents and
+ * single-member pools keep the previous one-zone forced behavior. De-scatter
+ * strips accent inks AND grounds outside all zones, so the 0-accent bucket
+ * produces a fully neutral banner.
  */
 function applyAccentZoning(
   cells: DraftCell[],
   grammar: EngineGrammar,
   rng: Rng,
   template: Template,
-  knobs: SampleKnobs,
+  request: AccentRequest,
   diag: SampleDiagnostics,
 ): void {
-  const accentChoices = ACCENT_POOL;
+  const accentChoices = request.poolChoices ?? ACCENT_POOL;
   if (accentChoices.length === 0) return;
 
-  const forcedAccent = knobs.accent;
-  const fullMode = knobs.paletteMode === 'full';
+  const forcedAccent = request.forcedAccent;
+  const poolMode = request.poolChoices !== undefined;
   const targetAccentCount = forcedAccent
     ? 1
-    : fullMode
-      ? weightedChoice(rng, FULL_ACCENT_COUNT_WEIGHTS)
+    : poolMode
+      ? accentChoices.length
       : weightedChoice(rng, CANON_ACCENT_COUNT_WEIGHTS);
   const warmSide: AccentSide | undefined = forcedAccent
     ? undefined
@@ -1962,7 +2036,10 @@ function applyAccentZoning(
     }
   }
 
-  if (fullMode && placedAccents.length < FULL_MIN_DISTINCT_ACCENTS) {
+  const requiredDistinct = poolMode
+    ? minimumDistinctAccentCount(cells, request.poolAccents)
+    : 0;
+  if (requiredDistinct > 0 && placedAccents.length < requiredDistinct) {
     for (const accent of selectedAccents) {
       if (placedAccents.includes(accent)) continue;
       const preferredSide = preferredSideForAccent(accent, warmSide);
@@ -1974,7 +2051,7 @@ function applyAccentZoning(
       for (const cell of placed.zone) {
         occupied.add(cell);
       }
-      if (placedAccents.length >= FULL_MIN_DISTINCT_ACCENTS) break;
+      if (placedAccents.length >= requiredDistinct) break;
     }
   }
 
@@ -2176,26 +2253,86 @@ function enforceAccentGroundContrast(cells: DraftCell[]): void {
   }
 }
 
-function ensureFullPaletteMinimum(cells: DraftCell[], rng: Rng): void {
+function ensureAccentPoolMinimum(
+  cells: DraftCell[],
+  rng: Rng,
+  poolChoices: readonly Weighted<string>[],
+  minDistinct: number,
+  maxShare: number,
+): void {
+  if (minDistinct <= 0) return;
   const allAccents = new Set<string>(ACCENT_POOL_HEXES);
-  const visible = visibleDraftAccents(cells, allAccents);
-  if (visible.size >= FULL_MIN_DISTINCT_ACCENTS) return;
+  const poolAccents = new Set(poolChoices.map(entry => entry.value));
+  const visible = visibleDraftAccents(cells, poolAccents);
+  if (visible.size >= minDistinct) return;
 
-  const missing = ACCENT_POOL
+  const missing = poolChoices
     .filter(entry => !visible.has(entry.value));
   for (const entry of missing) {
-    if (visible.size >= FULL_MIN_DISTINCT_ACCENTS) return;
-    const candidates = cells
-      .filter(cell => cell.kind !== 'plain' && !cellCarriesAnyAccent(cell, allAccents))
-      .sort(compareCells);
+    if (visible.size >= minDistinct) return;
+    const candidates = accentPoolMinimumCandidates(cells, allAccents, poolAccents);
     if (candidates.length === 0) return;
     const cell = weightedChoice(
       rng,
       candidates.map(candidate => ({ value: candidate, weight: 1, sortKey: positionKey(candidate) })),
     );
-    applyInkZoneCell(cell, entry.value, allAccents);
+    if (accentInkCellCount(cells, allAccents) >= maxAccentInkCells(cells, maxShare)) {
+      applyGroundZoneCell(cell, entry.value);
+    } else {
+      applyInkZoneCell(cell, entry.value, allAccents);
+    }
     visible.add(entry.value);
   }
+}
+
+function accentPoolMinimumCandidates(
+  cells: readonly DraftCell[],
+  allAccents: Set<string>,
+  poolAccents: Set<string>,
+): DraftCell[] {
+  const neutralCandidates = cells
+    .filter(cell => cell.kind !== 'plain' && !cellCarriesAnyAccent(cell, allAccents))
+    .sort(compareCells);
+  if (neutralCandidates.length > 0) return neutralCandidates;
+
+  const carrierCounts = new Map<string, number>();
+  for (const cell of cells) {
+    if (cell.kind === 'plain') continue;
+    for (const accent of cellVisibleAccents(cell, poolAccents)) {
+      carrierCounts.set(accent, (carrierCounts.get(accent) ?? 0) + 1);
+    }
+  }
+
+  return cells
+    .filter(cell => {
+      if (cell.kind === 'plain') return false;
+      const carried = cellVisibleAccents(cell, poolAccents);
+      if (carried.size === 0) return false;
+      return [...carried].every(accent => (carrierCounts.get(accent) ?? 0) > 1);
+    })
+    .sort(compareCells);
+}
+
+function cellVisibleAccents(cell: DraftCell, accents: Set<string>): Set<string> {
+  const visible = new Set<string>();
+  if (accents.has(cell.ground)) visible.add(cell.ground);
+  if (cell.ink && accents.has(cell.ink)) visible.add(cell.ink);
+  for (const ink of cell.inks ?? []) {
+    if (accents.has(ink)) visible.add(ink);
+  }
+  return visible;
+}
+
+function accentInkCellCount(cells: readonly DraftCell[], accents: Set<string>): number {
+  return cells.filter(cell =>
+    cell.kind !== 'plain' &&
+    ((cell.ink !== undefined && accents.has(cell.ink)) || (cell.inks ?? []).some(ink => accents.has(ink))),
+  ).length;
+}
+
+function maxAccentInkCells(cells: readonly DraftCell[], maxShare: number): number {
+  const nonPlain = cells.filter(cell => cell.kind !== 'plain').length;
+  return Math.floor(nonPlain * maxShare + EPS);
 }
 
 function visibleDraftAccents(cells: readonly DraftCell[], accents: Set<string>): Set<string> {
@@ -2314,6 +2451,7 @@ function applyMirror(
   extraAccent: string | undefined,
   diag: SampleDiagnostics,
   accentBudgetCap: number,
+  requiredAccentSurvivors: readonly string[] = extraAccent ? [extraAccent] : [],
 ): void {
   if (dims.cols < 2) return;
   if (!MIRROR_TEMPLATE_IDS.has(template.id)) return;
@@ -2365,7 +2503,7 @@ function applyMirror(
   // pass can strip what remains. Presence of the forced accent is a contract of
   // forced mode (ensureAccentPresence already ran); a mirror that breaks it
   // rolls back instead.
-  if (extraAccent && !cellsCarryAccent(cells, extraAccent)) {
+  if (requiredAccentSurvivors.some(accent => !cellsCarryAccent(cells, accent))) {
     restoreDraftCells(cellSnapshots);
     diag.runPaths = originalRunPaths;
     return;
@@ -3195,8 +3333,9 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
   };
 
   const knobs: SampleKnobs = { accent };
-  applyAccentZoning(cells, grammar, rng, template, knobs, diag);
-  enforceAccentBudget(cells, grammar, knobs.accent);
+  const accentRequest = resolveAccentRequest(knobs, grammar.palette.accentOrder);
+  applyAccentZoning(cells, grammar, rng, template, accentRequest, diag);
+  enforceAccentBudget(cells, grammar, accentRequest.forcedAccent);
   enforceAccentGroundContrast(cells);
 
   const finalCells = finalizeCells(cells);

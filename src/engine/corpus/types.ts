@@ -75,6 +75,8 @@ export interface BannerPlan {
 export interface SampleKnobs {
   template?: string;
   accent?: string;
+  /** User-constrained subset of the locked 7 accent hues. */
+  accentPool?: string[];
   paletteMode?: 'auto' | 'full';
   density?: number;
   figures?: boolean;

@@ -27,6 +27,8 @@ import type { CompositionScores } from './composition.js';
 // GRAMMAR is typed as EngineGrammar (with Template[] templates) directly in
 // the generated file; no cast needed.
 const GRAMMAR: EngineGrammar = GRAMMAR_RAW;
+const LOCKED_ACCENT_HEXES = ['#FF4F00', '#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const LOCKED_ACCENT_SET = new Set<string>(LOCKED_ACCENT_HEXES);
 
 // ---------------------------------------------------------------------------
 // Public interfaces
@@ -73,6 +75,7 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
   const knobs = {
     template: config.template,
     accent: config.program ? PROGRAMS[config.program].hue : config.accent,
+    accentPool: config.accentPool,
     density: config.density,
     figures: config.figures,
     arrangement: config.arrangement,
@@ -152,6 +155,30 @@ function validateCorpusConfig(config: CorpusConfig): void {
   }
   if (paletteMode === 'full' && config.program) {
     throw new Error('paletteMode full cannot be combined with program');
+  }
+  if (config.accentPool !== undefined) {
+    if (!Array.isArray(config.accentPool) || config.accentPool.length === 0) {
+      throw new Error('accentPool cannot be empty');
+    }
+    if (config.accent) {
+      throw new Error('accentPool cannot be combined with accent');
+    }
+    if (config.program) {
+      throw new Error('accentPool cannot be combined with program');
+    }
+    if (paletteMode === 'full') {
+      throw new Error('accentPool cannot be combined with paletteMode full');
+    }
+    const seen = new Set<string>();
+    for (const accent of config.accentPool) {
+      if (!LOCKED_ACCENT_SET.has(accent)) {
+        throw new Error(`Unknown accent in accentPool: ${accent}`);
+      }
+      if (seen.has(accent)) {
+        throw new Error(`accentPool cannot contain duplicate accent: ${accent}`);
+      }
+      seen.add(accent);
+    }
   }
 }
 
