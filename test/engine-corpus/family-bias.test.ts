@@ -61,7 +61,9 @@ function publicProgramShare(program: ProgramId): { baseline: number; biased: num
 describe('program family bias', () => {
   it('maps every program to existing corpus tile families', () => {
     const catalogFamilies = new Set(Object.values(TILES).map(tile => tile.family));
-    expect(PROGRAM_FAMILY_BIAS).toBe(3);
+    // 8 = the P8 greyscale-gate calibration (3 left T&S unrecognizable without
+    // its hue). This pin exists to catch accidental drift, not to freeze tuning.
+    expect(PROGRAM_FAMILY_BIAS).toBe(8);
     for (const program of PROGRAM_IDS) {
       expect(PROGRAM_FAMILY_MAP[program].length, `${program} family map`).toBeGreaterThan(0);
       for (const family of PROGRAM_FAMILY_MAP[program]) {

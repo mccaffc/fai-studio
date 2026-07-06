@@ -140,3 +140,28 @@ In-browser (aside, localhost:4310, desktop). **PASS after one controller fix.**
   Re-verified on screen: two full rows of square swatches, correct active states.
 - Accepted for v1: family/tile selects stretch full-width under the wrap layout — heavy but readable,
   grid-like, consistent with the IBM register. Revisit only if editing gets daily use.
+
+## Gate C — P8 program shape identity (greyscale test), 2026-07-06
+
+Six programs × 6 banners (seeds 850000–850005, same seeds across programs for A/B), greyscaled,
+judged on shapes alone. Calibration: PROGRAM_FAMILY_BIAS 3 → **8** at this gate (at 3, T&S was
+unrecognizable and two banners were near-identical across programs at shared seeds).
+
+Nameability at bias 8:
+- Science & Innovation ★ 6/6 — discs/dots carry every banner (a stripe field literally became a dot
+  grid, a rectangle field became quarter-discs). Unmistakable.
+- Technology & Statecraft ✓ 4/6 — stripe/bar/colonnade fields dominate; the two arc-mosaic-template
+  seeds resist (that template has no bar vocabulary — structural ceiling, not a knob problem).
+- American Governance ~3/6 — the scallop-chain sweep banners are genuinely distinctive; block-heavy
+  figure-field seeds don't lean.
+- Energy & Infrastructure ~2.5/6 — wave-gourd columns are unmistakable when present; frequency
+  limited by an 8-tile wave family.
+- Frontier Legal Defense ~2/6 — frame/grid blocks read but weakly.
+- Artificial Intelligence ✗ ~1/6 — the corpus has almost no capsule/lens vocabulary (float 8,
+  merge 3 tiles); no multiplier can conjure shapes that aren't in the corpus.
+
+**VERDICT: SHIP as v1** — the mechanism is proven and half the programs have real shape identity.
+Full identity needs two things family bias cannot provide, queued as named follow-ups:
+(1) per-program TEMPLATE bias (arc-mosaic for Science, repeat-rhythm/pipe-line for T&S…);
+(2) corpus vocabulary work — mine/author capsule+lens tiles for AI and more wave/scallop tiles for
+Energy. This is content, not engineering: the same path as the P0 mined-tiles discovery.

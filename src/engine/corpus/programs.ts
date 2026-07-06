@@ -41,8 +41,11 @@ export const PROGRAMS: Record<ProgramId, { name: string; hue: string }> = {
   'frontier-legal-defense': { name: 'Frontier Legal Defense',    hue: '#3A4A6B' },
 };
 
-/** Program-mode shape identity multiplier for mapped corpus tile families. */
-export const PROGRAM_FAMILY_BIAS = 3;
+/** Program-mode shape identity multiplier for mapped corpus tile families.
+ *  Calibrated at the P8 greyscale gate: 3 left ~half of program plans without
+ *  a mapped dominant family (T&S unrecognizable without its hue); 8 makes the
+ *  mapped families carry the sheet while non-mapped tiles stay reachable. */
+export const PROGRAM_FAMILY_BIAS = 8;
 
 /** Chris/controller-curated program identity map to corpus tile families. */
 export const PROGRAM_FAMILY_MAP: Record<ProgramId, readonly string[]> = {
