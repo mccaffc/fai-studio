@@ -27,10 +27,16 @@ const TEMPLATE_IDS = [
   "mixed-quilt",
 ] as const;
 
-const CORPUS_ACCENTS: Array<[string, string]> = [
+// One flat accent list — orange first (the brand), then the six program hues
+// alphabetical. All six are equal; no hue gets set off from the others.
+const ACCENT_OPTIONS: Array<[string, string]> = [
   ["International Orange", "#FF4F00"],
   ["Celestial Blue", "#4997D0"],
   ["Chrome Yellow", "#FFA300"],
+  ["Electric Violet", "#8265DB"],
+  ["Frontier Indigo", "#3A4A6B"],
+  ["Signal Green", "#268B41"],
+  ["Telemagenta", "#D63A8C"],
 ];
 const FULL_PALETTE_VALUE = "__full__";
 
@@ -529,26 +535,13 @@ function renderCorpusControls(): void {
     full.textContent = "Full palette";
     if (state.config.paletteMode === "full") full.selected = true;
     sel.appendChild(full);
-    for (const [name, hex] of CORPUS_ACCENTS) {
+    for (const [name, hex] of ACCENT_OPTIONS) {
       const o = document.createElement("option");
       o.value = hex;
       o.textContent = `${name} ${hex}`;
       if (state.config.paletteMode !== "full" && hex === state.config.accent) o.selected = true;
       sel.appendChild(o);
     }
-    // Program hues are choosable as explicit accents.
-    const pg = document.createElement("optgroup");
-    pg.label = "Program hues";
-    for (const [pid, p] of Object.entries(PROGRAMS)) {
-      if (CORPUS_ACCENTS.some(([, h]) => h === p.hue)) continue; // already listed as corpus-mined
-      const o = document.createElement("option");
-      o.value = p.hue;
-      o.textContent = `${p.name} ${p.hue}`;
-      o.dataset.programHue = pid;
-      if (state.config.paletteMode !== "full" && p.hue === state.config.accent && !CORPUS_ACCENTS.some(([, h]) => h === p.hue)) o.selected = true;
-      pg.appendChild(o);
-    }
-    sel.appendChild(pg);
     sel.addEventListener("change", () => {
       if (sel.value === FULL_PALETTE_VALUE) {
         state.config.paletteMode = "full";

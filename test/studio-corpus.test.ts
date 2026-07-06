@@ -610,4 +610,26 @@ describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
     expect(persisted.paletteMode).toBe('full');
     expect(persisted.accent).toBe('');
   });
+
+  it('lists all seven accents as one flat group — no hue set off from the others', async () => {
+    // Regression: blue and yellow were listed at top level with the other four
+    // hues demoted to a "Program hues" optgroup (old-paradigm holdover).
+    localStorage.clear();
+    const { mountCorpusMode } = await import('../src/studio/corpus-mode');
+    document.body.innerHTML = '<div id="canvas"></div><div id="corpus-controls"></div><div id="corpus-scores"></div><div id="variations"></div>';
+    mountCorpusMode({ flash: () => {}, onSave: () => {} });
+
+    const sel = document.querySelector('[data-corpus-accent]') as HTMLSelectElement;
+    expect(sel.querySelector('optgroup')).toBeNull();
+
+    const hexes = [...sel.options].map(o => o.value).filter(v => v.startsWith('#'));
+    expect(hexes).toEqual([
+      '#FF4F00', // International Orange first (the brand)
+      '#4997D0', '#FFA300', '#8265DB', '#3A4A6B', '#268B41', '#D63A8C', // six equal hues, alphabetical
+    ]);
+    // Every option is a DIRECT child of the select — flat, no grouping.
+    for (const o of [...sel.options]) {
+      expect(o.parentElement).toBe(sel);
+    }
+  });
 });
