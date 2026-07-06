@@ -115,7 +115,10 @@ describe("studio corpus mode (jsdom)", () => {
     expect(corpusAside.style.display).not.toBe("none");
   });
 
-  it("3. template select change regenerates (different svg content)", async () => {
+  // 15s timeout: this boots main.ts + two full generations under whole-suite
+  // parallel jsdom load; the 5s default became marginal once the suite grew to
+  // 36 files (observed intermittent timeouts at P8 Task 3; 385ms in isolation).
+  it("3. template select change regenerates (different svg content)", { timeout: 15_000 }, async () => {
     await import("../src/studio/main");
 
     const before = document.querySelector("#canvas")!.innerHTML;
