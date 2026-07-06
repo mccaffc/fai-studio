@@ -571,7 +571,7 @@ describe('P5-3 arrangement select (size)', () => {
 });
 
 describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
-  it('accent select lists the four non-heritage program hues once each', async () => {
+  it('accent select lists the four non-corpus-mined program hues once each', async () => {
     localStorage.clear();
     const { mountCorpusMode } = await import('../src/studio/corpus-mode');
     document.body.innerHTML = '<div id="canvas"></div><div id="corpus-controls"></div><div id="corpus-scores"></div>';
@@ -583,11 +583,11 @@ describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
     }
     expect(values.filter(v => v === '#4997D0')).toHaveLength(1); // no dupe for shared hues
   });
-  it('engine accepts a program hue as explicit accent in full-palette mode', async () => {
+  it('engine accepts a program hue as an explicit accent', async () => {
     const { generateBanner } = await import('../src/engine/corpus/index');
     const r = generateBanner({ seed: 777, accent: '#8265DB' });
     expect(r.svg).toContain('#8265DB');
-    expect(r.svg).not.toContain('#FF4F00'); // zoning de-scatters heritage strays
+    expect(r.svg).not.toContain('#FF4F00'); // zoning de-scatters corpus-mined strays
   });
 });
 

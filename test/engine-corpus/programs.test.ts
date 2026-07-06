@@ -214,7 +214,7 @@ describe('applyProgramPalette — rule 3: contrast pass', () => {
     };
     const out = applyProgramPalette(withConflict, hue);
     const cell = out.cells[0]!;
-    // After rule 1: ground stays hue (hue is not a classic accent, so no remap).
+    // After rule 1: ground remaps to the same hue.
     // After rule 2: ink stays hue. Rule 3a: ink === ground → flip to neutral.
     expect(cell.ink).not.toBe(cell.ground);
     expect(PROGRAM_NEUTRAL_SET.has(cell.ink!)).toBe(true);

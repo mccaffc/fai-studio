@@ -536,12 +536,11 @@ function renderCorpusControls(): void {
       if (state.config.paletteMode !== "full" && hex === state.config.accent) o.selected = true;
       sel.appendChild(o);
     }
-    // Program hues are choosable as explicit accents in full-palette mode
-    // (they stay out of the Auto rotation — wayfinding discipline).
+    // Program hues are choosable as explicit accents.
     const pg = document.createElement("optgroup");
     pg.label = "Program hues";
     for (const [pid, p] of Object.entries(PROGRAMS)) {
-      if (CORPUS_ACCENTS.some(([, h]) => h === p.hue)) continue; // already listed as heritage
+      if (CORPUS_ACCENTS.some(([, h]) => h === p.hue)) continue; // already listed as corpus-mined
       const o = document.createElement("option");
       o.value = p.hue;
       o.textContent = `${p.name} ${p.hue}`;

@@ -25,7 +25,7 @@ const ARRANGEMENT_IDS = Object.keys(ARRANGEMENTS) as ArrangementId[];
 const SAMPLE_SEEDS = Array.from({ length: 10 }, (_v, i) => i + 1);
 const PROGRAM_IDS = ['technology-statecraft', 'frontier-legal-defense'] as const;
 const PROGRAM_SEEDS = [3, 17];
-const HERITAGE_ACCENTS = new Set(['#FF4F00', '#FFA300', '#4997D0']);
+const CORPUS_MINED_ACCENTS = new Set(['#FF4F00', '#FFA300', '#4997D0']);
 const FAMILIES: Record<string, string> = Object.fromEntries(
   Object.entries(TILES).map(([id, tile]) => [id, tile.family]),
 );
@@ -67,10 +67,10 @@ function grammarForOnlyGroundScheme(scheme: GroundSchemeKind): EngineGrammar {
 function visibleAccentCount(plan: ReturnType<typeof samplePlan>): number {
   const accents = new Set<string>();
   for (const cell of plan.cells) {
-    if (HERITAGE_ACCENTS.has(cell.ground)) accents.add(cell.ground);
-    if (cell.ink && HERITAGE_ACCENTS.has(cell.ink)) accents.add(cell.ink);
+    if (CORPUS_MINED_ACCENTS.has(cell.ground)) accents.add(cell.ground);
+    if (cell.ink && CORPUS_MINED_ACCENTS.has(cell.ink)) accents.add(cell.ink);
     for (const ink of cell.inks ?? []) {
-      if (HERITAGE_ACCENTS.has(ink)) accents.add(ink);
+      if (CORPUS_MINED_ACCENTS.has(ink)) accents.add(ink);
     }
   }
   return accents.size;
