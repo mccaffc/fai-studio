@@ -32,6 +32,7 @@ const CORPUS_ACCENTS: Array<[string, string]> = [
   ["Celestial Blue", "#4997D0"],
   ["Chrome Yellow", "#FFA300"],
 ];
+const FULL_PALETTE_VALUE = "__full__";
 
 // Arrangement labels shown in the size select: id → label with dims
 const ARRANGEMENT_LABELS: Record<string, string> = {
@@ -63,6 +64,7 @@ const LS_CORPUS_CONFIG = "fai-corpus-config";
 interface PersistedCorpusConfig {
   template?: string;
   accent?: string;
+  paletteMode?: "auto" | "full";
   density?: number;
   figures?: boolean;
   program?: string;
@@ -83,6 +85,7 @@ function saveCorpusConfig(): void {
   const persisted: PersistedCorpusConfig = {
     template: state.config.template,
     accent: state.config.accent,
+    paletteMode: state.config.paletteMode,
     density: state.config.density,
     figures: state.config.figures,
     program: state.config.program,
@@ -101,6 +104,7 @@ interface CorpusState {
   config: {
     template: string;     // "" = auto
     accent: string;       // "" = auto
+    paletteMode: "auto" | "full";
     density: number;
     figures: boolean;
     seed: number;
@@ -109,7 +113,7 @@ interface CorpusState {
   };
 }
 
-function makeDefaultConfig() {
+function makeDefaultConfig(): CorpusState["config"] {
   const saved = loadCorpusConfig();
 
   // Validate program ID: only adopt if it exists in PROGRAMS
@@ -133,6 +137,7 @@ function makeDefaultConfig() {
   return {
     template,
     accent: saved.accent ?? "",
+    paletteMode: saved.paletteMode === "full" ? "full" : "auto",
     density: saved.density ?? 0.5,
     figures: saved.figures ?? true,
     seed: (Math.random() * 0xffffffff) >>> 0,
@@ -225,7 +230,8 @@ function buildCorpusConfig() {
     template: state.config.template || undefined,
     // accent is ignored by the engine when program is set, but we pass it
     // anyway so that switching back to None restores the user's chosen accent.
-    accent: state.config.program ? undefined : (state.config.accent || undefined),
+    accent: state.config.program || state.config.paletteMode === "full" ? undefined : (state.config.accent || undefined),
+    paletteMode: state.config.program ? "auto" as const : state.config.paletteMode,
     density: state.config.density,
     figures: state.config.figures,
     program: (state.config.program as ProgramId) || undefined,
@@ -518,11 +524,16 @@ function renderCorpusControls(): void {
     auto.value = "";
     auto.textContent = "Auto";
     sel.appendChild(auto);
+    const full = document.createElement("option");
+    full.value = FULL_PALETTE_VALUE;
+    full.textContent = "Full palette";
+    if (state.config.paletteMode === "full") full.selected = true;
+    sel.appendChild(full);
     for (const [name, hex] of CORPUS_ACCENTS) {
       const o = document.createElement("option");
       o.value = hex;
       o.textContent = `${name} ${hex}`;
-      if (hex === state.config.accent) o.selected = true;
+      if (state.config.paletteMode !== "full" && hex === state.config.accent) o.selected = true;
       sel.appendChild(o);
     }
     // Program hues are choosable as explicit accents in full-palette mode
@@ -535,11 +546,18 @@ function renderCorpusControls(): void {
       o.value = p.hue;
       o.textContent = `${p.name} ${p.hue}`;
       o.dataset.programHue = pid;
-      if (p.hue === state.config.accent && !CORPUS_ACCENTS.some(([, h]) => h === p.hue)) o.selected = true;
+      if (state.config.paletteMode !== "full" && p.hue === state.config.accent && !CORPUS_ACCENTS.some(([, h]) => h === p.hue)) o.selected = true;
       pg.appendChild(o);
     }
     sel.appendChild(pg);
     sel.addEventListener("change", () => {
+      if (sel.value === FULL_PALETTE_VALUE) {
+        state.config.paletteMode = "full";
+        state.config.accent = "";
+        corpusRegen(false);
+        return;
+      }
+      state.config.paletteMode = "auto";
       state.config.accent = sel.value;
       // recolor (geometry frozen) if there's a current result; else regenerate
       if (state.current) {
@@ -646,6 +664,7 @@ export function openCorpusItem(config: import("../engine/corpus/index.js").Corpu
     state.config = {
       template: config.template ?? "",
       accent: config.accent ?? "",
+      paletteMode: config.paletteMode === "full" ? "full" : "auto",
       density: config.density ?? 0.5,
       figures: config.figures ?? true,
       seed,

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { GRAMMAR as RAW_GRAMMAR } from '../../src/engine/corpus/data/grammar.js';
 import { sampleWithDiagnostics } from '../../src/engine/corpus/sample.js';
+import { generateBanner } from '../../src/engine/corpus/index.js';
 import type { BannerPlan, CellPlan, EngineGrammar } from '../../src/engine/corpus/types.js';
 
 const GRAMMAR = RAW_GRAMMAR as unknown as EngineGrammar;
@@ -201,5 +202,43 @@ describe('multi-accent auto zoning', () => {
     expect(first.diag.accentZonesPlaced).toBe(second.diag.accentZonesPlaced);
     expect(first.diag.accentsUsed).toEqual(second.diag.accentsUsed);
     expect(first.diag.accentWarmSide).toBe(second.diag.accentWarmSide);
+  });
+});
+
+describe('full-palette mode', () => {
+  it('is deterministic for full-palette diagnostics and plans', () => {
+    const knobs = { paletteMode: 'full' } as const;
+    const first = sampleWithDiagnostics(GRAMMAR, 61_000, knobs);
+    const second = sampleWithDiagnostics(GRAMMAR, 61_000, knobs);
+
+    expect(first.plan).toEqual(second.plan);
+    expect(first.diag.accentsUsed).toEqual(second.diag.accentsUsed);
+    expect(first.diag.accentWarmSide).toBe(second.diag.accentWarmSide);
+  });
+
+  it('uses at least 4 distinct locked accents in at least 80% of 100 seeds', () => {
+    let fourOrMore = 0;
+
+    for (let i = 0; i < 100; i += 1) {
+      const seed = 62_000 + i;
+      const { plan, diag } = sampleWithDiagnostics(GRAMMAR, seed, { paletteMode: 'full' });
+      const visible = visibleAccentSet(plan);
+      if (visible.size >= 4) fourOrMore += 1;
+
+      for (const accent of visible) {
+        expect(ACCENT_POOL_SET.has(accent), `seed ${seed}: unexpected visible accent ${accent}`).toBe(true);
+      }
+      for (const accent of diag.accentsUsed) {
+        expect(ACCENT_POOL_SET.has(accent), `seed ${seed}: unexpected diagnostic accent ${accent}`).toBe(true);
+      }
+      expect(accentInkShare(plan), `seed ${seed}`).toBeLessThanOrEqual(0.5);
+    }
+
+    expect(fourOrMore, `${fourOrMore}/100 full-palette seeds reached ≥4 accents`).toBeGreaterThanOrEqual(80);
+  });
+
+  it('throws when full-palette mode is combined with explicit accent or program mode', () => {
+    expect(() => generateBanner({ seed: 1, paletteMode: 'full', accent: '#FF4F00' })).toThrow(/paletteMode.*accent/i);
+    expect(() => generateBanner({ seed: 1, paletteMode: 'full', program: 'science-innovation' })).toThrow(/paletteMode.*program/i);
   });
 });

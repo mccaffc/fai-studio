@@ -590,3 +590,24 @@ describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
     expect(r.svg).not.toContain('#FF4F00'); // zoning de-scatters heritage strays
   });
 });
+
+describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
+  it('accent select offers Full palette and persists paletteMode=full', async () => {
+    localStorage.clear();
+    const { mountCorpusMode } = await import('../src/studio/corpus-mode');
+    document.body.innerHTML = '<div id="canvas"></div><div id="corpus-controls"></div><div id="corpus-scores"></div><div id="variations"></div>';
+    mountCorpusMode({ flash: () => {}, onSave: () => {} });
+
+    const sel = document.querySelector('[data-corpus-accent]') as HTMLSelectElement;
+    const full = [...sel.options].find(o => o.textContent === 'Full palette');
+    expect(full).toBeTruthy();
+    expect(full!.value).toBe('__full__');
+
+    sel.value = '__full__';
+    sel.dispatchEvent(new Event('change'));
+
+    const persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as { paletteMode?: string; accent?: string };
+    expect(persisted.paletteMode).toBe('full');
+    expect(persisted.accent).toBe('');
+  });
+});
