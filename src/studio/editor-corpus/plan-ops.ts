@@ -33,10 +33,36 @@ export function cellAt(plan: BannerPlan, ref: CellRef): CellPlan | null {
   return plan.cells.find((cell) => cell.col === ref.col && cell.row === ref.row) ?? null;
 }
 
+/**
+ * Build a set of "col,row" keys for every cell covered by a figure span or
+ * patch span (including the anchor cell itself).  Called per-op so it stays
+ * in sync after mutations — callers always operate on the live plan.
+ */
+function buildCoverageSet(plan: BannerPlan): Set<string> {
+  const covered = new Set<string>();
+  for (const cell of plan.cells) {
+    const span = cell.figureSpan ?? cell.patchSpan;
+    if (span) {
+      const [w, h] = span;
+      for (let dr = 0; dr < h; dr++) {
+        for (let dc = 0; dc < w; dc++) {
+          covered.add(`${cell.col + dc},${cell.row + dr}`);
+        }
+      }
+    }
+  }
+  return covered;
+}
+
 function editableCell(plan: BannerPlan, ref: CellRef): CellPlan | OpResult {
   const cell = cellAt(plan, ref);
   if (!cell) return { ok: false, reason: OUT_OF_BOUNDS };
+  // Anchor-cell check (fast path — anchors always carry one of these properties)
   if (cell.figureId || cell.figureSpan || cell.patchId)
+    return { ok: false, reason: LOCKED };
+  // Coverage check — non-anchor cells that fall within a multi-cell span
+  const covered = buildCoverageSet(plan);
+  if (covered.has(`${ref.col},${ref.row}`))
     return { ok: false, reason: LOCKED };
   return cell;
 }
@@ -107,6 +133,7 @@ export function setGround(plan: BannerPlan, ref: CellRef, hex: string): OpResult
   const cell = editableCell(plan, ref);
   if ("ok" in cell) return cell;
   if (cell.ink === hex) return { ok: false, reason: "ink equals ground" };
+  if (cell.inks && cell.inks.includes(hex)) return { ok: false, reason: "ground equals an ink" };
   cell.ground = hex;
   return { ok: true };
 }

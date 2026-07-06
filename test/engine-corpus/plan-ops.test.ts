@@ -145,6 +145,120 @@ describe("corpus plan ops", () => {
     });
   });
 
+  // F1 regression: non-anchor cells covered by a multi-cell patch or figure span
+  // must be locked — the prior guard only checked anchor properties (figureId /
+  // figureSpan / patchId) which are absent on covered non-anchor cells.
+  it("F1: covered non-anchor cells within a patch span are locked (all four ops)", () => {
+    // 3-col × 2-row plan.  Patch anchor at (0,0) with patchSpan [3,2] — covered
+    // cells (1,0), (2,0), (0,1), (1,1), (2,1) are plain CellPlan entries with NO
+    // patchId / patchSpan of their own; they were previously freely editable.
+    const cells: CellPlan[] = [
+      // anchor
+      baseCell(0, 0, { patchId: "patch-042-robot", patchSpan: [3, 2] }),
+      // covered non-anchors
+      baseCell(1, 0),
+      baseCell(2, 0),
+      baseCell(0, 1),
+      baseCell(1, 1),
+      baseCell(2, 1),
+    ];
+    const p: BannerPlan = {
+      id: "f1-patch-test",
+      width: 960,
+      height: 640,
+      cols: 3,
+      rows: 2,
+      ground: "#121212",
+      cells,
+      forms: [],
+      matchRate: 1,
+    };
+
+    const covered: Array<[number, number]> = [[1, 0], [2, 0], [0, 1], [1, 1], [2, 1]];
+    for (const [col, row] of covered) {
+      expect(setInk(p, { col, row }, "#FF4F00")).toEqual({
+        ok: false,
+        reason: "figure/patch cells are locked in v1",
+      });
+      expect(setTile(p, { col, row }, "circle-02")).toEqual({
+        ok: false,
+        reason: "figure/patch cells are locked in v1",
+      });
+      expect(setGround(p, { col, row }, "#FFFFFF")).toEqual({
+        ok: false,
+        reason: "figure/patch cells are locked in v1",
+      });
+      expect(clearToPlain(p, { col, row })).toEqual({
+        ok: false,
+        reason: "figure/patch cells are locked in v1",
+      });
+    }
+    // Anchor itself must also still be locked
+    expect(setInk(p, { col: 0, row: 0 }, "#FF4F00")).toEqual({
+      ok: false,
+      reason: "figure/patch cells are locked in v1",
+    });
+  });
+
+  it("F1: covered non-anchor cells within a figure span are locked", () => {
+    // 3-col × 2-row plan.  Figure anchor at (0,0) with figureSpan [3,2].
+    // Covered cells (1,0), (2,0), (0,1), (1,1), (2,1) must be locked.
+    const cells: CellPlan[] = [
+      // anchor — figureId + figureSpan present
+      baseCell(0, 0, { figureId: "fig-a", figureAnchor: true, figureSpan: [3, 2] }),
+      // covered non-anchors — no figureId / figureSpan of their own
+      baseCell(1, 0),
+      baseCell(2, 0),
+      baseCell(0, 1),
+      baseCell(1, 1),
+      baseCell(2, 1),
+    ];
+    const p: BannerPlan = {
+      id: "f1-figure-test",
+      width: 960,
+      height: 640,
+      cols: 3,
+      rows: 2,
+      ground: "#121212",
+      cells,
+      forms: [],
+      matchRate: 1,
+    };
+
+    const covered: Array<[number, number]> = [[1, 0], [2, 0], [0, 1], [1, 1], [2, 1]];
+    for (const [col, row] of covered) {
+      expect(setInk(p, { col, row }, "#FF4F00")).toEqual({
+        ok: false,
+        reason: "figure/patch cells are locked in v1",
+      });
+    }
+  });
+
+  // F3 regression: setGround must reject hex that appears in cell.inks[] (not
+  // just cell.ink).  Prior code only compared hex === cell.ink.
+  it("F3: setGround rejects a hex that matches a secondary ink in inks[]", () => {
+    const p = plan([
+      baseCell(0, 0, {
+        ground: "#121212",
+        ink: "#FF4F00",
+        inks: ["#FF4F00", "#4997D0"], // secondary ink #4997D0 must also block ground
+      }),
+    ]);
+
+    // Setting ground to the secondary ink should be rejected
+    expect(setGround(p, { col: 0, row: 0 }, "#4997D0")).toEqual({
+      ok: false,
+      reason: "ground equals an ink",
+    });
+    // Primary ink also blocked (existing behaviour must not regress)
+    expect(setGround(p, { col: 0, row: 0 }, "#FF4F00")).toEqual({
+      ok: false,
+      reason: "ink equals ground",
+    });
+    // A different permitted fill that isn't in inks should succeed
+    expect(setGround(p, { col: 0, row: 0 }, "#FFFFFF")).toEqual({ ok: true });
+  });
+
   it("forEachSelected applies to all cells and rolls back on the first failure", () => {
     const p = plan([
       baseCell(0, 0),

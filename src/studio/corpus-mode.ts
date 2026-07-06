@@ -420,8 +420,15 @@ function renderCorpusCanvas(): void {
 
   mkBtn("Reroll", "primary", () => {
     if (!state.current) return;
-    state.current = engineReroll(state.current);
-    state.config.seed = state.current.seed;
+    if (isEditedCorpusConfig(state.current.config)) {
+      // Edited configs must not be spread into fresh generations — rebuild a
+      // clean config from the current panel state with an incremented seed.
+      state.config.seed = state.current.seed + 1;
+      state.current = generateBanner(buildCorpusConfig());
+    } else {
+      state.current = engineReroll(state.current);
+      state.config.seed = state.current.seed;
+    }
     state.vars = engineVariations(state.current, 6);
     renderCorpusCanvas();
     renderCorpusVariations();
@@ -906,8 +913,15 @@ export function unmountCorpusMode(): void {
 export function corpusSpacebarReroll(): void {
   if (state.editing) return;
   if (!state.current) return;
-  state.current = engineReroll(state.current);
-  state.config.seed = state.current.seed;
+  if (isEditedCorpusConfig(state.current.config)) {
+    // Edited configs must not be spread into fresh generations — rebuild a
+    // clean config from the current panel state with an incremented seed.
+    state.config.seed = state.current.seed + 1;
+    state.current = generateBanner(buildCorpusConfig());
+  } else {
+    state.current = engineReroll(state.current);
+    state.config.seed = state.current.seed;
+  }
   state.vars = engineVariations(state.current, 6);
   renderCorpusCanvas();
   renderCorpusVariations();

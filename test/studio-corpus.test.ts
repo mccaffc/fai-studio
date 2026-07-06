@@ -601,6 +601,121 @@ describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
   });
 });
 
+// F2 regression: when the current item is an edited config (edited:true + plan),
+// clicking Reroll must not spread the stale EditedCorpusConfig into the new
+// generation.  The resulting state.current.config must be a plain CorpusConfig
+// (no 'edited', no 'plan') and the plan must be freshly generated (different
+// cells than the stale edited plan).
+describe('F2: edited-config reroll isolation (final review wave)', () => {
+  beforeEach(() => {
+    vi.resetModules();
+    localStorage.clear();
+    document.body.innerHTML =
+      '<div id="canvas"></div><div id="canvas-actions"></div>' +
+      '<div id="corpus-controls"></div><div id="corpus-scores"></div>' +
+      '<div id="variations"></div><div id="saved"></div>' +
+      '<div id="action-status"></div>';
+  });
+
+  it('Reroll from an edited item produces a clean CorpusConfig (no edited/plan)', async () => {
+    const { mountCorpusMode, openCorpusItem, generateBannerForTray } = await import('../src/studio/corpus-mode');
+
+    // Obtain a real edited config by generating a plan then simulating a save
+    const { generateBanner } = await import('../src/engine/corpus/index');
+    const originalResult = generateBanner({ seed: 42 });
+    const editedPlan = structuredClone(originalResult.plan);
+    // Mutate one cell to make it "edited"
+    if (editedPlan.cells[0]) editedPlan.cells[0].ground = "#FFFFFF";
+
+    const editedConfig = { ...originalResult.config, edited: true as const, plan: editedPlan };
+
+    let lastSaved: { config: unknown; seed: number } | null = null;
+    mountCorpusMode({
+      flash: () => {},
+      onSave: (config, seed) => { lastSaved = { config, seed }; },
+    });
+
+    // Restore the edited item — this sets state.current.config to an EditedCorpusConfig
+    openCorpusItem(editedConfig, 42);
+
+    // Click Reroll
+    const rerollBtn = Array.from(
+      document.querySelectorAll('#canvas-actions button'),
+    ).find(b => b.textContent?.trim() === 'Reroll') as HTMLButtonElement | undefined;
+    expect(rerollBtn).toBeTruthy();
+    rerollBtn!.click();
+
+    // Save so we can inspect the config that would be persisted
+    const saveBtn = Array.from(
+      document.querySelectorAll('#canvas-actions button'),
+    ).find(b => b.textContent?.trim() === 'Save') as HTMLButtonElement | undefined;
+    expect(saveBtn).toBeTruthy();
+    saveBtn!.click();
+    expect(lastSaved).toBeTruthy();
+
+    const savedConfig = lastSaved!.config as Record<string, unknown>;
+    // Must NOT carry edited or plan — those belong only to manually-edited items
+    expect(savedConfig).not.toHaveProperty('edited');
+    expect(savedConfig).not.toHaveProperty('plan');
+  });
+
+  it('Reroll from edited item produces a genuinely new plan (not the stale edited plan)', async () => {
+    const { mountCorpusMode, openCorpusItem } = await import('../src/studio/corpus-mode');
+    const { generateBanner } = await import('../src/engine/corpus/index');
+
+    const originalResult = generateBanner({ seed: 99 });
+    const editedPlan = structuredClone(originalResult.plan);
+    // Mark a cell with a distinctive ground so we can detect stale re-use
+    if (editedPlan.cells[0]) editedPlan.cells[0].ground = "#8265DB";
+    const editedConfig = { ...originalResult.config, edited: true as const, plan: editedPlan };
+
+    mountCorpusMode({ flash: () => {} });
+    openCorpusItem(editedConfig, 99);
+
+    // Canvas before reroll should show the edited plan (with #8265DB)
+    const canvasBefore = document.querySelector('#canvas')!.innerHTML;
+    // Note: #8265DB may or may not appear in SVG depending on renderer, but the
+    // plan itself is what matters.  We check via the canvas SVG content.
+
+    const rerollBtn = Array.from(
+      document.querySelectorAll('#canvas-actions button'),
+    ).find(b => b.textContent?.trim() === 'Reroll') as HTMLButtonElement | undefined;
+    expect(rerollBtn).toBeTruthy();
+    rerollBtn!.click();
+
+    const canvasAfter = document.querySelector('#canvas')!.innerHTML;
+    // After reroll the canvas must regenerate — seed changes so SVG changes
+    expect(canvasAfter).not.toBe(canvasBefore);
+  });
+
+  it('spacebar reroll from edited item produces a clean config', async () => {
+    const { mountCorpusMode, openCorpusItem, corpusSpacebarReroll } = await import('../src/studio/corpus-mode');
+    const { generateBanner } = await import('../src/engine/corpus/index');
+
+    const originalResult = generateBanner({ seed: 77 });
+    const editedPlan = structuredClone(originalResult.plan);
+    const editedConfig = { ...originalResult.config, edited: true as const, plan: editedPlan };
+
+    let lastSaved: { config: unknown } | null = null;
+    mountCorpusMode({
+      flash: () => {},
+      onSave: (config) => { lastSaved = { config }; },
+    });
+    openCorpusItem(editedConfig, 77);
+
+    corpusSpacebarReroll();
+
+    const saveBtn = Array.from(
+      document.querySelectorAll('#canvas-actions button'),
+    ).find(b => b.textContent?.trim() === 'Save') as HTMLButtonElement | undefined;
+    saveBtn!.click();
+
+    const savedConfig = lastSaved!.config as Record<string, unknown>;
+    expect(savedConfig).not.toHaveProperty('edited');
+    expect(savedConfig).not.toHaveProperty('plan');
+  });
+});
+
 describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
   beforeEach(() => {
     vi.resetModules();

@@ -47,6 +47,7 @@ export interface CellPlan {
   figureAnchor?: boolean;   // true only for the top-left figure anchor cell
   figureSpan?: [number, number]; // [w,h] cells spanned by the figure asset
   patchId?: string;         // iconic patch id, present on the stamped anchor cell
+  patchSpan?: [number, number]; // [w,h] cells spanned by the patch, present on the anchor
 }
 
 export interface FormGroup {

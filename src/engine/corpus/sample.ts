@@ -3085,7 +3085,7 @@ function finalizeCells(cells: DraftCell[]): CellPlan[] {
     if (cell.kind === undefined) {
       throw new Error(`Unresolved sampled cell ${positionKey(cell)}`);
     }
-    const { patchInkRole: _patchInkRole, patchSpan: _patchSpan, ...publicCell } = cell;
+    const { patchInkRole: _patchInkRole, ...publicCell } = cell;
     return publicCell as CellPlan;
   });
 }
