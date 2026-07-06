@@ -289,6 +289,20 @@ describe('program family bias', () => {
     expect(average, `energy-infrastructure checker-motif floor average=${average}`).toBeGreaterThanOrEqual(0.55);
   });
 
+  it('reports familyFloorMisses when catalog has mapped tiles but too few to satisfy minShare', () => {
+    // 'merge' has exactly 1 catalog tile. With minShare=0.6 and a large
+    // targetDistinct the requiredMapped would be capped at 1, so the actual
+    // mapped share in the result is well below 0.6. The honest diagnostic must
+    // fire even though mappedCandidates.length > 0.
+    const { diag, plan } = sampleWithDiagnostics(GRAMMAR, 3_001, {
+      familyFloor: { families: ['merge'], minShare: 0.6 },
+    });
+    expect(diag.familyFloorMisses).toBeGreaterThan(0);
+    // The working set should still fill (plan has tile cells).
+    const tileCells = plan.cells.filter(cell => cell.kind === 'tile');
+    expect(tileCells.length).toBeGreaterThan(0);
+  });
+
   it('reports family-floor misses and preserves one non-mapped working-set tile when the set size allows', () => {
     const miss = sampleWithDiagnostics(GRAMMAR, 2_345, {
       familyFloor: { families: ['not-a-corpus-family'], minShare: PROGRAM_FAMILY_FLOOR },

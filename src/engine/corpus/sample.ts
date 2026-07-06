@@ -683,23 +683,12 @@ function applyFamilyFloor(
   const preserveNonMapped = targetSize > requiredMapped && nonMappedCandidates.length > 0;
   let out = selected.slice(0, targetSize).sort();
 
-  while (out.length < targetSize) {
-    const shouldPreferMapped = countMappedTiles(grammar, out, mappedFamilies) < requiredMapped;
-    const candidates = shouldPreferMapped ? mappedCandidates : allTiles;
-    const picked = drawTileIdsByFamily(grammar, rng, candidates, 1, out, familyBias);
-    if (picked.length === 0) break;
-    out.push(picked[0]!);
-    out = [...new Set(out)].sort();
-  }
-
   while (countMappedTiles(grammar, out, mappedFamilies) < requiredMapped) {
     const picked = drawTileIdsByFamily(grammar, rng, mappedCandidates, 1, out, familyBias);
     if (picked.length === 0) break;
     const nonMapped = out
       .filter(tile => !mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? ''))
       .sort();
-    const minNonMapped = preserveNonMapped ? 1 : 0;
-    if (out.length >= targetSize && nonMapped.length <= minNonMapped) break;
     if (out.length >= targetSize) {
       const removed = nonMapped[nonMapped.length - 1]!;
       out = out.filter(tile => tile !== removed);
@@ -718,6 +707,16 @@ function applyFamilyFloor(
       out = out.filter(tile => tile !== removed);
       out.push(picked[0]!);
       out = [...new Set(out)].sort();
+    }
+  }
+
+  // Honest diagnostics: report a miss whenever the final working set's mapped
+  // share falls below minShare (capped requiredMapped silently under-counts).
+  if (diag) {
+    const actualMapped = countMappedTiles(grammar, out, mappedFamilies);
+    const actualShare = out.length > 0 ? actualMapped / out.length : 0;
+    if (actualShare < familyFloor.minShare) {
+      diag.familyFloorMisses += 1;
     }
   }
 

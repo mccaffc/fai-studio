@@ -27,6 +27,7 @@ import {
   PROGRAM_TEMPLATE_BIAS,
   PROGRAM_TEMPLATE_MAP,
   applyProgramPalette,
+  programSampleKnobs,
 } from './programs.js';
 import type { ProgramId } from './programs.js';
 import { scoreComposition, passesCompositionFloors, COMPOSITION_FLOORS } from './composition.js';
@@ -87,29 +88,21 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
   const seed = config.seed ?? 1;
   const maxAttempts = config.maxAttempts ?? 8;
 
+  const programKnobs = config.program ? programSampleKnobs(config.program) : undefined;
   const knobs: SampleKnobs = {
     template: config.template,
-    accent: config.program ? PROGRAMS[config.program].hue : config.accent,
+    accent: programKnobs ? programKnobs.accent : config.accent,
     accentPool: config.accentPool,
     density: config.density,
     figures: config.figures,
     arrangement: config.arrangement,
     paletteMode: config.paletteMode ?? 'auto',
+    ...(programKnobs && {
+      familyBias: programKnobs.familyBias,
+      templateBias: programKnobs.templateBias,
+      familyFloor: programKnobs.familyFloor,
+    }),
   };
-  if (config.program) {
-    knobs.familyBias = {
-      families: PROGRAM_FAMILY_MAP[config.program],
-      multiplier: PROGRAM_FAMILY_BIAS,
-    };
-    knobs.templateBias = {
-      ids: PROGRAM_TEMPLATE_MAP[config.program],
-      multiplier: PROGRAM_TEMPLATE_BIAS,
-    };
-    knobs.familyFloor = {
-      families: PROGRAM_FAMILY_MAP[config.program],
-      minShare: PROGRAM_FAMILY_FLOOR,
-    };
-  }
 
   interface Attempt {
     plan: BannerPlan;
