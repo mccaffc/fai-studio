@@ -15,8 +15,17 @@ import {
   ARRANGEMENTS,
 } from "../engine/corpus/index.js";
 import type { CorpusConfig, CorpusResult, ArrangementId } from "../engine/corpus/index.js";
+import type { BannerPlan } from "../engine/corpus/types.js";
+import { renderPlanSvg } from "../engine/corpus/render.js";
+import { TILES } from "../engine/corpus/data/tiles.js";
 import { PROGRAMS } from "../engine/corpus/programs.js";
 import type { ProgramId } from "../engine/corpus/programs.js";
+import {
+  corpusEditorActive,
+  enterCorpusEdit,
+  exitCorpusEditor,
+  saveCorpusEditor,
+} from "./editor-corpus/index";
 
 const TEMPLATE_IDS = [
   "pipe-field",
@@ -137,6 +146,8 @@ function saveCorpusConfig(): void {
 interface CorpusState {
   current: CorpusResult | null;
   vars: CorpusResult[];
+  editing: boolean;
+  preEdit: CorpusResult | null;
   config: {
     template: string;     // "" = auto
     accentPool: string[]; // [] = auto/canon; 1..7 = explicit user pool
@@ -183,8 +194,52 @@ function makeDefaultConfig(): CorpusState["config"] {
 const state: CorpusState = {
   current: null,
   vars: [],
+  editing: false,
+  preEdit: null,
   config: makeDefaultConfig(),
 };
+
+export type EditedCorpusConfig = CorpusConfig & {
+  edited: true;
+  plan: BannerPlan;
+};
+
+export type CorpusSaveConfig = CorpusConfig | EditedCorpusConfig;
+
+function isEditedCorpusConfig(config: CorpusSaveConfig): config is EditedCorpusConfig {
+  return (config as { edited?: unknown }).edited === true && Boolean((config as { plan?: unknown }).plan);
+}
+
+function emptyScores(): CorpusResult["scores"] {
+  return {
+    connectedness: 0,
+    lineworkShare: 0,
+    groundShifts: 0,
+    density: 0,
+    accentShare: 0,
+    maxTileRepetition: 0,
+    rhythmic: false,
+    connected: false,
+    quiltFail: false,
+    focalDominance: 0,
+    balance: 0,
+    negativeSpaceCluster: 0,
+    rhythmQuality: 0,
+    floorsPass: false,
+  };
+}
+
+function editedResultFromPlan(config: EditedCorpusConfig, seed: number): CorpusResult {
+  const plan = structuredClone(config.plan);
+  return {
+    svg: renderPlanSvg(plan, TILES),
+    plan,
+    scores: emptyScores(),
+    seed,
+    attempts: 1,
+    config,
+  };
+}
 
 // ── export helpers (corpus SVG bypasses finalSvg) ────────────────────────────
 
@@ -286,6 +341,7 @@ function paintCorpusError(err: unknown): void {
 }
 
 export function corpusRegen(newSeed = false): void {
+  if (state.editing) return;
   if (newSeed) {
     state.config.seed = (Math.random() * 0xffffffff) >>> 0;
   }
@@ -305,6 +361,7 @@ export function corpusRegen(newSeed = false): void {
 }
 
 function corpusRecolorInPlace(): void {
+  if (state.editing) return;
   if (!state.current) return;
   saveCorpusConfig();
   const [accent] = state.config.accentPool;
@@ -331,6 +388,7 @@ function flash(msg: string, isError = false): void {
 
 function renderCorpusCanvas(): void {
   if (!state.current) return;
+  if (state.editing) return;
   const canvas = $("#canvas");
   if (!canvas) return;
   canvas.innerHTML = state.current.svg;
@@ -376,6 +434,10 @@ function renderCorpusCanvas(): void {
       onSaveFn(state.current.config, state.current.seed);
     }
   });
+  mkBtn("Edit", "", () => {
+    beginCorpusEdit();
+  });
+  acts.lastElementChild?.setAttribute("data-corpus-edit", "");
   mkBtn("SVG", "ghost", () => {
     corpusDownloadSvg();
     flash("SVG saved to your browser's Downloads folder.");
@@ -417,6 +479,10 @@ function renderCorpusVariations(): void {
 function renderCorpusScores(): void {
   const el = $("#corpus-scores");
   if (!el || !state.current) return;
+  if (state.editing || isEditedCorpusConfig(state.current.config)) {
+    el.innerHTML = "";
+    return;
+  }
   const s = state.current.scores;
   const tmpl = state.current.plan.templateId ?? "auto";
   const quiltBadge = s.quiltFail
@@ -500,6 +566,24 @@ function renderCorpusControls(): void {
   const root = $("#corpus-controls");
   if (!root) return;
   root.innerHTML = "";
+
+  if (state.editing) {
+    const g = el("div", { class: "group" });
+    g.appendChild(el("div", {
+      class: "tray-note",
+      "data-corpus-edit-note": "",
+      role: "status",
+    }, "editing — changes are yours, scores off"));
+    const actions = el("div", { class: "canvas-actions" });
+    const exit = el("button", { type: "button", class: "ghost" }, "Exit") as HTMLButtonElement;
+    exit.addEventListener("click", () => exitCorpusEditor());
+    const save = el("button", { type: "button", class: "primary" }, "Save") as HTMLButtonElement;
+    save.addEventListener("click", () => saveCorpusEditor());
+    actions.append(exit, save);
+    g.appendChild(actions);
+    root.appendChild(g);
+    return;
+  }
 
   const group = (title: string, actions?: HTMLElement): HTMLElement => {
     const g = el("div", { class: "group" });
@@ -706,10 +790,39 @@ function renderCorpusControls(): void {
 export interface CorpusModeOptions {
   flash: (msg: string, isError?: boolean) => void;
   /** Called when the user saves a corpus result to the tray. */
-  onSave?: (config: import("../engine/corpus/index.js").CorpusConfig, seed: number) => void;
+  onSave?: (config: CorpusSaveConfig, seed: number) => void;
 }
 
-let onSaveFn: ((config: import("../engine/corpus/index.js").CorpusConfig, seed: number) => void) | null = null;
+let onSaveFn: ((config: CorpusSaveConfig, seed: number) => void) | null = null;
+
+function beginCorpusEdit(): void {
+  if (!state.current || state.editing) return;
+  state.preEdit = state.current;
+  state.editing = true;
+  renderCorpusControls();
+  renderCorpusScores();
+  enterCorpusEdit(state.current.plan, {
+    flash,
+    onExit: () => {
+      state.editing = false;
+      if (state.preEdit) state.current = state.preEdit;
+      state.preEdit = null;
+      renderCorpusControls();
+      renderCorpusCanvas();
+      renderCorpusVariations();
+      renderCorpusScores();
+      updateSeedDisplay();
+    },
+    onSavePlan: (plan) => {
+      if (!state.current || !onSaveFn) return;
+      onSaveFn({
+        ...buildCorpusConfig(),
+        edited: true,
+        plan: structuredClone(plan),
+      }, state.current.seed);
+    },
+  });
+}
 
 export function mountCorpusMode(opts: CorpusModeOptions): void {
   flashFn = opts.flash;
@@ -723,15 +836,38 @@ export function mountCorpusMode(opts: CorpusModeOptions): void {
  * (which can't statically import the corpus engine without blowing the initial bundle).
  */
 export function generateBannerForTray(
-  config: import("../engine/corpus/index.js").CorpusConfig,
+  config: CorpusSaveConfig,
   seed: number,
 ): import("../engine/corpus/index.js").CorpusResult {
+  if (isEditedCorpusConfig(config)) return editedResultFromPlan(config, seed);
   return generateBanner({ ...config, seed });
 }
 
 /** Restore a previously saved corpus item — used by the save tray. */
-export function openCorpusItem(config: import("../engine/corpus/index.js").CorpusConfig, seed: number): void {
+export function openCorpusItem(config: CorpusSaveConfig, seed: number): void {
   try {
+    if (isEditedCorpusConfig(config)) {
+      state.config = {
+        template: config.template ?? "",
+        accentPool: migrateAccentPool(config),
+        density: config.density ?? 0.5,
+        figures: config.figures ?? true,
+        seed,
+        program: config.program ?? "",
+        arrangement: config.arrangement ?? "",
+      };
+      saveCorpusConfig();
+      state.editing = false;
+      state.preEdit = null;
+      state.current = editedResultFromPlan(config, seed);
+      state.vars = [];
+      renderCorpusCanvas();
+      renderCorpusVariations();
+      updateSeedDisplay();
+      renderCorpusScores();
+      renderCorpusControls();
+      return;
+    }
     state.config = {
       template: config.template ?? "",
       accentPool: migrateAccentPool(config),
@@ -755,6 +891,9 @@ export function openCorpusItem(config: import("../engine/corpus/index.js").Corpu
 }
 
 export function unmountCorpusMode(): void {
+  if (corpusEditorActive()) exitCorpusEditor(true);
+  state.editing = false;
+  state.preEdit = null;
   flashFn = null;
   const root = $("#corpus-controls");
   if (root) root.innerHTML = "";
@@ -765,6 +904,7 @@ export function unmountCorpusMode(): void {
 // ── spacebar hook (called from main.ts when corpus is active) ─────────────────
 
 export function corpusSpacebarReroll(): void {
+  if (state.editing) return;
   if (!state.current) return;
   state.current = engineReroll(state.current);
   state.config.seed = state.current.seed;
