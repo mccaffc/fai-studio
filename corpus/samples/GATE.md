@@ -112,3 +112,18 @@ carries Signal Green disc field + Chrome Yellow + Celestial Blue (first non-trio
 
 Quirk for review: sheet caption "acc" (scorer accentShare) reads 0.00 on 820001 despite 5 visible hues —
 scorer counts cell.ink only, not inks[] (pre-existing, display-only).
+
+## Gate A — P8 studio UX (accent swatches + four-group panel), 2026-07-06
+
+In-browser (aside, localhost:4310), desktop 1440 + emulated 375. **PASS.**
+- Four groups exactly per spec (Size chips / Color / Pattern / Seed); swatch row DOM-verified: 7 buttons,
+  orange-first spec order, backgrounds exact to the locked hexes (screenshot compression faked a violet
+  where Chrome Yellow sits — DOM check is the arbiter, noted for future gates).
+- Check glyphs luminance-correct by eye (cod-gray on Celestial Blue, smoke-white on Signal Green).
+- Behavior end-to-end: blue+green checked → banner colored in exactly blue+green; presets and program-lock
+  states render; caption reads correctly.
+- Mobile 375: scrollWidth==clientWidth (no overflow), panel stacks below stage in flow, swatches fit one
+  343px row. (aside full-page capture DUPLICATES page content on emulated viewports — capture artifact,
+  not CSS; verified via DOM measurements instead.)
+- Accepted deviation: caption uses --line instead of --soft (this checkout's --soft is the panel bg;
+  implementer's reasoning correct, contrast verified on screen).
