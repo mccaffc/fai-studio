@@ -47,6 +47,12 @@ export const PROGRAMS: Record<ProgramId, { name: string; hue: string }> = {
  *  mapped families carry the sheet while non-mapped tiles stay reachable. */
 export const PROGRAM_FAMILY_BIAS = 8;
 
+/** Program-mode template-register multiplier for mapped corpus templates. */
+export const PROGRAM_TEMPLATE_BIAS = 5;
+
+/** Program-mode minimum mapped-family share in the working tile set. */
+export const PROGRAM_FAMILY_FLOOR = 0.6;
+
 /** Chris/controller-curated program identity map to corpus tile families. */
 export const PROGRAM_FAMILY_MAP: Record<ProgramId, readonly string[]> = {
   'technology-statecraft': ['lines', 'rectangle'],
@@ -55,6 +61,16 @@ export const PROGRAM_FAMILY_MAP: Record<ProgramId, readonly string[]> = {
   'energy-infrastructure': ['wave'],
   'science-innovation': ['circle', 'centric'],
   'frontier-legal-defense': ['square', 'angle', 'joint'],
+};
+
+/** Chris/controller-curated program identity map to corpus template registers. */
+export const PROGRAM_TEMPLATE_MAP: Record<ProgramId, readonly string[]> = {
+  'technology-statecraft': ['repeat-rhythm', 'pipe-field'],
+  'american-governance': ['pipe-field', 'figure-field'],
+  'artificial-intelligence': ['figure-field', 'mixed-quilt'],
+  'energy-infrastructure': ['pipe-field'],
+  'science-innovation': ['arc-mosaic', 'checker-motif'],
+  'frontier-legal-defense': ['checker-motif', 'repeat-rhythm'],
 };
 
 // ---------------------------------------------------------------------------

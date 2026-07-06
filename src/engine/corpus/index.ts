@@ -19,7 +19,15 @@ import { TILES } from './data/tiles.js';
 import { samplePlan, rezone } from './sample.js';
 import { scorePlan } from './score.js';
 import { renderPlanSvg } from './render.js';
-import { PROGRAMS, PROGRAM_FAMILY_BIAS, PROGRAM_FAMILY_MAP, applyProgramPalette } from './programs.js';
+import {
+  PROGRAMS,
+  PROGRAM_FAMILY_BIAS,
+  PROGRAM_FAMILY_FLOOR,
+  PROGRAM_FAMILY_MAP,
+  PROGRAM_TEMPLATE_BIAS,
+  PROGRAM_TEMPLATE_MAP,
+  applyProgramPalette,
+} from './programs.js';
 import type { ProgramId } from './programs.js';
 import { scoreComposition, passesCompositionFloors, COMPOSITION_FLOORS } from './composition.js';
 import type { CompositionScores } from './composition.js';
@@ -41,7 +49,14 @@ export type { RubricScores } from './score.js';
 export type { CompositionScores } from './composition.js';
 export { COMPOSITION_FLOORS } from './composition.js';
 export type { ProgramId } from './programs.js';
-export { PROGRAMS, PROGRAM_FAMILY_BIAS, PROGRAM_FAMILY_MAP } from './programs.js';
+export {
+  PROGRAMS,
+  PROGRAM_FAMILY_BIAS,
+  PROGRAM_FAMILY_FLOOR,
+  PROGRAM_FAMILY_MAP,
+  PROGRAM_TEMPLATE_BIAS,
+  PROGRAM_TEMPLATE_MAP,
+} from './programs.js';
 
 /** tile-id → shape family, derived once from the baked tile catalog. */
 const FAMILIES: Record<string, string> = Object.fromEntries(
@@ -85,6 +100,14 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
     knobs.familyBias = {
       families: PROGRAM_FAMILY_MAP[config.program],
       multiplier: PROGRAM_FAMILY_BIAS,
+    };
+    knobs.templateBias = {
+      ids: PROGRAM_TEMPLATE_MAP[config.program],
+      multiplier: PROGRAM_TEMPLATE_BIAS,
+    };
+    knobs.familyFloor = {
+      families: PROGRAM_FAMILY_MAP[config.program],
+      minShare: PROGRAM_FAMILY_FLOOR,
     };
   }
 

@@ -60,6 +60,8 @@ const LINEWORK_FAMILIES = new Set(['lines', 'circle', 'curve', 'wave']);
 
 export interface SampleDiagnostics {
   adjacencyHits: number;
+  /** Program-agnostic counter: requested family floor had no mapped candidates. */
+  familyFloorMisses: number;
   /** Shape family drawn before working-set selection. */
   dominantFamily: string;
   /** Mode of the FIRST accent zone at placement time. Not recomputed by later
@@ -90,6 +92,8 @@ export interface SampleResult {
 }
 
 type FamilyBias = NonNullable<SampleKnobs['familyBias']>;
+type TemplateBias = NonNullable<SampleKnobs['templateBias']>;
+type FamilyFloor = NonNullable<SampleKnobs['familyFloor']>;
 
 const CELL_PX = 320;
 const BANNER_CELL_COUNT = ARRANGEMENTS.banner.cols * ARRANGEMENTS.banner.rows;
@@ -233,6 +237,7 @@ export function sampleWithDiagnostics(
   const accentRequest = resolveAccentRequest(knobs, grammar.palette.accentOrder);
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
+    familyFloorMisses: 0,
     dominantFamily: '',
     accentZone: 'none',
     accentZonesPlaced: 0,
@@ -248,7 +253,7 @@ export function sampleWithDiagnostics(
   const rng = mulberry32(seed);
   const dims = dimsForArrangement(knobs.arrangement);
   const relativeStats = relativeGridStats(grammar, dims);
-  const template = chooseTemplate(grammar, rng, knobs.template);
+  const template = chooseTemplate(grammar, rng, knobs.template, knobs.templateBias);
   const globalGround = drawGlobalGround(grammar, rng);
   const groundScheme = drawGroundScheme(grammar, template, rng);
   const cells = makeDraftCells(generateGrounds(grammar, rng, groundScheme, globalGround, dims), dims);
@@ -259,9 +264,9 @@ export function sampleWithDiagnostics(
   if (dims.cellCount > 0 && template.spec.distinctTiles[1] > 0 && targetDistinct === 0) {
     targetDistinct = 1;
   }
-  let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct, knobs.familyBias);
+  let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct, knobs.familyBias, knobs.familyFloor, diag);
   if (workingSet.length === 0) {
-    workingSet = selectWorkingSet(grammar, rng, template, firstAvailableFamily(grammar), 1, knobs.familyBias);
+    workingSet = selectWorkingSet(grammar, rng, template, firstAvailableFamily(grammar), 1, knobs.familyBias, knobs.familyFloor, diag);
   }
   targetDistinct = workingSet.length;
 
@@ -344,7 +349,12 @@ export function sampleWithDiagnostics(
   return { plan, diag };
 }
 
-function chooseTemplate(grammar: EngineGrammar, rng: Rng, id: string | undefined): Template {
+function chooseTemplate(
+  grammar: EngineGrammar,
+  rng: Rng,
+  id: string | undefined,
+  templateBias?: TemplateBias,
+): Template {
   if (id) {
     const found = grammar.templates.find(template => template.id === id);
     if (!found) throw new Error(`Unknown template: ${id}`);
@@ -355,7 +365,7 @@ function chooseTemplate(grammar: EngineGrammar, rng: Rng, id: string | undefined
     rng,
     grammar.templates.map(template => ({
       value: template,
-      weight: template.bannerIds.length,
+      weight: template.bannerIds.length * templateBiasWeight(template.id, templateBias),
       sortKey: template.id,
     })),
   );
@@ -614,6 +624,8 @@ function selectWorkingSet(
   dominantFamily: string,
   targetDistinct: number,
   familyBias?: FamilyBias,
+  familyFloor?: FamilyFloor,
+  diag?: SampleDiagnostics,
 ): string[] {
   const allTiles = Object.keys(grammar.tileCatalog).sort();
   const preferredFamilies = new Set(template.spec.dominantFamilies);
@@ -630,7 +642,90 @@ function selectWorkingSet(
     selected.push(...drawTileIdsByFamily(grammar, rng, allTiles, targetDistinct - selected.length, selected, familyBias));
   }
 
-  return [...new Set(selected)].sort();
+  return applyFamilyFloor(grammar, rng, [...new Set(selected)].sort(), targetDistinct, familyFloor, familyBias, diag);
+}
+
+function templateBiasWeight(id: string, templateBias: TemplateBias | undefined): number {
+  if (templateBias === undefined) return 1;
+  return templateBias.ids.includes(id) ? templateBias.multiplier : 1;
+}
+
+function applyFamilyFloor(
+  grammar: EngineGrammar,
+  rng: Rng,
+  selected: string[],
+  targetDistinct: number,
+  familyFloor: FamilyFloor | undefined,
+  familyBias: FamilyBias | undefined,
+  diag: SampleDiagnostics | undefined,
+): string[] {
+  if (familyFloor === undefined || familyFloor.minShare <= 0 || familyFloor.families.length === 0 || targetDistinct <= 0) {
+    return selected;
+  }
+
+  const allTiles = Object.keys(grammar.tileCatalog).sort();
+  const mappedFamilies = new Set(familyFloor.families);
+  const mappedCandidates = allTiles
+    .filter(tile => mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? ''))
+    .sort();
+  if (mappedCandidates.length === 0) {
+    if (diag) diag.familyFloorMisses += 1;
+    return selected;
+  }
+
+  const targetSize = Math.min(Math.max(selected.length, targetDistinct), allTiles.length);
+  const requiredMapped = Math.min(
+    targetSize,
+    mappedCandidates.length,
+    Math.ceil(targetSize * familyFloor.minShare),
+  );
+  const nonMappedCandidates = allTiles.filter(tile => !mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? ''));
+  const preserveNonMapped = targetSize > requiredMapped && nonMappedCandidates.length > 0;
+  let out = selected.slice(0, targetSize).sort();
+
+  while (out.length < targetSize) {
+    const shouldPreferMapped = countMappedTiles(grammar, out, mappedFamilies) < requiredMapped;
+    const candidates = shouldPreferMapped ? mappedCandidates : allTiles;
+    const picked = drawTileIdsByFamily(grammar, rng, candidates, 1, out, familyBias);
+    if (picked.length === 0) break;
+    out.push(picked[0]!);
+    out = [...new Set(out)].sort();
+  }
+
+  while (countMappedTiles(grammar, out, mappedFamilies) < requiredMapped) {
+    const picked = drawTileIdsByFamily(grammar, rng, mappedCandidates, 1, out, familyBias);
+    if (picked.length === 0) break;
+    const nonMapped = out
+      .filter(tile => !mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? ''))
+      .sort();
+    const minNonMapped = preserveNonMapped ? 1 : 0;
+    if (out.length >= targetSize && nonMapped.length <= minNonMapped) break;
+    if (out.length >= targetSize) {
+      const removed = nonMapped[nonMapped.length - 1]!;
+      out = out.filter(tile => tile !== removed);
+    }
+    out.push(picked[0]!);
+    out = [...new Set(out)].sort();
+  }
+
+  if (preserveNonMapped && out.every(tile => mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? ''))) {
+    const picked = drawTileIdsByFamily(grammar, rng, nonMappedCandidates, 1, out, familyBias);
+    const mapped = out
+      .filter(tile => mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? ''))
+      .sort();
+    if (picked.length > 0 && mapped.length > requiredMapped) {
+      const removed = mapped[mapped.length - 1]!;
+      out = out.filter(tile => tile !== removed);
+      out.push(picked[0]!);
+      out = [...new Set(out)].sort();
+    }
+  }
+
+  return out.sort();
+}
+
+function countMappedTiles(grammar: EngineGrammar, tiles: readonly string[], mappedFamilies: ReadonlySet<string>): number {
+  return tiles.filter(tile => mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? '')).length;
 }
 
 function drawTileIds(
@@ -3362,6 +3457,7 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
 
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
+    familyFloorMisses: 0,
     dominantFamily: plan.forms.find(form => form.family)?.family ?? '',
     accentZone: 'none',
     accentZonesPlaced: 0,
