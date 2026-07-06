@@ -75,6 +75,7 @@ export interface BannerPlan {
 export interface SampleKnobs {
   template?: string;
   accent?: string;
+  paletteMode?: 'auto' | 'full';
   density?: number;
   figures?: boolean;
   arrangement?: ArrangementId;

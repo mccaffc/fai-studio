@@ -66,6 +66,7 @@ export interface CorpusResult {
 // ---------------------------------------------------------------------------
 
 export function generateBanner(config: CorpusConfig = {}): CorpusResult {
+  validateCorpusConfig(config);
   const seed = config.seed ?? 1;
   const maxAttempts = config.maxAttempts ?? 8;
 
@@ -75,6 +76,7 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
     density: config.density,
     figures: config.figures,
     arrangement: config.arrangement,
+    paletteMode: config.paletteMode ?? 'auto',
   };
 
   interface Attempt {
@@ -138,6 +140,19 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
     attempts: maxAttempts,
     config,
   };
+}
+
+function validateCorpusConfig(config: CorpusConfig): void {
+  const paletteMode = config.paletteMode ?? 'auto';
+  if (paletteMode !== 'auto' && paletteMode !== 'full') {
+    throw new Error(`Unknown paletteMode: ${String(config.paletteMode)}`);
+  }
+  if (paletteMode === 'full' && config.accent) {
+    throw new Error('paletteMode full cannot be combined with accent');
+  }
+  if (paletteMode === 'full' && config.program) {
+    throw new Error('paletteMode full cannot be combined with program');
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -221,7 +236,7 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
     const prevHue = PROGRAMS[prev.config.program].hue;
     const reclaimedPlan = remapPlanFill(prev.plan, prevHue, accent);
     newPlan = rezone(reclaimedPlan, GRAMMAR, prev.seed, accent);
-    newConfig = { ...prev.config, accent, program: undefined };
+    newConfig = { ...prev.config, accent, paletteMode: 'auto', program: undefined };
   } else {
     // Standard rezone (classic mode or program mode with corpus accent).
     newPlan = rezone(prev.plan, GRAMMAR, prev.seed, accent);
@@ -230,7 +245,7 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
       const hue = PROGRAMS[prev.config.program].hue;
       newPlan = applyProgramPalette(newPlan, hue);
     }
-    newConfig = { ...prev.config, accent };
+    newConfig = { ...prev.config, accent, paletteMode: 'auto' };
   }
 
   const rubric = scorePlan(newPlan, FAMILIES);

@@ -39,6 +39,7 @@ const PROGRAM_NEUTRAL_SET = new Set(['#121212', '#F3F3F3', '#D9D9D6']);
 const COD_GRAY    = '#121212';
 const SMOKE_WHITE = '#F3F3F3';
 const TIMBERWOLF  = '#D9D9D6';
+const LOCKED_ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'] as const;
 
 // ---------------------------------------------------------------------------
 // Registry integrity
@@ -168,17 +169,27 @@ describe('applyProgramPalette — rule 1: grounds remap', () => {
 });
 
 describe('applyProgramPalette — rule 2: inks remap', () => {
-  it('classic accents (#FF4F00, #4997D0, #FFA300) → hue', () => {
-    const plan = samplePlan(GRAMMAR, 7, { template: 'pipe-field' });
+  it('all locked accent-pool fills remap to the target program hue', () => {
+    const base = samplePlan(GRAMMAR, 7, { template: 'pipe-field' });
     const hue = '#268B41';
+    const plan: BannerPlan = {
+      ...base,
+      cells: base.cells.map((cell, index) => {
+        const accent = LOCKED_ACCENT_POOL[index % LOCKED_ACCENT_POOL.length]!;
+        return {
+          ...cell,
+          ground: accent,
+          ink: accent,
+          inks: [accent],
+        };
+      }),
+      forms: base.forms.map((form, index) => ({
+        ...form,
+        ink: LOCKED_ACCENT_POOL[index % LOCKED_ACCENT_POOL.length]!,
+      })),
+    };
     const out = applyProgramPalette(plan, hue);
-    for (const cell of out.cells) {
-      if (cell.ink) {
-        expect(cell.ink).not.toBe('#FF4F00');
-        expect(cell.ink).not.toBe('#4997D0');
-        expect(cell.ink).not.toBe('#FFA300');
-      }
-    }
+    assertProgramLaw(out, hue, 'all locked accent-pool fills');
   });
 
   it('#FFFFFF ink → #F3F3F3', () => {
@@ -203,7 +214,7 @@ describe('applyProgramPalette — rule 3: contrast pass', () => {
     };
     const out = applyProgramPalette(withConflict, hue);
     const cell = out.cells[0]!;
-    // After rule 1: ground stays hue (hue is not a classic accent, so no remap).
+    // After rule 1: ground remaps to the same hue.
     // After rule 2: ink stays hue. Rule 3a: ink === ground → flip to neutral.
     expect(cell.ink).not.toBe(cell.ground);
     expect(PROGRAM_NEUTRAL_SET.has(cell.ink!)).toBe(true);

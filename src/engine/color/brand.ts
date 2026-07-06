@@ -1,57 +1,71 @@
-/** FAI brand constants — ported verbatim from scripts/fai_colors.py. */
+/** FAI locked palette constants. */
 
-export const BRAND = {
+export const MASTER_FILLS = {
   internationalOrange: "#FF4F00",
   codGray: "#121212",
   white: "#FFFFFF",
   smokeWhite: "#F3F3F3",
-  chromeYellow: "#FFA300",
-  celestialBlue: "#4997D0",
   timberwolf: "#D9D9D6",
+} as const;
+
+export const PROGRAM_HUES = {
+  chromeYellow: "#FFA300",
+  electricViolet: "#8265DB",
+  telemagenta: "#D63A8C",
+  signalGreen: "#268B41",
+  celestialBlue: "#4997D0",
+  frontierIndigo: "#3A4A6B",
+} as const;
+
+/** @deprecated Use MASTER_FILLS / PROGRAM_HUES. Kept for classic engine byte identity. */
+export const BRAND = {
+  ...MASTER_FILLS,
+  chromeYellow: PROGRAM_HUES.chromeYellow,
+  celestialBlue: PROGRAM_HUES.celestialBlue,
 } as const;
 
 export const BRAND_HEXES: readonly string[] = Object.values(BRAND);
 
-/** Proposal hues — extended mode only (unratified). */
+/** @deprecated Use PROGRAM_HUES. Kept for classic engine byte identity. */
 export const PROPOSAL = {
-  irisViolet: "#8265DB",
-  telemagenta: "#D63A8C",
-  signalGreen: "#268B41",
-  slateIndigo: "#3A4A6B",
+  electricViolet: PROGRAM_HUES.electricViolet,
+  telemagenta: PROGRAM_HUES.telemagenta,
+  signalGreen: PROGRAM_HUES.signalGreen,
+  frontierIndigo: PROGRAM_HUES.frontierIndigo,
 } as const;
 
 export const PROPOSAL_HEXES: readonly string[] = Object.values(PROPOSAL);
 
 export const WARM: ReadonlySet<string> = new Set([
-  BRAND.internationalOrange,
-  BRAND.chromeYellow,
-  PROPOSAL.telemagenta,
+  MASTER_FILLS.internationalOrange,
+  PROGRAM_HUES.chromeYellow,
+  PROGRAM_HUES.telemagenta,
 ]);
 export const COOL: ReadonlySet<string> = new Set([
-  BRAND.celestialBlue,
-  PROPOSAL.irisViolet,
-  PROPOSAL.signalGreen,
-  PROPOSAL.slateIndigo,
+  PROGRAM_HUES.celestialBlue,
+  PROGRAM_HUES.electricViolet,
+  PROGRAM_HUES.signalGreen,
+  PROGRAM_HUES.frontierIndigo,
 ]);
 export const NEUTRAL: ReadonlySet<string> = new Set([
-  BRAND.codGray,
-  BRAND.white,
-  BRAND.smokeWhite,
-  BRAND.timberwolf,
+  MASTER_FILLS.codGray,
+  MASTER_FILLS.white,
+  MASTER_FILLS.smokeWhite,
+  MASTER_FILLS.timberwolf,
 ]);
 
-/** The full accent palette — brand fills and proposal hues on the same level.
+/** The classic full-mode accent palette.
  *  Index order matters: it is the accent-slot order nodes reference.
  *  Even slots warm, odd slots cool (zoning picks by parity). */
 export const ALL_ACCENTS: readonly string[] = [
-  BRAND.internationalOrange, // 0 warm lead
-  BRAND.celestialBlue, // 1 cool lead
-  BRAND.chromeYellow, // 2 warm
-  PROPOSAL.irisViolet, // 3 cool
-  PROPOSAL.telemagenta, // 4 warm
-  PROPOSAL.signalGreen, // 5 cool
-  BRAND.timberwolf, // 6
-  PROPOSAL.slateIndigo, // 7
+  MASTER_FILLS.internationalOrange, // 0 warm lead
+  PROGRAM_HUES.celestialBlue, // 1 cool lead
+  PROGRAM_HUES.chromeYellow, // 2 warm
+  PROGRAM_HUES.electricViolet, // 3 cool
+  PROGRAM_HUES.telemagenta, // 4 warm
+  PROGRAM_HUES.signalGreen, // 5 cool
+  MASTER_FILLS.timberwolf, // 6
+  PROGRAM_HUES.frontierIndigo, // 7
 ];
 
 function lum(hex: string): number {

@@ -53,6 +53,7 @@ interface CliArgs {
   template?: string;
   accent?: string;
   density?: number;
+  palette?: 'auto' | 'full';
 }
 
 function parseArgs(argv: string[]): CliArgs {
@@ -65,6 +66,7 @@ function parseArgs(argv: string[]): CliArgs {
     else if (flag === '--template' && val !== undefined) { args.template = val; i++; }
     else if (flag === '--accent' && val !== undefined) { args.accent = val; i++; }
     else if (flag === '--density' && val !== undefined) { args.density = parseFloat(val); i++; }
+    else if (flag === '--palette' && (val === 'auto' || val === 'full')) { args.palette = val; i++; }
   }
   return args;
 }
@@ -147,6 +149,7 @@ async function main(): Promise<void> {
   const knobs: SampleKnobs = {};
   if (cli.template !== undefined) knobs.template = cli.template;
   if (cli.accent !== undefined) knobs.accent = cli.accent;
+  if (cli.palette !== undefined) knobs.paletteMode = cli.palette;
   if (cli.density !== undefined) knobs.density = cli.density;
 
   mkdirSync(OUT_DIR, { recursive: true });

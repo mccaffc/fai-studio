@@ -22,12 +22,9 @@
  * test/engine-corpus/purity.test.ts.
  */
 
-// Explicit accent knobs accept the corpus accents AND the six program hues:
-// program hues stay OUT of the auto rotation (wayfinding discipline + corpus
-// truth) but are deliberately choosable (Chris, 2026-07-02).
-const PROGRAM_HUES = ['#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'];
+const ACCENT_POOL_HEXES = ['#FF4F00', '#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'] as const;
 function isAllowedExplicitAccent(accent: string, order: readonly string[]): boolean {
-  return order.includes(accent) || PROGRAM_HUES.includes(accent);
+  return order.includes(accent) || (ACCENT_POOL_HEXES as readonly string[]).includes(accent);
 }
 
 import type {
@@ -48,6 +45,7 @@ import { mulberry32, type Rng } from './rng.js';
 import { TILES } from './data/tiles.js';
 import { FIGURES, type FigureAsset } from './data/figures.js';
 import { PATCHES, type IconicPatch, type PatchCell, type PatchGroundRole, type PatchInkRole } from './data/patches.js';
+import { lumRatio, relativeLuminance } from './programs.js';
 
 export type { SampleKnobs } from './types.js';
 export type { BannerPlan } from './types.js';
@@ -135,7 +133,7 @@ const MIRROR_RATE = 0.50;
 const MIRROR_TEMPLATE_IDS = new Set(['arc-mosaic', 'figure-field', 'mixed-quilt', 'pipe-field', 'repeat-rhythm']);
 const MIRROR_MAX_BLACK_INK_SHARE = 0.85;
 
-const BRAND_FILLS = new Set([
+const CORPUS_GROUND_FILLS = new Set([
   '#121212',
   '#F3F3F3',
   '#D9D9D6',
@@ -157,6 +155,17 @@ interface Weighted<T> {
   weight: number;
   sortKey: string;
 }
+
+const ACCENT_POOL: readonly Weighted<string>[] = [
+  { value: '#FF4F00', weight: 2, sortKey: '00-#FF4F00' },
+  { value: '#FFA300', weight: 1, sortKey: '01-#FFA300' },
+  { value: '#8265DB', weight: 1, sortKey: '02-#8265DB' },
+  { value: '#D63A8C', weight: 1, sortKey: '03-#D63A8C' },
+  { value: '#268B41', weight: 1, sortKey: '04-#268B41' },
+  { value: '#4997D0', weight: 1, sortKey: '05-#4997D0' },
+  { value: '#3A4A6B', weight: 1, sortKey: '06-#3A4A6B' },
+] as const;
+const ACCENT_POOL_SET = new Set<string>(ACCENT_POOL_HEXES);
 
 interface DraftCell {
   col: number;
@@ -211,6 +220,9 @@ export function sampleWithDiagnostics(
   figures: readonly FigureAsset[] = FIGURES,
   patches: readonly IconicPatch[] = PATCHES,
 ): SampleResult {
+  if (knobs.paletteMode === 'full' && knobs.accent) {
+    throw new Error('paletteMode full cannot be combined with accent');
+  }
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
     accentZone: 'none',
@@ -273,8 +285,9 @@ export function sampleWithDiagnostics(
   placePlainCells(cells, relativeStats, rng, plainTarget);
 
   fillTileCells(cells, grammar, rng, workingSet, template, diag);
+  const accentBudgetCap = accentBudgetCapForKnobs(knobs);
   applyAccentZoning(cells, grammar, rng, template, knobs, diag);
-  enforceAccentBudget(cells, grammar, knobs.accent);
+  enforceAccentBudget(cells, grammar, knobs.accent, accentBudgetCap);
   if (knobs.accent) ensureAccentPresence(cells, grammar, rng, knobs.accent);
   // Run last: cap rhythm-template run length AFTER every ink mutation, so the
   // accent passes can't re-merge a split run.
@@ -287,10 +300,16 @@ export function sampleWithDiagnostics(
   // first form detection pass. If accepted, only the accent budget and forms
   // are recomputed; zoning is intentionally not re-run against mirrored ink.
   void detectForms(draftPlanForForms(cells, dims), grammar.tileCatalog, FAMILIES);
-  applyMirror(cells, grammar, dims, rng, template, knobs.accent, diag);
+  applyMirror(cells, grammar, dims, rng, template, knobs.accent, diag, accentBudgetCap);
   if (diag.mirrored) {
     syncAccentDiagnostics(cells, grammar, knobs.accent, diag);
   }
+  if (knobs.paletteMode === 'full') {
+    ensureFullPaletteMinimum(cells, rng);
+    enforceAccentBudget(cells, grammar, knobs.accent, accentBudgetCap);
+    syncAccentDiagnostics(cells, grammar, knobs.accent, diag);
+  }
+  enforceAccentGroundContrast(cells);
 
   const finalCells = finalizeCells(cells);
   const plan: BannerPlan = {
@@ -402,7 +421,7 @@ function drawGlobalGround(grammar: EngineGrammar, rng: Rng): string {
   return drawWeightedRecord(
     grammar.palette.globalGrounds,
     rng,
-    key => BRAND_FILLS.has(key),
+    key => CORPUS_GROUND_FILLS.has(key),
     '#F3F3F3',
   );
 }
@@ -493,8 +512,8 @@ function generateGrounds(
 }
 
 function groundPool(grammar: EngineGrammar, globalGround: string): string[] {
-  const fromInkTables = Object.keys(grammar.palette.inkByGround).filter(key => BRAND_FILLS.has(key));
-  if (!fromInkTables.includes(globalGround) && BRAND_FILLS.has(globalGround)) {
+  const fromInkTables = Object.keys(grammar.palette.inkByGround).filter(key => CORPUS_GROUND_FILLS.has(key));
+  if (!fromInkTables.includes(globalGround) && CORPUS_GROUND_FILLS.has(globalGround)) {
     fromInkTables.push(globalGround);
   }
   const sorted = [...new Set(fromInkTables)].sort();
@@ -503,7 +522,7 @@ function groundPool(grammar: EngineGrammar, globalGround: string): string[] {
 
 function drawGroundFromPool(pool: string[], rng: Rng, exclude = new Set<string>()): string {
   const candidates = pool.filter(ground => !exclude.has(ground)).sort();
-  const usable = candidates.length > 0 ? candidates : pool.filter(ground => BRAND_FILLS.has(ground)).sort();
+  const usable = candidates.length > 0 ? candidates : pool.filter(ground => CORPUS_GROUND_FILLS.has(ground)).sort();
   return weightedChoice(
     rng,
     usable.map(ground => ({ value: ground, weight: 1, sortKey: ground })),
@@ -1604,20 +1623,16 @@ function chooseAccent(
   excludedGrounds: Set<string>,
   knobAccent: string | undefined,
 ): string | null {
+  void grammar;
   if (knobAccent && !excludedGrounds.has(knobAccent)) return knobAccent;
   if (knobAccent) return null;
 
-  const accents = grammar.palette.accentOrder
-    .map((accent, index) => ({ accent, index }))
-    .filter(({ accent }) => BRAND_FILLS.has(accent) && !excludedGrounds.has(accent));
+  const accents = ACCENT_POOL
+    .filter(({ value }) => !excludedGrounds.has(value));
   if (accents.length === 0) return null;
   return weightedChoice(
     rng,
-    accents.map(({ accent, index }) => ({
-      value: accent,
-      weight: grammar.palette.accentOrder.length - index,
-      sortKey: accent,
-    })),
+    accents,
   );
 }
 
@@ -1839,7 +1854,7 @@ function drawInkForGrounds(grammar: EngineGrammar, rng: Rng, grounds: string[]):
   const excluded = new Set(grounds);
   const inkMap = grammar.palette.inkByGround[dominant] ?? {};
   const entries = Object.keys(inkMap)
-    .filter(ink => BRAND_FILLS.has(ink) && !excluded.has(ink))
+    .filter(ink => CORPUS_GROUND_FILLS.has(ink) && !excluded.has(ink))
     .sort()
     .map(ink => ({ value: ink, weight: inkMap[ink] ?? 0, sortKey: ink }));
   if (entries.length === 0) return neutralForGrounds(grounds);
@@ -1865,13 +1880,25 @@ const CANON_ACCENT_COUNT_WEIGHTS: Weighted<number>[] = [
   { value: 2, weight: 0.16, sortKey: '2' },
   { value: 3, weight: 0.48, sortKey: '3' },
 ];
-const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300']);
-const COOL_ACCENTS_SET = new Set(['#4997D0']);
+const FULL_ACCENT_COUNT_WEIGHTS: Weighted<number>[] = [
+  { value: 5, weight: 1, sortKey: '5' },
+  { value: 6, weight: 1, sortKey: '6' },
+  { value: 7, weight: 1, sortKey: '7' },
+];
+const FULL_MIN_DISTINCT_ACCENTS = 4;
+const AUTO_ACCENT_BUDGET_CAP = 0.35;
+const FULL_ACCENT_BUDGET_CAP = 0.5;
+const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300', '#D63A8C']);
+const COOL_ACCENTS_SET = new Set(['#4997D0', '#8265DB', '#268B41', '#3A4A6B']);
+
+function accentBudgetCapForKnobs(knobs: Pick<SampleKnobs, 'paletteMode'>): number {
+  return knobs.paletteMode === 'full' ? FULL_ACCENT_BUDGET_CAP : AUTO_ACCENT_BUDGET_CAP;
+}
 
 /**
- * Accent zoning (P6 Task 0): auto/full-palette mode draws a single
+ * Accent zoning (P6 Task 0): auto mode draws a single
  * canon-calibrated accent-count bucket, then allocates that many DISTINCT
- * heritage accents as coherent zones. Explicit accent knobs keep the previous
+ * locked accent-pool hues as coherent zones. Explicit accent knobs keep the previous
  * one-zone behavior. De-scatter strips accent inks AND grounds outside all
  * zones, so the 0-accent bucket produces a fully neutral banner.
  */
@@ -1883,20 +1910,22 @@ function applyAccentZoning(
   knobs: SampleKnobs,
   diag: SampleDiagnostics,
 ): void {
-  const accentChoices = grammar.palette.accentOrder
-    .map((accent, index) => ({ accent, index }))
-    .filter(({ accent }) => BRAND_FILLS.has(accent));
-  const corpusAccents = accentChoices.map(choice => choice.accent);
-  if (corpusAccents.length === 0) return;
+  const accentChoices = ACCENT_POOL;
+  if (accentChoices.length === 0) return;
 
   const forcedAccent = knobs.accent;
-  const targetAccentCount = forcedAccent ? 1 : weightedChoice(rng, CANON_ACCENT_COUNT_WEIGHTS);
+  const fullMode = knobs.paletteMode === 'full';
+  const targetAccentCount = forcedAccent
+    ? 1
+    : fullMode
+      ? weightedChoice(rng, FULL_ACCENT_COUNT_WEIGHTS)
+      : weightedChoice(rng, CANON_ACCENT_COUNT_WEIGHTS);
   const warmSide: AccentSide | undefined = forcedAccent
     ? undefined
     : (rng.next() < 0.5 ? 'left' : 'right');
   diag.accentWarmSide = warmSide;
 
-  const allAccents = new Set(corpusAccents);
+  const allAccents = new Set<string>(ACCENT_POOL_HEXES);
   if (forcedAccent) allAccents.add(forcedAccent);
   if (targetAccentCount === 0) {
     descatterAccentsOutsideZones(cells, allAccents, []);
@@ -1908,6 +1937,7 @@ function applyAccentZoning(
     : drawDistinctAccentInks(rng, accentChoices, targetAccentCount);
   const zones: Set<DraftCell>[] = [];
   const zoneModes: AccentMode[] = [];
+  const placedAccents: string[] = [];
   const occupied = new Set<DraftCell>();
   const patchAccentCells = cells
     .filter(c => c.kind === 'tile' && c.patchInkRole === 'accent')
@@ -1926,38 +1956,50 @@ function applyAccentZoning(
 
     zones.push(placed.zone);
     zoneModes.push(placed.mode);
+    placedAccents.push(accent);
     for (const cell of placed.zone) {
       occupied.add(cell);
     }
   }
 
+  if (fullMode && placedAccents.length < FULL_MIN_DISTINCT_ACCENTS) {
+    for (const accent of selectedAccents) {
+      if (placedAccents.includes(accent)) continue;
+      const preferredSide = preferredSideForAccent(accent, warmSide);
+      const placed = takeSingleCellAccentZone(cells, occupied, rng, accent, allAccents, preferredSide);
+      if (placed === null) continue;
+      zones.push(placed.zone);
+      zoneModes.push(placed.mode);
+      placedAccents.push(accent);
+      for (const cell of placed.zone) {
+        occupied.add(cell);
+      }
+      if (placedAccents.length >= FULL_MIN_DISTINCT_ACCENTS) break;
+    }
+  }
+
   diag.accentZone = zoneModes[0] ?? 'none';
   diag.accentZonesPlaced = zones.length;
-  diag.accentsUsed = selectedAccents.slice(0, zones.length);
+  diag.accentsUsed = placedAccents;
   void template; // retained in the signature for rezone compatibility and future template-specific zoning.
   descatterAccentsOutsideZones(cells, allAccents, zones);
 }
 
 const NEUTRAL_INKS_SET = new Set(['#121212', '#FFFFFF', '#F3F3F3', '#D9D9D6']);
+const INK_MODE_CONTRAST_FLOOR = 1.9;
+const DARK_GROUND_ZONE_LUMINANCE = 0.175;
 
 function drawDistinctAccentInks(
   rng: Rng,
-  choices: readonly { accent: string; index: number }[],
+  choices: readonly Weighted<string>[],
   count: number,
 ): string[] {
   let remaining = [...choices];
   const selected: string[] = [];
   while (remaining.length > 0 && selected.length < count) {
-    const picked = weightedChoice(
-      rng,
-      remaining.map(({ accent, index }) => ({
-        value: { accent, index },
-        weight: choices.length - index,
-        sortKey: accent,
-      })),
-    );
-    selected.push(picked.accent);
-    remaining = remaining.filter(choice => choice.accent !== picked.accent);
+    const picked = weightedChoice(rng, remaining);
+    selected.push(picked);
+    remaining = remaining.filter(choice => choice.value !== picked);
   }
   return selected;
 }
@@ -2032,6 +2074,31 @@ function takeTileAccentZone(
   return { zone, mode };
 }
 
+function takeSingleCellAccentZone(
+  cells: DraftCell[],
+  occupied: Set<DraftCell>,
+  rng: Rng,
+  accent: string,
+  allAccents: Set<string>,
+  preferredSide: AccentSide | undefined,
+): { zone: Set<DraftCell>; mode: AccentMode } | null {
+  const dims = dimsForCells(cells);
+  const candidates = cells
+    .filter(cell => cell.kind !== 'plain' && !occupied.has(cell))
+    .sort(compareCells);
+  if (candidates.length === 0) return null;
+  const cell = weightedChoice(
+    rng,
+    candidates.map(candidate => ({
+      value: candidate,
+      weight: anchorSideWeight(candidate, preferredSide, dims),
+      sortKey: positionKey(candidate),
+    })),
+  );
+  applyInkZoneCell(cell, accent, allAccents);
+  return { zone: new Set([cell]), mode: 'ink' };
+}
+
 function zoneHasSpineEdge(grammar: EngineGrammar, zone: Set<DraftCell>): boolean {
   const cells = [...zone];
   const keys = new Set(cells.map(positionKey));
@@ -2080,11 +2147,8 @@ function applyInkZoneCell(cell: DraftCell, accent: string, allAccents: Set<strin
   if (allAccents.has(cell.ground) && cell.ground !== accent) {
     cell.ground = neutralGroundForInk(cell.ink);
   }
-  if (accent === cell.ground) {
-    const ink = neutralForGround(cell.ground);
-    cell.ink = ink;
-    cell.inks = [ink];
-    return;
+  if (accent === cell.ground || lumRatio(accent, cell.ground) < INK_MODE_CONTRAST_FLOOR) {
+    cell.ground = contrastingNeutralGroundForAccent(accent);
   }
   cell.ink = accent;
   cell.inks = [accent];
@@ -2092,10 +2156,64 @@ function applyInkZoneCell(cell: DraftCell, accent: string, allAccents: Set<strin
 
 function applyGroundZoneCell(cell: DraftCell, accent: string): void {
   cell.ground = accent;
+  if (relativeLuminance(accent) < DARK_GROUND_ZONE_LUMINANCE) {
+    cell.ink = '#F3F3F3';
+    cell.inks = [cell.ink];
+    return;
+  }
   const ink = cell.ink === accent || cell.ink === undefined ? '#121212' : cell.ink;
   cell.ink = NEUTRAL_INKS_SET.has(ink) ? ink : '#121212';
   if (cell.ink === accent) cell.ink = '#121212';
   cell.inks = cell.ink ? [cell.ink] : [];
+}
+
+function enforceAccentGroundContrast(cells: DraftCell[]): void {
+  for (const cell of cells) {
+    if (!ACCENT_POOL_SET.has(cell.ground)) continue;
+    if (relativeLuminance(cell.ground) >= DARK_GROUND_ZONE_LUMINANCE) continue;
+    cell.ink = '#F3F3F3';
+    cell.inks = [cell.ink];
+  }
+}
+
+function ensureFullPaletteMinimum(cells: DraftCell[], rng: Rng): void {
+  const allAccents = new Set<string>(ACCENT_POOL_HEXES);
+  const visible = visibleDraftAccents(cells, allAccents);
+  if (visible.size >= FULL_MIN_DISTINCT_ACCENTS) return;
+
+  const missing = ACCENT_POOL
+    .filter(entry => !visible.has(entry.value));
+  for (const entry of missing) {
+    if (visible.size >= FULL_MIN_DISTINCT_ACCENTS) return;
+    const candidates = cells
+      .filter(cell => cell.kind !== 'plain' && !cellCarriesAnyAccent(cell, allAccents))
+      .sort(compareCells);
+    if (candidates.length === 0) return;
+    const cell = weightedChoice(
+      rng,
+      candidates.map(candidate => ({ value: candidate, weight: 1, sortKey: positionKey(candidate) })),
+    );
+    applyInkZoneCell(cell, entry.value, allAccents);
+    visible.add(entry.value);
+  }
+}
+
+function visibleDraftAccents(cells: readonly DraftCell[], accents: Set<string>): Set<string> {
+  const visible = new Set<string>();
+  for (const cell of cells) {
+    if (accents.has(cell.ground)) visible.add(cell.ground);
+    if (cell.ink && accents.has(cell.ink)) visible.add(cell.ink);
+    for (const ink of cell.inks ?? []) {
+      if (accents.has(ink)) visible.add(ink);
+    }
+  }
+  return visible;
+}
+
+function cellCarriesAnyAccent(cell: DraftCell, accents: Set<string>): boolean {
+  return accents.has(cell.ground) ||
+    (cell.ink !== undefined && accents.has(cell.ink)) ||
+    (cell.inks ?? []).some(ink => accents.has(ink));
 }
 
 function descatterAccentsOutsideZones(
@@ -2133,13 +2251,21 @@ function neutralGroundForInk(ink: string | undefined): string {
   return ink === '#121212' || ink === undefined ? '#F3F3F3' : '#121212';
 }
 
+function contrastingNeutralGroundForAccent(accent: string): string {
+  const neutrals = ['#121212', '#F3F3F3', '#FFFFFF', '#D9D9D6'];
+  return neutrals
+    .map(ground => ({ ground, ratio: lumRatio(accent, ground) }))
+    .sort((a, b) => b.ratio - a.ratio || compareCodepoint(a.ground, b.ground))[0]?.ground ?? '#121212';
+}
+
 function syncAccentDiagnostics(
   cells: DraftCell[],
   grammar: EngineGrammar,
   extraAccent: string | undefined,
   diag: SampleDiagnostics,
 ): void {
-  const accentOrder = [...grammar.palette.accentOrder];
+  void grammar;
+  const accentOrder: string[] = [...ACCENT_POOL_HEXES];
   if (extraAccent && !accentOrder.includes(extraAccent)) accentOrder.push(extraAccent);
   const accentSet = new Set(accentOrder);
   const used = new Set<string>();
@@ -2187,6 +2313,7 @@ function applyMirror(
   template: Template,
   extraAccent: string | undefined,
   diag: SampleDiagnostics,
+  accentBudgetCap: number,
 ): void {
   if (dims.cols < 2) return;
   if (!MIRROR_TEMPLATE_IDS.has(template.id)) return;
@@ -2232,7 +2359,7 @@ function applyMirror(
     restoreDraftCells(cellSnapshots);
     return;
   }
-  enforceAccentBudget(cells, grammar, extraAccent);
+  enforceAccentBudget(cells, grammar, extraAccent, accentBudgetCap);
   // Forced-accent survival: the mirror copies the left half over the right, so a
   // zone living entirely in the right half is erased wholesale — and the budget
   // pass can strip what remains. Presence of the forced accent is a contract of
@@ -2638,11 +2765,17 @@ function draftPlanForForms(cells: DraftCell[], dims: GridDims): BannerPlan {
   };
 }
 
-export function enforceAccentBudget(cells: DraftCell[], grammar: EngineGrammar, extraAccent?: string): void {
-  const accents = new Set(grammar.palette.accentOrder);
+export function enforceAccentBudget(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  extraAccent?: string,
+  maxShare = AUTO_ACCENT_BUDGET_CAP,
+): void {
+  void grammar;
+  const accents = new Set<string>(ACCENT_POOL_HEXES);
   if (extraAccent) accents.add(extraAccent); // explicit program-hue accents count toward the budget too
   const nonPlain = cells.filter(cell => cell.kind !== 'plain');
-  const maxAccent = Math.floor(nonPlain.length * 0.35 + EPS);
+  const maxAccent = Math.floor(nonPlain.length * maxShare + EPS);
   // Patch-accent cells strip LAST, and all-or-nothing: an iconic patch's accent
   // group (e.g. the dome's arches) must never be half-recolored. Zoning already
   // makes over-budget patch plans structurally unreachable (3000-seed probe,
@@ -2758,10 +2891,9 @@ function ensureAccentPresence(cells: DraftCell[], grammar: EngineGrammar, rng: R
 }
 
 function accentInkEntriesForGround(grammar: EngineGrammar, ground: string): Weighted<string>[] {
-  const accents = new Set(grammar.palette.accentOrder);
   const inkMap = grammar.palette.inkByGround[ground] ?? {};
   return Object.keys(inkMap)
-    .filter(ink => accents.has(ink) && BRAND_FILLS.has(ink) && ink !== ground)
+    .filter(ink => ACCENT_POOL_SET.has(ink) && CORPUS_GROUND_FILLS.has(ink) && ink !== ground)
     .sort()
     .map(ink => ({ value: ink, weight: inkMap[ink] ?? 0, sortKey: ink }));
 }
@@ -3065,6 +3197,7 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
   const knobs: SampleKnobs = { accent };
   applyAccentZoning(cells, grammar, rng, template, knobs, diag);
   enforceAccentBudget(cells, grammar, knobs.accent);
+  enforceAccentGroundContrast(cells);
 
   const finalCells = finalizeCells(cells);
   return {
