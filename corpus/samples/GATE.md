@@ -91,3 +91,24 @@ resolved: 7/12 plans carry all three heritage accents, 9/12 carry ≥2.
 
 The mirror rate landing above canon in-window (4/12 vs 24%) is sampling noise at n=12 (probe: 20%/200).
 Rhythm phrasing visibly present (810002/810003/810004/810008 all carry full-line phrases).
+
+## Iteration 7 — P7 gate (locked-palette pool + full-palette mode), 2026-07-06
+
+Sheets: full mode seeds 820000–820005, auto seeds 830000–830005, banner 6×3. Claude eyes on all 12.
+
+**Full-palette mode: PASS, and better than feared.** All 6 would show with light curation; no carnival
+failure. 820002 (6 hues over one striped/arced pipe surface) and 820003 (all 7 hues in a quarter-disc
+field) are the proof pieces: "all the colors at once" holds together when the tile FAMILY carries the
+composition. 820004's telemagenta stripe cross dominates properly. 820005 (ring quadrants over
+green/blue/yellow/orange grounds) shows the ground-mode zones working with the new hues.
+Dark-hue contrast law verified by eye: white ink on Frontier Indigo, black rings on Chrome Yellow,
+green-on-white stripes all read cleanly. Report's measured min ratio 3.06 (Timberwolf-on-green) meets
+the WCAG graphics standard; the plan's 4.5:1 was a body-text number, wrong for decorative shapes —
+implementation's threshold rule is correct, plan amended by this gate note.
+
+**Auto with 7-hue pool: PASS.** New hues appear naturally at canon frequency: 830004 checker-motif
+carries Signal Green disc field + Chrome Yellow + Celestial Blue (first non-trio hue ever in auto);
+830000/830002 are neutral-only (canon-legal). No regression in structure, seams, or rhythm.
+
+Quirk for review: sheet caption "acc" (scorer accentShare) reads 0.00 on 820001 despite 5 visible hues —
+scorer counts cell.ink only, not inks[] (pre-existing, display-only).
