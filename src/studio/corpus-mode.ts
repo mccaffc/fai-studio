@@ -14,9 +14,18 @@ import {
   describePlan,
   ARRANGEMENTS,
 } from "../engine/corpus/index.js";
-import type { CorpusResult, ArrangementId } from "../engine/corpus/index.js";
+import type { CorpusConfig, CorpusResult, ArrangementId } from "../engine/corpus/index.js";
+import type { BannerPlan } from "../engine/corpus/types.js";
+import { renderPlanSvg } from "../engine/corpus/render.js";
+import { TILES } from "../engine/corpus/data/tiles.js";
 import { PROGRAMS } from "../engine/corpus/programs.js";
 import type { ProgramId } from "../engine/corpus/programs.js";
+import {
+  corpusEditorActive,
+  enterCorpusEdit,
+  exitCorpusEditor,
+  saveCorpusEditor,
+} from "./editor-corpus/index";
 
 const TEMPLATE_IDS = [
   "pipe-field",
@@ -38,7 +47,11 @@ const ACCENT_OPTIONS: Array<[string, string]> = [
   ["Signal Green", "#268B41"],
   ["Telemagenta", "#D63A8C"],
 ];
-const FULL_PALETTE_VALUE = "__full__";
+const ACCENT_HEXES = ACCENT_OPTIONS.map(([, hex]) => hex);
+const ACCENT_SET = new Set(ACCENT_HEXES);
+// Mirrors sample.ts's DARK_GROUND_ZONE_LUMINANCE rule without importing engine
+// code: the two dark locked hues get a SmokeWhite check; the rest get CodGray.
+const SMOKE_WHITE_CHECK_HEXES = new Set(["#268B41", "#3A4A6B"]);
 
 // Arrangement labels shown in the size select: id → label with dims
 const ARRANGEMENT_LABELS: Record<string, string> = {
@@ -47,7 +60,7 @@ const ARRANGEMENT_LABELS: Record<string, string> = {
   square:       "Square 3×3",
   strip:        "Strip 3×1",
   column:       "Column 1×6",
-  "column-short": "Column short (experimental) 1×3",
+  "column-short": "Column 1×3",
 };
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -69,7 +82,10 @@ const LS_CORPUS_CONFIG = "fai-corpus-config";
 
 interface PersistedCorpusConfig {
   template?: string;
+  accentPool?: string[];
+  /** Legacy read-only migration input. Do not write. */
   accent?: string;
+  /** Legacy read-only migration input. Do not write. */
   paletteMode?: "auto" | "full";
   density?: number;
   figures?: boolean;
@@ -87,11 +103,34 @@ function loadCorpusConfig(): PersistedCorpusConfig {
   return {};
 }
 
+function normalizeAccentHex(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const hex = value.toUpperCase();
+  return ACCENT_SET.has(hex) ? hex : null;
+}
+
+function normalizeAccentPool(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  const selected = new Set<string>();
+  for (const raw of value) {
+    const hex = normalizeAccentHex(raw);
+    if (hex) selected.add(hex);
+  }
+  return ACCENT_HEXES.filter((hex) => selected.has(hex));
+}
+
+function migrateAccentPool(saved: Pick<PersistedCorpusConfig, "accentPool" | "accent" | "paletteMode">): string[] {
+  const pool = normalizeAccentPool(saved.accentPool);
+  if (pool.length) return pool;
+  if (saved.paletteMode === "full") return [...ACCENT_HEXES];
+  const accent = normalizeAccentHex(saved.accent);
+  return accent ? [accent] : [];
+}
+
 function saveCorpusConfig(): void {
   const persisted: PersistedCorpusConfig = {
     template: state.config.template,
-    accent: state.config.accent,
-    paletteMode: state.config.paletteMode,
+    accentPool: [...state.config.accentPool],
     density: state.config.density,
     figures: state.config.figures,
     program: state.config.program,
@@ -107,10 +146,11 @@ function saveCorpusConfig(): void {
 interface CorpusState {
   current: CorpusResult | null;
   vars: CorpusResult[];
+  editing: boolean;
+  preEdit: CorpusResult | null;
   config: {
     template: string;     // "" = auto
-    accent: string;       // "" = auto
-    paletteMode: "auto" | "full";
+    accentPool: string[]; // [] = auto/canon; 1..7 = explicit user pool
     density: number;
     figures: boolean;
     seed: number;
@@ -142,8 +182,7 @@ function makeDefaultConfig(): CorpusState["config"] {
 
   return {
     template,
-    accent: saved.accent ?? "",
-    paletteMode: saved.paletteMode === "full" ? "full" : "auto",
+    accentPool: migrateAccentPool(saved),
     density: saved.density ?? 0.5,
     figures: saved.figures ?? true,
     seed: (Math.random() * 0xffffffff) >>> 0,
@@ -155,8 +194,52 @@ function makeDefaultConfig(): CorpusState["config"] {
 const state: CorpusState = {
   current: null,
   vars: [],
+  editing: false,
+  preEdit: null,
   config: makeDefaultConfig(),
 };
+
+export type EditedCorpusConfig = CorpusConfig & {
+  edited: true;
+  plan: BannerPlan;
+};
+
+export type CorpusSaveConfig = CorpusConfig | EditedCorpusConfig;
+
+function isEditedCorpusConfig(config: CorpusSaveConfig): config is EditedCorpusConfig {
+  return (config as { edited?: unknown }).edited === true && Boolean((config as { plan?: unknown }).plan);
+}
+
+function emptyScores(): CorpusResult["scores"] {
+  return {
+    connectedness: 0,
+    lineworkShare: 0,
+    groundShifts: 0,
+    density: 0,
+    accentShare: 0,
+    maxTileRepetition: 0,
+    rhythmic: false,
+    connected: false,
+    quiltFail: false,
+    focalDominance: 0,
+    balance: 0,
+    negativeSpaceCluster: 0,
+    rhythmQuality: 0,
+    floorsPass: false,
+  };
+}
+
+function editedResultFromPlan(config: EditedCorpusConfig, seed: number): CorpusResult {
+  const plan = structuredClone(config.plan);
+  return {
+    svg: renderPlanSvg(plan, TILES),
+    plan,
+    scores: emptyScores(),
+    seed,
+    attempts: 1,
+    config,
+  };
+}
 
 // ── export helpers (corpus SVG bypasses finalSvg) ────────────────────────────
 
@@ -230,18 +313,25 @@ async function corpusCopySvg(): Promise<void> {
 
 // ── generation ───────────────────────────────────────────────────────────────
 
-function buildCorpusConfig() {
-  return {
+function buildCorpusConfig(): CorpusConfig {
+  const config: CorpusConfig = {
     seed: state.config.seed,
-    template: state.config.template || undefined,
-    // accent is ignored by the engine when program is set, but we pass it
-    // anyway so that switching back to None restores the user's chosen accent.
-    accent: state.config.program || state.config.paletteMode === "full" ? undefined : (state.config.accent || undefined),
-    paletteMode: state.config.program ? "auto" as const : state.config.paletteMode,
     density: state.config.density,
     figures: state.config.figures,
-    program: (state.config.program as ProgramId) || undefined,
-    arrangement: (state.config.arrangement as ArrangementId) || undefined,
+  };
+  if (state.config.template) config.template = state.config.template;
+  if (!state.config.program && state.config.accentPool.length) {
+    config.accentPool = [...state.config.accentPool];
+  }
+  if (state.config.program) config.program = state.config.program as ProgramId;
+  if (state.config.arrangement) config.arrangement = state.config.arrangement as ArrangementId;
+  return config;
+}
+
+function withCurrentCorpusConfig(result: CorpusResult): CorpusResult {
+  return {
+    ...result,
+    config: { ...buildCorpusConfig(), seed: result.seed },
   };
 }
 
@@ -251,6 +341,7 @@ function paintCorpusError(err: unknown): void {
 }
 
 export function corpusRegen(newSeed = false): void {
+  if (state.editing) return;
   if (newSeed) {
     state.config.seed = (Math.random() * 0xffffffff) >>> 0;
   }
@@ -270,14 +361,15 @@ export function corpusRegen(newSeed = false): void {
 }
 
 function corpusRecolorInPlace(): void {
+  if (state.editing) return;
   if (!state.current) return;
   saveCorpusConfig();
-  const accent = state.config.accent;
-  if (accent) {
-    state.current = recolorPlan(state.current, accent);
-    state.vars = state.vars.map((v) => recolorPlan(v, accent));
+  const [accent] = state.config.accentPool;
+  if (state.config.accentPool.length === 1 && accent) {
+    state.current = withCurrentCorpusConfig(recolorPlan(state.current, accent));
+    state.vars = state.vars.map((v) => withCurrentCorpusConfig(recolorPlan(v, accent)));
   } else {
-    // auto accent: regenerate with new accent slot
+    // Auto/full/multi-accent pools change sampler constraints, so regenerate.
     state.current = generateBanner(buildCorpusConfig());
     state.vars = engineVariations(state.current, 6);
   }
@@ -296,6 +388,7 @@ function flash(msg: string, isError = false): void {
 
 function renderCorpusCanvas(): void {
   if (!state.current) return;
+  if (state.editing) return;
   const canvas = $("#canvas");
   if (!canvas) return;
   canvas.innerHTML = state.current.svg;
@@ -327,8 +420,15 @@ function renderCorpusCanvas(): void {
 
   mkBtn("Reroll", "primary", () => {
     if (!state.current) return;
-    state.current = engineReroll(state.current);
-    state.config.seed = state.current.seed;
+    if (isEditedCorpusConfig(state.current.config)) {
+      // Edited configs must not be spread into fresh generations — rebuild a
+      // clean config from the current panel state with an incremented seed.
+      state.config.seed = state.current.seed + 1;
+      state.current = generateBanner(buildCorpusConfig());
+    } else {
+      state.current = engineReroll(state.current);
+      state.config.seed = state.current.seed;
+    }
     state.vars = engineVariations(state.current, 6);
     renderCorpusCanvas();
     renderCorpusVariations();
@@ -341,6 +441,10 @@ function renderCorpusCanvas(): void {
       onSaveFn(state.current.config, state.current.seed);
     }
   });
+  mkBtn("Edit", "", () => {
+    beginCorpusEdit();
+  });
+  acts.lastElementChild?.setAttribute("data-corpus-edit", "");
   mkBtn("SVG", "ghost", () => {
     corpusDownloadSvg();
     flash("SVG saved to your browser's Downloads folder.");
@@ -382,6 +486,10 @@ function renderCorpusVariations(): void {
 function renderCorpusScores(): void {
   const el = $("#corpus-scores");
   if (!el || !state.current) return;
+  if (state.editing || isEditedCorpusConfig(state.current.config)) {
+    el.innerHTML = "";
+    return;
+  }
   const s = state.current.scores;
   const tmpl = state.current.plan.templateId ?? "auto";
   const quiltBadge = s.quiltFail
@@ -420,21 +528,44 @@ function updateSeedDisplay(): void {
 
 // ── controls panel ────────────────────────────────────────────────────────────
 
-/**
- * Sync accent select disabled state to the current program config.
- * Called after a program selection change (without re-rendering the full panel).
- */
-function updateAccentSelectState(): void {
-  const sel = document.querySelector(
-    "#corpus-controls select[data-corpus-accent]",
-  ) as HTMLSelectElement | null;
-  if (!sel) return;
-  if (state.config.program) {
-    sel.disabled = true;
-    sel.title = "program mode uses the program hue";
-  } else {
-    sel.disabled = false;
-    sel.title = "";
+function activeProgramHue(): string {
+  const program = state.config.program as ProgramId;
+  return program && PROGRAMS[program] ? PROGRAMS[program].hue : "";
+}
+
+function visibleAccentSet(): Set<string> {
+  const programHue = activeProgramHue();
+  return new Set(programHue ? [programHue] : state.config.accentPool);
+}
+
+function accentCaption(): string {
+  if (state.config.program) return "program hue";
+  const count = state.config.accentPool.length;
+  if (count === 0) return "canon mix";
+  if (count === ACCENT_HEXES.length) return "full palette";
+  return count === 1 ? "1 accent" : `${count} accents`;
+}
+
+function updateAccentSwatchState(): void {
+  const selected = visibleAccentSet();
+  const programLocked = Boolean(state.config.program);
+  const presetWrap = document.querySelector("[data-corpus-accent-presets]") as HTMLElement | null;
+  if (presetWrap) presetWrap.hidden = programLocked;
+
+  const caption = document.querySelector("[data-corpus-accent-caption]") as HTMLElement | null;
+  if (caption) caption.textContent = accentCaption();
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".accent-swatch[data-corpus-accent]");
+  for (const button of buttons) {
+    const hex = button.dataset.corpusAccent ?? "";
+    const on = selected.has(hex);
+    button.classList.toggle("on", on);
+    button.classList.toggle("locked", programLocked && on);
+    button.setAttribute("aria-pressed", String(on));
+    button.disabled = programLocked;
+    button.title = programLocked
+      ? `${button.dataset.accentName ?? "Accent"} ${hex} — program hue locked`
+      : `${button.dataset.accentName ?? "Accent"} ${hex}`;
   }
 }
 
@@ -443,61 +574,95 @@ function renderCorpusControls(): void {
   if (!root) return;
   root.innerHTML = "";
 
-  const group = (title: string): HTMLElement => {
-    const g = el("div", { class: "group" }, `<h3>${title}</h3>`);
+  if (state.editing) {
+    const g = el("div", { class: "group" });
+    g.appendChild(el("div", {
+      class: "tray-note",
+      "data-corpus-edit-note": "",
+      role: "status",
+    }, "editing — changes are yours, scores off"));
+    const actions = el("div", { class: "canvas-actions" });
+    const exit = el("button", { type: "button", class: "ghost" }, "Exit") as HTMLButtonElement;
+    exit.addEventListener("click", () => exitCorpusEditor());
+    const save = el("button", { type: "button", class: "primary" }, "Save") as HTMLButtonElement;
+    save.addEventListener("click", () => saveCorpusEditor());
+    actions.append(exit, save);
+    g.appendChild(actions);
+    root.appendChild(g);
+    return;
+  }
+
+  const group = (title: string, actions?: HTMLElement): HTMLElement => {
+    const g = el("div", { class: "group" });
+    const head = el("div", { class: "group-head" });
+    head.appendChild(el("h3", {}, title));
+    if (actions) head.appendChild(actions);
+    g.appendChild(head);
     root.appendChild(g);
     return g;
   };
 
-  // Arrangement (Size) — at top of panel
+  const appendControlRow = (parent: HTMLElement, labelText: string, control: HTMLElement): void => {
+    const row = el("div", { class: "row" });
+    row.appendChild(el("label", {}, labelText));
+    row.appendChild(control);
+    parent.appendChild(row);
+  };
+
+  // Size
   {
     const g = group("Size");
-    const sel = el("select", { "data-corpus-arrangement": "" }) as HTMLSelectElement;
+    const chips = el("div", { class: "chips size-chips", role: "group", "aria-label": "Size" });
     for (const id of Object.keys(ARRANGEMENTS) as ArrangementId[]) {
-      const o = document.createElement("option");
-      o.value = id;
-      o.textContent = ARRANGEMENT_LABELS[id] ?? id;
-      // Default is banner (empty string maps to banner)
-      if (id === (state.config.arrangement || "banner")) o.selected = true;
-      sel.appendChild(o);
+      const active = id === (state.config.arrangement || "banner");
+      const chip = el(
+        "button",
+        {
+          type: "button",
+          class: `chip${active ? " on" : ""}`,
+          "data-corpus-arrangement": id,
+          "aria-pressed": String(active),
+        },
+        ARRANGEMENT_LABELS[id] ?? id,
+      ) as HTMLButtonElement;
+      chip.addEventListener("click", () => {
+        state.config.arrangement = id === "banner" ? "" : id;
+        for (const other of chips.querySelectorAll<HTMLButtonElement>(".chip")) {
+          const on = other === chip;
+          other.classList.toggle("on", on);
+          other.setAttribute("aria-pressed", String(on));
+        }
+        corpusRegen(false);
+      });
+      chips.appendChild(chip);
     }
-    sel.addEventListener("change", () => {
-      state.config.arrangement = sel.value === "banner" ? "" : sel.value;
-      corpusRegen(false);
-    });
-    g.appendChild(sel);
+    g.appendChild(chips);
   }
 
-  // Template
+  // Color
   {
-    const g = group("Template");
-    const sel = el("select", { "data-corpus-template": "" }) as HTMLSelectElement;
+    const presets = el("div", { class: "group-actions", "data-corpus-accent-presets": "" });
+    const nonePreset = el("button", { type: "button", class: "text-preset", "data-corpus-accent-none": "" }, "none");
+    nonePreset.addEventListener("click", () => {
+      state.config.accentPool = [];
+      updateAccentSwatchState();
+      if (state.current) corpusRecolorInPlace(); else corpusRegen(false);
+    });
+    const allPreset = el("button", { type: "button", class: "text-preset", "data-corpus-accent-all": "" }, "all");
+    allPreset.addEventListener("click", () => {
+      state.config.accentPool = [...ACCENT_HEXES];
+      updateAccentSwatchState();
+      if (state.current) corpusRecolorInPlace(); else corpusRegen(false);
+    });
+    presets.appendChild(nonePreset);
+    presets.appendChild(allPreset);
+
+    const g = group("Color", presets);
+    const sel = el("select", { "data-corpus-program": "" }) as HTMLSelectElement;
     const auto = document.createElement("option");
     auto.value = "";
     auto.textContent = "Auto";
     sel.appendChild(auto);
-    for (const id of TEMPLATE_IDS) {
-      const o = document.createElement("option");
-      o.value = id;
-      o.textContent = id;
-      if (id === state.config.template) o.selected = true;
-      sel.appendChild(o);
-    }
-    sel.addEventListener("change", () => {
-      state.config.template = sel.value;
-      corpusRegen(false);
-    });
-    g.appendChild(sel);
-  }
-
-  // Program (ABOVE accent — single-hue law)
-  {
-    const g = group("Program");
-    const sel = el("select", { "data-corpus-program": "" }) as HTMLSelectElement;
-    const none = document.createElement("option");
-    none.value = "";
-    none.textContent = "None";
-    sel.appendChild(none);
     for (const [id, prog] of Object.entries(PROGRAMS) as [ProgramId, { name: string; hue: string }][]) {
       const o = document.createElement("option");
       o.value = id;
@@ -510,60 +675,64 @@ function renderCorpusControls(): void {
     }
     sel.addEventListener("change", () => {
       state.config.program = sel.value;
-      // Single-hue law: disable accent select when a program is chosen
-      updateAccentSelectState();
+      updateAccentSwatchState();
       corpusRegen(false);
     });
-    g.appendChild(sel);
+    appendControlRow(g, "Program", sel);
+
+    const swatches = el("div", { class: "accent-swatches", role: "group", "aria-label": "Accents" });
+    for (const [name, hex] of ACCENT_OPTIONS) {
+      const swatch = el(
+        "button",
+        {
+          type: "button",
+          class: "accent-swatch",
+          "data-corpus-accent": hex,
+          "data-accent-name": name,
+          "aria-label": `${name} ${hex}`,
+          "aria-pressed": "false",
+          title: `${name} ${hex}`,
+        },
+      ) as HTMLButtonElement;
+      swatch.style.backgroundColor = hex;
+      swatch.style.setProperty("--check-color", SMOKE_WHITE_CHECK_HEXES.has(hex) ? "#F3F3F3" : "#121212");
+      swatch.addEventListener("click", () => {
+        if (state.config.program) return;
+        const selected = new Set(state.config.accentPool);
+        if (selected.has(hex)) selected.delete(hex);
+        else selected.add(hex);
+        state.config.accentPool = ACCENT_HEXES.filter((accent) => selected.has(accent));
+        updateAccentSwatchState();
+        if (state.current) corpusRecolorInPlace(); else corpusRegen(false);
+      });
+      swatches.appendChild(swatch);
+    }
+    g.appendChild(swatches);
+    g.appendChild(el("div", { class: "accent-caption", "data-corpus-accent-caption": "" }, accentCaption()));
+    updateAccentSwatchState();
   }
 
-  // Accent
+  // Pattern
   {
-    const g = group("Accent");
-    const sel = el("select", { "data-corpus-accent": "" }) as HTMLSelectElement;
-    // Disable when program is active (single-hue law)
-    if (state.config.program) {
-      sel.disabled = true;
-      sel.title = "program mode uses the program hue";
-    }
+    const g = group("Pattern");
+    const template = el("select", { "data-corpus-template": "" }) as HTMLSelectElement;
     const auto = document.createElement("option");
     auto.value = "";
     auto.textContent = "Auto";
-    sel.appendChild(auto);
-    const full = document.createElement("option");
-    full.value = FULL_PALETTE_VALUE;
-    full.textContent = "Full palette";
-    if (state.config.paletteMode === "full") full.selected = true;
-    sel.appendChild(full);
-    for (const [name, hex] of ACCENT_OPTIONS) {
+    template.appendChild(auto);
+    for (const id of TEMPLATE_IDS) {
       const o = document.createElement("option");
-      o.value = hex;
-      o.textContent = `${name} ${hex}`;
-      if (state.config.paletteMode !== "full" && hex === state.config.accent) o.selected = true;
-      sel.appendChild(o);
+      o.value = id;
+      o.textContent = id;
+      if (id === state.config.template) o.selected = true;
+      template.appendChild(o);
     }
-    sel.addEventListener("change", () => {
-      if (sel.value === FULL_PALETTE_VALUE) {
-        state.config.paletteMode = "full";
-        state.config.accent = "";
-        corpusRegen(false);
-        return;
-      }
-      state.config.paletteMode = "auto";
-      state.config.accent = sel.value;
-      // recolor (geometry frozen) if there's a current result; else regenerate
-      if (state.current) {
-        corpusRecolorInPlace();
-      } else {
-        corpusRegen(false);
-      }
+    template.addEventListener("change", () => {
+      state.config.template = template.value;
+      corpusRegen(false);
     });
-    g.appendChild(sel);
-  }
+    appendControlRow(g, "Template", template);
 
-  // Density
-  {
-    const g = group("Density");
     const row = el("div", { class: "row" });
     const label = el("label", {}, `Density: ${state.config.density.toFixed(2)}`);
     const slider = el("input", {
@@ -582,22 +751,23 @@ function renderCorpusControls(): void {
     row.appendChild(label);
     row.appendChild(slider);
     g.appendChild(row);
-  }
 
-  // Figures
-  {
-    const g = group("Figures");
     const chip = el(
       "button",
-      { class: `chip${state.config.figures ? " on" : ""}` },
+      {
+        type: "button",
+        class: `chip${state.config.figures ? " on" : ""}`,
+        "aria-pressed": String(state.config.figures),
+      },
       "figures",
-    );
+    ) as HTMLButtonElement;
     chip.addEventListener("click", () => {
       state.config.figures = !state.config.figures;
       chip.classList.toggle("on", state.config.figures);
+      chip.setAttribute("aria-pressed", String(state.config.figures));
       corpusRegen(false);
     });
-    g.appendChild(chip);
+    appendControlRow(g, "Figures", chip);
   }
 
   // Seed
@@ -627,10 +797,39 @@ function renderCorpusControls(): void {
 export interface CorpusModeOptions {
   flash: (msg: string, isError?: boolean) => void;
   /** Called when the user saves a corpus result to the tray. */
-  onSave?: (config: import("../engine/corpus/index.js").CorpusConfig, seed: number) => void;
+  onSave?: (config: CorpusSaveConfig, seed: number) => void;
 }
 
-let onSaveFn: ((config: import("../engine/corpus/index.js").CorpusConfig, seed: number) => void) | null = null;
+let onSaveFn: ((config: CorpusSaveConfig, seed: number) => void) | null = null;
+
+function beginCorpusEdit(): void {
+  if (!state.current || state.editing) return;
+  state.preEdit = state.current;
+  state.editing = true;
+  renderCorpusControls();
+  renderCorpusScores();
+  enterCorpusEdit(state.current.plan, {
+    flash,
+    onExit: () => {
+      state.editing = false;
+      if (state.preEdit) state.current = state.preEdit;
+      state.preEdit = null;
+      renderCorpusControls();
+      renderCorpusCanvas();
+      renderCorpusVariations();
+      renderCorpusScores();
+      updateSeedDisplay();
+    },
+    onSavePlan: (plan) => {
+      if (!state.current || !onSaveFn) return;
+      onSaveFn({
+        ...buildCorpusConfig(),
+        edited: true,
+        plan: structuredClone(plan),
+      }, state.current.seed);
+    },
+  });
+}
 
 export function mountCorpusMode(opts: CorpusModeOptions): void {
   flashFn = opts.flash;
@@ -644,19 +843,41 @@ export function mountCorpusMode(opts: CorpusModeOptions): void {
  * (which can't statically import the corpus engine without blowing the initial bundle).
  */
 export function generateBannerForTray(
-  config: import("../engine/corpus/index.js").CorpusConfig,
+  config: CorpusSaveConfig,
   seed: number,
 ): import("../engine/corpus/index.js").CorpusResult {
+  if (isEditedCorpusConfig(config)) return editedResultFromPlan(config, seed);
   return generateBanner({ ...config, seed });
 }
 
 /** Restore a previously saved corpus item — used by the save tray. */
-export function openCorpusItem(config: import("../engine/corpus/index.js").CorpusConfig, seed: number): void {
+export function openCorpusItem(config: CorpusSaveConfig, seed: number): void {
   try {
+    if (isEditedCorpusConfig(config)) {
+      state.config = {
+        template: config.template ?? "",
+        accentPool: migrateAccentPool(config),
+        density: config.density ?? 0.5,
+        figures: config.figures ?? true,
+        seed,
+        program: config.program ?? "",
+        arrangement: config.arrangement ?? "",
+      };
+      saveCorpusConfig();
+      state.editing = false;
+      state.preEdit = null;
+      state.current = editedResultFromPlan(config, seed);
+      state.vars = [];
+      renderCorpusCanvas();
+      renderCorpusVariations();
+      updateSeedDisplay();
+      renderCorpusScores();
+      renderCorpusControls();
+      return;
+    }
     state.config = {
       template: config.template ?? "",
-      accent: config.accent ?? "",
-      paletteMode: config.paletteMode === "full" ? "full" : "auto",
+      accentPool: migrateAccentPool(config),
       density: config.density ?? 0.5,
       figures: config.figures ?? true,
       seed,
@@ -664,7 +885,7 @@ export function openCorpusItem(config: import("../engine/corpus/index.js").Corpu
       arrangement: config.arrangement ?? "",
     };
     saveCorpusConfig();
-    state.current = generateBanner({ ...config, seed });
+    state.current = generateBanner(buildCorpusConfig());
     state.vars = engineVariations(state.current, 6);
     renderCorpusCanvas();
     renderCorpusVariations();
@@ -677,6 +898,9 @@ export function openCorpusItem(config: import("../engine/corpus/index.js").Corpu
 }
 
 export function unmountCorpusMode(): void {
+  if (corpusEditorActive()) exitCorpusEditor(true);
+  state.editing = false;
+  state.preEdit = null;
   flashFn = null;
   const root = $("#corpus-controls");
   if (root) root.innerHTML = "";
@@ -687,9 +911,17 @@ export function unmountCorpusMode(): void {
 // ── spacebar hook (called from main.ts when corpus is active) ─────────────────
 
 export function corpusSpacebarReroll(): void {
+  if (state.editing) return;
   if (!state.current) return;
-  state.current = engineReroll(state.current);
-  state.config.seed = state.current.seed;
+  if (isEditedCorpusConfig(state.current.config)) {
+    // Edited configs must not be spread into fresh generations — rebuild a
+    // clean config from the current panel state with an incremented seed.
+    state.config.seed = state.current.seed + 1;
+    state.current = generateBanner(buildCorpusConfig());
+  } else {
+    state.current = engineReroll(state.current);
+    state.config.seed = state.current.seed;
+  }
   state.vars = engineVariations(state.current, 6);
   renderCorpusCanvas();
   renderCorpusVariations();

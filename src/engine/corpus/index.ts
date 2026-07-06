@@ -12,14 +12,14 @@
  * first, then highest connectedness).
  */
 
-import type { BannerPlan, CorpusConfig, EngineGrammar } from './types.js';
+import type { BannerPlan, CorpusConfig, EngineGrammar, SampleKnobs } from './types.js';
 import type { RubricScores } from './score.js';
 import { GRAMMAR as GRAMMAR_RAW } from './data/grammar.js';
 import { TILES } from './data/tiles.js';
 import { samplePlan, rezone } from './sample.js';
 import { scorePlan } from './score.js';
 import { renderPlanSvg } from './render.js';
-import { PROGRAMS, applyProgramPalette } from './programs.js';
+import { PROGRAMS, PROGRAM_FAMILY_BIAS, PROGRAM_FAMILY_MAP, applyProgramPalette } from './programs.js';
 import type { ProgramId } from './programs.js';
 import { scoreComposition, passesCompositionFloors, COMPOSITION_FLOORS } from './composition.js';
 import type { CompositionScores } from './composition.js';
@@ -27,6 +27,8 @@ import type { CompositionScores } from './composition.js';
 // GRAMMAR is typed as EngineGrammar (with Template[] templates) directly in
 // the generated file; no cast needed.
 const GRAMMAR: EngineGrammar = GRAMMAR_RAW;
+const LOCKED_ACCENT_HEXES = ['#FF4F00', '#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const LOCKED_ACCENT_SET = new Set<string>(LOCKED_ACCENT_HEXES);
 
 // ---------------------------------------------------------------------------
 // Public interfaces
@@ -39,7 +41,7 @@ export type { RubricScores } from './score.js';
 export type { CompositionScores } from './composition.js';
 export { COMPOSITION_FLOORS } from './composition.js';
 export type { ProgramId } from './programs.js';
-export { PROGRAMS } from './programs.js';
+export { PROGRAMS, PROGRAM_FAMILY_BIAS, PROGRAM_FAMILY_MAP } from './programs.js';
 
 /** tile-id → shape family, derived once from the baked tile catalog. */
 const FAMILIES: Record<string, string> = Object.fromEntries(
@@ -70,14 +72,21 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
   const seed = config.seed ?? 1;
   const maxAttempts = config.maxAttempts ?? 8;
 
-  const knobs = {
+  const knobs: SampleKnobs = {
     template: config.template,
     accent: config.program ? PROGRAMS[config.program].hue : config.accent,
+    accentPool: config.accentPool,
     density: config.density,
     figures: config.figures,
     arrangement: config.arrangement,
     paletteMode: config.paletteMode ?? 'auto',
   };
+  if (config.program) {
+    knobs.familyBias = {
+      families: PROGRAM_FAMILY_MAP[config.program],
+      multiplier: PROGRAM_FAMILY_BIAS,
+    };
+  }
 
   interface Attempt {
     plan: BannerPlan;
@@ -152,6 +161,30 @@ function validateCorpusConfig(config: CorpusConfig): void {
   }
   if (paletteMode === 'full' && config.program) {
     throw new Error('paletteMode full cannot be combined with program');
+  }
+  if (config.accentPool !== undefined) {
+    if (!Array.isArray(config.accentPool) || config.accentPool.length === 0) {
+      throw new Error('accentPool cannot be empty');
+    }
+    if (config.accent) {
+      throw new Error('accentPool cannot be combined with accent');
+    }
+    if (config.program) {
+      throw new Error('accentPool cannot be combined with program');
+    }
+    if (paletteMode === 'full') {
+      throw new Error('accentPool cannot be combined with paletteMode full');
+    }
+    const seen = new Set<string>();
+    for (const accent of config.accentPool) {
+      if (!LOCKED_ACCENT_SET.has(accent)) {
+        throw new Error(`Unknown accent in accentPool: ${accent}`);
+      }
+      if (seen.has(accent)) {
+        throw new Error(`accentPool cannot contain duplicate accent: ${accent}`);
+      }
+      seen.add(accent);
+    }
   }
 }
 

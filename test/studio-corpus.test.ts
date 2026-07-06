@@ -30,6 +30,46 @@ function findButton(scope: string, re: RegExp): HTMLButtonElement {
   return b as HTMLButtonElement;
 }
 
+const ACCENT_HEXES = [
+  "#FF4F00",
+  "#4997D0",
+  "#FFA300",
+  "#8265DB",
+  "#3A4A6B",
+  "#268B41",
+  "#D63A8C",
+];
+
+function accentGroup(): HTMLElement {
+  const group = document.querySelector('[role="group"][aria-label="Accents"]') as HTMLElement | null;
+  if (!group) throw new Error("accent group not found");
+  return group;
+}
+
+function accentButtons(): HTMLButtonElement[] {
+  return Array.from(accentGroup().querySelectorAll<HTMLButtonElement>(".accent-swatch"));
+}
+
+function accentButton(hex: string): HTMLButtonElement {
+  const button = accentButtons().find((b) => b.dataset.corpusAccent === hex);
+  if (!button) throw new Error(`accent swatch ${hex} not found`);
+  return button;
+}
+
+function pressedAccentHexes(): string[] {
+  return accentButtons()
+    .filter((button) => button.getAttribute("aria-pressed") === "true")
+    .map((button) => button.dataset.corpusAccent ?? "");
+}
+
+function arrangementButton(id: string): HTMLButtonElement {
+  const button = document.querySelector(
+    `#corpus-controls button[data-corpus-arrangement="${id}"]`,
+  ) as HTMLButtonElement | null;
+  if (!button) throw new Error(`arrangement chip ${id} not found`);
+  return button;
+}
+
 describe("studio corpus mode (jsdom)", () => {
   beforeEach(() => {
     vi.resetModules(); // re-boot main.ts against each fresh DOM
@@ -75,7 +115,10 @@ describe("studio corpus mode (jsdom)", () => {
     expect(corpusAside.style.display).not.toBe("none");
   });
 
-  it("3. template select change regenerates (different svg content)", async () => {
+  // 15s timeout: this boots main.ts + two full generations under whole-suite
+  // parallel jsdom load; the 5s default became marginal once the suite grew to
+  // 36 files (observed intermittent timeouts at P8 Task 3; 385ms in isolation).
+  it("3. template select change regenerates (different svg content)", { timeout: 15_000 }, async () => {
     await import("../src/studio/main");
 
     const before = document.querySelector("#canvas")!.innerHTML;
@@ -101,13 +144,8 @@ describe("studio corpus mode (jsdom)", () => {
     const dBefore = pathBefore?.getAttribute("d");
     expect(dBefore).toBeTruthy();
 
-    // Change accent to Celestial Blue
-    const accentSelect = document.querySelector(
-      "#corpus-controls select[data-corpus-accent]",
-    ) as HTMLSelectElement;
-    expect(accentSelect).toBeTruthy();
-    accentSelect.value = "#4997D0";
-    accentSelect.dispatchEvent(new Event("change"));
+    // Change accent to Celestial Blue.
+    accentButton("#4997D0").click();
 
     // Same path 'd' must still exist (geometry frozen)
     const svgAfter = document.querySelector("#canvas svg")!;
@@ -116,7 +154,7 @@ describe("studio corpus mode (jsdom)", () => {
     expect(sameD).toBe(true);
   });
 
-  it("P3-1a. program select renders 7 options (None + 6 programs)", async () => {
+  it("P3-1a. program select renders 7 options (Auto + 6 programs)", async () => {
     await import("../src/studio/main");
 
     const programSelect = document.querySelector(
@@ -126,10 +164,10 @@ describe("studio corpus mode (jsdom)", () => {
     expect(programSelect.options.length).toBe(7);
     const firstOpt = programSelect.options.item(0);
     expect(firstOpt?.value).toBe("");
-    expect(firstOpt?.textContent).toMatch(/None/);
+    expect(firstOpt?.textContent).toMatch(/Auto/);
   });
 
-  it("P3-1b. choosing artificial-intelligence → hue in svg, no #FF4F00, accent disabled", async () => {
+  it("P3-1b. choosing artificial-intelligence → hue in svg, no #FF4F00, accents locked", async () => {
     await import("../src/studio/main");
 
     const programSelect = document.querySelector(
@@ -147,16 +185,15 @@ describe("studio corpus mode (jsdom)", () => {
     expect(svgHtml).not.toContain("#FF4F00");
     expect(svgHtml).not.toContain('"#FFFFFF"');
 
-    // Accent select must be disabled
-    const accentSelect = document.querySelector(
-      "#corpus-controls select[data-corpus-accent]",
-    ) as HTMLSelectElement;
-    expect(accentSelect).toBeTruthy();
-    expect(accentSelect.disabled).toBe(true);
-    expect(accentSelect.title).toMatch(/program mode/i);
+    // Program mode locks the program hue swatch and disables the other six.
+    for (const swatch of accentButtons()) {
+      expect(swatch.disabled).toBe(true);
+    }
+    expect(pressedAccentHexes()).toEqual(["#D63A8C"]);
+    expect(accentButton("#D63A8C").classList.contains("locked")).toBe(true);
   });
 
-  it("P3-1c. switching back to None re-enables accent select", async () => {
+  it("P3-1c. switching back to Auto re-enables accent swatches", async () => {
     await import("../src/studio/main");
 
     // First select a program
@@ -166,16 +203,13 @@ describe("studio corpus mode (jsdom)", () => {
     programSelect.value = "artificial-intelligence";
     programSelect.dispatchEvent(new Event("change"));
 
-    const accentSelect = document.querySelector(
-      "#corpus-controls select[data-corpus-accent]",
-    ) as HTMLSelectElement;
-    expect(accentSelect.disabled).toBe(true);
+    expect(accentButtons().every((swatch) => swatch.disabled)).toBe(true);
 
-    // Switch back to None
+    // Switch back to Auto
     programSelect.value = "";
     programSelect.dispatchEvent(new Event("change"));
 
-    expect(accentSelect.disabled).toBe(false);
+    expect(accentButtons().every((swatch) => !swatch.disabled)).toBe(true);
   });
 
   it("P3-1d. program choice persists across re-mount (localStorage)", async () => {
@@ -206,11 +240,9 @@ describe("studio corpus mode (jsdom)", () => {
     expect(programSelect2).toBeTruthy();
     expect(programSelect2.value).toBe("science-innovation");
 
-    // And accent should be disabled
-    const accentSelect2 = document.querySelector(
-      "#corpus-controls select[data-corpus-accent]",
-    ) as HTMLSelectElement;
-    expect(accentSelect2.disabled).toBe(true);
+    // And accents should be locked to the program hue.
+    expect(accentButtons().every((swatch) => swatch.disabled)).toBe(true);
+    expect(pressedAccentHexes()).toEqual(["#4997D0"]);
   });
 
   it("5. spacebar triggers reroll (seed display changes)", async () => {
@@ -300,10 +332,7 @@ describe("studio corpus mode (jsdom)", () => {
     expect(programSelect.value).toBe("");
 
     // Accent and density (non-id fields) should be preserved from localStorage
-    const accentSelect = document.querySelector(
-      "#corpus-controls select[data-corpus-accent]",
-    ) as HTMLSelectElement;
-    expect(accentSelect.value).toBe("#FF4F00");
+    expect(pressedAccentHexes()).toEqual(["#FF4F00"]);
 
     const densitySlider = document.querySelector(
       "#corpus-controls input[type='range']",
@@ -416,9 +445,9 @@ describe("studio corpus mode (jsdom)", () => {
   });
 });
 
-// ── P5-3 arrangement select tests ─────────────────────────────────────────────
+// ── P5-3 arrangement size-chip tests ──────────────────────────────────────────
 
-describe('P5-3 arrangement select (size)', () => {
+describe('P5-3 arrangement chips (size)', () => {
   beforeEach(() => {
     vi.resetModules();
     const mem = new Map<string, string>();
@@ -431,34 +460,27 @@ describe('P5-3 arrangement select (size)', () => {
     skeleton();
   });
 
-  it('P5-3a. arrangement select renders 6 options with Banner default selected', async () => {
+  it('P5-3a. arrangement chips render 6 options with Banner default selected', async () => {
     await import('../src/studio/main');
-    const sel = document.querySelector(
-      '#corpus-controls select[data-corpus-arrangement]',
-    ) as HTMLSelectElement;
-    expect(sel).toBeTruthy();
-    expect(sel.options.length).toBe(6);
+    const chips = Array.from(
+      document.querySelectorAll<HTMLButtonElement>('#corpus-controls button[data-corpus-arrangement]'),
+    );
+    expect(chips).toHaveLength(6);
     // Labels should include dims
-    const labels = [...sel.options].map(o => o.textContent ?? '');
+    const labels = chips.map(o => o.textContent ?? '');
     expect(labels.some(l => /Banner.*6.3/.test(l))).toBe(true);
     expect(labels.some(l => /Portrait.*2.3/.test(l))).toBe(true);
     expect(labels.some(l => /Square.*3.3/.test(l))).toBe(true);
     expect(labels.some(l => /Strip.*3.1/.test(l))).toBe(true);
     expect(labels.some(l => /Column.*1.6/.test(l))).toBe(true);
-    expect(labels.some(l => /Column short.*1.3/.test(l))).toBe(true);
+    expect(labels.some(l => /^Column.*1.3/.test(l))).toBe(true);
     // Banner should be selected by default
-    expect(sel.value).toBe('banner');
+    expect(arrangementButton('banner').getAttribute('aria-pressed')).toBe('true');
   });
 
   it('P5-3b. choosing Strip regenerates with 960×320 viewBox in canvas SVG', async () => {
     await import('../src/studio/main');
-    const sel = document.querySelector(
-      '#corpus-controls select[data-corpus-arrangement]',
-    ) as HTMLSelectElement;
-    expect(sel).toBeTruthy();
-
-    sel.value = 'strip';
-    sel.dispatchEvent(new Event('change'));
+    arrangementButton('strip').click();
 
     const svgEl = document.querySelector('#canvas svg') as SVGElement | null;
     expect(svgEl).toBeTruthy();
@@ -473,11 +495,7 @@ describe('P5-3 arrangement select (size)', () => {
   it('P5-3c. arrangement persists across re-mount (localStorage round-trip)', async () => {
     await import('../src/studio/main');
 
-    const sel = document.querySelector(
-      '#corpus-controls select[data-corpus-arrangement]',
-    ) as HTMLSelectElement;
-    sel.value = 'portrait';
-    sel.dispatchEvent(new Event('change'));
+    arrangementButton('portrait').click();
 
     // Check stored
     const stored = localStorage.getItem('fai-corpus-config');
@@ -490,10 +508,7 @@ describe('P5-3 arrangement select (size)', () => {
     skeleton();
     await import('../src/studio/main');
 
-    const sel2 = document.querySelector(
-      '#corpus-controls select[data-corpus-arrangement]',
-    ) as HTMLSelectElement;
-    expect(sel2.value).toBe('portrait');
+    expect(arrangementButton('portrait').getAttribute('aria-pressed')).toBe('true');
   });
 
   it('P5-3d. bogus arrangement in localStorage falls back to banner default', async () => {
@@ -509,11 +524,8 @@ describe('P5-3 arrangement select (size)', () => {
 
     // Should mount cleanly (no throw)
     expect(document.querySelector('#canvas svg')).toBeTruthy();
-    const sel = document.querySelector(
-      '#corpus-controls select[data-corpus-arrangement]',
-    ) as HTMLSelectElement;
     // bogus arrangement dropped → defaults to banner
-    expect(sel.value).toBe('banner');
+    expect(arrangementButton('banner').getAttribute('aria-pressed')).toBe('true');
   });
 
   it('P5-3e. export filename includes plan dims (cols×rows×320)', async () => {
@@ -544,11 +556,7 @@ describe('P5-3 arrangement select (size)', () => {
     await import('../src/studio/main');
 
     // Select square arrangement
-    const arrSel = document.querySelector(
-      '#corpus-controls select[data-corpus-arrangement]',
-    ) as HTMLSelectElement;
-    arrSel.value = 'square';
-    arrSel.dispatchEvent(new Event('change'));
+    arrangementButton('square').click();
 
     // Save it
     const saveBtn = Array.from(
@@ -564,20 +572,22 @@ describe('P5-3 arrangement select (size)', () => {
     const corpusItem = items.find(x => x.kind === 'corpus');
     expect(corpusItem).toBeTruthy();
     // arrangement in config ('' = banner default, or explicit id)
-    // square was selected → should be square or '' if we stored empty for non-banner
-    // The select sends 'square' which != 'banner', so stored as 'square'
+    // square was selected → the chip stores the explicit non-banner id.
     expect(corpusItem!.config.arrangement).toBe('square');
   });
 });
 
 describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
-  it('accent select lists the four non-corpus-mined program hues once each', async () => {
+  beforeEach(() => {
+    vi.resetModules();
     localStorage.clear();
+    document.body.innerHTML = '<div id="canvas"></div><div id="canvas-actions"></div><div id="corpus-controls"></div><div id="corpus-scores"></div><div id="variations"></div>';
+  });
+
+  it('accent swatches list the four non-corpus-mined program hues once each', async () => {
     const { mountCorpusMode } = await import('../src/studio/corpus-mode');
-    document.body.innerHTML = '<div id="canvas"></div><div id="corpus-controls"></div><div id="corpus-scores"></div>';
     mountCorpusMode({ flash: () => {}, onSave: () => {} });
-    const sel = document.querySelector('[data-corpus-accent]') as HTMLSelectElement;
-    const values = [...sel.options].map(o => o.value);
+    const values = accentButtons().map(o => o.dataset.corpusAccent ?? '');
     for (const hue of ['#8265DB', '#D63A8C', '#268B41', '#3A4A6B']) {
       expect(values.filter(v => v === hue)).toHaveLength(1);
     }
@@ -591,45 +601,231 @@ describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
   });
 });
 
-describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
-  it('accent select offers Full palette and persists paletteMode=full', async () => {
+// F2 regression: when the current item is an edited config (edited:true + plan),
+// clicking Reroll must not spread the stale EditedCorpusConfig into the new
+// generation.  The resulting state.current.config must be a plain CorpusConfig
+// (no 'edited', no 'plan') and the plan must be freshly generated (different
+// cells than the stale edited plan).
+describe('F2: edited-config reroll isolation (final review wave)', () => {
+  beforeEach(() => {
+    vi.resetModules();
     localStorage.clear();
-    const { mountCorpusMode } = await import('../src/studio/corpus-mode');
-    document.body.innerHTML = '<div id="canvas"></div><div id="corpus-controls"></div><div id="corpus-scores"></div><div id="variations"></div>';
-    mountCorpusMode({ flash: () => {}, onSave: () => {} });
-
-    const sel = document.querySelector('[data-corpus-accent]') as HTMLSelectElement;
-    const full = [...sel.options].find(o => o.textContent === 'Full palette');
-    expect(full).toBeTruthy();
-    expect(full!.value).toBe('__full__');
-
-    sel.value = '__full__';
-    sel.dispatchEvent(new Event('change'));
-
-    const persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as { paletteMode?: string; accent?: string };
-    expect(persisted.paletteMode).toBe('full');
-    expect(persisted.accent).toBe('');
+    document.body.innerHTML =
+      '<div id="canvas"></div><div id="canvas-actions"></div>' +
+      '<div id="corpus-controls"></div><div id="corpus-scores"></div>' +
+      '<div id="variations"></div><div id="saved"></div>' +
+      '<div id="action-status"></div>';
   });
 
-  it('lists all seven accents as one flat group — no hue set off from the others', async () => {
-    // Regression: blue and yellow were listed at top level with the other four
-    // hues demoted to a "Program hues" optgroup (old-paradigm holdover).
+  it('Reroll from an edited item produces a clean CorpusConfig (no edited/plan)', async () => {
+    const { mountCorpusMode, openCorpusItem, generateBannerForTray } = await import('../src/studio/corpus-mode');
+
+    // Obtain a real edited config by generating a plan then simulating a save
+    const { generateBanner } = await import('../src/engine/corpus/index');
+    const originalResult = generateBanner({ seed: 42 });
+    const editedPlan = structuredClone(originalResult.plan);
+    // Mutate one cell to make it "edited"
+    if (editedPlan.cells[0]) editedPlan.cells[0].ground = "#FFFFFF";
+
+    const editedConfig = { ...originalResult.config, edited: true as const, plan: editedPlan };
+
+    let lastSaved: { config: unknown; seed: number } | null = null;
+    mountCorpusMode({
+      flash: () => {},
+      onSave: (config, seed) => { lastSaved = { config, seed }; },
+    });
+
+    // Restore the edited item — this sets state.current.config to an EditedCorpusConfig
+    openCorpusItem(editedConfig, 42);
+
+    // Click Reroll
+    const rerollBtn = Array.from(
+      document.querySelectorAll('#canvas-actions button'),
+    ).find(b => b.textContent?.trim() === 'Reroll') as HTMLButtonElement | undefined;
+    expect(rerollBtn).toBeTruthy();
+    rerollBtn!.click();
+
+    // Save so we can inspect the config that would be persisted
+    const saveBtn = Array.from(
+      document.querySelectorAll('#canvas-actions button'),
+    ).find(b => b.textContent?.trim() === 'Save') as HTMLButtonElement | undefined;
+    expect(saveBtn).toBeTruthy();
+    saveBtn!.click();
+    expect(lastSaved).toBeTruthy();
+
+    const savedConfig = lastSaved!.config as Record<string, unknown>;
+    // Must NOT carry edited or plan — those belong only to manually-edited items
+    expect(savedConfig).not.toHaveProperty('edited');
+    expect(savedConfig).not.toHaveProperty('plan');
+  });
+
+  it('Reroll from edited item produces a genuinely new plan (not the stale edited plan)', async () => {
+    const { mountCorpusMode, openCorpusItem } = await import('../src/studio/corpus-mode');
+    const { generateBanner } = await import('../src/engine/corpus/index');
+
+    const originalResult = generateBanner({ seed: 99 });
+    const editedPlan = structuredClone(originalResult.plan);
+    // Mark a cell with a distinctive ground so we can detect stale re-use
+    if (editedPlan.cells[0]) editedPlan.cells[0].ground = "#8265DB";
+    const editedConfig = { ...originalResult.config, edited: true as const, plan: editedPlan };
+
+    mountCorpusMode({ flash: () => {} });
+    openCorpusItem(editedConfig, 99);
+
+    // Canvas before reroll should show the edited plan (with #8265DB)
+    const canvasBefore = document.querySelector('#canvas')!.innerHTML;
+    // Note: #8265DB may or may not appear in SVG depending on renderer, but the
+    // plan itself is what matters.  We check via the canvas SVG content.
+
+    const rerollBtn = Array.from(
+      document.querySelectorAll('#canvas-actions button'),
+    ).find(b => b.textContent?.trim() === 'Reroll') as HTMLButtonElement | undefined;
+    expect(rerollBtn).toBeTruthy();
+    rerollBtn!.click();
+
+    const canvasAfter = document.querySelector('#canvas')!.innerHTML;
+    // After reroll the canvas must regenerate — seed changes so SVG changes
+    expect(canvasAfter).not.toBe(canvasBefore);
+  });
+
+  it('spacebar reroll from edited item produces a clean config', async () => {
+    const { mountCorpusMode, openCorpusItem, corpusSpacebarReroll } = await import('../src/studio/corpus-mode');
+    const { generateBanner } = await import('../src/engine/corpus/index');
+
+    const originalResult = generateBanner({ seed: 77 });
+    const editedPlan = structuredClone(originalResult.plan);
+    const editedConfig = { ...originalResult.config, edited: true as const, plan: editedPlan };
+
+    let lastSaved: { config: unknown } | null = null;
+    mountCorpusMode({
+      flash: () => {},
+      onSave: (config) => { lastSaved = { config }; },
+    });
+    openCorpusItem(editedConfig, 77);
+
+    corpusSpacebarReroll();
+
+    const saveBtn = Array.from(
+      document.querySelectorAll('#canvas-actions button'),
+    ).find(b => b.textContent?.trim() === 'Save') as HTMLButtonElement | undefined;
+    saveBtn!.click();
+
+    const savedConfig = lastSaved!.config as Record<string, unknown>;
+    expect(savedConfig).not.toHaveProperty('edited');
+    expect(savedConfig).not.toHaveProperty('plan');
+  });
+});
+
+describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
+  beforeEach(() => {
+    vi.resetModules();
     localStorage.clear();
+    document.body.innerHTML = '<div id="canvas"></div><div id="canvas-actions"></div><div id="corpus-controls"></div><div id="corpus-scores"></div><div id="variations"></div>';
+  });
+
+  async function mountCorpusOnly(onSave: Parameters<typeof import('../src/studio/corpus-mode').mountCorpusMode>[0]['onSave'] = () => {}): Promise<void> {
     const { mountCorpusMode } = await import('../src/studio/corpus-mode');
-    document.body.innerHTML = '<div id="canvas"></div><div id="corpus-controls"></div><div id="corpus-scores"></div><div id="variations"></div>';
-    mountCorpusMode({ flash: () => {}, onSave: () => {} });
+    mountCorpusMode({ flash: () => {}, onSave });
+  }
 
-    const sel = document.querySelector('[data-corpus-accent]') as HTMLSelectElement;
-    expect(sel.querySelector('optgroup')).toBeNull();
+  it('renders one flat seven-swatch row in spec order with aria-pressed state', async () => {
+    // Sanctioned recalibration: P8 removes the explicit-accent dropdown, so the
+    // old dropdown-pinned flatness test now asserts the swatch-world contract.
+    await mountCorpusOnly();
 
-    const hexes = [...sel.options].map(o => o.value).filter(v => v.startsWith('#'));
-    expect(hexes).toEqual([
-      '#FF4F00', // International Orange first (the brand)
-      '#4997D0', '#FFA300', '#8265DB', '#3A4A6B', '#268B41', '#D63A8C', // six equal hues, alphabetical
+    expect(Array.from(document.querySelectorAll('#corpus-controls .group h3')).map((h) => h.textContent)).toEqual([
+      'Size', 'Color', 'Pattern', 'Seed',
     ]);
-    // Every option is a DIRECT child of the select — flat, no grouping.
-    for (const o of [...sel.options]) {
-      expect(o.parentElement).toBe(sel);
+    expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('canon mix');
+
+    const group = accentGroup();
+    const buttons = accentButtons();
+    expect(buttons).toHaveLength(7);
+    expect(Array.from(group.children)).toEqual(buttons);
+    expect(buttons.map((button) => button.dataset.corpusAccent)).toEqual(ACCENT_HEXES);
+    expect(buttons.map((button) => button.getAttribute('aria-pressed'))).toEqual([
+      'false', 'false', 'false', 'false', 'false', 'false', 'false',
+    ]);
+
+    accentButton('#FF4F00').click();
+    expect(accentButton('#FF4F00').getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('toggles swatches and presets into persisted accentPool only', async () => {
+    // Sanctioned recalibration: Full palette is now the "all" swatch preset;
+    // paletteMode/accent remain read-only legacy migration inputs.
+    await mountCorpusOnly();
+
+    accentButton('#FF4F00').click();
+    accentButton('#4997D0').click();
+    expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('2 accents');
+    let persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as {
+      accentPool?: string[];
+      accent?: string;
+      paletteMode?: string;
+    };
+    expect(persisted.accentPool).toEqual(['#FF4F00', '#4997D0']);
+    expect(persisted.accent).toBeUndefined();
+    expect(persisted.paletteMode).toBeUndefined();
+
+    (document.querySelector('[data-corpus-accent-all]') as HTMLButtonElement).click();
+    expect(pressedAccentHexes()).toEqual(ACCENT_HEXES);
+    expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('full palette');
+    persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as { accentPool?: string[] };
+    expect(persisted.accentPool).toEqual(ACCENT_HEXES);
+
+    (document.querySelector('[data-corpus-accent-none]') as HTMLButtonElement).click();
+    expect(pressedAccentHexes()).toEqual([]);
+    expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('canon mix');
+    persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as { accentPool?: string[] };
+    expect(persisted.accentPool).toEqual([]);
+  });
+
+  it('migrates legacy paletteMode and accent storage into checked swatches', async () => {
+    localStorage.setItem('fai-corpus-config', JSON.stringify({ paletteMode: 'full' }));
+    await mountCorpusOnly();
+    expect(pressedAccentHexes()).toEqual(ACCENT_HEXES);
+
+    vi.resetModules();
+    localStorage.setItem('fai-corpus-config', JSON.stringify({ accent: '#4997D0' }));
+    document.body.innerHTML = '<div id="canvas"></div><div id="canvas-actions"></div><div id="corpus-controls"></div><div id="corpus-scores"></div><div id="variations"></div>';
+    await mountCorpusOnly();
+    expect(pressedAccentHexes()).toEqual(['#4997D0']);
+  });
+
+  it('program mode disables swatches and locks the program hue on', async () => {
+    await mountCorpusOnly();
+
+    const programSelect = document.querySelector(
+      '#corpus-controls select[data-corpus-program]',
+    ) as HTMLSelectElement;
+    programSelect.value = 'energy-infrastructure';
+    programSelect.dispatchEvent(new Event('change'));
+
+    expect(pressedAccentHexes()).toEqual(['#268B41']);
+    for (const button of accentButtons()) {
+      expect(button.disabled).toBe(true);
     }
+    expect(accentButton('#268B41').classList.contains('locked')).toBe(true);
+    expect((document.querySelector('[data-corpus-accent-presets]') as HTMLElement).hidden).toBe(true);
+    expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('program hue');
+  });
+
+  it('maps checked swatches to the engine config without paletteMode', async () => {
+    let savedConfig: Record<string, unknown> | null = null;
+    await mountCorpusOnly((config) => {
+      savedConfig = config as Record<string, unknown>;
+    });
+
+    findButton('#canvas-actions', /^Save$/).click();
+    expect(savedConfig).toBeTruthy();
+    expect(savedConfig).not.toHaveProperty('accentPool');
+    expect(savedConfig).not.toHaveProperty('paletteMode');
+
+    accentButton('#FF4F00').click();
+    accentButton('#4997D0').click();
+    findButton('#canvas-actions', /^Save$/).click();
+    expect(savedConfig).toMatchObject({ accentPool: ['#FF4F00', '#4997D0'] });
+    expect(savedConfig).not.toHaveProperty('paletteMode');
   });
 });

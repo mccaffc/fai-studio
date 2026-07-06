@@ -112,3 +112,56 @@ carries Signal Green disc field + Chrome Yellow + Celestial Blue (first non-trio
 
 Quirk for review: sheet caption "acc" (scorer accentShare) reads 0.00 on 820001 despite 5 visible hues —
 scorer counts cell.ink only, not inks[] (pre-existing, display-only).
+
+## Gate A — P8 studio UX (accent swatches + four-group panel), 2026-07-06
+
+In-browser (aside, localhost:4310), desktop 1440 + emulated 375. **PASS.**
+- Four groups exactly per spec (Size chips / Color / Pattern / Seed); swatch row DOM-verified: 7 buttons,
+  orange-first spec order, backgrounds exact to the locked hexes (screenshot compression faked a violet
+  where Chrome Yellow sits — DOM check is the arbiter, noted for future gates).
+- Check glyphs luminance-correct by eye (cod-gray on Celestial Blue, smoke-white on Signal Green).
+- Behavior end-to-end: blue+green checked → banner colored in exactly blue+green; presets and program-lock
+  states render; caption reads correctly.
+- Mobile 375: scrollWidth==clientWidth (no overflow), panel stacks below stage in flow, swatches fit one
+  343px row. (aside full-page capture DUPLICATES page content on emulated viewports — capture artifact,
+  not CSS; verified via DOM measurements instead.)
+- Accepted deviation: caption uses --line instead of --soft (this checkout's --soft is the panel bg;
+  implementer's reasoning correct, contrast verified on screen).
+
+## Gate B — P8 corpus editor smoke, 2026-07-06
+
+In-browser (aside, localhost:4310, desktop). **PASS after one controller fix.**
+- Functional loop verified end-to-end: Edit entry → cell select (clean 2px orange outline) →
+  re-ink to Electric Violet (only the selected cell changed) → Undo restores → Exit restores
+  generate mode + panel → Save delivers edited:true with the edited plan into the tray.
+- DEFECT found by eye and fixed inline: the 11-fill Ink/Ground swatch rows rendered as 2px slivers —
+  `.canvas-actions button { width: auto }` outranked `.accent-swatch`'s width (class+element vs class).
+  Fix: each fill row owns a full line (`.fill-row`, flex-basis 100%) + two-class width rule.
+  Re-verified on screen: two full rows of square swatches, correct active states.
+- Accepted for v1: family/tile selects stretch full-width under the wrap layout — heavy but readable,
+  grid-like, consistent with the IBM register. Revisit only if editing gets daily use.
+
+## Gate C — P8 program shape identity (greyscale test), 2026-07-06
+
+Six programs × 6 banners (seeds 850000–850005, same seeds across programs for A/B), greyscaled,
+judged on shapes alone. Calibration: PROGRAM_FAMILY_BIAS 3 → **8** at this gate (at 3, T&S was
+unrecognizable and two banners were near-identical across programs at shared seeds).
+
+Nameability at bias 8:
+- Science & Innovation ★ 6/6 — discs/dots carry every banner (a stripe field literally became a dot
+  grid, a rectangle field became quarter-discs). Unmistakable.
+- Technology & Statecraft ✓ 4/6 — stripe/bar/colonnade fields dominate; the two arc-mosaic-template
+  seeds resist (that template has no bar vocabulary — structural ceiling, not a knob problem).
+- American Governance ~3/6 — the scallop-chain sweep banners are genuinely distinctive; block-heavy
+  figure-field seeds don't lean.
+- Energy & Infrastructure ~2.5/6 — wave-gourd columns are unmistakable when present; frequency
+  limited by an 8-tile wave family.
+- Frontier Legal Defense ~2/6 — frame/grid blocks read but weakly.
+- Artificial Intelligence ✗ ~1/6 — the corpus has almost no capsule/lens vocabulary (float 8,
+  merge 3 tiles); no multiplier can conjure shapes that aren't in the corpus.
+
+**VERDICT: SHIP as v1** — the mechanism is proven and half the programs have real shape identity.
+Full identity needs two things family bias cannot provide, queued as named follow-ups:
+(1) per-program TEMPLATE bias (arc-mosaic for Science, repeat-rhythm/pipe-line for T&S…);
+(2) corpus vocabulary work — mine/author capsule+lens tiles for AI and more wave/scallop tiles for
+Energy. This is content, not engineering: the same path as the P0 mined-tiles discovery.

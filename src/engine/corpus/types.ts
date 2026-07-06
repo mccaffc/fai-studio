@@ -47,6 +47,7 @@ export interface CellPlan {
   figureAnchor?: boolean;   // true only for the top-left figure anchor cell
   figureSpan?: [number, number]; // [w,h] cells spanned by the figure asset
   patchId?: string;         // iconic patch id, present on the stamped anchor cell
+  patchSpan?: [number, number]; // [w,h] cells spanned by the patch, present on the anchor
 }
 
 export interface FormGroup {
@@ -75,6 +76,10 @@ export interface BannerPlan {
 export interface SampleKnobs {
   template?: string;
   accent?: string;
+  /** User-constrained subset of the locked 7 accent hues. */
+  accentPool?: string[];
+  /** Optional weighted shape-family preference; multiplier 1 preserves draws. */
+  familyBias?: { families: readonly string[]; multiplier: number };
   paletteMode?: 'auto' | 'full';
   density?: number;
   figures?: boolean;

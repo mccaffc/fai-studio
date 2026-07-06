@@ -17,6 +17,13 @@ import { join } from 'node:path';
 import canvasPkg from 'canvas';
 import type { Grammar } from './grammar-schema.js';
 import { sampleWithDiagnostics, type SampleKnobs, type SampleDiagnostics } from './sample.js';
+import {
+  PROGRAMS,
+  PROGRAM_FAMILY_BIAS,
+  PROGRAM_FAMILY_MAP,
+  applyProgramPalette,
+  type ProgramId,
+} from '../../src/engine/corpus/programs.js';
 import { scorePlan, type RubricScores } from './score.js';
 import { loadMergedManifest, renderRecon } from '../mine/render-recon.js';
 
@@ -54,6 +61,7 @@ interface CliArgs {
   accent?: string;
   density?: number;
   palette?: 'auto' | 'full';
+  program?: string;
 }
 
 function parseArgs(argv: string[]): CliArgs {
@@ -67,6 +75,7 @@ function parseArgs(argv: string[]): CliArgs {
     else if (flag === '--accent' && val !== undefined) { args.accent = val; i++; }
     else if (flag === '--density' && val !== undefined) { args.density = parseFloat(val); i++; }
     else if (flag === '--palette' && (val === 'auto' || val === 'full')) { args.palette = val; i++; }
+    else if (flag === '--program' && val !== undefined) { args.program = val; i++; }
   }
   return args;
 }
@@ -151,6 +160,15 @@ async function main(): Promise<void> {
   if (cli.accent !== undefined) knobs.accent = cli.accent;
   if (cli.palette !== undefined) knobs.paletteMode = cli.palette;
   if (cli.density !== undefined) knobs.density = cli.density;
+  // --program mirrors generateBanner's program path: hue as forced accent,
+  // family bias from the program map, palette-law transform post-sampling.
+  const programId = cli.program as ProgramId | undefined;
+  if (programId !== undefined) {
+    const prog = PROGRAMS[programId];
+    if (!prog) throw new Error(`Unknown program: ${cli.program}`);
+    knobs.accent = prog.hue;
+    knobs.familyBias = { families: PROGRAM_FAMILY_MAP[programId], multiplier: PROGRAM_FAMILY_BIAS };
+  }
 
   mkdirSync(OUT_DIR, { recursive: true });
 
@@ -168,7 +186,10 @@ async function main(): Promise<void> {
 
   for (let i = 0; i < cli.count; i++) {
     const seed = cli.seed + i;
-    const { plan, diag } = sampleWithDiagnostics(grammar, seed, knobs);
+    const { plan: sampled, diag } = sampleWithDiagnostics(grammar, seed, knobs);
+    const plan = programId !== undefined
+      ? applyProgramPalette(sampled, PROGRAMS[programId]!.hue)
+      : sampled;
     const scores = scorePlan(plan, manifest);
 
     // Prefer plan.templateId (set since P2 Task 4) over the pinned CLI flag.

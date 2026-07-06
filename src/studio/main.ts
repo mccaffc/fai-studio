@@ -24,8 +24,7 @@ import {
   initEditor,
   openScene,
 } from "./editor/index";
-// CorpusConfig is a type-only import — no runtime corpus code in main.ts's static bundle.
-import type { CorpusConfig } from "../engine/corpus/index.js";
+import type { CorpusSaveConfig } from "./corpus-mode";
 
 // ── corpus-mode dynamic import ──
 // corpus-mode.ts bundles ~56 KB gzip of baked grammar data; classic-only users
@@ -67,7 +66,7 @@ const MODE_LABELS: Record<ColorMode, string> = {
 type SavedItem =
   | { kind: "generated"; config: Config; seed: number }
   | { kind: "scene"; v: 1; scene: Scene }
-  | { kind: "corpus"; config: CorpusConfig; seed: number };
+  | { kind: "corpus"; config: CorpusSaveConfig; seed: number };
 
 const state = {
   config: defaultConfig(),
@@ -322,12 +321,16 @@ function renderVariations(): void {
 // ── save tray ──
 
 /** Called by corpus-mode when the user hits Save in corpus mode. */
-function saveCorpusItem(config: CorpusConfig, seed: number): void {
+function saveCorpusItem(config: CorpusSaveConfig, seed: number): void {
   state.saved.push({ kind: "corpus", config, seed });
   persist();
   // Tray is visible in both modes since the corpus save-tray landed — always repaint.
   renderSaved();
   flash("Saved to the tray below.");
+}
+
+function isEditedCorpusItem(config: CorpusSaveConfig): boolean {
+  return (config as { edited?: unknown }).edited === true;
 }
 
 function persist(): void {
@@ -361,7 +364,7 @@ function renderSaved(): void {
         const r = corpusMod.generateBannerForTray(item.config, item.seed);
         svg = r.svg;
         metaLeft = `seed ${item.seed}`;
-        metaRight = r.plan.templateId ?? "corpus";
+        metaRight = isEditedCorpusItem(item.config) ? "edited" : r.plan.templateId ?? "corpus";
         onOpen = () => {
           // Switch to corpus mode and restore this item.
           if (studioMode !== "corpus") {
@@ -673,7 +676,7 @@ try {
       continue;
     }
     if (item?.kind === "corpus" && item.config && typeof item.seed === "number") {
-      migrated.push({ kind: "corpus", config: item.config as CorpusConfig, seed: item.seed as number });
+      migrated.push({ kind: "corpus", config: item.config as CorpusSaveConfig, seed: item.seed as number });
       continue;
     }
     // generated or legacy (no kind): normalize retired color modes
