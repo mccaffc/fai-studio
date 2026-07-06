@@ -165,3 +165,27 @@ Full identity needs two things family bias cannot provide, queued as named follo
 (1) per-program TEMPLATE bias (arc-mosaic for Science, repeat-rhythm/pipe-line for T&S…);
 (2) corpus vocabulary work — mine/author capsule+lens tiles for AI and more wave/scallop tiles for
 Energy. This is content, not engineering: the same path as the P0 mined-tiles discovery.
+
+## Gate D — P9 program identity structural (blind greyscale), 2026-07-06
+
+Six programs × 6 banners (seeds 860000–860005), template bias + family floor stacked on P8 family
+bias. Blind assignment by shape register alone. Calibration at this gate: PROGRAM_TEMPLATE_BIAS
+5 → **9** (at 5, T&S and Energy each leaked the other's stripe register at one seed).
+
+Blind nameability at final constants (family ×8, template ×9, floor 0.6):
+- Artificial Intelligence ★ 6/6 — capsules/lenses/pill-rows/eye-shapes on every banner. From 1/6 in
+  P8 to the MOST identifiable sheet: the floor forces the scarce float/merge vocabulary onto every
+  surface. (P9b vocabulary mining now optional for AI; still valuable for depth/variety.)
+- Technology & Statecraft 5/6 — ruled/banded/columned throughout; note the 'lines' family includes
+  concentric ring-stripe tiles, so some T&S banners read "curved ruling" — acceptable as banded
+  texture; if Chris wants strictly rectilinear T&S, exclude ring tiles at tile level (follow-up).
+- Science & Innovation 5/6 — discs/domes/dot-grids.
+- American Governance 5/6 — scallop-chains, sweeps, goblet ramps; distinctive and unlike any other.
+- Energy & Infrastructure 5/6 — melts, waves, gear-splats, ripple-rings; the fluid register.
+- Frontier Legal Defense 5/6 — diamonds, crosses, zigzags, frames; fully angular.
+No two sheets read as siblings. Mapped-family tile-cell shares 63–86% (implementer-measured);
+mapped-template shares 0.53–0.81 at ×5, higher at ×9.
+
+**VERDICT: PASS — "immediately obvious" met at the sheet level for all six programs.**
+P9b (capsule/lens + wave vocabulary mining from the 21 freestyle illustrations) remains queued for
+variety depth, no longer identity-critical.

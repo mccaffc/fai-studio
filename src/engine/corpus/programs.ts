@@ -18,7 +18,7 @@
  * prevHue (fresh corpus plans, no prior hue to reclaim).
  */
 
-import type { BannerPlan } from './types.js';
+import type { BannerPlan, SampleKnobs } from './types.js';
 
 // ---------------------------------------------------------------------------
 // Program registry (LOCKED brand values — exact)
@@ -47,6 +47,15 @@ export const PROGRAMS: Record<ProgramId, { name: string; hue: string }> = {
  *  mapped families carry the sheet while non-mapped tiles stay reachable. */
 export const PROGRAM_FAMILY_BIAS = 8;
 
+/** Program-mode template-register multiplier for mapped corpus templates.
+ *  Calibrated at the P9 greyscale gate: 5 left T&S and Energy at 4/6 blind
+ *  nameability (off-template leak seeds trading each other's stripe register);
+ *  9 closes the leak while unmapped templates stay reachable. */
+export const PROGRAM_TEMPLATE_BIAS = 9;
+
+/** Program-mode minimum mapped-family share in the working tile set. */
+export const PROGRAM_FAMILY_FLOOR = 0.6;
+
 /** Chris/controller-curated program identity map to corpus tile families. */
 export const PROGRAM_FAMILY_MAP: Record<ProgramId, readonly string[]> = {
   'technology-statecraft': ['lines', 'rectangle'],
@@ -56,6 +65,32 @@ export const PROGRAM_FAMILY_MAP: Record<ProgramId, readonly string[]> = {
   'science-innovation': ['circle', 'centric'],
   'frontier-legal-defense': ['square', 'angle', 'joint'],
 };
+
+/** Chris/controller-curated program identity map to corpus template registers. */
+export const PROGRAM_TEMPLATE_MAP: Record<ProgramId, readonly string[]> = {
+  'technology-statecraft': ['repeat-rhythm', 'pipe-field'],
+  'american-governance': ['pipe-field', 'figure-field'],
+  'artificial-intelligence': ['figure-field', 'mixed-quilt'],
+  'energy-infrastructure': ['pipe-field'],
+  'science-innovation': ['arc-mosaic', 'checker-motif'],
+  'frontier-legal-defense': ['checker-motif', 'repeat-rhythm'],
+};
+
+/**
+ * Shared program-knob helper — single source of truth for the three program
+ * shape-identity knobs (familyBias, templateBias, familyFloor) plus the forced
+ * accent hue. Both index.ts (generateBanner) and tools/grammar/render-samples.ts
+ * consume this; behavior is byte-identical to the per-caller inline blocks they
+ * replaced.
+ */
+export function programSampleKnobs(program: ProgramId): Pick<SampleKnobs, 'familyBias' | 'templateBias' | 'familyFloor'> & { accent: string } {
+  return {
+    accent: PROGRAMS[program].hue,
+    familyBias: { families: PROGRAM_FAMILY_MAP[program], multiplier: PROGRAM_FAMILY_BIAS },
+    templateBias: { ids: PROGRAM_TEMPLATE_MAP[program], multiplier: PROGRAM_TEMPLATE_BIAS },
+    familyFloor: { families: PROGRAM_FAMILY_MAP[program], minShare: PROGRAM_FAMILY_FLOOR },
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Palette constants

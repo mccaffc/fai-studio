@@ -80,6 +80,10 @@ export interface SampleKnobs {
   accentPool?: string[];
   /** Optional weighted shape-family preference; multiplier 1 preserves draws. */
   familyBias?: { families: readonly string[]; multiplier: number };
+  /** Optional weighted template preference; explicit `template` still wins. */
+  templateBias?: { ids: readonly string[]; multiplier: number };
+  /** Optional minimum mapped-family share in the selected working tile set. */
+  familyFloor?: { families: readonly string[]; minShare: number };
   paletteMode?: 'auto' | 'full';
   density?: number;
   figures?: boolean;

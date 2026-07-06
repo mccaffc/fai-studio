@@ -21,7 +21,11 @@ import {
   PROGRAMS,
   PROGRAM_FAMILY_BIAS,
   PROGRAM_FAMILY_MAP,
+  PROGRAM_TEMPLATE_BIAS,
+  PROGRAM_TEMPLATE_MAP,
+  PROGRAM_FAMILY_FLOOR,
   applyProgramPalette,
+  programSampleKnobs,
   type ProgramId,
 } from '../../src/engine/corpus/programs.js';
 import { scorePlan, type RubricScores } from './score.js';
@@ -164,10 +168,12 @@ async function main(): Promise<void> {
   // family bias from the program map, palette-law transform post-sampling.
   const programId = cli.program as ProgramId | undefined;
   if (programId !== undefined) {
-    const prog = PROGRAMS[programId];
-    if (!prog) throw new Error(`Unknown program: ${cli.program}`);
-    knobs.accent = prog.hue;
-    knobs.familyBias = { families: PROGRAM_FAMILY_MAP[programId], multiplier: PROGRAM_FAMILY_BIAS };
+    if (!PROGRAMS[programId]) throw new Error(`Unknown program: ${cli.program}`);
+    const pk = programSampleKnobs(programId);
+    knobs.accent = pk.accent;
+    knobs.familyBias = pk.familyBias;
+    knobs.templateBias = pk.templateBias;
+    knobs.familyFloor = pk.familyFloor;
   }
 
   mkdirSync(OUT_DIR, { recursive: true });
