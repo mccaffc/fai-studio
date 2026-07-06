@@ -41,6 +41,19 @@ export const PROGRAMS: Record<ProgramId, { name: string; hue: string }> = {
   'frontier-legal-defense': { name: 'Frontier Legal Defense',    hue: '#3A4A6B' },
 };
 
+/** Program-mode shape identity multiplier for mapped corpus tile families. */
+export const PROGRAM_FAMILY_BIAS = 3;
+
+/** Chris/controller-curated program identity map to corpus tile families. */
+export const PROGRAM_FAMILY_MAP: Record<ProgramId, readonly string[]> = {
+  'technology-statecraft': ['lines', 'rectangle'],
+  'american-governance': ['curve', 'ramp', 'cascade'],
+  'artificial-intelligence': ['float', 'merge'],
+  'energy-infrastructure': ['wave'],
+  'science-innovation': ['circle', 'centric'],
+  'frontier-legal-defense': ['square', 'angle', 'joint'],
+};
+
 // ---------------------------------------------------------------------------
 // Palette constants
 // ---------------------------------------------------------------------------

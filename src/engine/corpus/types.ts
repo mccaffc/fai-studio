@@ -77,6 +77,8 @@ export interface SampleKnobs {
   accent?: string;
   /** User-constrained subset of the locked 7 accent hues. */
   accentPool?: string[];
+  /** Optional weighted shape-family preference; multiplier 1 preserves draws. */
+  familyBias?: { families: readonly string[]; multiplier: number };
   paletteMode?: 'auto' | 'full';
   density?: number;
   figures?: boolean;

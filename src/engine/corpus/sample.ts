@@ -60,6 +60,8 @@ const LINEWORK_FAMILIES = new Set(['lines', 'circle', 'curve', 'wave']);
 
 export interface SampleDiagnostics {
   adjacencyHits: number;
+  /** Shape family drawn before working-set selection. */
+  dominantFamily: string;
   /** Mode of the FIRST accent zone at placement time. Not recomputed by later
    *  passes (mirror/budget can remove or reshape zones); only the accent COUNT
    *  is re-synced — treat this as a placement diagnostic, not final-plan truth. */
@@ -86,6 +88,8 @@ export interface SampleResult {
   plan: BannerPlan;
   diag: SampleDiagnostics;
 }
+
+type FamilyBias = NonNullable<SampleKnobs['familyBias']>;
 
 const CELL_PX = 320;
 const BANNER_CELL_COUNT = ARRANGEMENTS.banner.cols * ARRANGEMENTS.banner.rows;
@@ -229,6 +233,7 @@ export function sampleWithDiagnostics(
   const accentRequest = resolveAccentRequest(knobs, grammar.palette.accentOrder);
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
+    dominantFamily: '',
     accentZone: 'none',
     accentZonesPlaced: 0,
     accentsUsed: [],
@@ -248,14 +253,15 @@ export function sampleWithDiagnostics(
   const groundScheme = drawGroundScheme(grammar, template, rng);
   const cells = makeDraftCells(generateGrounds(grammar, rng, groundScheme, globalGround, dims), dims);
 
-  const dominantFamily = drawDominantFamily(grammar, template, rng);
+  const dominantFamily = drawDominantFamily(grammar, template, rng, knobs.familyBias);
+  diag.dominantFamily = dominantFamily;
   let targetDistinct = Math.min(dims.cellCount, drawFillVarietyTarget(template.spec.distinctTiles, rng));
   if (dims.cellCount > 0 && template.spec.distinctTiles[1] > 0 && targetDistinct === 0) {
     targetDistinct = 1;
   }
-  let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct);
+  let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct, knobs.familyBias);
   if (workingSet.length === 0) {
-    workingSet = selectWorkingSet(grammar, rng, template, firstAvailableFamily(grammar), 1);
+    workingSet = selectWorkingSet(grammar, rng, template, firstAvailableFamily(grammar), 1, knobs.familyBias);
   }
   targetDistinct = workingSet.length;
 
@@ -580,7 +586,12 @@ function rectCells(rect: { col: number; row: number; w: number; h: number }): [n
   return cells;
 }
 
-function drawDominantFamily(grammar: EngineGrammar, template: Template, rng: Rng): string {
+function drawDominantFamily(
+  grammar: EngineGrammar,
+  template: Template,
+  rng: Rng,
+  familyBias?: FamilyBias,
+): string {
   const availableFamilies = new Set(Object.values(grammar.tileCatalog).map(entry => entry.family));
   const families = template.spec.dominantFamilies
     .filter(family => availableFamilies.has(family))
@@ -590,7 +601,7 @@ function drawDominantFamily(grammar: EngineGrammar, template: Template, rng: Rng
     rng,
     candidates.map(family => ({
       value: family,
-      weight: 1,
+      weight: familyBias === undefined ? 1 : familyBiasWeight(family, familyBias),
       sortKey: family,
     })),
   );
@@ -602,6 +613,7 @@ function selectWorkingSet(
   template: Template,
   dominantFamily: string,
   targetDistinct: number,
+  familyBias?: FamilyBias,
 ): string[] {
   const allTiles = Object.keys(grammar.tileCatalog).sort();
   const preferredFamilies = new Set(template.spec.dominantFamilies);
@@ -610,12 +622,12 @@ function selectWorkingSet(
   const selected: string[] = [];
 
   const quota = Math.min(targetDistinct, Math.ceil(targetDistinct * DOMINANT_FAMILY_QUOTA));
-  selected.push(...drawTileIds(grammar, rng, dominant, quota, selected));
+  selected.push(...drawTileIds(grammar, rng, dominant, quota, selected, familyBias));
   if (selected.length < targetDistinct) {
-    selected.push(...drawTileIdsByFamily(grammar, rng, preferred, targetDistinct - selected.length, selected));
+    selected.push(...drawTileIdsByFamily(grammar, rng, preferred, targetDistinct - selected.length, selected, familyBias));
   }
   if (selected.length < targetDistinct) {
-    selected.push(...drawTileIdsByFamily(grammar, rng, allTiles, targetDistinct - selected.length, selected));
+    selected.push(...drawTileIdsByFamily(grammar, rng, allTiles, targetDistinct - selected.length, selected, familyBias));
   }
 
   return [...new Set(selected)].sort();
@@ -627,6 +639,7 @@ function drawTileIds(
   candidates: string[],
   count: number,
   alreadySelected: string[],
+  familyBias?: FamilyBias,
 ): string[] {
   let remaining = [...new Set(candidates)]
     .filter(tile => !alreadySelected.includes(tile))
@@ -635,7 +648,13 @@ function drawTileIds(
   while (remaining.length > 0 && picked.length < count) {
     const tile = weightedChoice(
       rng,
-      remaining.map(id => ({ value: id, weight: tileWeight(grammar, id), sortKey: id })),
+      remaining.map(id => ({
+        value: id,
+        weight: familyBias === undefined
+          ? tileWeight(grammar, id)
+          : tileWeight(grammar, id) * tileFamilyBiasWeight(grammar, id, familyBias),
+        sortKey: id,
+      })),
     );
     picked.push(tile);
     remaining = remaining.filter(id => id !== tile);
@@ -649,6 +668,7 @@ function drawTileIdsByFamily(
   candidates: string[],
   count: number,
   alreadySelected: string[],
+  familyBias?: FamilyBias,
 ): string[] {
   let remaining = [...new Set(candidates)]
     .filter(tile => !alreadySelected.includes(tile))
@@ -659,12 +679,22 @@ function drawTileIdsByFamily(
     if (families.length === 0) break;
     const family = weightedChoice(
       rng,
-      families.map(value => ({ value, weight: 1, sortKey: value })),
+      families.map(value => ({
+        value,
+        weight: familyBias === undefined ? 1 : familyBiasWeight(value, familyBias),
+        sortKey: value,
+      })),
     );
     const familyTiles = remaining.filter(tile => grammar.tileCatalog[tile]?.family === family);
     const tile = weightedChoice(
       rng,
-      familyTiles.map(id => ({ value: id, weight: tileWeight(grammar, id), sortKey: id })),
+      familyTiles.map(id => ({
+        value: id,
+        weight: familyBias === undefined
+          ? tileWeight(grammar, id)
+          : tileWeight(grammar, id) * tileFamilyBiasWeight(grammar, id, familyBias),
+        sortKey: id,
+      })),
     );
     picked.push(tile);
     remaining = remaining.filter(id => id !== tile);
@@ -3222,6 +3252,18 @@ function tileWeight(grammar: EngineGrammar, tile: string): number {
   return grammar.stats.tiles[tile] ?? 1;
 }
 
+function familyBiasWeight(family: string, familyBias: FamilyBias): number {
+  const multiplier = Number.isFinite(familyBias.multiplier) && familyBias.multiplier > 0
+    ? familyBias.multiplier
+    : 1;
+  return familyBias.families.includes(family) ? multiplier : 1;
+}
+
+function tileFamilyBiasWeight(grammar: EngineGrammar, tile: string, familyBias: FamilyBias): number {
+  const family = grammar.tileCatalog[tile]?.family;
+  return family === undefined ? 1 : familyBiasWeight(family, familyBias);
+}
+
 function midpoint(range: [number, number]): number {
   return (range[0] + range[1]) / 2;
 }
@@ -3320,6 +3362,7 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
 
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
+    dominantFamily: plan.forms.find(form => form.family)?.family ?? '',
     accentZone: 'none',
     accentZonesPlaced: 0,
     accentsUsed: [],

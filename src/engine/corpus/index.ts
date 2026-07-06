@@ -12,14 +12,14 @@
  * first, then highest connectedness).
  */
 
-import type { BannerPlan, CorpusConfig, EngineGrammar } from './types.js';
+import type { BannerPlan, CorpusConfig, EngineGrammar, SampleKnobs } from './types.js';
 import type { RubricScores } from './score.js';
 import { GRAMMAR as GRAMMAR_RAW } from './data/grammar.js';
 import { TILES } from './data/tiles.js';
 import { samplePlan, rezone } from './sample.js';
 import { scorePlan } from './score.js';
 import { renderPlanSvg } from './render.js';
-import { PROGRAMS, applyProgramPalette } from './programs.js';
+import { PROGRAMS, PROGRAM_FAMILY_BIAS, PROGRAM_FAMILY_MAP, applyProgramPalette } from './programs.js';
 import type { ProgramId } from './programs.js';
 import { scoreComposition, passesCompositionFloors, COMPOSITION_FLOORS } from './composition.js';
 import type { CompositionScores } from './composition.js';
@@ -41,7 +41,7 @@ export type { RubricScores } from './score.js';
 export type { CompositionScores } from './composition.js';
 export { COMPOSITION_FLOORS } from './composition.js';
 export type { ProgramId } from './programs.js';
-export { PROGRAMS } from './programs.js';
+export { PROGRAMS, PROGRAM_FAMILY_BIAS, PROGRAM_FAMILY_MAP } from './programs.js';
 
 /** tile-id → shape family, derived once from the baked tile catalog. */
 const FAMILIES: Record<string, string> = Object.fromEntries(
@@ -72,7 +72,7 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
   const seed = config.seed ?? 1;
   const maxAttempts = config.maxAttempts ?? 8;
 
-  const knobs = {
+  const knobs: SampleKnobs = {
     template: config.template,
     accent: config.program ? PROGRAMS[config.program].hue : config.accent,
     accentPool: config.accentPool,
@@ -81,6 +81,12 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
     arrangement: config.arrangement,
     paletteMode: config.paletteMode ?? 'auto',
   };
+  if (config.program) {
+    knobs.familyBias = {
+      families: PROGRAM_FAMILY_MAP[config.program],
+      multiplier: PROGRAM_FAMILY_BIAS,
+    };
+  }
 
   interface Attempt {
     plan: BannerPlan;
