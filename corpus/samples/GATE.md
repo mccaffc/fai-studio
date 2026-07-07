@@ -211,3 +211,14 @@ Fresh auto ×12 (seeds 890000–890011) at full P10 HEAD (focal law + 7-hue pool
   (48.5% center-share vs canon 55.6%) matches what the eye sees.
 - Laws 1+3 skipped-in-band confirmed visually: no stray-accent epidemic, rhythm rows read canon-like.
 **VERDICT: PASS.**
+
+## Gate F — P10 workflow in-browser, 2026-07-07
+
+Live checklist (aside, localhost:4310, 1440×900): **6/6 PASS.**
+History walk restores exact seed+SVG both directions; config changes (density drag) add NO history
+entries; Sheet ×12 opens 4×3 with captions, focus-ring arrows leave the background canvas untouched,
+Esc clean, promote adopts seed+template exactly; Eyebrow preset downloads 2880×960 PNG and snaps back
+to Custom; accent slider enables at 0.75 on first swatch check and visibly floods at 1.0 (orange fills
+2 → 96). Investigated the one anomaly: export filename seed ≠ canvas seed on cross-arrangement presets
+= CORRECT behavior — the strip regeneration passed through curation retries (seed strides) and the
+filename honestly names the exported artifact. Working as designed; noted for user docs someday.
