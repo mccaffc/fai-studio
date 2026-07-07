@@ -2040,7 +2040,13 @@ function chooseFillTile(
 ): string {
   const unused = workingSet.filter(tile => !used.has(tile)).sort();
   let pool = unused.length > 0 ? unused : [...workingSet].sort();
-  if (pool.length === 0) pool = Object.keys(grammar.tileCatalog).sort();
+  if (pool.length === 0) {
+    // Defensive: unreachable with the current catalog (workingSet can't be
+    // empty), but if it ever fires it must not leak program-only tiles.
+    pool = Object.keys(grammar.tileCatalog)
+      .filter(id => !grammar.tileCatalog[id]?.programOnly)
+      .sort();
+  }
 
   const currentShare = tileCells === 0 ? targetLinework : lineworkCells / tileCells;
   const wantLinework = currentShare < targetLinework;

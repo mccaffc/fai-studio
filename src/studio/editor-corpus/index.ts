@@ -48,6 +48,9 @@ const FILLS = [
 ];
 const SMOKE_WHITE_CHECK_HEXES = new Set(["#268B41", "#3A4A6B"]);
 
+// Intentionally includes programOnly tiles: the editor is a curator's hand
+// tool, not the auto-generation path — hand-placing program vocabulary is a
+// legitimate use. The program-only gate applies to the SAMPLER only.
 const tilesByFamily = new Map<string, string[]>();
 for (const [id, tile] of Object.entries(TILES)) {
   const ids = tilesByFamily.get(tile.family) ?? [];
