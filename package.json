@@ -14,6 +14,7 @@
     "mine": "esbuild tools/mine/mine.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/mine.mjs && node dist-tools/mine.mjs",
     "mine:extract": "esbuild tools/mine/extract-tile.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/extract-tile.mjs && node dist-tools/extract-tile.mjs",
     "mine:freestyle": "esbuild tools/mine/freestyle.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/freestyle.mjs && node dist-tools/freestyle.mjs",
+    "mine:freestyle-vocab": "esbuild tools/mine/freestyle-vocabulary.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/freestyle-vocabulary.mjs && node dist-tools/freestyle-vocabulary.mjs",
     "mine:validate": "esbuild tools/mine/validate-sheet.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/validate-sheet.mjs && node dist-tools/validate-sheet.mjs",
     "grammar:build": "esbuild tools/grammar/build-grammar.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/build-grammar.mjs && node dist-tools/build-grammar.mjs",
     "grammar:audit": "esbuild tools/grammar/audit.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-tools/audit.mjs && node dist-tools/audit.mjs",

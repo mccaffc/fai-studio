@@ -34,6 +34,9 @@ export interface TileCatalogEntry {
   flipShare: number;
   /** Per-variant edge bit-profiles ('rot/flip' → hex vectors); v2 edge-matching contract. */
   profiles?: TileEdgeProfiles;
+  /** When true, tile is excluded from auto-mode draws; only reachable via an
+   *  active familyFloor that covers its family (program context only). */
+  programOnly?: boolean;
 }
 
 export interface Grammar {
@@ -82,6 +85,21 @@ export function composeGrammar(
       rotations: stats.tileRotations[tileId] ?? { '0': 0, '90': 0, '180': 0, '270': 0 },
       flipShare: stats.tileFlipShare[tileId] ?? 0,
       ...(profiles?.[tileId] ? { profiles: profiles[tileId] } : {}),
+    };
+  }
+
+  // Freestyle vocabulary tiles are controller-curated catalog additions, not
+  // mined from the banner corpus. Include them explicitly so program family
+  // maps can reach them while learned corpus stats remain unchanged.
+  for (const [tileId, entry] of manifest.entries()) {
+    if (!tileId.startsWith('mined-fs-') || tileCatalog[tileId]) continue;
+    tileCatalog[tileId] = {
+      family: entry.shape_family,
+      edges: entry.edge_coverage,
+      rotations: { '0': 1, '90': 1, '180': 1, '270': 1 },
+      flipShare: 0.5,
+      ...(profiles?.[tileId] ? { profiles: profiles[tileId] } : {}),
+      ...(entry.program_only ? { programOnly: true } : {}),
     };
   }
 

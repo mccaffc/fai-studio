@@ -10,6 +10,9 @@ export interface ManifestTile {
   renderable?: boolean;
   has_background_rect?: boolean;
   mined_from?: string;
+  /** When true, tile is excluded from auto-mode working-set draws and is only
+   *  reachable when a familyFloor is active for its family (program context). */
+  program_only?: boolean;
 }
 
 export type Hex = string; // '#RRGGBB' uppercase
