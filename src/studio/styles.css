@@ -367,7 +367,7 @@ body.mode-editor #saved { display: none; }
 .corpus-hist-hint {
   margin-top: 6px;
   font: 400 11px "IBM Plex Mono", monospace;
-  color: var(--line);
+  color: var(--soft);
 }
 
 /* ── P10: Sheet ×12 overlay ── */

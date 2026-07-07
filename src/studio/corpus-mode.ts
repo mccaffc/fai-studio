@@ -740,6 +740,7 @@ function renderCorpusVariations(): void {
       state.current = v;
       state.config.seed = v.seed;
       state.vars = engineVariations(v, 6);
+      historyPush(state.current);
       renderCorpusCanvas();
       renderCorpusVariations();
       updateSeedDisplay();
@@ -898,7 +899,7 @@ function renderCorpusControls(): void {
           other.classList.toggle("on", on);
           other.setAttribute("aria-pressed", String(on));
         }
-        corpusRegen(false);
+        corpusRegen(false, false);
       });
       chips.appendChild(chip);
     }
@@ -912,13 +913,13 @@ function renderCorpusControls(): void {
     nonePreset.addEventListener("click", () => {
       state.config.accentPool = [];
       updateAccentSwatchState();
-      if (state.current) corpusRecolorInPlace(); else corpusRegen(false);
+      if (state.current) corpusRecolorInPlace(); else corpusRegen(false, false);
     });
     const allPreset = el("button", { type: "button", class: "text-preset", "data-corpus-accent-all": "" }, "all");
     allPreset.addEventListener("click", () => {
       state.config.accentPool = [...ACCENT_HEXES];
       updateAccentSwatchState();
-      if (state.current) corpusRecolorInPlace(); else corpusRegen(false);
+      if (state.current) corpusRecolorInPlace(); else corpusRegen(false, false);
     });
     presets.appendChild(nonePreset);
     presets.appendChild(allPreset);
@@ -942,7 +943,7 @@ function renderCorpusControls(): void {
     sel.addEventListener("change", () => {
       state.config.program = sel.value;
       updateAccentSwatchState();
-      corpusRegen(false);
+      corpusRegen(false, false);
     });
     appendControlRow(g, "Program", sel);
 
@@ -969,7 +970,7 @@ function renderCorpusControls(): void {
         else selected.add(hex);
         state.config.accentPool = ACCENT_HEXES.filter((accent) => selected.has(accent));
         updateAccentSwatchState();
-        if (state.current) corpusRecolorInPlace(); else corpusRegen(false);
+        if (state.current) corpusRecolorInPlace(); else corpusRegen(false, false);
       });
       swatches.appendChild(swatch);
     }
@@ -995,7 +996,7 @@ function renderCorpusControls(): void {
     }
     template.addEventListener("change", () => {
       state.config.template = template.value;
-      corpusRegen(false);
+      corpusRegen(false, false);
     });
     appendControlRow(g, "Template", template);
 
@@ -1012,7 +1013,7 @@ function renderCorpusControls(): void {
     slider.addEventListener("change", () => {
       state.config.density = Number(slider.value);
       label.textContent = `Density: ${state.config.density.toFixed(2)}`;
-      corpusRegen(false);
+      corpusRegen(false, false);
     });
     row.appendChild(label);
     row.appendChild(slider);
@@ -1031,7 +1032,7 @@ function renderCorpusControls(): void {
       state.config.figures = !state.config.figures;
       chip.classList.toggle("on", state.config.figures);
       chip.setAttribute("aria-pressed", String(state.config.figures));
-      corpusRegen(false);
+      corpusRegen(false, false);
     });
     appendControlRow(g, "Figures", chip);
   }
@@ -1207,6 +1208,13 @@ export function unmountCorpusMode(): void {
 
 export function corpusKeydown(code: string): boolean {
   if (state.editing) return false;
+  // Guard: if the sheet overlay is open, it owns ArrowLeft/Right/Enter/Escape
+  // and KeyE — do not let the main keydown handler act on those keys while it
+  // is visible.  main.ts's listener is registered before the overlay's, so
+  // stopPropagation/stopImmediatePropagation in the overlay handler runs too
+  // late; the guard here is the only reliable interception point.
+  const overlayOpen = !!document.querySelector("[data-corpus-sheet-overlay]");
+  if (overlayOpen) return false;
   if (code === "ArrowLeft") { historyWalk(-1); return true; }
   if (code === "ArrowRight") { historyWalk(1); return true; }
   if (code === "KeyS") {
