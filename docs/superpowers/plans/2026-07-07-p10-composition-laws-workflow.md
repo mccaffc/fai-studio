@@ -44,3 +44,16 @@ Tests: canon-fidelity (distribution tests still in band); per-law before/after m
 - Gate E (aesthetic): paired A/B sheets — same seeds with laws on/off — for each law; exit = the law visibly kills its failure mode (strays gone, focals off-center, rows broken once) with NO new artificiality (migrated accents must not read as deliberate-looking noise), plus overall would-show rate ≥ P6 baseline on a fresh 12-sheet.
 - Gate F (UX): in-browser — history walk restores exact banners; sheet diversity + promote; each preset produces the exact named pixel size; keyboard flow.
 - Reviews per task + Gemini cross-cut + opus final → DIRECT MERGE.
+
+## Task 5: Accent amount — slider + hotter defaults (Chris, 2026-07-07)
+
+**Ask (verbatim intent):** "the accent banners by and large should have more of the accent than they do. maybe a slider that adjusts the amount of the accent in a composition?"
+
+**Files:** `src/engine/corpus/sample.ts`, `types.ts`, `index.ts`, `src/studio/corpus-mode.ts`, `styles.css`, tests. Runs AFTER Task 2 lands and Task 3 is integrated (same files).
+
+- Engine: `knobs.accentStrength?: number` (0..1). It scales, together and monotonically: the accent budget cap (lerp 0.15 → 0.60 across the range), zone size targets (sameTileFlood cap and zone cell counts), and ground-mode zone frequency. `accentStrength: 0.5` must reproduce today's behavior EXACTLY (all existing calibrations = the midpoint; determinism tests pin this). Applies in every accent-carrying mode (explicit accent, pool, full, program — threaded through programSampleKnobs); auto canon behavior unchanged at default.
+- **Default shift per Chris's taste:** accent-carrying modes default to `accentStrength = 0.65`, not 0.5 — "by and large more" is the new baseline, the slider adjusts from there. The controller calibrates the exact default and the lerp endpoints at the visual gate (a strength ladder sheet: same seed at 0.2/0.35/0.5/0.65/0.8/1.0).
+- Studio: "Accent amount" slider in the Color group beneath the swatches (Density's visual idiom), enabled whenever ≥1 accent is checked or a program is active; disabled + dimmed in plain auto with nothing checked (canon mode has no accent to amplify). Persisted in the corpus config; migration: absent → default.
+- Guards unchanged: palette laws, pool member guarantees, mirror survival, contrast law. At strength 1.0 the accent may dominate (near accent-field banners) but every guarantee still holds.
+- Tests: midpoint identity (0.5 ≡ today, deep-equal over 50 seeds per mode); monotonicity (accent cell share non-decreasing in strength over 100 seeds sampled at 5 strengths); budget cap respected at each strength; slider persistence + disabled-state.
+- Gate: controller's strength-ladder sheet per mode (explicit accent + program + full) — the ladder must read as a smooth, usable range where 0.65 default matches Chris's "more accent" taste and 1.0 is still composed, not flooded.
