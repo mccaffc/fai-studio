@@ -18,7 +18,7 @@
  * prevHue (fresh corpus plans, no prior hue to reclaim).
  */
 
-import type { BannerPlan, SampleKnobs } from './types.js';
+import { DEFAULT_ACCENT_STRENGTH, type BannerPlan, type SampleKnobs } from './types.js';
 
 // ---------------------------------------------------------------------------
 // Program registry (LOCKED brand values — exact)
@@ -83,9 +83,10 @@ export const PROGRAM_TEMPLATE_MAP: Record<ProgramId, readonly string[]> = {
  * consume this; behavior is byte-identical to the per-caller inline blocks they
  * replaced.
  */
-export function programSampleKnobs(program: ProgramId): Pick<SampleKnobs, 'familyBias' | 'templateBias' | 'familyFloor'> & { accent: string } {
+export function programSampleKnobs(program: ProgramId): Pick<SampleKnobs, 'familyBias' | 'templateBias' | 'familyFloor' | 'accentStrength'> & { accent: string } {
   return {
     accent: PROGRAMS[program].hue,
+    accentStrength: DEFAULT_ACCENT_STRENGTH,
     familyBias: { families: PROGRAM_FAMILY_MAP[program], multiplier: PROGRAM_FAMILY_BIAS },
     templateBias: { ids: PROGRAM_TEMPLATE_MAP[program], multiplier: PROGRAM_TEMPLATE_BIAS },
     familyFloor: { families: PROGRAM_FAMILY_MAP[program], minShare: PROGRAM_FAMILY_FLOOR },

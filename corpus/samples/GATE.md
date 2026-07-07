@@ -189,3 +189,36 @@ mapped-template shares 0.53–0.81 at ×5, higher at ×9.
 **VERDICT: PASS — "immediately obvious" met at the sheet level for all six programs.**
 P9b (capsule/lens + wave vocabulary mining from the 21 freestyle illustrations) remains queued for
 variety depth, no longer identity-critical.
+
+## Gate E2 — P10 accent-strength ladder, 2026-07-07
+
+Ladders: seeds 870000–870003 explicit orange at 0.2/0.5/0.65/1.0; fresh seeds 880000+ at the default.
+- Monotone progression real on 3/4 ladder seeds (clearest 0.65→1.0); one cool-running seed stays quiet
+  at all strengths (strength amplifies what zoning places; it does not manufacture presence — correct).
+- **Default calibrated 0.65 → 0.75 at this gate:** 0.65 measured only +3pp accent share ("more" too
+  subtle for the ask); 0.75 lands +5–8pp per mode. On fresh sheets at 0.75: explicit orange CARRIES
+  compositions (block clusters, arc rows, quarter-fields) without flooding; program blue reads generous
+  and composed. Identity (0.5 ≡ pre-P10) and monotonicity re-verified post-calibration, 407/407.
+**VERDICT: PASS at 0.75.**
+
+## Gate E — P10 composition laws + fresh would-show, 2026-07-07
+
+Fresh auto ×12 (seeds 890000–890011) at full P10 HEAD (focal law + 7-hue pool + strength machinery).
+- Would-show: 8/12 clean + 3 borderline + 0 failures (~67% vs P6 baseline ~58%) — no regression,
+  modest lift. Standouts: 890002 (stripe field, off-center orange orb focal), 890005 (blue arc-rhythm
+  rows), 890011 (quarter-disc field, star focal upper-right — the focal law reading exactly as intended).
+- Focal steering: no artificial centering; heroes sit off-center-in-band; the in-band measurement
+  (48.5% center-share vs canon 55.6%) matches what the eye sees.
+- Laws 1+3 skipped-in-band confirmed visually: no stray-accent epidemic, rhythm rows read canon-like.
+**VERDICT: PASS.**
+
+## Gate F — P10 workflow in-browser, 2026-07-07
+
+Live checklist (aside, localhost:4310, 1440×900): **6/6 PASS.**
+History walk restores exact seed+SVG both directions; config changes (density drag) add NO history
+entries; Sheet ×12 opens 4×3 with captions, focus-ring arrows leave the background canvas untouched,
+Esc clean, promote adopts seed+template exactly; Eyebrow preset downloads 2880×960 PNG and snaps back
+to Custom; accent slider enables at 0.75 on first swatch check and visibly floods at 1.0 (orange fills
+2 → 96). Investigated the one anomaly: export filename seed ≠ canvas seed on cross-arrangement presets
+= CORRECT behavior — the strip regeneration passed through curation retries (seed strides) and the
+filename honestly names the exported artifact. Working as designed; noted for user docs someday.

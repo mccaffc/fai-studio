@@ -14,6 +14,7 @@
 
 import type { BannerPlan, CorpusConfig, EngineGrammar, SampleKnobs } from './types.js';
 import type { RubricScores } from './score.js';
+import { DEFAULT_ACCENT_STRENGTH } from './types.js';
 import { GRAMMAR as GRAMMAR_RAW } from './data/grammar.js';
 import { TILES } from './data/tiles.js';
 import { samplePlan, rezone } from './sample.js';
@@ -89,14 +90,20 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
   const maxAttempts = config.maxAttempts ?? 8;
 
   const programKnobs = config.program ? programSampleKnobs(config.program) : undefined;
+  const paletteMode = config.paletteMode ?? 'auto';
+  const hasAccentContext = Boolean(config.accent || config.accentPool || paletteMode === 'full' || config.program);
+  const accentStrength = config.accentStrength ?? (hasAccentContext
+    ? (programKnobs?.accentStrength ?? DEFAULT_ACCENT_STRENGTH)
+    : undefined);
   const knobs: SampleKnobs = {
     template: config.template,
     accent: programKnobs ? programKnobs.accent : config.accent,
     accentPool: config.accentPool,
+    accentStrength,
     density: config.density,
     figures: config.figures,
     arrangement: config.arrangement,
-    paletteMode: config.paletteMode ?? 'auto',
+    paletteMode,
     ...(programKnobs && {
       familyBias: programKnobs.familyBias,
       templateBias: programKnobs.templateBias,
@@ -169,6 +176,7 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
 
 function validateCorpusConfig(config: CorpusConfig): void {
   const paletteMode = config.paletteMode ?? 'auto';
+  validateAccentStrength(config.accentStrength);
   if (paletteMode !== 'auto' && paletteMode !== 'full') {
     throw new Error(`Unknown paletteMode: ${String(config.paletteMode)}`);
   }
@@ -201,6 +209,13 @@ function validateCorpusConfig(config: CorpusConfig): void {
       }
       seen.add(accent);
     }
+  }
+}
+
+function validateAccentStrength(strength: number | undefined): void {
+  if (strength === undefined) return;
+  if (!Number.isFinite(strength) || strength < 0 || strength > 1) {
+    throw new Error(`accentStrength must be a finite number from 0 to 1: ${String(strength)}`);
   }
 }
 
@@ -269,6 +284,7 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
 
   let newPlan: BannerPlan;
   let newConfig: CorpusConfig;
+  const accentStrength = prev.config.accentStrength ?? DEFAULT_ACCENT_STRENGTH;
 
   if (prev.config.program && newProgramEntry) {
     // Program hue swap: re-apply applyProgramPalette on the already-transformed
@@ -284,11 +300,11 @@ export function recolorPlan(prev: CorpusResult, accent: string): CorpusResult {
     // fall back to standard rezone and drop program mode.
     const prevHue = PROGRAMS[prev.config.program].hue;
     const reclaimedPlan = remapPlanFill(prev.plan, prevHue, accent);
-    newPlan = rezone(reclaimedPlan, GRAMMAR, prev.seed, accent);
+    newPlan = rezone(reclaimedPlan, GRAMMAR, prev.seed, accent, accentStrength);
     newConfig = { ...prev.config, accent, paletteMode: 'auto', program: undefined };
   } else {
     // Standard rezone (classic mode or program mode with corpus accent).
-    newPlan = rezone(prev.plan, GRAMMAR, prev.seed, accent);
+    newPlan = rezone(prev.plan, GRAMMAR, prev.seed, accent, accentStrength);
     if (prev.config.program) {
       // Program mode with corpus accent — re-apply program palette after rezone.
       const hue = PROGRAMS[prev.config.program].hue;

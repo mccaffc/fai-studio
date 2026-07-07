@@ -105,6 +105,30 @@ describe('accent-pool knob', () => {
     expect(mirrored, 'expected this seed range to exercise accepted mirrors').toBeGreaterThan(0);
   });
 
+  it('holds pool-member and forced-accent survival at accentStrength extremes (0.2 and 1.0)', () => {
+    // P10 engine-review gap I1: the survival guarantees were only exercised at
+    // the identity strength. The P6 mirror-erasure bug lived in exactly this
+    // kind of untested interaction — pin the extremes.
+    const pool = ['#FF4F00', '#4997D0'];
+    for (const accentStrength of [0.2, 1.0]) {
+      let mirrored = 0;
+      for (let i = 0; i < 200; i += 1) {
+        const seed = 145_000 + i;
+        const { plan, diag } = sampleWithDiagnostics(GRAMMAR, seed, { ...knobsWithPool(pool), accentStrength });
+        if (diag.mirrored) mirrored += 1;
+        const visible = visibleAccentSet(plan);
+        for (const accent of pool) {
+          expect(visible.has(accent), `strength ${accentStrength} seed ${seed}: ${accent} absent`).toBe(true);
+        }
+        const forced = sampleWithDiagnostics(GRAMMAR, seed, { accent: '#8265DB', accentStrength });
+        const forcedVisible = visibleAccentSet(forced.plan);
+        expect(forcedVisible.has('#8265DB'), `strength ${accentStrength} seed ${seed}: forced accent absent`).toBe(true);
+        expect([...forcedVisible].filter(hex => hex !== '#8265DB'), `strength ${accentStrength} seed ${seed}: second accent`).toHaveLength(0);
+      }
+      expect(mirrored, `strength ${accentStrength}: seed range must exercise accepted mirrors`).toBeGreaterThan(0);
+    }
+  });
+
   it('uses the pool-specific accent budget caps', () => {
     const cases = [
       { pool: ['#FF4F00', '#4997D0'], cap: 0.35 },

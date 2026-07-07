@@ -66,6 +66,7 @@ interface CliArgs {
   density?: number;
   palette?: 'auto' | 'full';
   program?: string;
+  strength?: number;
 }
 
 function parseArgs(argv: string[]): CliArgs {
@@ -80,6 +81,7 @@ function parseArgs(argv: string[]): CliArgs {
     else if (flag === '--density' && val !== undefined) { args.density = parseFloat(val); i++; }
     else if (flag === '--palette' && (val === 'auto' || val === 'full')) { args.palette = val; i++; }
     else if (flag === '--program' && val !== undefined) { args.program = val; i++; }
+    else if (flag === '--strength' && val !== undefined) { args.strength = parseFloat(val); i++; }
   }
   return args;
 }
@@ -164,6 +166,7 @@ async function main(): Promise<void> {
   if (cli.accent !== undefined) knobs.accent = cli.accent;
   if (cli.palette !== undefined) knobs.paletteMode = cli.palette;
   if (cli.density !== undefined) knobs.density = cli.density;
+  if (cli.strength !== undefined) knobs.accentStrength = cli.strength;
   // --program mirrors generateBanner's program path: hue as forced accent,
   // family bias from the program map, palette-law transform post-sampling.
   const programId = cli.program as ProgramId | undefined;

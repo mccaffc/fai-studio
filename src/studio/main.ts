@@ -25,6 +25,7 @@ import {
   openScene,
 } from "./editor/index";
 import type { CorpusSaveConfig } from "./corpus-mode";
+// corpusKeydown type is the same CorpusMod — we get it from the cached module reference
 
 // ── corpus-mode dynamic import ──
 // corpus-mode.ts bundles ~56 KB gzip of baked grammar data; classic-only users
@@ -628,21 +629,41 @@ function renderControls(): void {
 
 // ── boot ──
 document.addEventListener("keydown", (e) => {
-  if (e.code !== "Space") return;
-  if (editorActive()) return; // spacebar-reroll is disabled while editing
+  if (editorActive()) return; // editor owns all shortcuts while open
   const tag = (e.target as HTMLElement).tagName;
-  if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
-  e.preventDefault();
-  if (studioMode === "corpus") {
-    // Use sync cached module if available (avoids microtask delay); otherwise
-    // queue via promise (module not yet loaded).
-    if (_corpusMod) {
-      _corpusMod.corpusSpacebarReroll();
+  const inInput = tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA";
+
+  if (e.code === "Space") {
+    if (inInput) return;
+    e.preventDefault();
+    if (studioMode === "corpus") {
+      if (_corpusMod) {
+        _corpusMod.corpusSpacebarReroll();
+      } else {
+        getCorpusMod().then((mod) => mod.corpusSpacebarReroll()).catch(() => {});
+      }
     } else {
-      getCorpusMod().then((mod) => mod.corpusSpacebarReroll()).catch(() => {});
+      regen(true);
     }
-  } else {
-    regen(true);
+    return;
+  }
+
+  // Corpus-only single-key shortcuts (← → S E) — guarded from inputs
+  if (studioMode === "corpus") {
+    if (e.code === "ArrowLeft" || e.code === "ArrowRight") {
+      if (inInput) return; // guard: don't intercept cursor movement in inputs
+      if (_corpusMod) {
+        const handled = _corpusMod.corpusKeydown(e.code);
+        if (handled) e.preventDefault();
+      }
+      return;
+    }
+    if ((e.code === "KeyS" || e.code === "KeyE") && !inInput) {
+      if (_corpusMod) {
+        const handled = _corpusMod.corpusKeydown(e.code);
+        if (handled) e.preventDefault();
+      }
+    }
   }
 });
 
