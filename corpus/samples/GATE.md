@@ -200,3 +200,14 @@ Ladders: seeds 870000–870003 explicit orange at 0.2/0.5/0.65/1.0; fresh seeds 
   compositions (block clusters, arc rows, quarter-fields) without flooding; program blue reads generous
   and composed. Identity (0.5 ≡ pre-P10) and monotonicity re-verified post-calibration, 407/407.
 **VERDICT: PASS at 0.75.**
+
+## Gate E — P10 composition laws + fresh would-show, 2026-07-07
+
+Fresh auto ×12 (seeds 890000–890011) at full P10 HEAD (focal law + 7-hue pool + strength machinery).
+- Would-show: 8/12 clean + 3 borderline + 0 failures (~67% vs P6 baseline ~58%) — no regression,
+  modest lift. Standouts: 890002 (stripe field, off-center orange orb focal), 890005 (blue arc-rhythm
+  rows), 890011 (quarter-disc field, star focal upper-right — the focal law reading exactly as intended).
+- Focal steering: no artificial centering; heroes sit off-center-in-band; the in-band measurement
+  (48.5% center-share vs canon 55.6%) matches what the eye sees.
+- Laws 1+3 skipped-in-band confirmed visually: no stray-accent epidemic, rhythm rows read canon-like.
+**VERDICT: PASS.**
