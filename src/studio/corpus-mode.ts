@@ -1235,6 +1235,9 @@ export function corpusKeydown(code: string): boolean {
 
 export function corpusSpacebarReroll(): void {
   if (state.editing) return;
+  // Same guard as corpusKeydown: a reroll behind the open Sheet ×12 overlay
+  // would silently replace state.current and stale the overlay's cells.
+  if (document.querySelector("[data-corpus-sheet-overlay]")) return;
   if (!state.current) return;
   if (isEditedCorpusConfig(state.current.config)) {
     // Edited configs must not be spread into fresh generations — rebuild a
