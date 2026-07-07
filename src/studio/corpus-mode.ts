@@ -260,6 +260,7 @@ function historyWalk(delta: -1 | 1): void {
   updateSeedDisplay();
   renderCorpusScores();
   updateHistoryButtons();
+  renderCorpusControls();
 }
 
 function updateHistoryButtons(): void {
@@ -408,6 +409,13 @@ async function corpusDownloadPreset(preset: string): Promise<void> {
   // If current arrangement doesn't match preset arrangement, regenerate same seed
   // under the target arrangement.
   if (currentArrangement !== spec.arrangement) {
+    // Edited banners carry a fixed plan; cross-arrangement regeneration would
+    // silently discard the user's edits.  Guard: refuse the mismatched preset
+    // and tell the user to use the SVG/PNG buttons instead.
+    if (isEditedCorpusConfig(state.current.config)) {
+      flash("edited banners export at their own arrangement — use SVG/PNG buttons", true);
+      return;
+    }
     flash(`Re-generated at ${spec.arrangement} for ${spec.slug}`);
     result = generateBanner({
       ...buildCorpusConfig(),

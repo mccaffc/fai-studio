@@ -336,3 +336,205 @@ describe("P10 Task 5 — accent amount slider", () => {
     expect(accentStrengthLabel().textContent).toBe("Accent amount: 0.75");
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Finding 1 (Critical) — historyWalk must re-render corpus controls panel
+// ─────────────────────────────────────────────────────────────────────────────
+describe("Phase fix wave — finding 1: historyWalk re-renders corpus controls", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    const mem = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (k: string) => (mem.has(k) ? mem.get(k)! : null),
+      setItem: (k: string, v: string) => void mem.set(k, String(v)),
+      removeItem: (k: string) => void mem.delete(k),
+      clear: () => mem.clear(),
+    });
+    vi.stubGlobal("confirm", () => true);
+    skeleton();
+  });
+
+  it("walking back re-renders the panel to reflect restored config (accent swatch and slider)", async () => {
+    const { mountCorpusMode } = await import("../src/studio/corpus-mode");
+    mountCorpusMode({ flash: () => {} });
+
+    // Step 1: check an accent swatch — recolorInPlace, no history push, historyPtr=0.
+    accentButton("#FF4F00").click();
+    expect(accentButton("#FF4F00").getAttribute("aria-pressed")).toBe("true");
+    expect(accentStrengthSlider().disabled).toBe(false);
+
+    // Step 2: reroll — engineReroll inherits prev.config.accentPool=['#FF4F00'] so
+    // history[1] carries the accent; historyPtr=1.
+    const rerollBtn = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("#canvas-actions button"),
+    ).find((b) => /reroll/i.test(b.textContent ?? ""));
+    expect(rerollBtn).toBeTruthy();
+    rerollBtn!.click();
+
+    // Confirm accent is still active after the reroll (inherited config).
+    expect(accentButton("#FF4F00").getAttribute("aria-pressed")).toBe("true");
+    expect(accentStrengthSlider().disabled).toBe(false);
+
+    // Step 3: uncheck the accent swatch — state.config.accentPool=[], no history push,
+    // historyPtr remains 1.
+    accentButton("#FF4F00").click();
+    expect(accentButton("#FF4F00").getAttribute("aria-pressed")).toBe("false");
+    expect(accentStrengthSlider().disabled).toBe(true);
+
+    // Step 4: walk back to history[0] — the initial plain-auto state (no accent).
+    // Without the fix, renderCorpusControls() was never called so the panel would
+    // still show the just-unchecked swatch as unpressed (same as the stale panel).
+    // With the fix, the panel is rebuilt from history[0].config — which also has
+    // no accent — but the key thing being verified is that the panel IS rebuilt.
+    // Verify by checking that the swatch aria-pressed reflects the *restored* config,
+    // not any intermediate UI state.
+    const backButton = document.querySelector<HTMLButtonElement>(
+      "#corpus-controls button[data-corpus-hist-back]",
+    );
+    expect(backButton).toBeTruthy();
+    expect(backButton!.disabled).toBe(false);
+    backButton!.click();
+
+    // After the walk, historyPtr=0 (initial: no accent in config).
+    // The panel must have been re-rendered — swatch is unpressed (matches history[0])
+    // and slider is disabled (no accent active).
+    expect(accentButton("#FF4F00").getAttribute("aria-pressed")).toBe("false");
+    expect(accentStrengthSlider().disabled).toBe(true);
+
+    // Now go forward to history[1] (accent active).  The panel must re-render again.
+    const fwdButton = document.querySelector<HTMLButtonElement>(
+      "#corpus-controls button[data-corpus-hist-fwd]",
+    );
+    expect(fwdButton).toBeTruthy();
+    expect(fwdButton!.disabled).toBe(false);
+    fwdButton!.click();
+
+    // history[1] had accentPool=['#FF4F00'] — panel must now show the swatch as
+    // checked and the slider enabled.
+    expect(accentButton("#FF4F00").getAttribute("aria-pressed")).toBe("true");
+    expect(accentStrengthSlider().disabled).toBe(false);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Finding 2 (Critical) — edited-banner export guard in corpusDownloadPreset
+// ─────────────────────────────────────────────────────────────────────────────
+describe("Phase fix wave — finding 2: edited-banner export guard", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    const mem = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (k: string) => (mem.has(k) ? mem.get(k)! : null),
+      setItem: (k: string, v: string) => void mem.set(k, String(v)),
+      removeItem: (k: string) => void mem.delete(k),
+      clear: () => mem.clear(),
+    });
+    vi.stubGlobal("confirm", () => true);
+    // Stub Image and URL so canvas path doesn't fail when it does run
+    vi.stubGlobal("URL", {
+      ...URL,
+      createObjectURL: vi.fn(() => "blob:mock"),
+      revokeObjectURL: vi.fn(),
+    });
+    vi.stubGlobal("Image", class FakeImage {
+      onload: (() => void) | null = null;
+      set src(_: string) { setTimeout(() => this.onload?.(), 0); }
+    });
+    skeleton();
+  });
+
+  it("mismatched-arrangement preset on an edited banner flashes error and does NOT download", async () => {
+    const { mountCorpusMode, openCorpusItem } = await import("../src/studio/corpus-mode");
+    const { generateBanner } = await import("../src/engine/corpus/index");
+
+    const flashMessages: Array<{ msg: string; isError: boolean }> = [];
+    mountCorpusMode({
+      flash: (msg, isError = false) => { flashMessages.push({ msg, isError }); },
+    });
+
+    // Build an edited banner with banner arrangement (default — undefined maps to "banner").
+    const originalResult = generateBanner({ seed: 55 });
+    const editedPlan = structuredClone(originalResult.plan);
+    const editedConfig = { ...originalResult.config, edited: true as const, plan: editedPlan, arrangement: undefined };
+    openCorpusItem(editedConfig, 55);
+
+    // Spy on anchor clicks to detect downloads
+    const clickedDownloads: string[] = [];
+    const realCreateElement = document.createElement.bind(document);
+    vi.spyOn(document, "createElement").mockImplementation((tag: string) => {
+      const elem = realCreateElement(tag);
+      if (tag === "a") {
+        vi.spyOn(elem as HTMLAnchorElement, "click").mockImplementation(() => {
+          clickedDownloads.push((elem as HTMLAnchorElement).download);
+        });
+      }
+      return elem;
+    });
+
+    // Select the "square" preset (arrangement: "square") — mismatches banner.
+    const exportSel = document.querySelector<HTMLSelectElement>("[data-corpus-export-preset]");
+    expect(exportSel).toBeTruthy();
+    exportSel!.value = "square";
+    exportSel!.dispatchEvent(new Event("change"));
+
+    // Wait for any async operations
+    await new Promise((r) => setTimeout(r, 50));
+
+    // Must NOT have triggered any download
+    expect(clickedDownloads).toHaveLength(0);
+
+    // Must have flashed an error about using SVG/PNG buttons
+    const errorFlash = flashMessages.find(
+      (f) => f.isError && /edited.*SVG.*PNG|SVG.*PNG.*edited/i.test(f.msg),
+    );
+    expect(errorFlash).toBeTruthy();
+  });
+
+  it("same-arrangement preset on an edited banner proceeds to download", async () => {
+    const { mountCorpusMode, openCorpusItem } = await import("../src/studio/corpus-mode");
+    const { generateBanner } = await import("../src/engine/corpus/index");
+
+    mountCorpusMode({ flash: () => {} });
+
+    // Edited banner with explicit "square" arrangement.
+    const originalResult = generateBanner({ seed: 66 });
+    const editedPlan = structuredClone(originalResult.plan);
+    const editedConfig = { ...originalResult.config, edited: true as const, plan: editedPlan, arrangement: "square" as import("../src/engine/corpus/types.js").ArrangementId };
+    openCorpusItem(editedConfig, 66);
+
+    // Stub canvas.toBlob so the download path runs synchronously.
+    const realCreateElement2 = document.createElement.bind(document);
+    const clickedDownloads2: string[] = [];
+    vi.spyOn(document, "createElement").mockImplementation((tag: string) => {
+      const elem = realCreateElement2(tag);
+      if (tag === "canvas") {
+        Object.defineProperty(elem, "toBlob", {
+          value: (cb: (b: Blob | null) => void) => cb(new Blob(["png"], { type: "image/png" })),
+          writable: true,
+        });
+        Object.defineProperty(elem, "getContext", {
+          value: () => ({ drawImage: vi.fn() }),
+          writable: true,
+        });
+      }
+      if (tag === "a") {
+        vi.spyOn(elem as HTMLAnchorElement, "click").mockImplementation(() => {
+          clickedDownloads2.push((elem as HTMLAnchorElement).download);
+        });
+      }
+      return elem;
+    });
+
+    // Select the "square" preset — arrangement matches.
+    const exportSel = document.querySelector<HTMLSelectElement>("[data-corpus-export-preset]");
+    expect(exportSel).toBeTruthy();
+    exportSel!.value = "square";
+    exportSel!.dispatchEvent(new Event("change"));
+
+    await new Promise((r) => setTimeout(r, 50));
+
+    // Download must have been triggered
+    expect(clickedDownloads2.length).toBeGreaterThanOrEqual(1);
+    expect(clickedDownloads2[0]).toMatch(/fai-square-/);
+  });
+});

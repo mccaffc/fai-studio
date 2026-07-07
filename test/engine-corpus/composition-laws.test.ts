@@ -22,11 +22,7 @@ function measureAutoBannerSample() {
 
 describe('P10 composition steering laws', () => {
   it('Law 2 steers focal center-cell share into the canon band over 200 auto banner seeds', () => {
-    // Before Law 2, the same seeds measured 76/199 center focals = 38.2%,
-    // below the controller-set canon band of 45-65%.
-    const preLawCenterShare = 0.38191;
-    expect(preLawCenterShare).toBeLessThan(0.45);
-
+    // Pre-Law 2 baseline (historical): 76/199 center focals = 0.38191, below the 45-65% canon band.
     const measurement = measureAutoBannerSample().focalPosition;
     expect(
       measurement.centerCellShare,
