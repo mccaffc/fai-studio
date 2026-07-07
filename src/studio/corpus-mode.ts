@@ -15,7 +15,7 @@ import {
   ARRANGEMENTS,
 } from "../engine/corpus/index.js";
 import type { CorpusConfig, CorpusResult, ArrangementId } from "../engine/corpus/index.js";
-import type { BannerPlan } from "../engine/corpus/types.js";
+import { DEFAULT_ACCENT_STRENGTH, IDENTITY_ACCENT_STRENGTH, type BannerPlan } from "../engine/corpus/types.js";
 import { renderPlanSvg } from "../engine/corpus/render.js";
 import { TILES } from "../engine/corpus/data/tiles.js";
 import { PROGRAMS } from "../engine/corpus/programs.js";
@@ -87,6 +87,7 @@ interface PersistedCorpusConfig {
   accent?: string;
   /** Legacy read-only migration input. Do not write. */
   paletteMode?: "auto" | "full";
+  accentStrength?: number;
   density?: number;
   figures?: boolean;
   program?: string;
@@ -119,6 +120,12 @@ function normalizeAccentPool(value: unknown): string[] {
   return ACCENT_HEXES.filter((hex) => selected.has(hex));
 }
 
+function normalizeAccentStrength(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1
+    ? value
+    : undefined;
+}
+
 function migrateAccentPool(saved: Pick<PersistedCorpusConfig, "accentPool" | "accent" | "paletteMode">): string[] {
   const pool = normalizeAccentPool(saved.accentPool);
   if (pool.length) return pool;
@@ -131,6 +138,7 @@ function saveCorpusConfig(): void {
   const persisted: PersistedCorpusConfig = {
     template: state.config.template,
     accentPool: [...state.config.accentPool],
+    accentStrength: state.config.accentStrength,
     density: state.config.density,
     figures: state.config.figures,
     program: state.config.program,
@@ -151,6 +159,7 @@ interface CorpusState {
   config: {
     template: string;     // "" = auto
     accentPool: string[]; // [] = auto/canon; 1..7 = explicit user pool
+    accentStrength?: number;
     density: number;
     figures: boolean;
     seed: number;
@@ -183,6 +192,7 @@ function makeDefaultConfig(): CorpusState["config"] {
   return {
     template,
     accentPool: migrateAccentPool(saved),
+    accentStrength: normalizeAccentStrength(saved.accentStrength),
     density: saved.density ?? 0.5,
     figures: saved.figures ?? true,
     seed: (Math.random() * 0xffffffff) >>> 0,
@@ -235,6 +245,7 @@ function historyWalk(delta: -1 | 1): void {
     accentPool: (entry.config as { accentPool?: string[] }).accentPool
       ? [...((entry.config as { accentPool: string[] }).accentPool)]
       : [],
+    accentStrength: normalizeAccentStrength((entry.config as { accentStrength?: number }).accentStrength),
     density: (entry.config as { density?: number }).density ?? 0.5,
     figures: (entry.config as { figures?: boolean }).figures ?? true,
     seed: entry.seed,
@@ -556,6 +567,7 @@ function buildCorpusConfig(): CorpusConfig {
     density: state.config.density,
     figures: state.config.figures,
   };
+  if (state.config.accentStrength !== undefined) config.accentStrength = state.config.accentStrength;
   if (state.config.template) config.template = state.config.template;
   if (!state.config.program && state.config.accentPool.length) {
     config.accentPool = [...state.config.accentPool];
@@ -800,6 +812,19 @@ function activeProgramHue(): string {
   return program && PROGRAMS[program] ? PROGRAMS[program].hue : "";
 }
 
+function accentAmountEnabled(): boolean {
+  return Boolean(state.config.program) || state.config.accentPool.length > 0;
+}
+
+function effectiveAccentStrength(): number {
+  if (state.config.accentStrength !== undefined) return state.config.accentStrength;
+  return accentAmountEnabled() ? DEFAULT_ACCENT_STRENGTH : IDENTITY_ACCENT_STRENGTH;
+}
+
+function accentStrengthLabelText(value = effectiveAccentStrength()): string {
+  return `Accent amount: ${value.toFixed(2)}`;
+}
+
 function visibleAccentSet(): Set<string> {
   const programHue = activeProgramHue();
   return new Set(programHue ? [programHue] : state.config.accentPool);
@@ -833,6 +858,25 @@ function updateAccentSwatchState(): void {
     button.title = programLocked
       ? `${button.dataset.accentName ?? "Accent"} ${hex} — program hue locked`
       : `${button.dataset.accentName ?? "Accent"} ${hex}`;
+  }
+  updateAccentStrengthControl();
+}
+
+function updateAccentStrengthControl(): void {
+  const enabled = accentAmountEnabled();
+  const value = effectiveAccentStrength();
+  const row = document.querySelector("[data-corpus-accent-strength-row]") as HTMLElement | null;
+  const label = document.querySelector("[data-corpus-accent-strength-label]") as HTMLElement | null;
+  const slider = document.querySelector("[data-corpus-accent-strength]") as HTMLInputElement | null;
+  if (row) {
+    row.classList.toggle("disabled", !enabled);
+    row.title = enabled ? "" : "check an accent first";
+  }
+  if (label) label.textContent = accentStrengthLabelText(value);
+  if (slider) {
+    slider.disabled = !enabled;
+    slider.value = String(value);
+    slider.title = enabled ? "" : "check an accent first";
   }
 }
 
@@ -976,6 +1020,27 @@ function renderCorpusControls(): void {
     }
     g.appendChild(swatches);
     g.appendChild(el("div", { class: "accent-caption", "data-corpus-accent-caption": "" }, accentCaption()));
+    const amountRow = el("div", { class: "row accent-amount-row", "data-corpus-accent-strength-row": "" });
+    const amountLabel = el("label", { "data-corpus-accent-strength-label": "" }, accentStrengthLabelText());
+    const amountSlider = el("input", {
+      type: "range",
+      min: "0",
+      max: "1",
+      step: "0.01",
+      value: String(effectiveAccentStrength()),
+      "data-corpus-accent-strength": "",
+    }) as HTMLInputElement;
+    amountSlider.addEventListener("input", () => {
+      amountLabel.textContent = accentStrengthLabelText(Number(amountSlider.value));
+    });
+    amountSlider.addEventListener("change", () => {
+      state.config.accentStrength = Number(amountSlider.value);
+      amountLabel.textContent = accentStrengthLabelText(state.config.accentStrength);
+      corpusRegen(false, false);
+    });
+    amountRow.appendChild(amountLabel);
+    amountRow.appendChild(amountSlider);
+    g.appendChild(amountRow);
     updateAccentSwatchState();
   }
 
@@ -1005,6 +1070,7 @@ function renderCorpusControls(): void {
     const slider = el("input", {
       type: "range", min: "0", max: "1", step: "0.01",
       value: String(state.config.density),
+      "data-corpus-density": "",
     }) as HTMLInputElement;
     // Show live value on input (no regen); regenerate only on change (pointer-up)
     slider.addEventListener("input", () => {
@@ -1152,6 +1218,7 @@ export function openCorpusItem(config: CorpusSaveConfig, seed: number): void {
       state.config = {
         template: config.template ?? "",
         accentPool: migrateAccentPool(config),
+        accentStrength: normalizeAccentStrength(config.accentStrength),
         density: config.density ?? 0.5,
         figures: config.figures ?? true,
         seed,
@@ -1173,6 +1240,7 @@ export function openCorpusItem(config: CorpusSaveConfig, seed: number): void {
     state.config = {
       template: config.template ?? "",
       accentPool: migrateAccentPool(config),
+      accentStrength: normalizeAccentStrength(config.accentStrength),
       density: config.density ?? 0.5,
       figures: config.figures ?? true,
       seed,

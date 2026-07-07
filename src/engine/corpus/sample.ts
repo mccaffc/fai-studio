@@ -38,7 +38,7 @@ import type {
   Template,
   VariantKey,
 } from './types.js';
-import { ARRANGEMENTS } from './types.js';
+import { ARRANGEMENTS, IDENTITY_ACCENT_STRENGTH } from './types.js';
 import { detectForms, orientEdges } from './forms.js';
 import { profileIoU } from './profiles.js';
 import { mulberry32, type Rng } from './rng.js';
@@ -242,6 +242,8 @@ export function sampleWithDiagnostics(
   patches: readonly IconicPatch[] = PATCHES,
 ): SampleResult {
   const accentRequest = resolveAccentRequest(knobs, grammar.palette.accentOrder);
+  const requestedAccentStrength = validateAccentStrength(knobs.accentStrength);
+  const accentStrength = accentRequestUsesStrength(accentRequest) ? requestedAccentStrength : IDENTITY_ACCENT_STRENGTH;
   const diag: SampleDiagnostics = {
     adjacencyHits: 0,
     familyFloorMisses: 0,
@@ -309,8 +311,8 @@ export function sampleWithDiagnostics(
   placePlainCells(cells, relativeStats, rng, plainTarget);
 
   fillTileCells(cells, grammar, rng, workingSet, template, diag);
-  const accentBudgetCap = accentBudgetCapForRequest(accentRequest);
-  applyAccentZoning(cells, grammar, rng, template, accentRequest, diag);
+  const accentBudgetCap = accentBudgetCapForRequest(accentRequest, accentStrength);
+  applyAccentZoning(cells, grammar, rng, template, accentRequest, diag, accentStrength);
   enforceAccentBudget(cells, grammar, accentRequest.forcedAccent, accentBudgetCap);
   if (accentRequest.forcedAccent) ensureAccentPresence(cells, grammar, rng, accentRequest.forcedAccent);
   // Run last: cap rhythm-template run length AFTER every ink mutation, so the
@@ -2090,8 +2092,28 @@ const CANON_ACCENT_COUNT_WEIGHTS: Weighted<number>[] = [
 ];
 const AUTO_ACCENT_BUDGET_CAP = 0.35;
 const FULL_ACCENT_BUDGET_CAP = 0.5;
+const MIN_ACCENT_BUDGET_CAP = 0.15;
+const MAX_ACCENT_BUDGET_CAP = 0.60;
+const MIN_ACCENT_ZONE_CAP = 3;
+const SHIPPED_ACCENT_ZONE_CAP = 6;
+const MAX_ACCENT_ZONE_CAP = 9;
+const MIN_GROUND_MODE_PROBABILITY = 0.25;
+const SHIPPED_GROUND_MODE_PROBABILITY = 0.40;
+const MAX_GROUND_MODE_PROBABILITY = 0.55;
 const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300', '#D63A8C']);
 const COOL_ACCENTS_SET = new Set(['#4997D0', '#8265DB', '#268B41', '#3A4A6B']);
+
+function validateAccentStrength(strength: number | undefined): number {
+  if (strength === undefined) return IDENTITY_ACCENT_STRENGTH;
+  if (!Number.isFinite(strength) || strength < 0 || strength > 1) {
+    throw new Error(`accentStrength must be a finite number from 0 to 1: ${String(strength)}`);
+  }
+  return strength;
+}
+
+function accentRequestUsesStrength(request: AccentRequest): boolean {
+  return request.forcedAccent !== undefined || request.poolChoices !== undefined;
+}
 
 function resolveAccentRequest(knobs: SampleKnobs, explicitAccentOrder: readonly string[]): AccentRequest {
   const paletteMode = knobs.paletteMode ?? 'auto';
@@ -2156,8 +2178,39 @@ function accentChoicesForPool(accentPool: readonly string[]): readonly Weighted<
   return ACCENT_POOL.filter(entry => selected.has(entry.value));
 }
 
-function accentBudgetCapForRequest(request: AccentRequest): number {
-  return request.poolAccents.length >= 3 ? FULL_ACCENT_BUDGET_CAP : AUTO_ACCENT_BUDGET_CAP;
+function accentBudgetCapForRequest(request: AccentRequest, accentStrength: number): number {
+  const shippedMidpoint = request.poolAccents.length >= 3 ? FULL_ACCENT_BUDGET_CAP : AUTO_ACCENT_BUDGET_CAP;
+  return strengthCurve(accentStrength, MIN_ACCENT_BUDGET_CAP, shippedMidpoint, MAX_ACCENT_BUDGET_CAP);
+}
+
+function accentZoneCellCapForStrength(accentStrength: number): number {
+  return Math.max(2, Math.round(
+    strengthCurve(accentStrength, MIN_ACCENT_ZONE_CAP, SHIPPED_ACCENT_ZONE_CAP, MAX_ACCENT_ZONE_CAP),
+  ));
+}
+
+function accentGroundModeProbabilityForStrength(accentStrength: number): number {
+  return strengthCurve(
+    accentStrength,
+    MIN_GROUND_MODE_PROBABILITY,
+    SHIPPED_GROUND_MODE_PROBABILITY,
+    MAX_GROUND_MODE_PROBABILITY,
+  );
+}
+
+function accentInkModeProbabilityForStrength(accentStrength: number): number {
+  return 1 - accentGroundModeProbabilityForStrength(accentStrength);
+}
+
+function strengthCurve(strength: number, low: number, shippedMidpoint: number, high: number): number {
+  // Task 5 names low/high endpoints, but a single lerp would move the shipped
+  // cap at strength 0.5 (0.15→0.60 lands on 0.375, not today's 0.35). Keep
+  // strength 0.5 byte-identical by using a piecewise curve through the shipped
+  // midpoint, with each mode's current cap as its own anchor.
+  if (strength === IDENTITY_ACCENT_STRENGTH) return shippedMidpoint;
+  return strength < IDENTITY_ACCENT_STRENGTH
+    ? low + (shippedMidpoint - low) * (strength / IDENTITY_ACCENT_STRENGTH)
+    : shippedMidpoint + (high - shippedMidpoint) * ((strength - IDENTITY_ACCENT_STRENGTH) / IDENTITY_ACCENT_STRENGTH);
 }
 
 function accentSurvivors(request: AccentRequest): readonly string[] {
@@ -2185,6 +2238,7 @@ function applyAccentZoning(
   template: Template,
   request: AccentRequest,
   diag: SampleDiagnostics,
+  accentStrength: number,
 ): void {
   const accentChoices = request.poolChoices ?? ACCENT_POOL;
   if (accentChoices.length === 0) return;
@@ -2227,7 +2281,16 @@ function applyAccentZoning(
     const figureZone = patchZone === null
       ? takeFigureAccentZone(cells, occupied, rng, accent, allAccents)
       : null;
-    const placed = patchZone ?? figureZone ?? takeTileAccentZone(cells, grammar, occupied, rng, accent, allAccents, preferredSide);
+    const placed = patchZone ?? figureZone ?? takeTileAccentZone(
+      cells,
+      grammar,
+      occupied,
+      rng,
+      accent,
+      allAccents,
+      preferredSide,
+      accentStrength,
+    );
     if (placed === null) continue;
 
     zones.push(placed.zone);
@@ -2325,6 +2388,7 @@ function takeTileAccentZone(
   accent: string,
   allAccents: Set<string>,
   preferredSide: AccentSide | undefined,
+  accentStrength: number,
 ): { zone: Set<DraftCell>; mode: AccentMode } | null {
   const dims = dimsForCells(cells);
   const anchors = cells
@@ -2340,8 +2404,8 @@ function takeTileAccentZone(
       sortKey: `${c.col},${c.row}`,
     })),
   );
-  const zone = sameTileFlood(cells, anchor, occupied);
-  let mode: AccentMode = rng.next() < 0.6 ? 'ink' : 'ground';
+  const zone = sameTileFlood(cells, anchor, occupied, accentZoneCellCapForStrength(accentStrength));
+  let mode: AccentMode = rng.next() < accentInkModeProbabilityForStrength(accentStrength) ? 'ink' : 'ground';
   if (mode === 'ink' && zone.size >= 3 && !zoneHasSpineEdge(grammar, zone)) {
     mode = 'ground';
   }
@@ -2405,13 +2469,13 @@ function anchorSideWeight(cell: DraftCell, side: AccentSide | undefined, dims: G
   return onPreferredSide ? 3 : 1;
 }
 
-function sameTileFlood(cells: DraftCell[], anchor: DraftCell, occupied: Set<DraftCell>): Set<DraftCell> {
+function sameTileFlood(cells: DraftCell[], anchor: DraftCell, occupied: Set<DraftCell>, maxCells: number): Set<DraftCell> {
   const zone = new Set<DraftCell>([anchor]);
   const queue = [anchor];
-  while (queue.length > 0 && zone.size < 6) {
+  while (queue.length > 0 && zone.size < maxCells) {
     const cur = queue.shift()!;
     for (const next of cells) {
-      if (zone.size >= 6 || zone.has(next) || occupied.has(next)) continue;
+      if (zone.size >= maxCells || zone.has(next) || occupied.has(next)) continue;
       if (next.kind !== 'tile' || next.tile !== cur.tile) continue;
       const adjacent = Math.abs(next.col - cur.col) + Math.abs(next.row - cur.row) === 1;
       if (!adjacent) continue;
@@ -3514,8 +3578,16 @@ function compareCodepoint(a: string, b: string): number {
  * @param grammar - The engine grammar the plan was sampled from.
  * @param seed    - The original seed (used to replay the RNG state for accent zoning).
  * @param accent  - The new accent color to apply.
+ * @param accentStrength - Accent amount control; 0.5 preserves the shipped zoning.
  */
-export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, accent: string): BannerPlan {
+export function rezone(
+  plan: BannerPlan,
+  grammar: EngineGrammar,
+  seed: number,
+  accent: string,
+  accentStrength = IDENTITY_ACCENT_STRENGTH,
+): BannerPlan {
+  const resolvedAccentStrength = validateAccentStrength(accentStrength);
   // Deep-copy the plan (cells carry inks/grounds that will be mutated).
   const cells: DraftCell[] = plan.cells.map(c => ({ ...c }));
 
@@ -3548,10 +3620,11 @@ export function rezone(plan: BannerPlan, grammar: EngineGrammar, seed: number, a
     runPaths: [],
   };
 
-  const knobs: SampleKnobs = { accent };
+  const knobs: SampleKnobs = { accent, accentStrength: resolvedAccentStrength };
   const accentRequest = resolveAccentRequest(knobs, grammar.palette.accentOrder);
-  applyAccentZoning(cells, grammar, rng, template, accentRequest, diag);
-  enforceAccentBudget(cells, grammar, accentRequest.forcedAccent);
+  const accentBudgetCap = accentBudgetCapForRequest(accentRequest, resolvedAccentStrength);
+  applyAccentZoning(cells, grammar, rng, template, accentRequest, diag, resolvedAccentStrength);
+  enforceAccentBudget(cells, grammar, accentRequest.forcedAccent, accentBudgetCap);
   enforceAccentGroundContrast(cells);
 
   const finalCells = finalizeCells(cells);

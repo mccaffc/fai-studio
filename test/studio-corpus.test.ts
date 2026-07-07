@@ -335,7 +335,7 @@ describe("studio corpus mode (jsdom)", () => {
     expect(pressedAccentHexes()).toEqual(["#FF4F00"]);
 
     const densitySlider = document.querySelector(
-      "#corpus-controls input[type='range']",
+      "#corpus-controls input[data-corpus-density]",
     ) as HTMLInputElement;
     expect(Number(densitySlider.value)).toBeCloseTo(0.6, 1);
   });

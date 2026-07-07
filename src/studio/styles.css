@@ -310,6 +310,13 @@ body.mode-editor #saved { display: none; }
   font: 400 11px "IBM Plex Mono", monospace;
   color: var(--line);
 }
+.accent-amount-row.disabled {
+  opacity: 0.45;
+}
+.accent-amount-row.disabled label,
+.accent-amount-row.disabled input {
+  cursor: not-allowed;
+}
 
 .corpus-scores {
   margin-top: 6px;

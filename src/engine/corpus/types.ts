@@ -16,6 +16,9 @@
 
 export type Hex = string; // '#RRGGBB' uppercase
 
+export const IDENTITY_ACCENT_STRENGTH = 0.5;
+export const DEFAULT_ACCENT_STRENGTH = 0.65;
+
 export type ArrangementId = 'banner' | 'portrait' | 'square' | 'strip' | 'column' | 'column-short';
 
 export const ARRANGEMENTS: Record<ArrangementId, { cols: number; rows: number }> = {
@@ -78,6 +81,8 @@ export interface SampleKnobs {
   accent?: string;
   /** User-constrained subset of the locked 7 accent hues. */
   accentPool?: string[];
+  /** Accent amount control, 0..1. The shipped sampler behavior is 0.5. */
+  accentStrength?: number;
   /** Optional weighted shape-family preference; multiplier 1 preserves draws. */
   familyBias?: { families: readonly string[]; multiplier: number };
   /** Optional weighted template preference; explicit `template` still wins. */
