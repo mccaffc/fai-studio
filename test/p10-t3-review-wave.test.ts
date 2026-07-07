@@ -279,7 +279,7 @@ describe("P10 Task 5 — accent amount slider", () => {
     skeleton();
   });
 
-  it("is disabled in plain auto and shows the effective 0.65 default after checking an accent", async () => {
+  it("is disabled in plain auto and shows the effective 0.75 default after checking an accent", async () => {
     await import("../src/studio/main");
 
     const slider = accentStrengthSlider();
@@ -291,8 +291,8 @@ describe("P10 Task 5 — accent amount slider", () => {
     accentButton("#FF4F00").click();
 
     expect(slider.disabled).toBe(false);
-    expect(slider.value).toBe("0.65");
-    expect(accentStrengthLabel().textContent).toBe("Accent amount: 0.65");
+    expect(slider.value).toBe("0.75");
+    expect(accentStrengthLabel().textContent).toBe("Accent amount: 0.75");
     expect(accentStrengthRow().classList.contains("disabled")).toBe(false);
     expect(accentStrengthRow().title).toBe("");
   });
@@ -319,7 +319,7 @@ describe("P10 Task 5 — accent amount slider", () => {
     expect(persisted.accentStrength).toBe(0.82);
   });
 
-  it("enables at the effective 0.65 default when a program is active", async () => {
+  it("enables at the effective 0.75 default when a program is active", async () => {
     await import("../src/studio/main");
 
     const programSelect = document.querySelector<HTMLSelectElement>(
@@ -332,7 +332,7 @@ describe("P10 Task 5 — accent amount slider", () => {
 
     const slider = accentStrengthSlider();
     expect(slider.disabled).toBe(false);
-    expect(slider.value).toBe("0.65");
-    expect(accentStrengthLabel().textContent).toBe("Accent amount: 0.65");
+    expect(slider.value).toBe("0.75");
+    expect(accentStrengthLabel().textContent).toBe("Accent amount: 0.75");
   });
 });

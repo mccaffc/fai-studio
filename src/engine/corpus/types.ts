@@ -17,7 +17,11 @@
 export type Hex = string; // '#RRGGBB' uppercase
 
 export const IDENTITY_ACCENT_STRENGTH = 0.5;
-export const DEFAULT_ACCENT_STRENGTH = 0.65;
+/** Default for accent-carrying modes. Calibrated at the P10 strength-ladder
+ *  gate: 0.65 measured only +3pp accent share over today — too subtle for
+ *  Chris's "by and large more accent"; 0.75 lands +5–8pp per mode, visibly
+ *  hotter while every seed on the ladder stays composed. */
+export const DEFAULT_ACCENT_STRENGTH = 0.75;
 
 export type ArrangementId = 'banner' | 'portrait' | 'square' | 'strip' | 'column' | 'column-short';
 

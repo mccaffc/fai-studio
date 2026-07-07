@@ -70,7 +70,9 @@ describe('accentStrength engine knob', () => {
     }
   });
 
-  it('defaults public accent-carrying generation to explicit accentStrength 0.65', () => {
+  // 0.75 = the P10 strength-ladder gate calibration (0.65 read +3pp — too subtle
+  // for "by and large more accent"). Drift-guard pin, not frozen tuning.
+  it('defaults public accent-carrying generation to explicit accentStrength 0.75', () => {
     const cases: { name: string; config: CorpusConfig }[] = [
       { name: 'explicit accent', config: { accent: '#FF4F00' } },
       { name: 'pool-3', config: { accentPool: ['#FF4F00', '#FFA300', '#4997D0'] } },
@@ -82,7 +84,7 @@ describe('accentStrength engine knob', () => {
       for (let i = 0; i < 30; i += 1) {
         const seed = 230_000 + i;
         const implicit = generateBanner({ ...config, seed, maxAttempts: 1 });
-        const explicit = generateBanner({ ...config, seed, maxAttempts: 1, accentStrength: 0.65 });
+        const explicit = generateBanner({ ...config, seed, maxAttempts: 1, accentStrength: 0.75 });
 
         expect(implicit.plan, `${name} seed ${seed}`).toEqual(explicit.plan);
         expect(implicit.svg, `${name} seed ${seed}`).toBe(explicit.svg);
