@@ -189,3 +189,14 @@ mapped-template shares 0.53–0.81 at ×5, higher at ×9.
 **VERDICT: PASS — "immediately obvious" met at the sheet level for all six programs.**
 P9b (capsule/lens + wave vocabulary mining from the 21 freestyle illustrations) remains queued for
 variety depth, no longer identity-critical.
+
+## Gate E2 — P10 accent-strength ladder, 2026-07-07
+
+Ladders: seeds 870000–870003 explicit orange at 0.2/0.5/0.65/1.0; fresh seeds 880000+ at the default.
+- Monotone progression real on 3/4 ladder seeds (clearest 0.65→1.0); one cool-running seed stays quiet
+  at all strengths (strength amplifies what zoning places; it does not manufacture presence — correct).
+- **Default calibrated 0.65 → 0.75 at this gate:** 0.65 measured only +3pp accent share ("more" too
+  subtle for the ask); 0.75 lands +5–8pp per mode. On fresh sheets at 0.75: explicit orange CARRIES
+  compositions (block clusters, arc rows, quarter-fields) without flooding; program blue reads generous
+  and composed. Identity (0.5 ≡ pre-P10) and monotonicity re-verified post-calibration, 407/407.
+**VERDICT: PASS at 0.75.**
