@@ -222,3 +222,15 @@ to Custom; accent slider enables at 0.75 on first swatch check and visibly flood
 2 → 96). Investigated the one anomaly: export filename seed ≠ canvas seed on cross-arrangement presets
 = CORRECT behavior — the strip regeneration passed through curation retries (seed strides) and the
 filename honestly names the exported artifact. Working as designed; noted for user docs someday.
+
+## Gate G — P9b wave vocabulary, 2026-07-07
+
+ACCEPTED.png (8 tiles at size + 3×1 context strips) + energy-with-vocab.png (6 Energy banners).
+- All 8 mined-fs-wave tiles APPROVED: genuinely new fluid register (bending reeds, melting pillars,
+  drip-teeth, stalactite bars, S-pipes) with real seam profiles; context strips coherent.
+- Capsule/lens outcome recorded honestly: 0/26 candidates tile-grade — the freestyle corpus contains
+  no clean capsule cells; AI depth requires AUTHORED tiles (controller design task, queued).
+- Energy sheet: the new vocabulary visibly enriches the program (seed 900001's drip-column rhythm
+  field is a composition the engine previously could not produce); 6/6 nameable, palette law clean.
+- Program-only gating verified: auto 0/50 wave-tile cells; Energy adoption 26/100.
+**VERDICT: PASS — merge after integration review.**
