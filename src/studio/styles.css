@@ -359,3 +359,59 @@ body.mode-editor #saved { display: none; }
 .fill-row .accent-swatches { margin-top: 0; }
 /* two-class selector outranks `.canvas-actions button { width: auto }` */
 .fill-row .accent-swatch { flex-shrink: 0; width: 28px; height: 28px; }
+
+/* ── P10: seed history hint ── */
+.seed-row--hist {
+  grid-template-columns: 32px 1fr 32px auto;
+}
+.corpus-hist-hint {
+  margin-top: 6px;
+  font: 400 11px "IBM Plex Mono", monospace;
+  color: var(--line);
+}
+
+/* ── P10: Sheet ×12 overlay ── */
+.corpus-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(18, 18, 18, 0.92); /* --ink at 92% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.corpus-sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+}
+.corpus-sheet-cell {
+  background: #fff;
+  cursor: pointer;
+  border: 2px solid transparent;
+  outline: none;
+  position: relative;
+}
+.corpus-sheet-cell:hover,
+.corpus-sheet-cell.focus {
+  border-color: #FF4F00;
+}
+.corpus-sheet-cell:focus {
+  border-color: #FF4F00;
+}
+.corpus-sheet-cell svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.corpus-sheet-caption {
+  font: 400 11px "IBM Plex Mono", monospace;
+  color: #666;
+  padding: 4px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

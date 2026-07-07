@@ -199,6 +199,65 @@ const state: CorpusState = {
   config: makeDefaultConfig(),
 };
 
+// ── seed history (session-scoped, cap 50) ────────────────────────────────────
+
+interface HistoryEntry {
+  seed: number;
+  config: CorpusSaveConfig;
+}
+
+const history: HistoryEntry[] = [];
+let historyPtr = -1; // index of the currently displayed entry (-1 = none yet)
+
+/** Push a new entry onto history (drops forward tail; no-op for edited configs). */
+function historyPush(result: import("../engine/corpus/index.js").CorpusResult): void {
+  if (state.editing) return;
+  if (isEditedCorpusConfig(result.config)) return; // spec: edited items not pushed
+  // Drop forward tail
+  if (historyPtr < history.length - 1) {
+    history.splice(historyPtr + 1);
+  }
+  history.push({ seed: result.seed, config: result.config });
+  if (history.length > 50) history.shift();
+  historyPtr = history.length - 1;
+  updateHistoryButtons();
+}
+
+function historyWalk(delta: -1 | 1): void {
+  if (state.editing) return;
+  const next = historyPtr + delta;
+  if (next < 0 || next >= history.length) return;
+  historyPtr = next;
+  const entry = history[historyPtr]!;
+  // Restore config from the snapshot
+  state.config = {
+    template: (entry.config as { template?: string }).template ?? "",
+    accentPool: (entry.config as { accentPool?: string[] }).accentPool
+      ? [...((entry.config as { accentPool: string[] }).accentPool)]
+      : [],
+    density: (entry.config as { density?: number }).density ?? 0.5,
+    figures: (entry.config as { figures?: boolean }).figures ?? true,
+    seed: entry.seed,
+    program: (entry.config as { program?: string }).program ?? "",
+    arrangement: (entry.config as { arrangement?: string }).arrangement ?? "",
+  };
+  saveCorpusConfig();
+  state.current = generateBanner(buildCorpusConfig());
+  state.vars = engineVariations(state.current, 6);
+  renderCorpusCanvas();
+  renderCorpusVariations();
+  updateSeedDisplay();
+  renderCorpusScores();
+  updateHistoryButtons();
+}
+
+function updateHistoryButtons(): void {
+  const backBtn = document.querySelector<HTMLButtonElement>("[data-corpus-hist-back]");
+  const fwdBtn = document.querySelector<HTMLButtonElement>("[data-corpus-hist-fwd]");
+  if (backBtn) backBtn.disabled = historyPtr <= 0;
+  if (fwdBtn) fwdBtn.disabled = historyPtr >= history.length - 1;
+}
+
 export type EditedCorpusConfig = CorpusConfig & {
   edited: true;
   plan: BannerPlan;
@@ -311,6 +370,184 @@ async function corpusCopySvg(): Promise<void> {
   if (!ok) throw new Error("clipboard unavailable in this browser context");
 }
 
+// ── destination export presets ───────────────────────────────────────────────
+
+interface ExportPresetSpec {
+  slug: string;
+  arrangement: string; // ArrangementId
+  w: number;
+  h: number;
+}
+
+const PRESET_SPECS: Record<string, ExportPresetSpec> = {
+  hero:    { slug: "hero",    arrangement: "banner", w: 2560, h: 1280 },
+  deck:    { slug: "deck",    arrangement: "banner", w: 1920, h: 960  },
+  eyebrow: { slug: "eyebrow", arrangement: "strip",  w: 2880, h: 960  },
+  square:  { slug: "square",  arrangement: "square", w: 2048, h: 2048 },
+};
+
+async function corpusDownloadPreset(preset: string): Promise<void> {
+  if (!state.current) return;
+  const spec = PRESET_SPECS[preset];
+  if (!spec) return;
+
+  const currentArrangement = state.config.arrangement || "banner";
+  let result = state.current;
+
+  // If current arrangement doesn't match preset arrangement, regenerate same seed
+  // under the target arrangement.
+  if (currentArrangement !== spec.arrangement) {
+    flash(`Re-generated at ${spec.arrangement} for ${spec.slug}`);
+    result = generateBanner({
+      ...buildCorpusConfig(),
+      arrangement: spec.arrangement as import("../engine/corpus/index.js").ArrangementId,
+    });
+  }
+
+  const svg = result.svg;
+  const tmpl = result.plan.templateId ?? (state.config.template || "auto");
+  const seed = result.seed;
+  const filename = `fai-${spec.slug}-${tmpl}-${seed}-${spec.w}x${spec.h}.png`;
+
+  // Rasterize at target pixel size
+  const img = new Image();
+  const blob = new Blob([svg], { type: "image/svg+xml" });
+  const url = URL.createObjectURL(blob);
+  await new Promise<void>((resolve, reject) => {
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = spec.w;
+      canvas.height = spec.h;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((png) => {
+        if (png) triggerDownload(URL.createObjectURL(png), filename);
+        URL.revokeObjectURL(url);
+        resolve();
+      }, "image/png");
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("SVG render failed")); };
+    img.src = url;
+  });
+  flash(`${spec.slug} PNG (${spec.w}×${spec.h}) saved to your browser's Downloads folder.`);
+}
+
+// ── sheet ×12 overlay ─────────────────────────────────────────────────────────
+
+const SHEET_TEMPLATE_ORDER = [
+  "pipe-field",
+  "arc-mosaic",
+  "checker-motif",
+  "repeat-rhythm",
+  "figure-field",
+  "mixed-quilt",
+] as const;
+
+function openSheetOverlay(): void {
+  if (!state.current) return;
+  const baseSeed = state.current.seed;
+
+  // Build 12 cells: seeds baseSeed+1…+12, templates cycled two each
+  const cells: Array<{ seed: number; template: string; svg: string }> = [];
+  for (let i = 0; i < 12; i++) {
+    const seed = (baseSeed + 1 + i) >>> 0;
+    const template = SHEET_TEMPLATE_ORDER[i % 6]!;
+    const cfg = buildCorpusConfig();
+    cfg.seed = seed;
+    cfg.template = template;
+    try {
+      const r = generateBanner(cfg);
+      cells.push({ seed, template, svg: r.svg });
+    } catch {
+      cells.push({ seed, template: template as string, svg: "" });
+    }
+  }
+
+  // Overlay element
+  const overlay = el("div", {
+    class: "corpus-sheet-overlay",
+    "data-corpus-sheet-overlay": "",
+    role: "dialog",
+    "aria-modal": "true",
+  });
+
+  const grid = el("div", { class: "corpus-sheet-grid" });
+
+  let focusedIdx = 0;
+
+  const cellEls: HTMLElement[] = [];
+
+  for (let i = 0; i < cells.length; i++) {
+    const c = cells[i]!;
+    const cellEl = el("div", {
+      class: "corpus-sheet-cell" + (i === 0 ? " focus" : ""),
+      "data-corpus-sheet-cell": "",
+      tabindex: "0",
+    });
+    cellEl.innerHTML = c.svg;
+    const cap = el("div", {
+      class: "corpus-sheet-caption",
+      "data-corpus-sheet-caption": "",
+    }, `${c.seed} · ${c.template}`);
+    cellEl.appendChild(cap);
+
+    cellEl.addEventListener("click", (e) => {
+      e.stopPropagation();
+      promoteCell(i);
+    });
+    cellEls.push(cellEl);
+    grid.appendChild(cellEl);
+  }
+
+  overlay.appendChild(grid);
+  document.body.appendChild(overlay);
+
+  function promoteCell(idx: number): void {
+    const c = cells[idx]!;
+    // Adopt seed and template
+    state.config.seed = c.seed;
+    state.config.template = c.template;
+    saveCorpusConfig();
+    state.current = generateBanner(buildCorpusConfig());
+    state.vars = engineVariations(state.current, 6);
+    historyPush(state.current);
+    closeOverlay();
+    renderCorpusCanvas();
+    renderCorpusVariations();
+    updateSeedDisplay();
+    renderCorpusScores();
+    // Update template select to reflect promoted template
+    const tmplSel = document.querySelector<HTMLSelectElement>("#corpus-controls select[data-corpus-template]");
+    if (tmplSel) tmplSel.value = c.template;
+  }
+
+  function closeOverlay(): void {
+    overlay.remove();
+    document.removeEventListener("keydown", overlayKeydown);
+  }
+
+  function updateFocus(newIdx: number): void {
+    cellEls[focusedIdx]?.classList.remove("focus");
+    focusedIdx = newIdx;
+    cellEls[focusedIdx]?.classList.add("focus");
+    cellEls[focusedIdx]?.focus();
+  }
+
+  function overlayKeydown(e: KeyboardEvent): void {
+    if (e.code === "Escape") { e.preventDefault(); closeOverlay(); return; }
+    if (e.code === "ArrowLeft") { e.preventDefault(); updateFocus(Math.max(0, focusedIdx - 1)); return; }
+    if (e.code === "ArrowRight") { e.preventDefault(); updateFocus(Math.min(11, focusedIdx + 1)); return; }
+    if (e.code === "Enter") { e.preventDefault(); promoteCell(focusedIdx); return; }
+  }
+
+  document.addEventListener("keydown", overlayKeydown);
+
+  // Scrim click closes (click on overlay but not grid)
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeOverlay();
+  });
+}
+
 // ── generation ───────────────────────────────────────────────────────────────
 
 function buildCorpusConfig(): CorpusConfig {
@@ -340,7 +577,7 @@ function paintCorpusError(err: unknown): void {
   if (canvas) canvas.innerHTML = `<p style="padding:20px;color:#c00">${String(err)}</p>`;
 }
 
-export function corpusRegen(newSeed = false): void {
+export function corpusRegen(newSeed = false, pushHistory = true): void {
   if (state.editing) return;
   if (newSeed) {
     state.config.seed = (Math.random() * 0xffffffff) >>> 0;
@@ -351,6 +588,7 @@ export function corpusRegen(newSeed = false): void {
   try {
     state.current = generateBanner(buildCorpusConfig());
     state.vars = engineVariations(state.current, 6);
+    if (pushHistory) historyPush(state.current);
     renderCorpusCanvas();
     renderCorpusVariations();
     updateSeedDisplay();
@@ -430,6 +668,7 @@ function renderCorpusCanvas(): void {
       state.config.seed = state.current.seed;
     }
     state.vars = engineVariations(state.current, 6);
+    historyPush(state.current);
     renderCorpusCanvas();
     renderCorpusVariations();
     updateSeedDisplay();
@@ -445,6 +684,33 @@ function renderCorpusCanvas(): void {
     beginCorpusEdit();
   });
   acts.lastElementChild?.setAttribute("data-corpus-edit", "");
+  mkBtn("Sheet ×12", "ghost", () => {
+    openSheetOverlay();
+  });
+
+  // ── Destination export preset select ────────────────────────────────────────
+  const exportPreset = el("select", { "data-corpus-export-preset": "", style: "width:auto" }) as HTMLSelectElement;
+  const EXPORT_PRESETS: Array<{ value: string; label: string }> = [
+    { value: "custom",  label: "Export…" },
+    { value: "hero",    label: "Hero — 2560×1280 PNG" },
+    { value: "deck",    label: "Deck panel — 1920×960 PNG" },
+    { value: "eyebrow", label: "Eyebrow — 2880×960 PNG" },
+    { value: "square",  label: "Square social — 2048×2048 PNG" },
+  ];
+  for (const p of EXPORT_PRESETS) {
+    const o = document.createElement("option");
+    o.value = p.value;
+    o.textContent = p.label;
+    exportPreset.appendChild(o);
+  }
+  exportPreset.addEventListener("change", () => {
+    const preset = exportPreset.value;
+    exportPreset.value = "custom"; // snap back immediately
+    if (preset === "custom") return;
+    void corpusDownloadPreset(preset).catch((err) => flash(String(err), true));
+  });
+  acts.appendChild(exportPreset);
+
   mkBtn("SVG", "ghost", () => {
     corpusDownloadSvg();
     flash("SVG saved to your browser's Downloads folder.");
@@ -773,22 +1039,50 @@ function renderCorpusControls(): void {
   // Seed
   {
     const g = group("Seed");
-    const row = el("div", { class: "seed-row" });
+    const row = el("div", { class: "seed-row seed-row--hist" });
+    const backBtn = el("button", {
+      class: "chip",
+      title: "previous (← key)",
+      "data-corpus-hist-back": "",
+      style: "width:32px; padding:0",
+    }, "‹") as HTMLButtonElement;
+    backBtn.disabled = historyPtr <= 0;
+    backBtn.addEventListener("click", () => historyWalk(-1));
+
     const inp = el("input", {
       type: "text",
       readonly: "",
       "data-corpus-seed": "",
       value: String(state.current?.seed ?? state.config.seed),
     }) as HTMLInputElement;
+
+    const fwdBtn = el("button", {
+      class: "chip",
+      title: "next (→ key)",
+      "data-corpus-hist-fwd": "",
+      style: "width:32px; padding:0",
+    }, "›") as HTMLButtonElement;
+    fwdBtn.disabled = historyPtr >= history.length - 1;
+    fwdBtn.addEventListener("click", () => historyWalk(1));
+
     const copyBtn = el("button", { class: "chip", title: "copy seed", style: "width:44px" }, "copy");
     copyBtn.addEventListener("click", () => {
       if (window.isSecureContext && navigator.clipboard?.writeText) {
         navigator.clipboard.writeText(inp.value).catch(() => {});
       }
     });
+    row.appendChild(backBtn);
     row.appendChild(inp);
+    row.appendChild(fwdBtn);
     row.appendChild(copyBtn);
     g.appendChild(row);
+
+    // Hint line under Seed group
+    const hint = el("div", {
+      class: "corpus-hist-hint",
+      "data-corpus-history-hint": "",
+    }, "‹ › history · space reroll · S save · E edit");
+    g.appendChild(hint);
   }
 }
 
@@ -908,6 +1202,27 @@ export function unmountCorpusMode(): void {
   if (scores) scores.innerHTML = "";
 }
 
+// ── keyboard hook (called from main.ts when corpus is active) ────────────────
+// Returns true if the key was handled (caller should preventDefault).
+
+export function corpusKeydown(code: string): boolean {
+  if (state.editing) return false;
+  if (code === "ArrowLeft") { historyWalk(-1); return true; }
+  if (code === "ArrowRight") { historyWalk(1); return true; }
+  if (code === "KeyS") {
+    // S = save
+    if (!state.current || !onSaveFn) return false;
+    onSaveFn(state.current.config, state.current.seed);
+    flash("Saved to the tray below.");
+    return true;
+  }
+  if (code === "KeyE") {
+    beginCorpusEdit();
+    return true;
+  }
+  return false;
+}
+
 // ── spacebar hook (called from main.ts when corpus is active) ─────────────────
 
 export function corpusSpacebarReroll(): void {
@@ -923,6 +1238,7 @@ export function corpusSpacebarReroll(): void {
     state.config.seed = state.current.seed;
   }
   state.vars = engineVariations(state.current, 6);
+  historyPush(state.current);
   renderCorpusCanvas();
   renderCorpusVariations();
   updateSeedDisplay();
