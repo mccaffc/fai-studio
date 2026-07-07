@@ -126,6 +126,11 @@ const SERPENTINE_TURN_WEIGHT = 0.2;
 // minimal interior cell of any longer same-ink run to break the join.
 const RHYTHM_RUN_CAP = 6;
 const RHYTHM_TEMPLATES = new Set(['repeat-rhythm', 'checker-motif']);
+// P10 Law 2 baseline (seeds 80000..80199, 6x3 auto): focal center-cell share
+// was 76/199 = 38.2%, below the canon band of 45-65%. These multipliers steer
+// existing form/figure/patch anchor draws toward center-cell focal centroids.
+const FOCAL_CENTER_ANCHOR_WEIGHT = 5;
+const FOCAL_NEAR_CENTER_ANCHOR_WEIGHT = 2;
 
 // P6 Task 1 mirror calibration from corpus/corpus.json, pair-match metric
 // tile+ink >= 70% across (c,r)/(cols-1-c,r) pairs:
@@ -137,7 +142,9 @@ const RHYTHM_TEMPLATES = new Set(['repeat-rhythm', 'checker-motif']);
 // repeat-rhythm. checker-motif had no >=70% canon near-mirror exemplar.
 // Single probability draw; deterministic rollbacks below pull the accepted
 // output rate back into the canon 24% band.
-const MIRROR_RATE = 0.50;
+// P10 Law 2 focal anchor steering slightly reduces mirror acceptance. Raising
+// the proposal rate preserves the shipped 24% +/- 8% accepted mirror band.
+const MIRROR_RATE = 0.55;
 const MIRROR_TEMPLATE_IDS = new Set(['arc-mosaic', 'figure-field', 'mixed-quilt', 'pipe-field', 'repeat-rhythm']);
 const MIRROR_MAX_BLACK_INK_SHARE = 0.85;
 
@@ -327,6 +334,13 @@ export function sampleWithDiagnostics(
     syncAccentDiagnostics(cells, grammar, accentRequest.forcedAccent, diag);
   }
   enforceAccentGroundContrast(cells);
+  // P10 Law 1 current-sampler baseline (seeds 80000..80199, 6x3 auto):
+  // isolated accent-cell share 34/1315 = 2.59% and isolated corner singletons
+  // 17/200 = 0.085/banner, both inside the canon bands (1-5%, <=0.25/banner).
+  // Per brief, no accent migration/suppression law is built while in band.
+  // P10 Law 3 current-sampler baseline on rhythm templates in the same sample:
+  // one-interrupt lines 90/333 = 27.0% and perfect lines 20/333 = 6.0%,
+  // both inside canon bands (20-32%, 5-15%). No interrupt mutation is built.
 
   const finalCells = finalizeCells(cells);
   const plan: BannerPlan = {
@@ -817,7 +831,7 @@ function placeFriezes(
   if (capable.length === 0) return;
 
   for (let i = 0; i < count; i += 1) {
-    const row = drawFriezeRow(relativeStats, rng);
+    const row = drawFriezeRow(relativeStats, rng, dims);
     if (!rowIsFree(cells, row)) continue;
     const placement = weightedChoice(rng, capable);
     const rowCells = Array.from({ length: dims.cols }, (_v, col) => cellAt(cells, col, row));
@@ -849,9 +863,23 @@ function friezePlacements(grammar: EngineGrammar, workingSet: string[]): Weighte
   return entries;
 }
 
-function drawFriezeRow(relativeStats: RelativeGridStats, rng: Rng): number {
-  const rowKey = drawWeightedRecord(relativeStats.friezeRowWeights, rng, key => /^\d+$/.test(key), '0');
-  return Number(rowKey);
+function drawFriezeRow(relativeStats: RelativeGridStats, rng: Rng, dims: GridDims): number {
+  const entries = Object.keys(relativeStats.friezeRowWeights)
+    .filter(key => /^\d+$/.test(key))
+    .map(key => Number(key))
+    .filter(row => row >= 0 && row < dims.rows)
+    .sort((a, b) => a - b)
+    .map(row => ({
+      value: row,
+      weight: (relativeStats.friezeRowWeights[String(row)] ?? 1) *
+        focalAnchorWeightForPositions(
+          Array.from({ length: dims.cols }, (_value, col) => ({ col, row })),
+          dims,
+        ),
+      sortKey: String(row),
+    }));
+  if (entries.length === 0) return 0;
+  return weightedChoice(rng, entries);
 }
 
 /**
@@ -919,7 +947,11 @@ function placeRun(
 
   const start = weightedChoice(
     rng,
-    starts.map(cell => ({ value: cell, weight: 1, sortKey: positionKey(cell) })),
+    starts.map(cell => ({
+      value: cell,
+      weight: focalAnchorWeightForPositions([cell], dims),
+      sortKey: positionKey(cell),
+    })),
   );
 
   // Seed the run with a two-cell placement in a free adjacent direction. The
@@ -1005,10 +1037,15 @@ function placePhraseRun(
   diag: SampleDiagnostics,
 ): boolean {
   let remaining = [...options];
+  const dims = dimsForCells(cells);
   while (remaining.length > 0) {
     const line = weightedChoice(
       rng,
-      remaining.map(option => ({ value: option, weight: 1, sortKey: option.sortKey })),
+      remaining.map(option => ({
+        value: option,
+        weight: focalAnchorWeightForPositions(option.cells, dims),
+        sortKey: option.sortKey,
+      })),
     );
     if (tryPlacePhraseLine(cells, grammar, rng, workingSet, line, template, diag)) return true;
     remaining = remaining.filter(option => option !== line);
@@ -1317,19 +1354,23 @@ function choosePatchPlacement(
   const sizes = [...new Map(usablePatches.map(patch => [`${patch.w}x${patch.h}`, { w: patch.w, h: patch.h }])).values()]
     .sort((a, b) => (b.w * b.h) - (a.w * a.h) || b.w - a.w || b.h - a.h);
 
-  for (let row = 0; row < dims.rows; row += 1) {
-    for (let col = 0; col < dims.cols; col += 1) {
-      for (const size of sizes) {
+  for (const size of sizes) {
+    const entries: Array<Weighted<{ patch: IconicPatch; col: number; row: number }>> = [];
+    for (let row = 0; row < dims.rows; row += 1) {
+      for (let col = 0; col < dims.cols; col += 1) {
         if (col + size.w > dims.cols || row + size.h > dims.rows) continue;
         if (!rectIsFree(cells, col, row, size.w, size.h)) continue;
         const candidates = usablePatches.filter(patch => patch.w === size.w && patch.h === size.h);
-        const patch = weightedChoice(
-          rng,
-          candidates.map(candidate => ({ value: candidate, weight: 1, sortKey: candidate.id })),
-        );
-        return { patch, col, row };
+        for (const patch of candidates) {
+          entries.push({
+            value: { patch, col, row },
+            weight: focalAnchorWeightForRect(col, row, patch.w, patch.h, dims),
+            sortKey: `${String(row).padStart(2, '0')},${String(col).padStart(2, '0')},${patch.id}`,
+          });
+        }
       }
     }
+    if (entries.length > 0) return weightedChoice(rng, entries);
   }
 
   return null;
@@ -1557,7 +1598,11 @@ function placeFigure(
     if (empty.length < size) return false;
     const start = weightedChoice(
       rng,
-      empty.map(cell => ({ value: cell, weight: 1, sortKey: positionKey(cell) })),
+      empty.map(cell => ({
+        value: cell,
+        weight: focalAnchorWeightForPositions([cell], dims),
+        sortKey: positionKey(cell),
+      })),
     );
     const region = growConnectedRegion(cells, rng, start, size, templateId);
     if (region.length < size) continue;
@@ -1745,6 +1790,39 @@ function figureRegionBoundsWithExtra(
   const maxCol = Math.max(existing.col + existing.w - 1, extra.col);
   const maxRow = Math.max(existing.row + existing.h - 1, extra.row);
   return { col: minCol, row: minRow, w: maxCol - minCol + 1, h: maxRow - minRow + 1 };
+}
+
+function focalAnchorWeightForRect(col: number, row: number, w: number, h: number, dims: GridDims): number {
+  const positions: PositionLike[] = [];
+  for (let dy = 0; dy < h; dy += 1) {
+    for (let dx = 0; dx < w; dx += 1) {
+      positions.push({ col: col + dx, row: row + dy });
+    }
+  }
+  return focalAnchorWeightForPositions(positions, dims);
+}
+
+interface PositionLike {
+  col: number;
+  row: number;
+}
+
+function focalAnchorWeightForPositions(positions: readonly PositionLike[], dims: GridDims): number {
+  if (positions.length === 0 || dims.cols <= 0 || dims.rows <= 0) return 1;
+  const x = positions.reduce((total, cell) => total + cell.col + 0.5, 0) / positions.length / dims.cols;
+  const y = positions.reduce((total, cell) => total + cell.row + 0.5, 0) / positions.length / dims.rows;
+  const centroidCell = {
+    col: Math.max(0, Math.min(dims.cols - 1, Math.floor(x * dims.cols))),
+    row: Math.max(0, Math.min(dims.rows - 1, Math.floor(y * dims.rows))),
+  };
+  if (centerIndices(dims.cols).includes(centroidCell.col) && centerIndices(dims.rows).includes(centroidCell.row)) {
+    return FOCAL_CENTER_ANCHOR_WEIGHT;
+  }
+  return Math.hypot(x - 0.5, y - 0.5) <= 0.25 ? FOCAL_NEAR_CENTER_ANCHOR_WEIGHT : 1;
+}
+
+function centerIndices(count: number): number[] {
+  return count % 2 === 1 ? [Math.floor(count / 2)] : [count / 2 - 1, count / 2];
 }
 
 function chooseAccent(

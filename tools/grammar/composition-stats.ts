@@ -15,6 +15,8 @@ import { fileURLToPath } from 'node:url';
 
 import { loadMergedManifest } from '../mine/render-recon.js';
 import type { BannerRecon, CellRecon, Corpus, FormGroup, ManifestTile } from '../mine/schema.js';
+import { measureCompositionLawPlans as measureSharedCompositionLawPlans } from '../../src/engine/corpus/composition-laws.js';
+import type { BannerPlan } from '../../src/engine/corpus/types.js';
 import { NEUTRAL_INKS } from './features.js';
 import { TEMPLATE_MEMBERS } from './templates.js';
 
@@ -219,40 +221,11 @@ export function measureCompositionLaws(
   manifest: Manifest,
 ): CompositionLawMeasurements {
   const templateByBanner = buildTemplateLookup();
-  const banners = corpus.banners.map((banner): BannerCompositionMeasurements => {
-    const templateId = templateByBanner.get(banner.id) ?? null;
-    return {
-      id: banner.id,
-      templateId,
-      accentProximity: measureAccentProximity(banner),
-      focalPosition: measureFocalPosition(banner, manifest),
-      rhythmBreak: isRhythmTemplate(templateId) ? measureRhythmBreak(banner, templateId) : null,
-    };
+  return measureSharedCompositionLawPlans(corpus.banners as BannerPlan[], {
+    corpusMinedAt: corpus.minedAt,
+    familyForTile: tile => manifest.get(tile)?.shape_family,
+    templateIdForPlan: plan => templateByBanner.get(plan.id) ?? null,
   });
-
-  return {
-    schemaVersion: 1,
-    source: {
-      corpusPath: 'corpus/corpus.json',
-      corpusMinedAt: corpus.minedAt,
-      bannerCount: corpus.banners.length,
-      neutralFills: [...NEUTRAL_INKS].sort(compareCodepoint),
-      rhythmTemplates: [...RHYTHM_TEMPLATE_IDS],
-    },
-    definitions: {
-      accentCell: 'A cell is accented when ground, ink, or any inks[] entry contains at least one exact non-neutral hex fill.',
-      accentComponent: 'Accent components are 8-neighbor connected accent cells; an edge exists only when adjacent cells share at least one exact non-neutral fill.',
-      isolatedAccentCell: 'An isolated accent cell has no 8-neighbor accent cell of any fill.',
-      singletonDistance: 'Singleton distance is Euclidean center-to-center grid-cell distance to the nearest other accent cell; null when no other accent cell exists.',
-      focalCandidate: 'Focal candidates are explicit figure forms of any size, explicit non-figure forms with at least 3 cells, and fallback 8-neighbor regions of non-plain cells sharing exact dominant ink plus family/kind with at least 3 cells. The largest candidate wins; ties prefer explicit figure forms, then other explicit forms, then fallback regions.',
-      focalCentroid: 'Centroids average the centers of the focal cells and normalize x/y to [0,1].',
-      centerCell: 'For the 6x3 canon grid, center cell means centroid landing in col 2 or 3 and row 1.',
-      rhythmUnit: 'Rhythm units use kind/tile/dominant-ink/ground. Rotation, flip, and secondary inks are ignored because the brief names tile/ink/ground as the interruption dimensions.',
-      rhythmInterruption: 'A row or column is perfect when every rhythm unit matches; it has exactly one interruption when one cell differs from a repeated majority unit.',
-    },
-    banners,
-    aggregates: aggregateMeasurements(banners),
-  };
 }
 
 export function renderMeasurementTables(measurements: CompositionLawMeasurements): string {
