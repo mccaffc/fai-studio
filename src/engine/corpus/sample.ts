@@ -643,7 +643,16 @@ function selectWorkingSet(
   familyFloor?: FamilyFloor,
   diag?: SampleDiagnostics,
 ): string[] {
-  const allTiles = Object.keys(grammar.tileCatalog).sort();
+  // programOnly tiles are excluded from auto-mode draws; they are only reachable
+  // when a familyFloor is active that explicitly covers their family.
+  const floorFamilies = familyFloor && familyFloor.families.length > 0
+    ? new Set(familyFloor.families)
+    : undefined;
+  const allTiles = Object.keys(grammar.tileCatalog).sort().filter(tile => {
+    if (!grammar.tileCatalog[tile]?.programOnly) return true;
+    // Allow programOnly tiles through only when a matching floor family is active.
+    return floorFamilies !== undefined && floorFamilies.has(grammar.tileCatalog[tile]?.family ?? '');
+  });
   const preferredFamilies = new Set(template.spec.dominantFamilies);
   const preferred = allTiles.filter(tile => preferredFamilies.has(grammar.tileCatalog[tile]?.family ?? ''));
   const dominant = preferred.filter(tile => grammar.tileCatalog[tile]?.family === dominantFamily);
@@ -681,6 +690,8 @@ function applyFamilyFloor(
 
   const allTiles = Object.keys(grammar.tileCatalog).sort();
   const mappedFamilies = new Set(familyFloor.families);
+  // programOnly tiles in the floor's family are intentionally included —
+  // the floor top-up is what makes them reachable.
   const mappedCandidates = allTiles
     .filter(tile => mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? ''))
     .sort();
@@ -695,7 +706,12 @@ function applyFamilyFloor(
     mappedCandidates.length,
     Math.ceil(targetSize * familyFloor.minShare),
   );
-  const nonMappedCandidates = allTiles.filter(tile => !mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? ''));
+  // Exclude programOnly tiles from non-floor candidates (they are not eligible
+  // outside of their owning floor context).
+  const nonMappedCandidates = allTiles.filter(tile =>
+    !mappedFamilies.has(grammar.tileCatalog[tile]?.family ?? '') &&
+    !grammar.tileCatalog[tile]?.programOnly
+  );
   const preserveNonMapped = targetSize > requiredMapped && nonMappedCandidates.length > 0;
   let out = selected.slice(0, targetSize).sort();
 
@@ -2024,7 +2040,13 @@ function chooseFillTile(
 ): string {
   const unused = workingSet.filter(tile => !used.has(tile)).sort();
   let pool = unused.length > 0 ? unused : [...workingSet].sort();
-  if (pool.length === 0) pool = Object.keys(grammar.tileCatalog).sort();
+  if (pool.length === 0) {
+    // Defensive: unreachable with the current catalog (workingSet can't be
+    // empty), but if it ever fires it must not leak program-only tiles.
+    pool = Object.keys(grammar.tileCatalog)
+      .filter(id => !grammar.tileCatalog[id]?.programOnly)
+      .sort();
+  }
 
   const currentShare = tileCells === 0 ? targetLinework : lineworkCells / tileCells;
   const wantLinework = currentShare < targetLinework;

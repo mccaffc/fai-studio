@@ -46,5 +46,141 @@
     "renderable": true,
     "has_background_rect": true,
     "mined_from": "019/0,1"
+  },
+  {
+    "id": "mined-fs-wave-01",
+    "filename": "mined-fs-wave-01.svg",
+    "shape_family": "wave",
+    "visual_weight": 0.2148,
+    "edge_coverage": {
+      "top": 0,
+      "right": 0.2188,
+      "bottom": 0.625,
+      "left": 0.7656
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "freestyle-candidates/f04-2-1",
+    "program_only": true
+  },
+  {
+    "id": "mined-fs-wave-02",
+    "filename": "mined-fs-wave-02.svg",
+    "shape_family": "wave",
+    "visual_weight": 0.3479,
+    "edge_coverage": {
+      "top": 0.2188,
+      "right": 0.5781,
+      "bottom": 0.4063,
+      "left": 0
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "freestyle-candidates/f18-0-1",
+    "program_only": true
+  },
+  {
+    "id": "mined-fs-wave-03",
+    "filename": "mined-fs-wave-03.svg",
+    "shape_family": "wave",
+    "visual_weight": 0.2354,
+    "edge_coverage": {
+      "top": 0,
+      "right": 0.7813,
+      "bottom": 0.6094,
+      "left": 0.25
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "freestyle-candidates/f04-1-1",
+    "program_only": true
+  },
+  {
+    "id": "mined-fs-wave-04",
+    "filename": "mined-fs-wave-04.svg",
+    "shape_family": "wave",
+    "visual_weight": 0.1724,
+    "edge_coverage": {
+      "top": 0.3281,
+      "right": 0.5938,
+      "bottom": 0.8281,
+      "left": 0
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "freestyle-candidates/f08-2-3",
+    "program_only": true
+  },
+  {
+    "id": "mined-fs-wave-05",
+    "filename": "mined-fs-wave-05.svg",
+    "shape_family": "wave",
+    "visual_weight": 0.4507,
+    "edge_coverage": {
+      "top": 0.3906,
+      "right": 1,
+      "bottom": 0.5938,
+      "left": 0
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "freestyle-candidates/f08-2-0",
+    "program_only": true
+  },
+  {
+    "id": "mined-fs-wave-06",
+    "filename": "mined-fs-wave-06.svg",
+    "shape_family": "wave",
+    "visual_weight": 0.5625,
+    "edge_coverage": {
+      "top": 0.5625,
+      "right": 1,
+      "bottom": 0.5625,
+      "left": 1
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "freestyle-candidates/f19-0-2",
+    "program_only": true
+  },
+  {
+    "id": "mined-fs-wave-07",
+    "filename": "mined-fs-wave-07.svg",
+    "shape_family": "wave",
+    "visual_weight": 0.5378,
+    "edge_coverage": {
+      "top": 0.6719,
+      "right": 0,
+      "bottom": 0.4375,
+      "left": 1
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "freestyle-candidates/f18-1-3",
+    "program_only": true
+  },
+  {
+    "id": "mined-fs-wave-08",
+    "filename": "mined-fs-wave-08.svg",
+    "shape_family": "wave",
+    "visual_weight": 0.5444,
+    "edge_coverage": {
+      "top": 0.2969,
+      "right": 0.7031,
+      "bottom": 0.4063,
+      "left": 0.7031
+    },
+    "dominant_direction": "neutral",
+    "renderable": true,
+    "has_background_rect": true,
+    "mined_from": "freestyle-candidates/f02-2-2",
+    "program_only": true
   }
 ]

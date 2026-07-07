@@ -59,6 +59,7 @@ interface RawGrammar {
     rotations: Record<string, number>;
     flipShare: number;
     profiles?: unknown;
+    programOnly?: boolean;
   }>;
   palette: {
     globalGrounds: Record<string, number>;
@@ -312,7 +313,7 @@ function main(): void {
     'export interface EdgeProfileSet { top: string; right: string; bottom: string; left: string; }',
     "export type VariantKey = `${0 | 90 | 180 | 270}/${'f' | '-'}`;",
     'export type TileEdgeProfiles = Record<VariantKey, EdgeProfileSet>;',
-    'export interface TileCatalogEntry { family: string; edges: { top: number; right: number; bottom: number; left: number }; rotations: Record<string, number>; flipShare: number; profiles?: TileEdgeProfiles; }',
+    'export interface TileCatalogEntry { family: string; edges: { top: number; right: number; bottom: number; left: number }; rotations: Record<string, number>; flipShare: number; profiles?: TileEdgeProfiles; programOnly?: boolean; }',
     "export type GroundSchemeKind = 'uniform' | 'checker' | 'banded-rows' | 'banded-cols' | 'zoned' | 'scatter';",
     'export interface TemplateSpec {',
     '  groundSchemes: GroundSchemeKind[];',

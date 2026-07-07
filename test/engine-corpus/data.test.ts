@@ -123,4 +123,38 @@ describe('engine corpus data — structural assertions', () => {
       expect(tile.elements.length, `tile ${id} has no elements`).toBeGreaterThanOrEqual(1);
     }
   });
+
+  it('freestyle vocabulary tiles have catalog families, real edge profiles, and renderable SVG elements', () => {
+    const entries = Object.entries(TILES)
+      .filter(([id]) => id.startsWith('mined-fs-'))
+      .sort(([a], [b]) => a.localeCompare(b));
+    expect(entries.length).toBeGreaterThan(0);
+
+    for (const [id, tile] of entries) {
+      const catalog = GRAMMAR.tileCatalog[id];
+      expect(catalog, `${id} missing from grammar tileCatalog`).toBeDefined();
+      if (!catalog) throw new Error(`${id} missing from grammar tileCatalog`);
+      expect(tile.family, `${id} tile family`).toBe(catalog.family);
+      expect(['float', 'wave'], `${id} expected vocabulary family`).toContain(tile.family);
+      expect(tile.elements.length, `${id} has no renderable elements`).toBeGreaterThan(0);
+
+      expect(catalog.profiles, `${id} missing edge profiles`).toBeDefined();
+      const profiles = catalog.profiles!;
+      let nonZeroProfiles = 0;
+      for (const key of ['0/-', '0/f', '90/-', '90/f', '180/-', '180/f', '270/-', '270/f'] as const) {
+        const profile = profiles[key];
+        expect(profile, `${id} missing profile ${key}`).toBeDefined();
+        for (const side of ['top', 'right', 'bottom', 'left'] as const) {
+          expect(profile[side], `${id} profile ${key}.${side}`).toMatch(/^[0-9a-f]{16}$/);
+        }
+        if (profile.top + profile.right + profile.bottom + profile.left !== '0000000000000000000000000000000000000000000000000000000000000000') {
+          nonZeroProfiles += 1;
+        }
+      }
+      expect(nonZeroProfiles, `${id} profile set is all-zero`).toBeGreaterThan(0);
+
+      const edges = catalog.edges;
+      expect(edges.top + edges.right + edges.bottom + edges.left, `${id} has all-zero edge coverage`).toBeGreaterThan(0);
+    }
+  });
 });
