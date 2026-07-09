@@ -18,7 +18,7 @@ export const BRAND_SWATCHES: ReadonlyArray<[string, string]> = [
   ["Celestial Blue", "#4997D0"],
   ["Chrome Yellow", "#FFA300"],
   ["Electric Violet", "#8265DB"],
-  ["Telemagenta", "#D63A8C"],
+  ["Deep Teal", "#0E8C88"],
   ["Signal Green", "#268B41"],
   ["Frontier Indigo", "#3A4A6B"],
   ["Smoke White", "#F3F3F3"],

@@ -89,9 +89,10 @@ export function compose(cfg: Config): { scene: Scene; meta: GenMeta } {
   const px = TUNING.cellPx;
   const features: string[] = [];
 
-  // warm accents live on even palette slots, cool on odd (see ALL_ACCENTS)
+  // warm accents live on slots 0/2, cool on 1/3/4/5 (see ALL_ACCENTS).
+  // slot 4 (Deep Teal — AI) moved warm→cool 2026-07-09.
   const pickIndex = (warm: boolean): number => {
-    const slots = warm ? [0, 2, 4] : [1, 3, 5];
+    const slots = warm ? [0, 2] : [1, 3, 4, 5];
     return rng.chance(0.55) ? slots[0]! : rng.pick(slots);
   };
 

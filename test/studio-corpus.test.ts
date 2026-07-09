@@ -37,7 +37,7 @@ const ACCENT_HEXES = [
   "#8265DB",
   "#3A4A6B",
   "#268B41",
-  "#D63A8C",
+  "#0E8C88",
 ];
 
 function accentGroup(): HTMLElement {
@@ -179,8 +179,8 @@ describe("studio corpus mode (jsdom)", () => {
     programSelect.dispatchEvent(new Event("change"));
 
     const svgHtml = document.querySelector("#canvas")!.innerHTML.toUpperCase();
-    // Must contain the AI program hue (#D63A8C)
-    expect(svgHtml).toContain("#D63A8C");
+    // Must contain the AI program hue (#0E8C88)
+    expect(svgHtml).toContain("#0E8C88");
     // Must NOT contain corpus orange or white fills (program palette law)
     expect(svgHtml).not.toContain("#FF4F00");
     expect(svgHtml).not.toContain('"#FFFFFF"');
@@ -189,8 +189,8 @@ describe("studio corpus mode (jsdom)", () => {
     for (const swatch of accentButtons()) {
       expect(swatch.disabled).toBe(true);
     }
-    expect(pressedAccentHexes()).toEqual(["#D63A8C"]);
-    expect(accentButton("#D63A8C").classList.contains("locked")).toBe(true);
+    expect(pressedAccentHexes()).toEqual(["#0E8C88"]);
+    expect(accentButton("#0E8C88").classList.contains("locked")).toBe(true);
   });
 
   it("P3-1c. switching back to Auto re-enables accent swatches", async () => {
@@ -588,7 +588,7 @@ describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
     const { mountCorpusMode } = await import('../src/studio/corpus-mode');
     mountCorpusMode({ flash: () => {}, onSave: () => {} });
     const values = accentButtons().map(o => o.dataset.corpusAccent ?? '');
-    for (const hue of ['#8265DB', '#D63A8C', '#268B41', '#3A4A6B']) {
+    for (const hue of ['#8265DB', '#0E8C88', '#268B41', '#3A4A6B']) {
       expect(values.filter(v => v === hue)).toHaveLength(1);
     }
     expect(values.filter(v => v === '#4997D0')).toHaveLength(1); // no dupe for shared hues

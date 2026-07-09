@@ -39,7 +39,7 @@ const PROGRAM_NEUTRAL_SET = new Set(['#121212', '#F3F3F3', '#D9D9D6']);
 const COD_GRAY    = '#121212';
 const SMOKE_WHITE = '#F3F3F3';
 const TIMBERWOLF  = '#D9D9D6';
-const LOCKED_ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const LOCKED_ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
 
 // ---------------------------------------------------------------------------
 // Registry integrity
@@ -53,7 +53,7 @@ describe('PROGRAMS registry', () => {
   it('contains the correct locked hues', () => {
     expect(PROGRAMS['technology-statecraft'].hue).toBe('#FFA300');
     expect(PROGRAMS['american-governance'].hue).toBe('#8265DB');
-    expect(PROGRAMS['artificial-intelligence'].hue).toBe('#D63A8C');
+    expect(PROGRAMS['artificial-intelligence'].hue).toBe('#0E8C88');
     expect(PROGRAMS['energy-infrastructure'].hue).toBe('#268B41');
     expect(PROGRAMS['science-innovation'].hue).toBe('#4997D0');
     expect(PROGRAMS['frontier-legal-defense'].hue).toBe('#3A4A6B');
@@ -162,7 +162,7 @@ describe('applyProgramPalette — rule 1: grounds remap', () => {
       ...plan,
       cells: plan.cells.map((c, i) => i === 0 ? { ...c, ground: '#FF4F00' } : c),
     };
-    const hue = '#D63A8C';
+    const hue = '#0E8C88';
     const out = applyProgramPalette(withOrangeGround, hue);
     expect(out.cells[0]!.ground).toBe(hue);
   });
@@ -391,7 +391,7 @@ describe('recolorPlan — program-hue swap', () => {
 // ---------------------------------------------------------------------------
 
 describe('recolorPlan — hue→hue swap where h1 is not a corpus accent (C2)', () => {
-  // american-governance (#8265DB) and artificial-intelligence (#D63A8C) are NOT
+  // american-governance (#8265DB) and artificial-intelligence (#0E8C88) are NOT
   // classic corpus accents — they are pure program hues. Swapping from these
   // to another program hue previously leaked h1 cells into the output because
   // remapInk/remapGround did not know about prevHue.
@@ -418,7 +418,7 @@ describe('recolorPlan — hue→hue swap where h1 is not a corpus accent (C2)', 
   });
 
   it('artificial-intelligence → technology-statecraft: palette law on result, no h1 in SVG', () => {
-    const h1 = PROGRAMS['artificial-intelligence'].hue;      // #D63A8C (not a corpus accent)
+    const h1 = PROGRAMS['artificial-intelligence'].hue;      // #0E8C88 (not a corpus accent)
     const h2 = PROGRAMS['technology-statecraft'].hue;        // #FFA300
     const base = generateBanner({ seed: 42, program: 'artificial-intelligence' });
     const swapped = recolorPlan(base, h2);

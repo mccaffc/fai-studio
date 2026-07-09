@@ -45,7 +45,7 @@ const ACCENT_OPTIONS: Array<[string, string]> = [
   ["Electric Violet", "#8265DB"],
   ["Frontier Indigo", "#3A4A6B"],
   ["Signal Green", "#268B41"],
-  ["Telemagenta", "#D63A8C"],
+  ["Deep Teal", "#0E8C88"],
 ];
 const ACCENT_HEXES = ACCENT_OPTIONS.map(([, hex]) => hex);
 const ACCENT_SET = new Set(ACCENT_HEXES);

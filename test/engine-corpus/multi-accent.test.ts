@@ -6,10 +6,10 @@ import { generateBanner } from '../../src/engine/corpus/index.js';
 import type { BannerPlan, CellPlan, EngineGrammar } from '../../src/engine/corpus/types.js';
 
 const GRAMMAR = RAW_GRAMMAR as unknown as EngineGrammar;
-const ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
 const ACCENT_POOL_SET = new Set<string>(ACCENT_POOL);
-const WARM_ACCENTS = new Set<string>(['#FF4F00', '#FFA300', '#D63A8C']);
-const COOL_ACCENTS = new Set<string>(['#4997D0', '#8265DB', '#268B41', '#3A4A6B']);
+const WARM_ACCENTS = new Set<string>(['#FF4F00', '#FFA300']);
+const COOL_ACCENTS = new Set<string>(['#4997D0', '#8265DB', '#268B41', '#3A4A6B', '#0E8C88']);
 const CANON_TARGET = [0.22, 0.20, 0.16, 0.42] as const;
 const SAMPLE_COUNT = 200;
 

@@ -23,7 +23,7 @@ export const PROGRAMS: readonly Program[] = [
   { id: "fai", label: "FAI", category: "triangles", accent: "#FF4F00", colorName: "International Orange" },
   { id: "tech-statecraft", label: "Technology & Statecraft", category: "bars", accent: "#FFA300", colorName: "Chrome Yellow" },
   { id: "american-governance", label: "American Governance", category: "arcs", accent: "#8265DB", colorName: "Electric Violet" },
-  { id: "ai", label: "Artificial Intelligence", category: "capsules", accent: "#D63A8C", colorName: "Telemagenta" },
+  { id: "ai", label: "Artificial Intelligence", category: "capsules", accent: "#0E8C88", colorName: "Deep Teal" },
   { id: "energy-infrastructure", label: "Energy & Infrastructure", category: "waves", accent: "#268B41", colorName: "Signal Green" },
   { id: "science-innovation", label: "Science & Innovation", category: "discs", accent: "#4997D0", colorName: "Celestial Blue" },
   { id: "frontier-legal", label: "Frontier Legal Defense", category: "frames", accent: "#3A4A6B", colorName: "Frontier Indigo" },

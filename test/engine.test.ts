@@ -41,7 +41,7 @@ describe("color modes", () => {
     expect(PROGRAM_HUES).toEqual({
       chromeYellow: "#FFA300",
       electricViolet: "#8265DB",
-      telemagenta: "#D63A8C",
+      deepTeal: "#0E8C88",
       signalGreen: "#268B41",
       celestialBlue: "#4997D0",
       frontierIndigo: "#3A4A6B",

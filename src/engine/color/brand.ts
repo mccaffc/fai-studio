@@ -11,7 +11,7 @@ export const MASTER_FILLS = {
 export const PROGRAM_HUES = {
   chromeYellow: "#FFA300",
   electricViolet: "#8265DB",
-  telemagenta: "#D63A8C",
+  deepTeal: "#0E8C88",
   signalGreen: "#268B41",
   celestialBlue: "#4997D0",
   frontierIndigo: "#3A4A6B",
@@ -29,7 +29,7 @@ export const BRAND_HEXES: readonly string[] = Object.values(BRAND);
 /** @deprecated Use PROGRAM_HUES. Kept for classic engine byte identity. */
 export const PROPOSAL = {
   electricViolet: PROGRAM_HUES.electricViolet,
-  telemagenta: PROGRAM_HUES.telemagenta,
+  deepTeal: PROGRAM_HUES.deepTeal,
   signalGreen: PROGRAM_HUES.signalGreen,
   frontierIndigo: PROGRAM_HUES.frontierIndigo,
 } as const;
@@ -39,13 +39,13 @@ export const PROPOSAL_HEXES: readonly string[] = Object.values(PROPOSAL);
 export const WARM: ReadonlySet<string> = new Set([
   MASTER_FILLS.internationalOrange,
   PROGRAM_HUES.chromeYellow,
-  PROGRAM_HUES.telemagenta,
 ]);
 export const COOL: ReadonlySet<string> = new Set([
   PROGRAM_HUES.celestialBlue,
   PROGRAM_HUES.electricViolet,
   PROGRAM_HUES.signalGreen,
   PROGRAM_HUES.frontierIndigo,
+  PROGRAM_HUES.deepTeal,
 ]);
 export const NEUTRAL: ReadonlySet<string> = new Set([
   MASTER_FILLS.codGray,
@@ -62,7 +62,7 @@ export const ALL_ACCENTS: readonly string[] = [
   PROGRAM_HUES.celestialBlue, // 1 cool lead
   PROGRAM_HUES.chromeYellow, // 2 warm
   PROGRAM_HUES.electricViolet, // 3 cool
-  PROGRAM_HUES.telemagenta, // 4 warm
+  PROGRAM_HUES.deepTeal, // 4 cool (Deep Teal — AI; ex-Telemagenta, moved warm→cool 2026-07-09)
   PROGRAM_HUES.signalGreen, // 5 cool
   MASTER_FILLS.timberwolf, // 6
   PROGRAM_HUES.frontierIndigo, // 7

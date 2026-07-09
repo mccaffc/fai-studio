@@ -22,7 +22,7 @@
  * test/engine-corpus/purity.test.ts.
  */
 
-const ACCENT_POOL_HEXES = ['#FF4F00', '#FFA300', '#8265DB', '#D63A8C', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const ACCENT_POOL_HEXES = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
 function isAllowedExplicitAccent(accent: string, order: readonly string[]): boolean {
   return order.includes(accent) || (ACCENT_POOL_HEXES as readonly string[]).includes(accent);
 }
@@ -175,7 +175,7 @@ const ACCENT_POOL: readonly Weighted<string>[] = [
   { value: '#FF4F00', weight: 2, sortKey: '00-#FF4F00' },
   { value: '#FFA300', weight: 1, sortKey: '01-#FFA300' },
   { value: '#8265DB', weight: 1, sortKey: '02-#8265DB' },
-  { value: '#D63A8C', weight: 1, sortKey: '03-#D63A8C' },
+  { value: '#0E8C88', weight: 1, sortKey: '03-#0E8C88' },
   { value: '#268B41', weight: 1, sortKey: '04-#268B41' },
   { value: '#4997D0', weight: 1, sortKey: '05-#4997D0' },
   { value: '#3A4A6B', weight: 1, sortKey: '06-#3A4A6B' },
@@ -2122,8 +2122,8 @@ const MAX_ACCENT_ZONE_CAP = 9;
 const MIN_GROUND_MODE_PROBABILITY = 0.25;
 const SHIPPED_GROUND_MODE_PROBABILITY = 0.40;
 const MAX_GROUND_MODE_PROBABILITY = 0.55;
-const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300', '#D63A8C']);
-const COOL_ACCENTS_SET = new Set(['#4997D0', '#8265DB', '#268B41', '#3A4A6B']);
+const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300']);
+const COOL_ACCENTS_SET = new Set(['#4997D0', '#8265DB', '#268B41', '#3A4A6B', '#0E8C88']);
 
 function validateAccentStrength(strength: number | undefined): number {
   if (strength === undefined) return IDENTITY_ACCENT_STRENGTH;
