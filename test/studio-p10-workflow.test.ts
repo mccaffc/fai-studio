@@ -346,7 +346,7 @@ describe("P10 destination export presets", () => {
     expect(values).toContain("square");
   });
 
-  it("eyebrow preset from a banner arrangement triggers download with 2880×960", async () => {
+  it("eyebrow preset previews the 3×1 composition before a second selection downloads", async () => {
     await import("../src/studio/main");
 
     // Verify we start on banner (default)
@@ -412,17 +412,25 @@ describe("P10 destination export presets", () => {
       return el;
     });
 
-    // Select the eyebrow preset
+    // First selection adopts and previews the target arrangement.
     sel.value = "eyebrow";
     sel.dispatchEvent(new Event("change"));
+    await new Promise((r) => setTimeout(r, 10));
 
-    // Wait for async operations (image load, etc.)
+    expect(sel.value).toBe("custom");
+    expect(clickedAnchors).toHaveLength(0);
+    expect(document.querySelector("#canvas svg")?.getAttribute("width")).toBe("960");
+    expect(document.querySelector("#canvas svg")?.getAttribute("height")).toBe("320");
+    expect(
+      document.querySelector('[data-corpus-arrangement="strip"]')?.getAttribute("aria-pressed"),
+    ).toBe("true");
+
+    // Selecting the now-compatible destination exports the composition on screen.
+    const refreshedSelect = document.querySelector("[data-corpus-export-preset]") as HTMLSelectElement;
+    refreshedSelect.value = "eyebrow";
+    refreshedSelect.dispatchEvent(new Event("change"));
     await new Promise((r) => setTimeout(r, 50));
 
-    // The select should snap back to custom
-    expect(sel.value).toBe("custom");
-
-    // Verify download filename contains 2880x960
     const found = clickedAnchors.find((a) => a.download.includes("2880") && a.download.includes("960"));
     expect(found).toBeTruthy();
     expect(found!.download).toMatch(/fai-eyebrow-/);

@@ -609,12 +609,65 @@ describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
 describe('F2: edited-config reroll isolation (final review wave)', () => {
   beforeEach(() => {
     vi.resetModules();
+    vi.stubGlobal('confirm', () => true);
     localStorage.clear();
     document.body.innerHTML =
       '<div id="canvas"></div><div id="canvas-actions"></div>' +
       '<div id="corpus-controls"></div><div id="corpus-scores"></div>' +
       '<div id="variations"></div><div id="saved"></div>' +
       '<div id="action-status"></div>';
+  });
+
+  it('canceling a generator control or reroll preserves the edited banner', async () => {
+    const { mountCorpusMode, openCorpusItem } = await import('../src/studio/corpus-mode');
+    const { generateBanner } = await import('../src/engine/corpus/index');
+    const originalResult = generateBanner({ seed: 314, template: 'mixed-quilt' });
+    const editedPlan = structuredClone(originalResult.plan);
+    if (editedPlan.cells[0]) editedPlan.cells[0].ground = '#8265DB';
+    const editedConfig = {
+      ...originalResult.config,
+      template: 'mixed-quilt',
+      edited: true as const,
+      plan: editedPlan,
+    };
+    let lastSaved: { config: unknown; seed: number } | null = null;
+
+    mountCorpusMode({
+      flash: () => {},
+      onSave: (config, seed) => { lastSaved = { config, seed }; },
+    });
+    openCorpusItem(editedConfig, 314);
+    const canvasBefore = document.querySelector('#canvas')!.innerHTML;
+    const confirmSpy = vi.fn(() => false);
+    vi.stubGlobal('confirm', confirmSpy);
+
+    (document.querySelector('[data-corpus-arrangement="square"]') as HTMLButtonElement).click();
+    expect(document.querySelector('#canvas')!.innerHTML).toBe(canvasBefore);
+
+    const template = document.querySelector('[data-corpus-template]') as HTMLSelectElement;
+    template.value = 'pipe-field';
+    template.dispatchEvent(new Event('change'));
+    expect(document.querySelector('#canvas')!.innerHTML).toBe(canvasBefore);
+
+    (document.querySelector('[data-corpus-accent="#FF4F00"]') as HTMLButtonElement).click();
+    expect(document.querySelector('#canvas')!.innerHTML).toBe(canvasBefore);
+
+    const density = document.querySelector('[data-corpus-density]') as HTMLInputElement;
+    density.value = '0.9';
+    density.dispatchEvent(new Event('change'));
+    expect(document.querySelector('#canvas')!.innerHTML).toBe(canvasBefore);
+
+    const reroll = Array.from(document.querySelectorAll('#canvas-actions button'))
+      .find(button => button.textContent?.trim() === 'Reroll') as HTMLButtonElement;
+    reroll.click();
+    expect(document.querySelector('#canvas')!.innerHTML).toBe(canvasBefore);
+
+    const save = Array.from(document.querySelectorAll('#canvas-actions button'))
+      .find(button => button.textContent?.trim() === 'Save') as HTMLButtonElement;
+    save.click();
+    expect(lastSaved).toBeTruthy();
+    expect((lastSaved!.config as { edited?: boolean }).edited).toBe(true);
+    expect(confirmSpy).toHaveBeenCalledTimes(5);
   });
 
   it('Reroll from an edited item produces a clean CorpusConfig (no edited/plan)', async () => {

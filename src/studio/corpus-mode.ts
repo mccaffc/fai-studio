@@ -9,7 +9,7 @@
 import {
   generateBanner,
   reroll as engineReroll,
-  variations as engineVariations,
+  curateVariations as engineVariations,
   recolorPlan,
   describePlan,
   ARRANGEMENTS,
@@ -237,6 +237,10 @@ function historyWalk(delta: -1 | 1): void {
   if (state.editing) return;
   const next = historyPtr + delta;
   if (next < 0 || next >= history.length) return;
+  if (!confirmReplaceEdited()) {
+    renderCorpusControls();
+    return;
+  }
   historyPtr = next;
   const entry = history[historyPtr]!;
   // Restore config from the snapshot
@@ -279,6 +283,11 @@ export type CorpusSaveConfig = CorpusConfig | EditedCorpusConfig;
 
 function isEditedCorpusConfig(config: CorpusSaveConfig): config is EditedCorpusConfig {
   return (config as { edited?: unknown }).edited === true && Boolean((config as { plan?: unknown }).plan);
+}
+
+function confirmReplaceEdited(): boolean {
+  if (!state.current || !isEditedCorpusConfig(state.current.config)) return true;
+  return window.confirm("This starts a new generated banner. Your edited version stays saved. Continue?");
 }
 
 function emptyScores(): CorpusResult["scores"] {
@@ -416,11 +425,23 @@ async function corpusDownloadPreset(preset: string): Promise<void> {
       flash("edited banners export at their own arrangement — use SVG/PNG buttons", true);
       return;
     }
-    flash(`Re-generated at ${spec.arrangement} for ${spec.slug}`);
     result = generateBanner({
       ...buildCorpusConfig(),
       arrangement: spec.arrangement as import("../engine/corpus/index.js").ArrangementId,
     });
+    state.current = result;
+    state.config.arrangement = spec.arrangement === "banner" ? "" : spec.arrangement;
+    state.config.seed = result.seed;
+    state.vars = engineVariations(result, 6);
+    saveCorpusConfig();
+    historyPush(result);
+    renderCorpusCanvas();
+    renderCorpusVariations();
+    renderCorpusControls();
+    updateSeedDisplay();
+    renderCorpusScores();
+    flash(`Previewing ${spec.arrangement} for ${spec.slug}. Choose ${spec.slug} again to export.`);
+    return;
   }
 
   const svg = result.svg;
@@ -522,6 +543,7 @@ function openSheetOverlay(): void {
   document.body.appendChild(overlay);
 
   function promoteCell(idx: number): void {
+    if (!confirmReplaceEdited()) return;
     const c = cells[idx]!;
     // Adopt seed and template
     state.config.seed = c.seed;
@@ -678,6 +700,7 @@ function renderCorpusCanvas(): void {
 
   mkBtn("Reroll", "primary", () => {
     if (!state.current) return;
+    if (!confirmReplaceEdited()) return;
     if (isEditedCorpusConfig(state.current.config)) {
       // Edited configs must not be spread into fresh generations — rebuild a
       // clean config from the current panel state with an incremented seed.
@@ -945,6 +968,7 @@ function renderCorpusControls(): void {
         ARRANGEMENT_LABELS[id] ?? id,
       ) as HTMLButtonElement;
       chip.addEventListener("click", () => {
+        if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
         state.config.arrangement = id === "banner" ? "" : id;
         for (const other of chips.querySelectorAll<HTMLButtonElement>(".chip")) {
           const on = other === chip;
@@ -963,12 +987,14 @@ function renderCorpusControls(): void {
     const presets = el("div", { class: "group-actions", "data-corpus-accent-presets": "" });
     const nonePreset = el("button", { type: "button", class: "text-preset", "data-corpus-accent-none": "" }, "none");
     nonePreset.addEventListener("click", () => {
+      if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.accentPool = [];
       updateAccentSwatchState();
       if (state.current) corpusRecolorInPlace(); else corpusRegen(false, false);
     });
     const allPreset = el("button", { type: "button", class: "text-preset", "data-corpus-accent-all": "" }, "all");
     allPreset.addEventListener("click", () => {
+      if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.accentPool = [...ACCENT_HEXES];
       updateAccentSwatchState();
       if (state.current) corpusRecolorInPlace(); else corpusRegen(false, false);
@@ -993,6 +1019,7 @@ function renderCorpusControls(): void {
       sel.appendChild(o);
     }
     sel.addEventListener("change", () => {
+      if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.program = sel.value;
       updateAccentSwatchState();
       corpusRegen(false, false);
@@ -1017,6 +1044,7 @@ function renderCorpusControls(): void {
       swatch.style.setProperty("--check-color", SMOKE_WHITE_CHECK_HEXES.has(hex) ? "#F3F3F3" : "#121212");
       swatch.addEventListener("click", () => {
         if (state.config.program) return;
+        if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
         const selected = new Set(state.config.accentPool);
         if (selected.has(hex)) selected.delete(hex);
         else selected.add(hex);
@@ -1042,6 +1070,7 @@ function renderCorpusControls(): void {
       amountLabel.textContent = accentStrengthLabelText(Number(amountSlider.value));
     });
     amountSlider.addEventListener("change", () => {
+      if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.accentStrength = Number(amountSlider.value);
       amountLabel.textContent = accentStrengthLabelText(state.config.accentStrength);
       corpusRegen(false, false);
@@ -1068,6 +1097,7 @@ function renderCorpusControls(): void {
       template.appendChild(o);
     }
     template.addEventListener("change", () => {
+      if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.template = template.value;
       corpusRegen(false, false);
     });
@@ -1085,6 +1115,7 @@ function renderCorpusControls(): void {
       label.textContent = `Density: ${Number(slider.value).toFixed(2)}`;
     });
     slider.addEventListener("change", () => {
+      if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.density = Number(slider.value);
       label.textContent = `Density: ${state.config.density.toFixed(2)}`;
       corpusRegen(false, false);
@@ -1103,6 +1134,7 @@ function renderCorpusControls(): void {
       "figures",
     ) as HTMLButtonElement;
     chip.addEventListener("click", () => {
+      if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.figures = !state.config.figures;
       chip.classList.toggle("on", state.config.figures);
       chip.setAttribute("aria-pressed", String(state.config.figures));
@@ -1191,11 +1223,14 @@ function beginCorpusEdit(): void {
     },
     onSavePlan: (plan) => {
       if (!state.current || !onSaveFn) return;
-      onSaveFn({
+      const editedConfig: EditedCorpusConfig = {
         ...buildCorpusConfig(),
         edited: true,
         plan: structuredClone(plan),
-      }, state.current.seed);
+      };
+      onSaveFn(editedConfig, state.current.seed);
+      state.preEdit = editedResultFromPlan(editedConfig, state.current.seed);
+      state.vars = [];
     },
   });
 }
@@ -1315,6 +1350,7 @@ export function corpusSpacebarReroll(): void {
   // would silently replace state.current and stale the overlay's cells.
   if (document.querySelector("[data-corpus-sheet-overlay]")) return;
   if (!state.current) return;
+  if (!confirmReplaceEdited()) return;
   if (isEditedCorpusConfig(state.current.config)) {
     // Edited configs must not be spread into fresh generations — rebuild a
     // clean config from the current panel state with an incremented seed.

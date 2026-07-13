@@ -33,6 +33,8 @@ import {
 import type { ProgramId } from './programs.js';
 import { scoreComposition, passesCompositionFloors, COMPOSITION_FLOORS } from './composition.js';
 import type { CompositionScores } from './composition.js';
+import { selectCuratedVariations } from './curation.js';
+import type { VariationCurationOptions } from './curation.js';
 
 // GRAMMAR is typed as EngineGrammar (with Template[] templates) directly in
 // the generated file; no cast needed.
@@ -50,6 +52,7 @@ export { ARRANGEMENTS } from './types.js';
 export type { RubricScores } from './score.js';
 export type { CompositionScores } from './composition.js';
 export { COMPOSITION_FLOORS } from './composition.js';
+export type { VariationCurationOptions } from './curation.js';
 export type { ProgramId } from './programs.js';
 export {
   PROGRAMS,
@@ -231,6 +234,26 @@ export function reroll(prev: CorpusResult): CorpusResult {
 // ---------------------------------------------------------------------------
 // variations
 // ---------------------------------------------------------------------------
+
+/** Curate n quality/diversity-balanced variations from a wider seed window. */
+export function curateVariations(
+  prev: CorpusResult,
+  n: number,
+  options: VariationCurationOptions = {},
+): CorpusResult[] {
+  const count = Math.max(0, Math.floor(n));
+  if (count === 0) return [];
+  const requestedMultiplier = options.poolMultiplier ?? 4;
+  const multiplier = Number.isFinite(requestedMultiplier)
+    ? Math.max(1, requestedMultiplier)
+    : 4;
+  const poolSize = Math.max(count, Math.ceil(count * multiplier));
+  const candidates: CorpusResult[] = [];
+  for (let i = 1; i <= poolSize; i++) {
+    candidates.push(generateBanner({ ...prev.config, seed: prev.seed + i }));
+  }
+  return selectCuratedVariations(prev, candidates, count, options);
+}
 
 /** n variations using prev.config with seeds prev.seed+1 .. prev.seed+n. */
 export function variations(prev: CorpusResult, n: number): CorpusResult[] {

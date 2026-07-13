@@ -90,6 +90,11 @@ describe("corpus editor controller (jsdom)", () => {
     button('[data-corpus-editor-ink="#8265DB"]').click();
     button("[data-corpus-editor-save]").click();
 
+    expect(document.querySelector("#canvas")!.innerHTML).toContain("#8265DB");
+    button("[data-corpus-editor-exit]").click();
+    expect(document.querySelector("#canvas")!.innerHTML).toContain("#8265DB");
+    expect(document.querySelector("[data-corpus-edit-note]")).toBeNull();
+
     const stored = localStorage.getItem("fai-pattern-saved");
     expect(stored).toBeTruthy();
     const items = JSON.parse(stored!) as Array<{
