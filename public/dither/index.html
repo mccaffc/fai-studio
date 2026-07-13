@@ -30,6 +30,14 @@
   .presets,.act{display:flex;flex-wrap:wrap;gap:6px}
   .presets button,.act button,.mini{font-family:inherit;font-size:11px;letter-spacing:.04em;text-transform:uppercase;background:#0d0d0d;color:var(--ink);border:1px solid var(--line);padding:7px 9px;cursor:pointer}
   .presets button:hover,.act button:hover,.mini:hover{border-color:var(--orange)}
+  button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+  .presets button[aria-pressed="true"]{border-color:var(--orange);background:var(--orange);color:#121212}
+  [hidden]{display:none!important}
+  details.grp{padding-top:0}
+  details.grp>summary{list-style:none;cursor:pointer;padding:16px 0 12px;color:var(--far);text-transform:uppercase;letter-spacing:.16em;font-size:10px}
+  details.grp>summary::-webkit-details-marker{display:none}
+  details.grp>summary::after{content:"+";float:right;color:var(--mut)}
+  details.grp[open]>summary::after{content:"−"}
   .swatches{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
   .chip{width:24px;height:24px;border:1px solid #3a3a3a;cursor:pointer;padding:0}
   .chip:hover{outline:1px solid var(--orange);outline-offset:1px}
@@ -53,85 +61,88 @@
   <h1>Chevron Dither</h1>
   <div class="sub"><a href="../" style="color:var(--mut);text-decoration:none">‹ FAI Studio</a> · chevron pattern generator</div>
 
-  <div class="grp"><div class="glabel">Presets</div>
+  <div class="grp"><div class="glabel">Starting points</div>
     <div class="presets" id="presets">
-      <button data-p="dissolve">Dissolve</button><button data-p="oblique">Oblique</button>
-      <button data-p="bands">Bands</button><button data-p="spot">Spot</button>
-      <button data-p="noise">Noise</button><button data-p="scatter">Scatter</button>
-      <button data-p="tri">Tri·orange</button><button data-p="gamut">Black ramp</button>
-      <button data-p="duo">Two-colour</button><button data-p="tile">Tile</button>
+      <button data-p="dissolve">Dissolve</button><button data-p="oblique">Offset sweep</button>
+      <button data-p="bands">Bands</button><button data-p="spot">Spotlight</button>
+      <button data-p="noise">Cloud</button><button data-p="scatter">Scatter</button>
+      <button data-p="tri">Orange accent</button><button data-p="gamut">Tonal ramp</button>
+      <button data-p="duo">Two-colour fade</button><button data-p="tile">Seamless tile</button>
     </div>
   </div>
 
   <div class="grp"><div class="glabel">Canvas</div>
     <div class="row"><label>Width</label><input type="number" id="W" value="1240" step="20"></div>
     <div class="row"><label>Height</label><input type="number" id="H" value="420" step="20"></div>
-    <div class="row"><label>Cell</label><input type="range" id="cell" min="8" max="72" value="28"><span class="val" id="cell_v"></span></div>
-    <div class="row"><label>Symbol size</label><input type="range" id="size" min="20" max="140" value="92"><span class="val" id="size_v"></span></div>
+    <div class="row"><label>Spacing</label><input type="range" id="cell" min="8" max="72" value="28"><span class="val" id="cell_v"></span></div>
+    <div class="row"><label>Chevron scale</label><input type="range" id="size" min="20" max="140" value="92"><span class="val" id="size_v"></span></div>
   </div>
 
-  <div class="grp"><div class="glabel">Fade pattern</div>
-    <div class="row"><label>Pattern</label>
-      <select id="field"><option value="linear">Linear</option><option value="diagonal">Diagonal</option><option value="bands">Bands</option><option value="spot">Spot</option><option value="vignette">Edge vignette</option><option value="radial">Radial</option><option value="noise">Noise / cloud</option><option value="uniform">Uniform</option></select></div>
-    <div class="row"><label>Direction</label>
+  <div class="grp"><div class="glabel">Pattern</div>
+    <div class="row"><label>Shape</label>
+      <select id="field"><option value="linear">Sweep</option><option value="diagonal">Diagonal sweep</option><option value="bands">Repeating bands</option><option value="spot">Center spotlight</option><option value="vignette">Edge fade</option><option value="radial">Radial burst</option><option value="noise">Organic cloud</option><option value="uniform">Solid field</option></select></div>
+    <div class="row" id="row_ramp"><label>Flow</label>
       <select id="ramp"><option value="ltr">Left → right</option><option value="rtl">Right → left</option><option value="ttb">Top → bottom</option><option value="btt">Bottom → top</option></select></div>
-    <div class="row"><label>Fade curve</label>
-      <select id="curve"><option value="linear">Linear</option><option value="ein">Ease-in</option><option value="eout">Ease-out</option><option value="smooth">Smoothstep</option><option value="steps">Stepped</option></select></div>
-    <div class="row"><label>Solid start</label><input type="range" id="start" min="0" max="60" value="16"><span class="val" id="start_v"></span></div>
-    <div class="row"><label>Scale / freq</label><input type="range" id="scale" min="2" max="100" value="50"><span class="val" id="scale_v"></span></div>
-    <div class="row"><label>Invert</label><input type="checkbox" id="invert"></div>
+    <div class="row" id="row_curve"><label>Falloff</label>
+      <select id="curve"><option value="linear">Even</option><option value="ein">Late</option><option value="eout">Early</option><option value="smooth">Soft</option><option value="steps">Stepped</option></select></div>
+    <div class="row" id="row_start"><label>Solid area</label><input type="range" id="start" min="0" max="60" value="16"><span class="val" id="start_v"></span></div>
+    <div class="row" id="row_scale"><label id="scale_label">Pattern scale</label><input type="range" id="scale" min="2" max="100" value="50"><span class="val" id="scale_v"></span></div>
+    <div class="row"><label>Reverse density</label><input type="checkbox" id="invert"></div>
   </div>
 
-  <div class="grp"><div class="glabel">Lattice</div>
-    <div class="row"><label>Row parallax</label><input type="range" id="rowpx" min="-100" max="100" value="0"><span class="val" id="rowpx_v"></span></div>
-    <div class="row"><label>Col parallax</label><input type="range" id="colpx" min="-100" max="100" value="0"><span class="val" id="colpx_v"></span></div>
-    <div class="row"><label>Jitter (rand)</label><input type="range" id="jit" min="0" max="90" value="0"><span class="val" id="jit_v"></span></div>
+  <details class="grp" id="layout_details"><summary>Layout variation</summary>
+    <div class="row"><label>Row offset</label><input type="range" id="rowpx" min="-100" max="100" value="0"><span class="val" id="rowpx_v"></span></div>
+    <div class="row"><label>Column offset</label><input type="range" id="colpx" min="-100" max="100" value="0"><span class="val" id="colpx_v"></span></div>
+    <div class="row"><label>Position jitter</label><input type="range" id="jit" min="0" max="90" value="0"><span class="val" id="jit_v"></span></div>
+    <div class="hint">Offsets create diagonal lattice rhythms. Jitter loosens the grid.</div>
+  </details>
+
+  <div class="grp"><div class="glabel">Chevron orientation</div>
+    <div class="row"><label>Behavior</label>
+      <select id="dir"><option value="gradient">Align to pattern</option><option value="fixed">One angle</option><option value="scatter">Varied angles</option><option value="converge">Point inward</option><option value="diverge">Point outward</option></select></div>
+    <div class="row" id="row_ang"><label>Angle</label><input type="range" id="ang" min="0" max="360" value="0"><span class="val" id="ang_v"></span></div>
+    <div class="row" id="row_scat"><label>Variation</label><input type="range" id="scat" min="0" max="180" value="60"><span class="val" id="scat_v"></span></div>
   </div>
 
-  <div class="grp"><div class="glabel">Arrow direction</div>
-    <div class="row"><label>Mode</label>
-      <select id="dir"><option value="gradient">Follow fade</option><option value="fixed">Fixed angle</option><option value="scatter">Scatter</option><option value="converge">Converge</option><option value="diverge">Diverge</option></select></div>
-    <div class="row"><label>Fixed angle</label><input type="range" id="ang" min="0" max="360" value="0"><span class="val" id="ang_v"></span></div>
-    <div class="row"><label>Scatter ±°</label><input type="range" id="scat" min="0" max="180" value="60"><span class="val" id="scat_v"></span></div>
-  </div>
-
-  <div class="grp"><div class="glabel">Colour</div>
+  <div class="grp"><div class="glabel">Palette</div>
     <div class="swatches" id="swatches"></div>
-    <div class="hint">Swatches → highlighted field below.</div>
+    <div class="hint">Choose Chevron, Ground, or Accent, then apply a brand swatch.</div>
     <div class="crow active" data-key="cc" id="row_cc"><label>Chevron</label><input class="hex" data-key="cc" value="#f3f3f3"><input type="color" data-key="cc" value="#f3f3f3"></div>
-    <div class="crow" data-key="cg"><label>Ground</label><input class="hex" data-key="cg" value="#121212"><input type="color" data-key="cg" value="#121212"></div>
-    <div class="crow" data-key="ca"><label>Accent</label><input class="hex" data-key="ca" value="#ff4f00"><input type="color" data-key="ca" value="#ff4f00"></div>
-    <div class="row"><label>Accent amt</label><input type="range" id="acc" min="0" max="50" value="0"><span class="val" id="acc_v"></span></div>
-    <div class="row"><label>Accent side</label>
+    <div class="crow" data-key="cg" id="row_cg"><label>Ground</label><input class="hex" data-key="cg" value="#121212"><input type="color" data-key="cg" value="#121212"></div>
+    <div class="crow" data-key="ca" id="row_ca"><label>Accent</label><input class="hex" data-key="ca" value="#ff4f00"><input type="color" data-key="ca" value="#ff4f00"></div>
+    <div class="row"><label>Accent frequency</label><input type="range" id="acc" min="0" max="50" value="0"><span class="val" id="acc_v"></span></div>
+    <div class="row" id="row_accmode"><label>Accent placement</label>
       <select id="accmode"><option value="dense">Dense side</option><option value="sparse">Sparse side</option><option value="uniform">Everywhere</option></select></div>
-    <div class="row"><label>Transparent</label><input type="checkbox" id="trans"></div>
-    <div class="row"><label>Seed</label><input type="number" id="seed" value="7" step="1"></div>
+    <div class="row"><label>Transparent ground</label><input type="checkbox" id="trans"></div>
+    <div class="row" id="row_seed"><label>Random seed</label><input type="number" id="seed" value="7" step="1"></div>
   </div>
 
-  <div class="grp"><div class="glabel">Gradient ramp</div>
-    <div class="row"><label>Use ramp</label><input type="checkbox" id="grad"></div>
-    <div class="row"><label>Blend</label><select id="rampmode"><option value="stepped">Stepped (dither)</option><option value="smooth">Smooth</option></select></div>
-    <div id="stops"></div>
-    <div class="act" style="margin-top:8px"><button class="mini" id="addstop">+ stop</button><button class="mini" id="brandramp">Black ramp</button></div>
-    <div class="hint">Density picks the colour along the ramp. Two stops = a simple A→B fade.</div>
+  <div class="grp"><div class="glabel">Colour ramp</div>
+    <div class="row"><label>Use colour ramp</label><input type="checkbox" id="grad"></div>
+    <div id="ramp_controls">
+      <div class="row"><label>Transition</label><select id="rampmode"><option value="stepped">Dithered steps</option><option value="smooth">Smooth blend</option></select></div>
+      <div id="stops"></div>
+      <div class="act" style="margin-top:8px"><button class="mini" id="addstop">+ colour</button><button class="mini" id="brandramp">Neutral ramp</button></div>
+      <div class="hint">Density selects colours from left to right.</div>
+    </div>
   </div>
 
-  <div class="grp"><div class="glabel">Tile</div>
-    <div class="row"><label>Seamless tile</label><input type="checkbox" id="tile"></div>
-    <div class="row"><label>Show tiling</label><input type="checkbox" id="showtile"></div>
-    <div class="hint">Uniform / bands / noise tile cleanly; a directional fade only tiles across its non-fading axis.</div>
-  </div>
+  <details class="grp" id="tile_details"><summary>Repeat tile</summary>
+    <div class="row"><label>Seamless edges</label><input type="checkbox" id="tile"></div>
+    <div class="row" id="row_showtile"><label>Preview 2 × 2</label><input type="checkbox" id="showtile"></div>
+    <div class="hint">Solid, bands, and cloud patterns repeat most naturally.</div>
+  </details>
 </div>
 
 <div id="stage">
   <div id="bar">
     <span class="dim" id="dim"></span>
-    <div class="act"><span class="dim">export</span>
+    <div class="act"><label class="dim" for="escale">resolution</label>
       <select id="escale" style="flex:0 0 56px"><option value="1">1×</option><option value="2" selected>2×</option><option value="3">3×</option></select>
       <button id="png">PNG</button><button id="svg">SVG</button><button id="copy">Copy SVG</button>
     </div>
   </div>
-  <div id="view"><canvas id="cv"></canvas></div>
+  <div id="view"><canvas id="cv" role="img" aria-label="Generated chevron dither pattern"></canvas></div>
 </div>
 <div class="tag">FAI Action — outlined double chevron · the angle is canonical</div>
 
@@ -151,6 +162,9 @@ const $=id=>document.getElementById(id);
 const PAL=[["True Black","#000000"],["Cod Gray","#121212"],["Graphite","#1e1e1e"],["Iron","#2a2a2a"],["Ash","#5a5a5a"],["Pewter","#8a8a8a"],["Smoke White","#f3f3f3"],["Int. Orange","#ff4f00"]];
 const BRAND=["#000000","#121212","#1e1e1e","#2a2a2a","#5a5a5a","#8a8a8a","#f3f3f3"];
 
+document.querySelectorAll('.row').forEach(row=>{const label=row.querySelector('label'),control=row.querySelector('input,select');if(label&&control&&control.id)label.htmlFor=control.id;});
+document.querySelectorAll('.crow').forEach(row=>{const key=row.dataset.key,label=row.querySelector('label'),hex=row.querySelector('input.hex'),picker=row.querySelector('input[type=color]');if(hex){hex.id='color_'+key;label.htmlFor=hex.id;}if(picker)picker.setAttribute('aria-label',label.textContent+' color picker');});
+
 function getHex(k){return document.querySelector('input.hex[data-key="'+k+'"]').value;}
 function stops(){return[...document.querySelectorAll('#stops input[type=color]')].map(i=>i.value);}
 function P(){const tile=$("tile").checked;return{W:+$("W").value,H:+$("H").value,cell:+$("cell").value,size:+$("size").value/100,
@@ -159,6 +173,32 @@ function P(){const tile=$("tile").checked;return{W:+$("W").value,H:+$("H").value
   dir:$("dir").value,ang:+$("ang").value*Math.PI/180,scat:+$("scat").value*Math.PI/180,
   cg:getHex('cg'),cc:getHex('cc'),ca:getHex('ca'),acc:+$("acc").value/100,accmode:$("accmode").value,trans:$("trans").checked,seed:+$("seed").value,
   grad:$("grad").checked,rampmode:$("rampmode").value,stops:stops(),tile:tile,showtile:$("showtile").checked};}
+
+function show(id,visible){const node=$(id);if(node)node.hidden=!visible;}
+function syncUI(){
+  const field=$("field").value;
+  if(["noise","uniform"].includes(field)&&$("dir").value==="gradient")$("dir").value="fixed";
+  const dir=$("dir").value;
+  const directional=["linear","diagonal","bands"].includes(field);
+  const curved=["linear","diagonal","spot","vignette","radial"].includes(field);
+  const scaled=["bands","spot","vignette","radial","noise"].includes(field);
+  show("row_ramp",directional);
+  show("row_curve",curved);
+  show("row_start",["linear","diagonal"].includes(field));
+  show("row_scale",scaled);
+  show("row_ang",dir==="fixed");
+  show("row_scat",dir==="scatter");
+  show("row_accmode",+$('acc').value>0);
+  show("row_seed",field==="noise"||+$('jit').value>0||dir==="scatter"||+$('acc').value>0);
+  show("row_ca",+$('acc').value>0);
+  show("row_cg",!$("trans").checked);
+  show("ramp_controls",$("grad").checked);
+  show("row_cc",!$("grad").checked);
+  show("row_showtile",$("tile").checked);
+  const scaleNames={bands:"Band count",spot:"Spot size",vignette:"Edge width",radial:"Burst size",noise:"Cloud scale"};
+  $("scale_label").textContent=scaleNames[field]||"Pattern scale";
+  ensureActiveColor();
+}
 
 function dens(p,nx,ny){let d;const cv=f=>curveFn(f,p.curve);
   switch(p.field){
@@ -206,7 +246,7 @@ function paint(ctx,p,list,scale){ctx.save();ctx.scale(scale,scale);ctx.clearRect
   if(!p.trans){ctx.fillStyle=p.cg;ctx.fillRect(0,0,p.W,p.H);}
   for(const o of list){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.a);ctx.scale(o.s,o.s);ctx.translate(-CX0,-CY0);ctx.fillStyle=o.color;ctx.fill(P2D,"evenodd");ctx.restore();}
   ctx.restore();}
-function draw(){const p=P(),list=build(p),sc=+$("escale").value||2,cv=$("cv");
+function draw(){syncUI();const p=P(),list=build(p),sc=+$("escale").value||2,cv=$("cv");
   if(p.tile&&p.showtile){const oc=document.createElement("canvas");oc.width=p.W*sc;oc.height=p.H*sc;paint(oc.getContext("2d"),p,list,sc);
     cv.width=p.W*2*sc;cv.height=p.H*2*sc;cv.style.width=(p.W*2)+"px";cv.style.height=(p.H*2)+"px";
     const ctx=cv.getContext("2d");ctx.clearRect(0,0,cv.width,cv.height);ctx.fillStyle=ctx.createPattern(oc,"repeat");ctx.fillRect(0,0,cv.width,cv.height);
@@ -214,8 +254,7 @@ function draw(){const p=P(),list=build(p),sc=+$("escale").value||2,cv=$("cv");
   $("dim").textContent=p.W+" × "+p.H+" · "+list.length+" marks"+(p.tile?" · tile":"");
   const sv=(id,t)=>{const e=$(id);if(e)e.textContent=t;};
   sv("cell_v",p.cell);sv("size_v",$("size").value+"%");sv("start_v",$("start").value+"%");sv("scale_v",$("scale").value);
-  sv("rowpx_v",$("rowpx").value+"%");sv("colpx_v",$("colpx").value+"%");sv("jit_v",$("jit").value+"%");sv("ang_v",$("ang").value+"°");sv("scat_v","±"+$("scat").value);sv("acc_v",$("acc").value+"%");
-  $("row_cc").style.display=p.grad?"none":"flex";}
+  sv("rowpx_v",$("rowpx").value+"%");sv("colpx_v",$("colpx").value+"%");sv("jit_v",$("jit").value+"%");sv("ang_v",$("ang").value+"°");sv("scat_v","±"+$("scat").value+"°");sv("acc_v",$("acc").value+"%");}
 function buildSVG(){const p=P(),list=build(p);
   let head=`<svg xmlns="http://www.w3.org/2000/svg" width="${p.W}" height="${p.H}" viewBox="0 0 ${p.W} ${p.H}">`;
   if(!p.trans)head+=`<rect width="${p.W}" height="${p.H}" fill="${p.cg}"/>`;
@@ -227,39 +266,48 @@ $("png").onclick=()=>{const p=P(),list=build(p),sc=+$("escale").value||2,oc=docu
 $("svg").onclick=()=>dl("faia-dither.svg",new Blob([buildSVG()],{type:"image/svg+xml"}));
 $("copy").onclick=()=>{navigator.clipboard.writeText(buildSVG());$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy SVG",1000);};
 
-// brand swatches → active fixed field
+// brand swatches → active visible fixed field
 let activeKey="cc";
-const sw=$("swatches");PAL.forEach(([n,h])=>{const b=document.createElement("button");b.className="chip";b.style.background=h;b.title=n+" "+h;b.onmousedown=e=>e.preventDefault();b.onclick=()=>{setColor(activeKey,h);draw();};sw.appendChild(b);});
+function markPreset(active){document.querySelectorAll('#presets button').forEach(b=>b.setAttribute('aria-pressed',String(b===active)));}
+function customDraw(){markPreset(null);draw();}
+function selectActiveColor(key){activeKey=key;document.querySelectorAll('.crow').forEach(r=>r.classList.toggle('active',r.dataset.key===activeKey&&!r.hidden));}
+function ensureActiveColor(){const visible=["cc","cg","ca"].filter(k=>!$("row_"+k).hidden);show("swatches",visible.length>0);if(!visible.includes(activeKey))activeKey=visible[0]||"";document.querySelectorAll('.crow').forEach(r=>r.classList.toggle('active',r.dataset.key===activeKey&&!r.hidden));}
+const sw=$("swatches");PAL.forEach(([n,h])=>{const b=document.createElement("button");b.className="chip";b.style.background=h;b.title=n+" "+h;b.onmousedown=e=>e.preventDefault();b.onclick=()=>{if(activeKey){setColor(activeKey,h);customDraw();}};sw.appendChild(b);});
 function setColor(k,h){document.querySelector('input.hex[data-key="'+k+'"]').value=h;document.querySelector('input[type=color][data-key="'+k+'"]').value=h;}
-document.querySelectorAll('input.hex').forEach(inp=>{inp.addEventListener('focus',()=>{activeKey=inp.dataset.key;document.querySelectorAll('.crow').forEach(r=>r.classList.toggle('active',r.dataset.key===activeKey));});
-  inp.addEventListener('input',()=>{const v=inp.value.trim();if(/^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(v)){let h=v[0]==='#'?v:'#'+v;if(h.length===4)h='#'+h.slice(1).split('').map(x=>x+x).join('');document.querySelector('input[type=color][data-key="'+inp.dataset.key+'"]').value=h;draw();}});});
-document.querySelectorAll('input[type=color][data-key]').forEach(pk=>pk.addEventListener('input',()=>{document.querySelector('input.hex[data-key="'+pk.dataset.key+'"]').value=pk.value;draw();}));
+document.querySelectorAll('input.hex').forEach(inp=>{inp.addEventListener('focus',()=>selectActiveColor(inp.dataset.key));
+  inp.addEventListener('input',()=>{const v=inp.value.trim();if(/^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(v)){let h=v[0]==='#'?v:'#'+v;if(h.length===4)h='#'+h.slice(1).split('').map(x=>x+x).join('');document.querySelector('input[type=color][data-key="'+inp.dataset.key+'"]').value=h;customDraw();}});});
+document.querySelectorAll('input[type=color][data-key]').forEach(pk=>{pk.addEventListener('focus',()=>selectActiveColor(pk.dataset.key));pk.addEventListener('input',()=>{document.querySelector('input.hex[data-key="'+pk.dataset.key+'"]').value=pk.value;customDraw();});});
 
 // gradient stops
-function addStop(h){const s=document.createElement("span");s.className="stop";const ci=document.createElement("input");ci.type="color";ci.value=h||"#888888";ci.addEventListener("input",draw);const x=document.createElement("button");x.className="x";x.textContent="×";x.onclick=()=>{if(document.querySelectorAll('#stops .stop').length>2){s.remove();draw();}};s.appendChild(ci);s.appendChild(x);$("stops").appendChild(s);}
+function addStop(h){const s=document.createElement("span");s.className="stop";const ci=document.createElement("input");ci.type="color";ci.value=h||"#888888";ci.setAttribute("aria-label","Ramp colour");ci.addEventListener("input",customDraw);const x=document.createElement("button");x.className="x";x.textContent="×";x.setAttribute("aria-label","Remove ramp colour");x.onclick=()=>{if(document.querySelectorAll('#stops .stop').length>2){s.remove();customDraw();}};s.appendChild(ci);s.appendChild(x);$("stops").appendChild(s);}
 function setStops(arr){$("stops").innerHTML="";arr.forEach(addStop);}
-$("addstop").onclick=()=>{addStop("#888888");draw();};
-$("brandramp").onclick=()=>{setStops(BRAND);$("grad").checked=true;draw();};
+$("addstop").onclick=()=>{addStop("#888888");customDraw();};
+$("brandramp").onclick=()=>{setStops(BRAND);$("grad").checked=true;customDraw();};
 setStops(BRAND);
 
+const BASE={field:"linear",ramp:"ltr",curve:"linear",dir:"gradient",cell:28,size:92,start:16,scale:50,rowpx:0,colpx:0,jit:0,ang:0,scat:60,acc:0,accmode:"dense",invert:false,grad:false,rampmode:"stepped",tile:false,showtile:false,trans:false,seed:7,cc:"#f3f3f3",cg:"#121212",ca:"#ff4f00"};
 const PRE={
-  dissolve:{field:"linear",ramp:"ltr",curve:"linear",dir:"gradient",cell:28,size:92,start:16,scale:50,rowpx:0,colpx:0,jit:0,acc:0,invert:false,grad:false,tile:false,showtile:false,cc:"#f3f3f3",cg:"#121212"},
-  oblique:{field:"linear",ramp:"ltr",dir:"gradient",cell:30,size:90,start:14,rowpx:50,jit:0,grad:false,cc:"#f3f3f3"},
-  bands:{field:"bands",dir:"gradient",cell:26,size:88,scale:34,grad:false,cc:"#f3f3f3"},
-  spot:{field:"spot",curve:"smooth",dir:"diverge",cell:28,size:90,scale:55,grad:false,cc:"#f3f3f3"},
-  noise:{field:"noise",dir:"fixed",ang:0,cell:24,size:84,scale:36,grad:false,cc:"#f3f3f3"},
-  scatter:{field:"linear",ramp:"ltr",dir:"scatter",scat:120,cell:26,size:80,start:10,jit:25,grad:false,cc:"#f3f3f3"},
-  tri:{field:"linear",ramp:"ltr",dir:"gradient",cell:28,size:92,start:14,acc:18,accmode:"dense",grad:false,ca:"#ff4f00",cc:"#f3f3f3"},
-  gamut:{field:"linear",ramp:"ltr",dir:"gradient",cell:28,size:96,start:0,invert:false,grad:true,rampmode:"stepped",_stops:BRAND},
-  duo:{field:"linear",ramp:"ltr",dir:"gradient",cell:28,size:96,start:0,grad:true,rampmode:"smooth",_stops:["#121212","#ff4f00"]},
-  tile:{field:"uniform",dir:"fixed",ang:0,cell:30,size:78,grad:false,tile:true,showtile:true,cc:"#1e1e1e",cg:"#121212",rowpx:50}
+  dissolve:{...BASE},
+  oblique:{...BASE,cell:30,size:90,start:14,rowpx:50},
+  bands:{...BASE,field:"bands",cell:26,size:88,scale:34},
+  spot:{...BASE,field:"spot",curve:"smooth",dir:"diverge",cell:28,size:90,scale:55},
+  noise:{...BASE,field:"noise",dir:"fixed",cell:24,size:84,scale:36},
+  scatter:{...BASE,dir:"scatter",scat:120,cell:26,size:80,start:10,jit:25},
+  tri:{...BASE,start:14,acc:18},
+  gamut:{...BASE,size:96,start:0,grad:true,_stops:BRAND},
+  duo:{...BASE,size:96,start:0,grad:true,rampmode:"smooth",_stops:["#121212","#ff4f00"]},
+  tile:{...BASE,field:"uniform",dir:"fixed",cell:30,size:78,tile:true,showtile:true,cc:"#1e1e1e",rowpx:50}
 };
-document.querySelectorAll('#presets button').forEach(b=>b.onclick=()=>{const pr=PRE[b.dataset.p];
+document.querySelectorAll('#presets button').forEach(b=>{b.setAttribute('aria-pressed','false');b.onclick=()=>{const pr=PRE[b.dataset.p];
   if(pr._stops)setStops(pr._stops);
   for(const k in pr){if(k==="_stops")continue;if(["cc","cg","ca"].includes(k)){setColor(k,pr[k]);continue;}const el=$(k);if(!el)continue;if(el.type==="checkbox")el.checked=pr[k];else el.value=pr[k];}
-  draw();});
+  markPreset(b);
+  if(+$("rowpx").value||+$("colpx").value||+$("jit").value)$("layout_details").open=true;
+  if($("tile").checked)$("tile_details").open=true;
+  draw();};});
 
-["W","H","cell","size","field","ramp","curve","start","scale","invert","rowpx","colpx","jit","dir","ang","scat","acc","accmode","trans","seed","grad","rampmode","tile","showtile","escale"].forEach(i=>{const el=$(i);el.addEventListener("input",draw);el.addEventListener("change",draw);});
+["W","H","cell","size","field","ramp","curve","start","scale","invert","rowpx","colpx","jit","dir","ang","scat","acc","accmode","trans","seed","grad","rampmode","tile","showtile","escale"].forEach(i=>{const el=$(i);const update=()=>{if(i!=="escale")markPreset(null);draw();};el.addEventListener("input",update);el.addEventListener("change",update);});
+markPreset(document.querySelector('#presets button[data-p="dissolve"]'));
 draw();
 </script>
 </body>
