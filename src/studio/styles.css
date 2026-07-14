@@ -19,8 +19,14 @@ header {
   background: var(--ink);
   color: var(--soft);
 }
-.brand { display: flex; align-items: center; color: var(--soft); }
-.brand svg { height: 30px; width: auto; display: block; }
+.brand { display: flex; align-items: center; gap: 12px; color: var(--soft); }
+.brand img { height: 30px; width: auto; display: block; }
+.product-name {
+  border-left: 1px solid #666;
+  padding-left: 12px;
+  font: 500 18px "IBM Plex Sans", Arial, sans-serif;
+  letter-spacing: 0.01em;
+}
 .sub { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #999; }
 main {
   display: grid;

@@ -216,14 +216,12 @@ describe('full-palette mode', () => {
     expect(first.diag.accentWarmSide).toBe(second.diag.accentWarmSide);
   });
 
-  it('uses at least 4 distinct locked accents in at least 80% of 100 seeds', () => {
-    let fourOrMore = 0;
-
+  it('visibly uses all 7 locked accents in every banner seed', () => {
     for (let i = 0; i < 100; i += 1) {
       const seed = 62_000 + i;
       const { plan, diag } = sampleWithDiagnostics(GRAMMAR, seed, { paletteMode: 'full' });
       const visible = visibleAccentSet(plan);
-      if (visible.size >= 4) fourOrMore += 1;
+      expect(visible, `seed ${seed}: visible full palette`).toEqual(ACCENT_POOL_SET);
 
       for (const accent of visible) {
         expect(ACCENT_POOL_SET.has(accent), `seed ${seed}: unexpected visible accent ${accent}`).toBe(true);
@@ -233,8 +231,6 @@ describe('full-palette mode', () => {
       }
       expect(accentInkShare(plan), `seed ${seed}`).toBeLessThanOrEqual(0.5);
     }
-
-    expect(fourOrMore, `${fourOrMore}/100 full-palette seeds reached ≥4 accents`).toBeGreaterThanOrEqual(80);
   });
 
   it('throws when full-palette mode is combined with explicit accent or program mode', () => {

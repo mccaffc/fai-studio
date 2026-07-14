@@ -22,12 +22,14 @@
   .row label{color:var(--mut);flex:0 0 112px;white-space:nowrap}
   .row .val{color:var(--ink);flex:0 0 52px;text-align:right;font-size:12px}
   input[type=range]{flex:1;accent-color:var(--orange);height:2px;min-width:0}
-  select,input[type=number],input.hex{background:#0d0d0d;color:var(--ink);border:1px solid var(--line);font-family:inherit;font-size:12px;padding:5px 7px;min-width:0}
+  select,input[type=number],input.hex,.stop-hex{background:#0d0d0d;color:var(--ink);border:1px solid var(--line);font-family:inherit;font-size:12px;padding:5px 7px;min-width:0}
   select,input[type=number]{flex:1}
-  input.hex{flex:1;letter-spacing:.04em;text-transform:lowercase}
+  input.hex,.stop-hex{flex:1;letter-spacing:.04em;text-transform:uppercase}
   input[type=color]{background:none;border:1px solid var(--line);width:30px;height:28px;padding:1px;cursor:pointer;flex:0 0 30px}
   input[type=checkbox]{accent-color:var(--orange);width:15px;height:15px}
   .presets,.act{display:flex;flex-wrap:wrap;gap:6px}
+  .size-presets{margin-bottom:12px}
+  .dimension-row input[type=number]{flex:0 0 78px;width:78px}
   .presets button,.act button,.mini{font-family:inherit;font-size:11px;letter-spacing:.04em;text-transform:uppercase;background:#0d0d0d;color:var(--ink);border:1px solid var(--line);padding:7px 9px;cursor:pointer}
   .presets button:hover,.act button:hover,.mini:hover{border-color:var(--orange)}
   button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
@@ -46,7 +48,8 @@
   .crow.active{border-left-color:var(--orange)}
   .hint{color:var(--far);font-size:10.5px;line-height:15px;margin:2px 0 10px}
   #stops{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}
-  .stop{position:relative;display:flex}
+  .stop{position:relative;display:flex;align-items:center;gap:5px;flex:1 1 150px}
+  .stop-hex{width:96px}
   .stop .x{position:absolute;top:-7px;right:-7px;width:15px;height:15px;line-height:13px;text-align:center;border-radius:50%;background:#000;border:1px solid #444;color:#aaa;font-size:11px;cursor:pointer;padding:0}
   #stage{flex:1;display:flex;flex-direction:column;min-width:0}
   #bar{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--line);gap:10px;flex-wrap:wrap}
@@ -72,8 +75,13 @@
   </div>
 
   <div class="grp"><div class="glabel">Canvas</div>
-    <div class="row"><label>Width</label><input type="number" id="W" value="1240" step="20"></div>
-    <div class="row"><label>Height</label><input type="number" id="H" value="420" step="20"></div>
+    <div class="presets size-presets" id="size_presets" aria-label="Canvas size presets">
+      <button data-size="2560x1280">Page background</button><button data-size="1920x1080">Slide</button>
+      <button data-size="1920x960">Deck panel</button><button data-size="2048x2048">Square</button>
+      <button data-size="2880x960">Eyebrow</button>
+    </div>
+    <div class="row dimension-row"><label>Width</label><input type="range" id="Wr" aria-label="Width slider" min="320" max="3840" step="8" value="2560"><input type="number" id="W" aria-label="Width value" min="320" max="3840" value="2560" step="8"></div>
+    <div class="row dimension-row"><label>Height</label><input type="range" id="Hr" aria-label="Height slider" min="160" max="2160" step="8" value="1280"><input type="number" id="H" aria-label="Height value" min="160" max="2160" value="1280" step="8"></div>
     <div class="row"><label>Spacing</label><input type="range" id="cell" min="8" max="72" value="28"><span class="val" id="cell_v"></span></div>
     <div class="row"><label>Chevron scale</label><input type="range" id="size" min="20" max="140" value="92"><span class="val" id="size_v"></span></div>
   </div>
@@ -107,9 +115,9 @@
   <div class="grp"><div class="glabel">Palette</div>
     <div class="swatches" id="swatches"></div>
     <div class="hint">Choose Chevron, Ground, or Accent, then apply a brand swatch.</div>
-    <div class="crow active" data-key="cc" id="row_cc"><label>Chevron</label><input class="hex" data-key="cc" value="#f3f3f3"><input type="color" data-key="cc" value="#f3f3f3"></div>
-    <div class="crow" data-key="cg" id="row_cg"><label>Ground</label><input class="hex" data-key="cg" value="#121212"><input type="color" data-key="cg" value="#121212"></div>
-    <div class="crow" data-key="ca" id="row_ca"><label>Accent</label><input class="hex" data-key="ca" value="#ff4f00"><input type="color" data-key="ca" value="#ff4f00"></div>
+    <div class="crow active" data-key="cc" id="row_cc"><label>Chevron</label><input class="hex" data-key="cc" inputmode="text" spellcheck="false" value="#F3F3F3"><input type="color" data-key="cc" value="#f3f3f3"></div>
+    <div class="crow" data-key="cg" id="row_cg"><label>Ground</label><input class="hex" data-key="cg" inputmode="text" spellcheck="false" value="#121212"><input type="color" data-key="cg" value="#121212"></div>
+    <div class="crow" data-key="ca" id="row_ca"><label>Accent</label><input class="hex" data-key="ca" inputmode="text" spellcheck="false" value="#FF4F00"><input type="color" data-key="ca" value="#ff4f00"></div>
     <div class="row"><label>Accent frequency</label><input type="range" id="acc" min="0" max="50" value="0"><span class="val" id="acc_v"></span></div>
     <div class="row" id="row_accmode"><label>Accent placement</label>
       <select id="accmode"><option value="dense">Dense side</option><option value="sparse">Sparse side</option><option value="uniform">Everywhere</option></select></div>
@@ -162,11 +170,12 @@ const $=id=>document.getElementById(id);
 const PAL=[["True Black","#000000"],["Cod Gray","#121212"],["Graphite","#1e1e1e"],["Iron","#2a2a2a"],["Ash","#5a5a5a"],["Pewter","#8a8a8a"],["Smoke White","#f3f3f3"],["Int. Orange","#ff4f00"]];
 const BRAND=["#000000","#121212","#1e1e1e","#2a2a2a","#5a5a5a","#8a8a8a","#f3f3f3"];
 
+function normalizeHex(value){let h=String(value||"").trim().replace(/^#/,"");if(/^[0-9a-fA-F]{3}$/.test(h))h=h.split("").map(x=>x+x).join("");return/^[0-9a-fA-F]{6}$/.test(h)?"#"+h.toUpperCase():null;}
 document.querySelectorAll('.row').forEach(row=>{const label=row.querySelector('label'),control=row.querySelector('input,select');if(label&&control&&control.id)label.htmlFor=control.id;});
 document.querySelectorAll('.crow').forEach(row=>{const key=row.dataset.key,label=row.querySelector('label'),hex=row.querySelector('input.hex'),picker=row.querySelector('input[type=color]');if(hex){hex.id='color_'+key;label.htmlFor=hex.id;}if(picker)picker.setAttribute('aria-label',label.textContent+' color picker');});
 
-function getHex(k){return document.querySelector('input.hex[data-key="'+k+'"]').value;}
-function stops(){return[...document.querySelectorAll('#stops input[type=color]')].map(i=>i.value);}
+function getHex(k){const input=document.querySelector('input.hex[data-key="'+k+'"]'),picker=document.querySelector('input[type=color][data-key="'+k+'"]');return normalizeHex(input.value)||picker.value.toUpperCase();}
+function stops(){return[...document.querySelectorAll('#stops .stop')].map(row=>normalizeHex(row.querySelector('.stop-hex').value)||row.querySelector('input[type=color]').value.toUpperCase());}
 function P(){const tile=$("tile").checked;return{W:+$("W").value,H:+$("H").value,cell:+$("cell").value,size:+$("size").value/100,
   field:$("field").value,ramp:$("ramp").value,curve:$("curve").value,start:+$("start").value/100,scale:+$("scale").value,invert:$("invert").checked,
   rowpx:+$("rowpx").value/100,colpx:+$("colpx").value/100,jit:+$("jit").value/100,
@@ -273,13 +282,14 @@ function customDraw(){markPreset(null);draw();}
 function selectActiveColor(key){activeKey=key;document.querySelectorAll('.crow').forEach(r=>r.classList.toggle('active',r.dataset.key===activeKey&&!r.hidden));}
 function ensureActiveColor(){const visible=["cc","cg","ca"].filter(k=>!$("row_"+k).hidden);show("swatches",visible.length>0);if(!visible.includes(activeKey))activeKey=visible[0]||"";document.querySelectorAll('.crow').forEach(r=>r.classList.toggle('active',r.dataset.key===activeKey&&!r.hidden));}
 const sw=$("swatches");PAL.forEach(([n,h])=>{const b=document.createElement("button");b.className="chip";b.style.background=h;b.title=n+" "+h;b.onmousedown=e=>e.preventDefault();b.onclick=()=>{if(activeKey){setColor(activeKey,h);customDraw();}};sw.appendChild(b);});
-function setColor(k,h){document.querySelector('input.hex[data-key="'+k+'"]').value=h;document.querySelector('input[type=color][data-key="'+k+'"]').value=h;}
+function setColor(k,h){const hex=normalizeHex(h);if(!hex)return;const input=document.querySelector('input.hex[data-key="'+k+'"]');input.value=hex;input.removeAttribute('aria-invalid');document.querySelector('input[type=color][data-key="'+k+'"]').value=hex;}
 document.querySelectorAll('input.hex').forEach(inp=>{inp.addEventListener('focus',()=>selectActiveColor(inp.dataset.key));
-  inp.addEventListener('input',()=>{const v=inp.value.trim();if(/^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(v)){let h=v[0]==='#'?v:'#'+v;if(h.length===4)h='#'+h.slice(1).split('').map(x=>x+x).join('');document.querySelector('input[type=color][data-key="'+inp.dataset.key+'"]').value=h;customDraw();}});});
-document.querySelectorAll('input[type=color][data-key]').forEach(pk=>{pk.addEventListener('focus',()=>selectActiveColor(pk.dataset.key));pk.addEventListener('input',()=>{document.querySelector('input.hex[data-key="'+pk.dataset.key+'"]').value=pk.value;customDraw();});});
+  inp.addEventListener('input',()=>{const h=normalizeHex(inp.value);inp.setAttribute('aria-invalid',String(!h));if(h){document.querySelector('input[type=color][data-key="'+inp.dataset.key+'"]').value=h;customDraw();}});
+  inp.addEventListener('blur',()=>{const h=normalizeHex(inp.value);if(h){inp.value=h;inp.removeAttribute('aria-invalid');}});});
+document.querySelectorAll('input[type=color][data-key]').forEach(pk=>{pk.addEventListener('focus',()=>selectActiveColor(pk.dataset.key));pk.addEventListener('input',()=>{const input=document.querySelector('input.hex[data-key="'+pk.dataset.key+'"]');input.value=pk.value.toUpperCase();input.removeAttribute('aria-invalid');customDraw();});});
 
 // gradient stops
-function addStop(h){const s=document.createElement("span");s.className="stop";const ci=document.createElement("input");ci.type="color";ci.value=h||"#888888";ci.setAttribute("aria-label","Ramp colour");ci.addEventListener("input",customDraw);const x=document.createElement("button");x.className="x";x.textContent="×";x.setAttribute("aria-label","Remove ramp colour");x.onclick=()=>{if(document.querySelectorAll('#stops .stop').length>2){s.remove();customDraw();}};s.appendChild(ci);s.appendChild(x);$("stops").appendChild(s);}
+function addStop(h){const value=normalizeHex(h)||"#888888",s=document.createElement("span");s.className="stop";const hi=document.createElement("input");hi.className="stop-hex";hi.type="text";hi.inputMode="text";hi.spellcheck=false;hi.value=value;hi.setAttribute("aria-label","Ramp colour hex");const ci=document.createElement("input");ci.type="color";ci.value=value;ci.setAttribute("aria-label","Ramp colour picker");hi.addEventListener("input",()=>{const next=normalizeHex(hi.value);hi.setAttribute('aria-invalid',String(!next));if(next){ci.value=next;customDraw();}});hi.addEventListener("blur",()=>{const next=normalizeHex(hi.value);if(next){hi.value=next;hi.removeAttribute('aria-invalid');}});ci.addEventListener("input",()=>{hi.value=ci.value.toUpperCase();hi.removeAttribute('aria-invalid');customDraw();});const x=document.createElement("button");x.className="x";x.textContent="×";x.setAttribute("aria-label","Remove ramp colour");x.onclick=()=>{if(document.querySelectorAll('#stops .stop').length>2){s.remove();customDraw();}};s.appendChild(hi);s.appendChild(ci);s.appendChild(x);$("stops").appendChild(s);}
 function setStops(arr){$("stops").innerHTML="";arr.forEach(addStop);}
 $("addstop").onclick=()=>{addStop("#888888");customDraw();};
 $("brandramp").onclick=()=>{setStops(BRAND);$("grad").checked=true;customDraw();};
@@ -306,8 +316,13 @@ document.querySelectorAll('#presets button').forEach(b=>{b.setAttribute('aria-pr
   if($("tile").checked)$("tile_details").open=true;
   draw();};});
 
-["W","H","cell","size","field","ramp","curve","start","scale","invert","rowpx","colpx","jit","dir","ang","scat","acc","accmode","trans","seed","grad","rampmode","tile","showtile","escale"].forEach(i=>{const el=$(i);const update=()=>{if(i!=="escale")markPreset(null);draw();};el.addEventListener("input",update);el.addEventListener("change",update);});
+function markSizePreset(active){document.querySelectorAll('#size_presets button').forEach(b=>b.setAttribute('aria-pressed',String(b===active)));}
+document.querySelectorAll('#size_presets button').forEach(b=>{b.setAttribute('aria-pressed','false');b.onclick=()=>{const [w,h]=b.dataset.size.split('x').map(Number);$("W").value=w;$("H").value=h;$("Wr").value=w;$("Hr").value=h;markSizePreset(b);draw();};});
+function bindDimension(numberId,rangeId){const number=$(numberId),range=$(rangeId);const fromNumber=()=>{range.value=number.value;markSizePreset(null);draw();};const fromRange=()=>{number.value=range.value;markSizePreset(null);draw();};number.addEventListener("input",fromNumber);number.addEventListener("change",fromNumber);range.addEventListener("input",fromRange);range.addEventListener("change",fromRange);}
+bindDimension("W","Wr");bindDimension("H","Hr");
+["cell","size","field","ramp","curve","start","scale","invert","rowpx","colpx","jit","dir","ang","scat","acc","accmode","trans","seed","grad","rampmode","tile","showtile","escale"].forEach(i=>{const el=$(i);const update=()=>{if(i!=="escale")markPreset(null);draw();};el.addEventListener("input",update);el.addEventListener("change",update);});
 markPreset(document.querySelector('#presets button[data-p="dissolve"]'));
+markSizePreset(document.querySelector('#size_presets button[data-size="2560x1280"]'));
 draw();
 </script>
 </body>

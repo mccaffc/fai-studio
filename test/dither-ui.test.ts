@@ -55,4 +55,27 @@ describe('Chevron Dither control model', () => {
     expect(html).toContain('ensureActiveColor();');
     expect(html).toContain('["noise","uniform"].includes(field)');
   });
+
+  it('offers named canvas sizes with mouse-adjustable width and height', () => {
+    for (const preset of ['Page background', 'Slide', 'Deck panel', 'Square', 'Eyebrow']) {
+      expect(html).toContain(preset);
+    }
+    expect(html).toContain('type="range" id="Wr"');
+    expect(html).toContain('type="range" id="Hr"');
+    expect(html).toContain('data-size="2560x1280"');
+    expect(html).toContain('data-size="1920x1080"');
+    expect(html).toContain('data-size="2048x2048"');
+    expect(html).toContain('aria-label="Width slider"');
+    expect(html).toContain('aria-label="Width value"');
+    expect(html).toContain('aria-label="Height slider"');
+    expect(html).toContain('aria-label="Height value"');
+  });
+
+  it('makes hexadecimal text the primary editor for palette colors and ramp stops', () => {
+    expect(html).toContain('inputmode="text"');
+    expect(html).toContain('className="stop-hex"');
+    expect(html).toContain('function normalizeHex');
+    expect(html).toContain('text-transform:uppercase');
+    expect(html).toContain("||picker.value.toUpperCase()");
+  });
 });

@@ -138,6 +138,7 @@ function saveCorpusConfig(): void {
   const persisted: PersistedCorpusConfig = {
     template: state.config.template,
     accentPool: [...state.config.accentPool],
+    paletteMode: state.config.paletteMode === "full" ? "full" : undefined,
     accentStrength: state.config.accentStrength,
     density: state.config.density,
     figures: state.config.figures,
@@ -158,7 +159,8 @@ interface CorpusState {
   preEdit: CorpusResult | null;
   config: {
     template: string;     // "" = auto
-    accentPool: string[]; // [] = auto/canon; 1..7 = explicit user pool
+    accentPool: string[]; // [] = canon mix; 1..7 = explicit user pool
+    paletteMode: "auto" | "full";
     accentStrength?: number;
     density: number;
     figures: boolean;
@@ -192,6 +194,7 @@ function makeDefaultConfig(): CorpusState["config"] {
   return {
     template,
     accentPool: migrateAccentPool(saved),
+    paletteMode: !program && saved.paletteMode === "full" ? "full" : "auto",
     accentStrength: normalizeAccentStrength(saved.accentStrength),
     density: saved.density ?? 0.5,
     figures: saved.figures ?? true,
@@ -246,9 +249,8 @@ function historyWalk(delta: -1 | 1): void {
   // Restore config from the snapshot
   state.config = {
     template: (entry.config as { template?: string }).template ?? "",
-    accentPool: (entry.config as { accentPool?: string[] }).accentPool
-      ? [...((entry.config as { accentPool: string[] }).accentPool)]
-      : [],
+    accentPool: migrateAccentPool(entry.config),
+    paletteMode: (entry.config as { paletteMode?: string }).paletteMode === "full" ? "full" : "auto",
     accentStrength: normalizeAccentStrength((entry.config as { accentStrength?: number }).accentStrength),
     density: (entry.config as { density?: number }).density ?? 0.5,
     figures: (entry.config as { figures?: boolean }).figures ?? true,
@@ -599,7 +601,9 @@ function buildCorpusConfig(): CorpusConfig {
   };
   if (state.config.accentStrength !== undefined) config.accentStrength = state.config.accentStrength;
   if (state.config.template) config.template = state.config.template;
-  if (!state.config.program && state.config.accentPool.length) {
+  if (!state.config.program && state.config.paletteMode === "full") {
+    config.paletteMode = "full";
+  } else if (!state.config.program && state.config.accentPool.length) {
     config.accentPool = [...state.config.accentPool];
   }
   if (state.config.program) config.program = state.config.program as ProgramId;
@@ -844,7 +848,7 @@ function activeProgramHue(): string {
 }
 
 function accentAmountEnabled(): boolean {
-  return Boolean(state.config.program) || state.config.accentPool.length > 0;
+  return Boolean(state.config.program) || state.config.paletteMode === "full" || state.config.accentPool.length > 0;
 }
 
 function effectiveAccentStrength(): number {
@@ -858,14 +862,19 @@ function accentStrengthLabelText(value = effectiveAccentStrength()): string {
 
 function visibleAccentSet(): Set<string> {
   const programHue = activeProgramHue();
-  return new Set(programHue ? [programHue] : state.config.accentPool);
+  return new Set(programHue
+    ? [programHue]
+    : state.config.paletteMode === "full"
+      ? ACCENT_HEXES
+      : state.config.accentPool);
 }
 
 function accentCaption(): string {
   if (state.config.program) return "program hue";
+  if (state.config.paletteMode === "full") return "full palette · all 7 guaranteed";
   const count = state.config.accentPool.length;
   if (count === 0) return "canon mix";
-  if (count === ACCENT_HEXES.length) return "full palette";
+  if (count === ACCENT_HEXES.length) return "7-color custom pool";
   return count === 1 ? "1 accent" : `${count} accents`;
 }
 
@@ -989,13 +998,15 @@ function renderCorpusControls(): void {
     nonePreset.addEventListener("click", () => {
       if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.accentPool = [];
+      state.config.paletteMode = "auto";
       updateAccentSwatchState();
       if (state.current) corpusRecolorInPlace(); else corpusRegen(false, false);
     });
-    const allPreset = el("button", { type: "button", class: "text-preset", "data-corpus-accent-all": "" }, "all");
+    const allPreset = el("button", { type: "button", class: "text-preset", "data-corpus-accent-all": "" }, "full palette");
     allPreset.addEventListener("click", () => {
       if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.accentPool = [...ACCENT_HEXES];
+      state.config.paletteMode = "full";
       updateAccentSwatchState();
       if (state.current) corpusRecolorInPlace(); else corpusRegen(false, false);
     });
@@ -1006,7 +1017,7 @@ function renderCorpusControls(): void {
     const sel = el("select", { "data-corpus-program": "" }) as HTMLSelectElement;
     const auto = document.createElement("option");
     auto.value = "";
-    auto.textContent = "Auto";
+    auto.textContent = "No program";
     sel.appendChild(auto);
     for (const [id, prog] of Object.entries(PROGRAMS) as [ProgramId, { name: string; hue: string }][]) {
       const o = document.createElement("option");
@@ -1049,6 +1060,7 @@ function renderCorpusControls(): void {
         if (selected.has(hex)) selected.delete(hex);
         else selected.add(hex);
         state.config.accentPool = ACCENT_HEXES.filter((accent) => selected.has(accent));
+        state.config.paletteMode = "auto";
         updateAccentSwatchState();
         if (state.current) corpusRecolorInPlace(); else corpusRegen(false, false);
       });
@@ -1261,6 +1273,7 @@ export function openCorpusItem(config: CorpusSaveConfig, seed: number): void {
       state.config = {
         template: config.template ?? "",
         accentPool: migrateAccentPool(config),
+        paletteMode: config.paletteMode === "full" ? "full" : "auto",
         accentStrength: normalizeAccentStrength(config.accentStrength),
         density: config.density ?? 0.5,
         figures: config.figures ?? true,
@@ -1283,6 +1296,7 @@ export function openCorpusItem(config: CorpusSaveConfig, seed: number): void {
     state.config = {
       template: config.template ?? "",
       accentPool: migrateAccentPool(config),
+      paletteMode: config.paletteMode === "full" ? "full" : "auto",
       accentStrength: normalizeAccentStrength(config.accentStrength),
       density: config.density ?? 0.5,
       figures: config.figures ?? true,

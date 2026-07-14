@@ -154,7 +154,7 @@ describe("studio corpus mode (jsdom)", () => {
     expect(sameD).toBe(true);
   });
 
-  it("P3-1a. program select renders 7 options (Auto + 6 programs)", async () => {
+  it("P3-1a. program select renders 7 options (No program + 6 programs)", async () => {
     await import("../src/studio/main");
 
     const programSelect = document.querySelector(
@@ -164,7 +164,7 @@ describe("studio corpus mode (jsdom)", () => {
     expect(programSelect.options.length).toBe(7);
     const firstOpt = programSelect.options.item(0);
     expect(firstOpt?.value).toBe("");
-    expect(firstOpt?.textContent).toMatch(/Auto/);
+    expect(firstOpt?.textContent).toBe("No program");
   });
 
   it("P3-1b. choosing artificial-intelligence → hue in svg, no #FF4F00, accents locked", async () => {
@@ -804,9 +804,7 @@ describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
     expect(accentButton('#FF4F00').getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('toggles swatches and presets into persisted accentPool only', async () => {
-    // Sanctioned recalibration: Full palette is now the "all" swatch preset;
-    // paletteMode/accent remain read-only legacy migration inputs.
+  it('persists custom accents separately from explicit full-palette mode', async () => {
     await mountCorpusOnly();
 
     accentButton('#FF4F00').click();
@@ -823,15 +821,17 @@ describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
 
     (document.querySelector('[data-corpus-accent-all]') as HTMLButtonElement).click();
     expect(pressedAccentHexes()).toEqual(ACCENT_HEXES);
-    expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('full palette');
-    persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as { accentPool?: string[] };
+    expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('full palette · all 7 guaranteed');
+    persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as { accentPool?: string[]; paletteMode?: string };
     expect(persisted.accentPool).toEqual(ACCENT_HEXES);
+    expect(persisted.paletteMode).toBe('full');
 
     (document.querySelector('[data-corpus-accent-none]') as HTMLButtonElement).click();
     expect(pressedAccentHexes()).toEqual([]);
     expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('canon mix');
-    persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as { accentPool?: string[] };
+    persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as { accentPool?: string[]; paletteMode?: string };
     expect(persisted.accentPool).toEqual([]);
+    expect(persisted.paletteMode).toBeUndefined();
   });
 
   it('migrates legacy paletteMode and accent storage into checked swatches', async () => {
@@ -864,7 +864,7 @@ describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
     expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('program hue');
   });
 
-  it('maps checked swatches to the engine config without paletteMode', async () => {
+  it('maps custom swatches and full palette to distinct engine configs', async () => {
     let savedConfig: Record<string, unknown> | null = null;
     await mountCorpusOnly((config) => {
       savedConfig = config as Record<string, unknown>;
@@ -880,5 +880,25 @@ describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
     findButton('#canvas-actions', /^Save$/).click();
     expect(savedConfig).toMatchObject({ accentPool: ['#FF4F00', '#4997D0'] });
     expect(savedConfig).not.toHaveProperty('paletteMode');
+
+    (document.querySelector('[data-corpus-accent-all]') as HTMLButtonElement).click();
+    findButton('#canvas-actions', /^Save$/).click();
+    expect(savedConfig).toMatchObject({ paletteMode: 'full' });
+    expect(savedConfig).not.toHaveProperty('accentPool');
+  });
+
+  it('restores full-palette intent after a temporary program selection', async () => {
+    await mountCorpusOnly();
+
+    (document.querySelector('[data-corpus-accent-all]') as HTMLButtonElement).click();
+    const programSelect = document.querySelector('[data-corpus-program]') as HTMLSelectElement;
+    programSelect.value = 'energy-infrastructure';
+    programSelect.dispatchEvent(new Event('change'));
+    programSelect.value = '';
+    programSelect.dispatchEvent(new Event('change'));
+
+    expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('full palette · all 7 guaranteed');
+    const persisted = JSON.parse(localStorage.getItem('fai-corpus-config') ?? '{}') as { paletteMode?: string };
+    expect(persisted.paletteMode).toBe('full');
   });
 });
