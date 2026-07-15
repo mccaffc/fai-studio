@@ -162,10 +162,10 @@ const PUBS = {
 /* ---------- state ---------- */
 const state = {
   pub:"pg",
-  headline:"Capability doesn’t wait for consensus",
+  headline:"Headline goes here",
   hlUpper:true,
-  body:"Everyone in Washington agrees that AI policy should be “evidence-based,” right up until the evidence arrives. Then the argument shifts — from what the models can do, to what we wish they couldn’t.\n\nThe uncomfortable fact is that capability doesn’t wait for consensus. If the policy conversation runs eighteen months behind the frontier, the frontier writes the rules by default.",
-  author:"Daniel King", role:"Editor, Policy Gradients",
+  body:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+  author:"Author Name", role:"Title, Publication",
   avatarImg:null,
   accent:PUBS.pg.accent, ground:MASTER.smokeWhite,
   bandAuto:true, bandColor:"#e6e2d8",
@@ -306,8 +306,8 @@ async function renderCard(scale){
   // footer band
   const bandH = 118;
 
-  // vertical assembly
-  const topbarH = state.topbar ? 20 : 0;
+  // vertical assembly — top bar rides at half the footer band's height
+  const topbarH = state.topbar ? Math.round(bandH/2) : 0;
   let y = topbarH + Math.round(pad*0.92);
   const blocks = [];
   if (hlLines.length){ blocks.push({t:"headline", y}); y += hlLines.length*hlLH + 38; }
