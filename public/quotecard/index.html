@@ -100,6 +100,7 @@
       </select>
     </div>
     <div class="row"><label>Top accent bar</label><input type="checkbox" id="topbar" checked></div>
+    <div class="row"><label>FAI chevron</label><input type="checkbox" id="show-chev" checked></div>
     <div class="row"><label>Wordmark</label><input type="checkbox" id="show-mark" checked></div>
   </div>
 
@@ -169,7 +170,7 @@ const state = {
   accent:PUBS.pg.accent, ground:MASTER.smokeWhite,
   bandAuto:true, bandColor:"#e6e2d8",
   hlSize:72, bodySize:33, width:1200,
-  topbar:true, showMark:true,
+  topbar:true, showChev:true, showMark:true,
   kicker:PUBS.pg.kicker, url:PUBS.pg.url,
 };
 
@@ -187,6 +188,33 @@ function loadImg(src){
   const p = new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=src; });
   imgCache.set(src,p); return p;
 }
+/* Official FAI logomark geometry (FAI-Logo-Assets viewBox 0 0 900 1081) — path
+   vertices verbatim; the chevron is never redrawn by eye and never recolored
+   beyond the three lawful pairings (black/white · white/black · black/orange). */
+const CHEV_VB = { w:900, h:1081 };
+const CHEV_TRIS = [
+  [[459.238,0.820],[899.028,540.82],[459.238,1080.82]],
+  [[0,0.820],[439.78,540.82],[0,1080.82]],
+];
+function chevronInk(R){
+  if (R.ground.toUpperCase() === "#FF4F00") return MASTER.codGray; // black on orange
+  return R.dark ? MASTER.smokeWhite : MASTER.codGray;
+}
+function drawChevron(ctx, x, y, h, fill){
+  const s = h / CHEV_VB.h;
+  ctx.save();
+  ctx.translate(x, y); ctx.scale(s, s);
+  ctx.beginPath();
+  for (const tri of CHEV_TRIS){
+    ctx.moveTo(tri[0][0], tri[0][1]);
+    ctx.lineTo(tri[1][0], tri[1][1]);
+    ctx.lineTo(tri[2][0], tri[2][1]);
+    ctx.closePath();
+  }
+  ctx.fillStyle = fill; ctx.fill();
+  ctx.restore();
+}
+
 const tintCache = new Map();
 function tinted(img, hex){
   const key = img.src+"|"+hex;
@@ -254,10 +282,14 @@ async function renderCard(scale){
 
   const meas = document.createElement("canvas").getContext("2d");
 
+  // chevron (official mark, top-right across from the headline)
+  const chevH = 64, chevW = chevH * CHEV_VB.w / CHEV_VB.h;
+
   // headline
   const hlText = state.hlUpper ? state.headline.toUpperCase() : state.headline;
   setFont(meas,"Anton",state.hlSize,400,false,0.004);
-  const hlLines = state.headline.trim() ? wrap(meas,hlText,maxW) : [];
+  const hlMaxW = maxW - (state.showChev ? chevW + 36 : 0);
+  const hlLines = state.headline.trim() ? wrap(meas,hlText,hlMaxW) : [];
   const hlLH = Math.round(state.hlSize*1.08);
 
   // byline
@@ -275,7 +307,7 @@ async function renderCard(scale){
   const bandH = 118;
 
   // vertical assembly
-  const topbarH = state.topbar ? 12 : 0;
+  const topbarH = state.topbar ? 20 : 0;
   let y = topbarH + Math.round(pad*0.92);
   const blocks = [];
   if (hlLines.length){ blocks.push({t:"headline", y}); y += hlLines.length*hlLH + 38; }
@@ -296,6 +328,7 @@ async function renderCard(scale){
   // ground + top bar
   ctx.fillStyle = R.ground; ctx.fillRect(0,0,W,H);
   if (state.topbar){ ctx.fillStyle = state.accent; ctx.fillRect(0,0,W,topbarH); }
+  if (state.showChev) drawChevron(ctx, W - pad - chevW, topbarH + Math.round(pad*0.92), chevH, chevronInk(R));
 
   for (const b of blocks){
     if (b.t === "headline"){
@@ -478,7 +511,7 @@ function bindRange(id,key){ $(id).value = state[key]; $(id+"-v").textContent = s
 bindText("headline","headline"); bindCheck("hl-upper","hlUpper");
 bindText("body","body"); bindText("author","author"); bindText("role","role");
 bindText("kicker","kicker"); bindText("url","url");
-bindCheck("topbar","topbar"); bindCheck("show-mark","showMark");
+bindCheck("topbar","topbar"); bindCheck("show-chev","showChev"); bindCheck("show-mark","showMark");
 bindRange("hl-size","hlSize"); bindRange("body-size","bodySize");
 $("width").value = String(state.width);
 $("width").addEventListener("change",e=>{ state.width=+e.target.value; refresh(); });
