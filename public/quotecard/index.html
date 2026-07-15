@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAI Studio · Quote Cards</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#121212; --line:#2a2a2a; --ink:#f3f3f3; --mut:#8a8a8a; --far:#5a5a5a; --orange:#ff4f00; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;display:flex;height:100vh;overflow:hidden}
+  h1{font-family:"IBM Plex Sans Condensed","Arial Narrow",sans-serif;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:22px;margin:0 0 2px}
+  .sub{color:var(--mut);font-size:11px;letter-spacing:.04em}
+  a.back{color:var(--mut);text-decoration:none;font-size:11px;letter-spacing:.04em}
+  a.back:hover{color:var(--ink)}
+  #panel{width:404px;flex:0 0 404px;height:100%;overflow-y:auto;overflow-x:hidden;border-right:1px solid var(--line);padding:22px 26px 80px 22px;scrollbar-gutter:stable}
+  .grp{border-top:1px solid var(--line);padding:16px 0 4px;margin-top:6px}
+  .grp:first-of-type{border-top:none}
+  .glabel{color:var(--far);text-transform:uppercase;letter-spacing:.16em;font-size:10px;margin-bottom:12px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:9px 0}
+  .row label{color:var(--mut);flex:0 0 112px;white-space:nowrap}
+  .row .val{color:var(--ink);flex:0 0 52px;text-align:right;font-size:12px}
+  .col{margin:9px 0}
+  .col label{display:block;color:var(--mut);margin-bottom:6px}
+  input[type=range]{flex:1;accent-color:var(--orange);height:2px;min-width:0}
+  select,input[type=text],textarea{background:#0d0d0d;color:var(--ink);border:1px solid var(--line);font-family:inherit;font-size:12px;padding:6px 8px;min-width:0;width:100%}
+  textarea{resize:vertical;line-height:1.5}
+  select{flex:1;width:auto}
+  input[type=color]{background:none;border:1px solid var(--line);width:30px;height:28px;padding:1px;cursor:pointer;flex:0 0 30px}
+  input[type=checkbox]{accent-color:var(--orange);width:15px;height:15px}
+  input[type=file]{display:none}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{background:#0d0d0d;color:var(--mut);border:1px solid var(--line);font-family:inherit;font-size:11px;letter-spacing:.05em;padding:7px 11px;cursor:pointer}
+  .chip:hover{color:var(--ink)}
+  .chip.on{color:#121212;background:var(--ink);border-color:var(--ink)}
+  .swatches{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+  .sw{width:26px;height:26px;border:1px solid var(--line);cursor:pointer;padding:0;position:relative}
+  .sw.on{outline:2px solid var(--ink);outline-offset:1px}
+  .btn{background:#0d0d0d;color:var(--ink);border:1px solid var(--line);font-family:inherit;font-size:12px;letter-spacing:.04em;padding:9px 14px;cursor:pointer}
+  .btn:hover{border-color:var(--mut)}
+  .btn.primary{background:var(--orange);border-color:var(--orange);color:#121212;font-weight:500}
+  .btn.small{padding:5px 9px;font-size:11px}
+  .act{display:flex;flex-wrap:wrap;gap:8px}
+  #status{color:var(--mut);font-size:11px;min-height:16px;margin-top:8px}
+  #stage{flex:1;height:100%;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:36px 40px 80px}
+  #stage .frame{max-width:min(920px,100%);width:100%}
+  #card{width:100%;height:auto;display:block;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+  .stagenote{color:var(--far);font-size:11px;letter-spacing:.04em;margin-top:14px;text-align:center}
+</style>
+</head>
+<body>
+<aside id="panel">
+  <div style="margin-bottom:14px">
+    <a class="back" href="../">← FAI Studio</a>
+    <h1 style="margin-top:10px">Quote Cards</h1>
+    <div class="sub">substack excerpt cards · brand-locked</div>
+  </div>
+
+  <div class="grp">
+    <div class="glabel">Publication</div>
+    <div class="chips" id="pub-chips"></div>
+  </div>
+
+  <div class="grp">
+    <div class="glabel">Content</div>
+    <div class="col"><label>Headline</label><input type="text" id="headline"></div>
+    <div class="row"><label>Uppercase headline</label><input type="checkbox" id="hl-upper" checked></div>
+    <div class="col"><label>Excerpt</label><textarea id="body" rows="9"></textarea></div>
+    <div class="col"><label>Author</label><input type="text" id="author"></div>
+    <div class="col"><label>Author title</label><input type="text" id="role"></div>
+    <div class="row"><label>Avatar</label>
+      <span class="act">
+        <button class="btn small" id="avatar-pick">Upload…</button>
+        <button class="btn small" id="avatar-clear" style="display:none">Remove</button>
+      </span>
+      <input type="file" id="avatar-file" accept="image/*">
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="glabel">Color</div>
+    <div class="col"><label>Accent</label><span class="swatches" id="accent-sw"></span></div>
+    <div class="col"><label>Ground</label><span class="swatches" id="ground-sw"></span></div>
+    <div class="row"><label>Footer band auto</label><input type="checkbox" id="band-auto" checked></div>
+    <div class="row" id="band-row" style="display:none"><label>Footer band</label><input type="color" id="band-color" value="#e6e2d8"></div>
+  </div>
+
+  <div class="grp">
+    <div class="glabel">Type &amp; layout</div>
+    <div class="row"><label>Headline size</label><input type="range" id="hl-size" min="44" max="104" step="1" value="72"><span class="val" id="hl-size-v">72</span></div>
+    <div class="row"><label>Excerpt size</label><input type="range" id="body-size" min="24" max="44" step="1" value="33"><span class="val" id="body-size-v">33</span></div>
+    <div class="row"><label>Width</label>
+      <select id="width">
+        <option value="1080">1080 · square-ish feeds</option>
+        <option value="1200" selected>1200 · X / OG</option>
+        <option value="1456">1456 · Substack</option>
+      </select>
+    </div>
+    <div class="row"><label>Top accent bar</label><input type="checkbox" id="topbar" checked></div>
+    <div class="row"><label>Wordmark</label><input type="checkbox" id="show-mark" checked></div>
+  </div>
+
+  <div class="grp">
+    <div class="glabel">Footer</div>
+    <div class="col"><label>Kicker</label><input type="text" id="kicker"></div>
+    <div class="col"><label>URL</label><input type="text" id="url"></div>
+  </div>
+
+  <div class="grp">
+    <div class="glabel">Export</div>
+    <div class="act">
+      <button class="btn primary" id="dl">Download PNG 2×</button>
+      <button class="btn" id="copy">Copy PNG</button>
+    </div>
+    <div id="status"></div>
+  </div>
+</aside>
+
+<main id="stage">
+  <div class="frame">
+    <canvas id="card"></canvas>
+    <div class="stagenote">preview renders at export quality · exports are sRGB</div>
+  </div>
+</main>
+
+<script>
+"use strict";
+/* ---------- brand data (locked palette) ---------- */
+const MASTER = { orange:"#FF4F00", codGray:"#121212", smokeWhite:"#F3F3F3", timberwolf:"#D9D9D6" };
+const ACCENTS = [
+  ["International Orange","#FF4F00"],
+  ["Chrome Yellow","#FFA300"],
+  ["Electric Violet","#8265DB"],
+  ["Deep Teal","#0E8C88"],
+  ["Signal Green","#268B41"],
+  ["Celestial Blue","#4997D0"],
+  ["Frontier Indigo","#3A4A6B"],
+  ["Telemagenta (legacy PG)","#D63A8C"],
+];
+const PUBS = {
+  ansible: {
+    label:"The Ansible", accent:"#FFA300",
+    kicker:"From The Ansible, FAI’s Tech & Statecraft newsletter", url:"thefai.org",
+    marks:{ light:"assets/ansible-wordmark.png" }, tintable:true, markAspect:5600/1067, markH:54,
+  },
+  pg: {
+    label:"Policy Gradients", accent:"#0E8C88",
+    kicker:"From Policy Gradients, FAI’s AI policy newsletter", url:"thefai.org",
+    marks:{ light:"assets/pg-wordmark-black.png", dark:"assets/pg-wordmark-white.png" }, tintable:false, markAspect:4032/768, markH:42,
+  },
+  frontier: {
+    label:"The Frontier", accent:"#FF4F00",
+    kicker:"From The Frontier, the FAI podcast", url:"thefai.org",
+    marks:{ light:"assets/frontier-wordmark.png" }, tintable:true, markAspect:5600/1067, markH:44,
+  },
+};
+
+/* ---------- state ---------- */
+const state = {
+  pub:"pg",
+  headline:"Capability doesn’t wait for consensus",
+  hlUpper:true,
+  body:"Everyone in Washington agrees that AI policy should be “evidence-based,” right up until the evidence arrives. Then the argument shifts — from what the models can do, to what we wish they couldn’t.\n\nThe uncomfortable fact is that capability doesn’t wait for consensus. If the policy conversation runs eighteen months behind the frontier, the frontier writes the rules by default.",
+  author:"Daniel King", role:"Editor, Policy Gradients",
+  avatarImg:null,
+  accent:PUBS.pg.accent, ground:MASTER.smokeWhite,
+  bandAuto:true, bandColor:"#e6e2d8",
+  hlSize:72, bodySize:33, width:1200,
+  topbar:true, showMark:true,
+  kicker:PUBS.pg.kicker, url:PUBS.pg.url,
+};
+
+/* ---------- color helpers ---------- */
+function hexRgb(h){ h=h.replace("#",""); if(h.length===3) h=h.split("").map(c=>c+c).join(""); const n=parseInt(h,16); return [(n>>16)&255,(n>>8)&255,n&255]; }
+function rgbHex(r,g,b){ return "#"+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,"0")).join(""); }
+function mix(a,b,t){ const A=hexRgb(a),B=hexRgb(b); return rgbHex(A[0]+(B[0]-A[0])*t, A[1]+(B[1]-A[1])*t, A[2]+(B[2]-A[2])*t); }
+function lum(hex){ const [r,g,b]=hexRgb(hex).map(v=>{ v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); }); return 0.2126*r+0.7152*g+0.0722*b; }
+const isDark = hex => lum(hex) < 0.35;
+
+/* ---------- asset loading ---------- */
+const imgCache = new Map();
+function loadImg(src){
+  if (imgCache.has(src)) return imgCache.get(src);
+  const p = new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=src; });
+  imgCache.set(src,p); return p;
+}
+const tintCache = new Map();
+function tinted(img, hex){
+  const key = img.src+"|"+hex;
+  if (tintCache.has(key)) return tintCache.get(key);
+  const c=document.createElement("canvas"); c.width=img.naturalWidth; c.height=img.naturalHeight;
+  const x=c.getContext("2d");
+  x.drawImage(img,0,0);
+  x.globalCompositeOperation="source-in";
+  x.fillStyle=hex; x.fillRect(0,0,c.width,c.height);
+  tintCache.set(key,c); return c;
+}
+
+/* ---------- text layout ---------- */
+function setFont(ctx,font,size,weight,italic,tracking){
+  ctx.font = `${italic?"italic ":""}${weight||400} ${size}px "${font}"`;
+  ctx.letterSpacing = (tracking||0)*size + "px";
+}
+function wrap(ctx,text,maxW){
+  const out=[];
+  for (const hard of String(text).split("\n")){
+    const words = hard.split(/\s+/).filter(Boolean);
+    if (!words.length){ continue; }
+    let line = "";
+    for (const w of words){
+      const t = line ? line+" "+w : w;
+      if (ctx.measureText(t).width <= maxW || !line) line = t;
+      else { out.push(line); line = w; }
+    }
+    if (line) out.push(line);
+  }
+  return out.length ? out : [];
+}
+
+/* ---------- card model ---------- */
+function resolved(){
+  const pub = PUBS[state.pub];
+  const ground = state.ground === "__accent__" ? state.accent : state.ground;
+  const dark = isDark(ground);
+  const ink = dark ? MASTER.smokeWhite : MASTER.codGray;
+  const muted = mix(ink, ground, 0.38);
+  let band = state.bandAuto ? mix(ground, state.accent, 0.12) : state.bandColor;
+  // accent-drenched grounds: accent-on-accent tint is invisible — step toward ink instead
+  if (state.bandAuto && Math.abs(lum(band) - lum(ground)) < 0.02) band = mix(ground, ink, 0.07);
+  return { pub, ground, ink, muted, band, dark };
+}
+
+async function markFor(band){
+  const pub = PUBS[state.pub];
+  const darkBand = isDark(band);
+  if (darkBand && pub.marks.dark) return loadImg(pub.marks.dark);
+  const img = await loadImg(pub.marks.light);
+  if (darkBand && pub.tintable) return tinted(img, MASTER.smokeWhite);
+  // light accent-drench: a mark that shares the accent hue melts into the ground — go monochrome ink
+  if (!darkBand && state.ground === "__accent__" && pub.tintable) return tinted(img, MASTER.codGray);
+  return img;
+}
+
+/* Layout + paint. scale = device pixels per logical px. Returns canvas sized W*scale x H*scale. */
+async function renderCard(scale){
+  const R = resolved();
+  const W = state.width;
+  const pad = Math.round(W * 0.07);
+  const maxW = W - pad*2;
+  const mark = state.showMark ? await markFor(R.band) : null;
+
+  const meas = document.createElement("canvas").getContext("2d");
+
+  // headline
+  const hlText = state.hlUpper ? state.headline.toUpperCase() : state.headline;
+  setFont(meas,"Anton",state.hlSize,400,false,0.004);
+  const hlLines = state.headline.trim() ? wrap(meas,hlText,maxW) : [];
+  const hlLH = Math.round(state.hlSize*1.08);
+
+  // byline
+  const hasByline = state.author.trim() || state.avatarImg;
+  const avatarD = 64;
+
+  // body paragraphs
+  const paras = state.body.split(/\n{2,}/).map(p=>p.trim()).filter(Boolean);
+  setFont(meas,"IBM Plex Sans",state.bodySize,400,false,0);
+  const bodyLH = Math.round(state.bodySize*1.52);
+  const paraGap = Math.round(state.bodySize*0.62);
+  const paraLines = paras.map(p=>wrap(meas,p,maxW));
+
+  // footer band
+  const bandH = 118;
+
+  // vertical assembly
+  const topbarH = state.topbar ? 12 : 0;
+  let y = topbarH + Math.round(pad*0.92);
+  const blocks = [];
+  if (hlLines.length){ blocks.push({t:"headline", y}); y += hlLines.length*hlLH + 38; }
+  if (hasByline){ blocks.push({t:"byline", y}); y += (state.avatarImg ? avatarD : 50) + 40; }
+  if (paraLines.length){
+    blocks.push({t:"body", y});
+    y += paraLines.reduce((s,l)=>s+l.length*bodyLH,0) + (paraLines.length-1)*paraGap + Math.round(pad*0.75);
+  }
+  const H = y + bandH;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(W*scale); canvas.height = Math.round(H*scale);
+  const ctx = canvas.getContext("2d");
+  ctx.scale(scale,scale);
+  ctx.imageSmoothingQuality = "high";
+  ctx.textBaseline = "alphabetic";
+
+  // ground + top bar
+  ctx.fillStyle = R.ground; ctx.fillRect(0,0,W,H);
+  if (state.topbar){ ctx.fillStyle = state.accent; ctx.fillRect(0,0,W,topbarH); }
+
+  for (const b of blocks){
+    if (b.t === "headline"){
+      setFont(ctx,"Anton",state.hlSize,400,false,0.004);
+      ctx.fillStyle = R.ink;
+      hlLines.forEach((ln,i)=> ctx.fillText(ln, pad, b.y + state.hlSize*0.92 + i*hlLH));
+    }
+    if (b.t === "byline"){
+      let tx = pad;
+      const cy = b.y + (state.avatarImg ? avatarD/2 : 25);
+      if (state.avatarImg){
+        ctx.save();
+        ctx.beginPath(); ctx.arc(pad+avatarD/2, b.y+avatarD/2, avatarD/2, 0, Math.PI*2); ctx.clip();
+        const im = state.avatarImg;
+        const s = Math.max(avatarD/im.naturalWidth, avatarD/im.naturalHeight);
+        ctx.drawImage(im, pad+avatarD/2-im.naturalWidth*s/2, b.y+avatarD/2-im.naturalHeight*s/2, im.naturalWidth*s, im.naturalHeight*s);
+        ctx.restore();
+        tx = pad + avatarD + 18;
+      }
+      if (state.author.trim()){
+        setFont(ctx,"IBM Plex Sans",23,600,false,0.05);
+        ctx.fillStyle = R.ink;
+        ctx.fillText(state.author.toUpperCase(), tx, cy - (state.role.trim()?4:-8));
+      }
+      if (state.role.trim()){
+        setFont(ctx,"IBM Plex Sans",17,400,false,0.01);
+        ctx.fillStyle = R.muted;
+        ctx.fillText(state.role, tx, cy + 20);
+      }
+    }
+    if (b.t === "body"){
+      setFont(ctx,"IBM Plex Sans",state.bodySize,400,false,0);
+      ctx.fillStyle = R.ink;
+      let by = b.y + state.bodySize*0.85;
+      paraLines.forEach((lines)=>{
+        lines.forEach(ln=>{ ctx.fillText(ln, pad, by); by += bodyLH; });
+        by += paraGap;
+      });
+    }
+  }
+
+  // footer band
+  const bandY = H - bandH;
+  ctx.fillStyle = R.band; ctx.fillRect(0,bandY,W,bandH);
+  const bandInk = isDark(R.band) ? MASTER.smokeWhite : MASTER.codGray;
+  const bandMut = mix(bandInk, R.band, 0.35);
+  const midY = bandY + bandH/2;
+  if (state.kicker.trim()){
+    setFont(ctx,"IBM Plex Mono",17,400,false,0.01);
+    ctx.fillStyle = bandMut;
+    ctx.fillText(state.kicker, pad, midY - 8);
+    setFont(ctx,"IBM Plex Mono",20,500,false,0.01);
+    ctx.fillStyle = bandInk;
+    ctx.fillText(state.url, pad, midY + 22);
+  } else {
+    setFont(ctx,"IBM Plex Mono",20,500,false,0.01);
+    ctx.fillStyle = bandInk;
+    ctx.fillText(state.url, pad, midY + 7);
+  }
+  if (mark){
+    const mh = PUBS[state.pub].markH || 40;
+    let mw = mh * PUBS[state.pub].markAspect;
+    const capW = W*0.38;
+    let h = mh;
+    if (mw > capW){ h = mh*capW/mw; mw = capW; }
+    ctx.drawImage(mark, W - pad - mw, midY - h/2, mw, h);
+  }
+
+  return canvas;
+}
+
+/* ---------- preview / export ---------- */
+const cardEl = document.getElementById("card");
+let renderQueued = false;
+async function refresh(){
+  if (renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(async ()=>{
+    renderQueued = false;
+    try {
+      const c = await renderCard(2);
+      cardEl.width = c.width; cardEl.height = c.height;
+      cardEl.getContext("2d").drawImage(c,0,0);
+    } catch(e){ setStatus("render error: "+e.message); }
+  });
+}
+function setStatus(msg){ document.getElementById("status").textContent = msg; }
+
+async function exportBlob(){
+  const c = await renderCard(2);
+  return new Promise(res=>c.toBlob(res,"image/png"));
+}
+document.getElementById("dl").addEventListener("click", async ()=>{
+  setStatus("rendering…");
+  const blob = await exportBlob();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${state.pub}-quote-card-${new Date().toISOString().slice(0,10)}.png`;
+  a.click();
+  // WebKit queues the download async — revoking synchronously kills the blob first
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+  setStatus(`saved ${a.download} (${state.width*2}px wide)`);
+});
+document.getElementById("copy").addEventListener("click", ()=>{
+  try {
+    const item = new ClipboardItem({ "image/png": exportBlob() });
+    navigator.clipboard.write([item]).then(
+      ()=>setStatus("copied to clipboard"),
+      err=>setStatus("copy failed: "+err.message));
+  } catch(e){ setStatus("copy not supported here: "+e.message); }
+});
+
+/* ---------- controls wiring ---------- */
+const $ = id => document.getElementById(id);
+
+function applyPub(key){
+  state.pub = key;
+  const p = PUBS[key];
+  state.accent = p.accent; state.kicker = p.kicker; state.url = p.url;
+  $("kicker").value = p.kicker; $("url").value = p.url;
+  syncSelection(); refresh();
+}
+/* Chips and swatches are built once; selection toggles classes in place so
+   the clicked element (and keyboard focus) survives. */
+let chipBtns = [], accentBtns = [], groundBtns = [], drenchBtn = null;
+function buildChips(){
+  const box = $("pub-chips"); box.innerHTML = ""; chipBtns = [];
+  for (const [key,p] of Object.entries(PUBS)){
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = p.label; b.dataset.key = key;
+    b.addEventListener("click",()=>applyPub(key));
+    chipBtns.push(b); box.appendChild(b);
+  }
+}
+function swatch(hex,title,cb){
+  const b = document.createElement("button");
+  b.className = "sw"; b.title = title; b.style.background = hex;
+  b.addEventListener("click",cb);
+  return b;
+}
+function buildSwatches(){
+  const asw = $("accent-sw"); asw.innerHTML = ""; accentBtns = [];
+  for (const [name,hex] of ACCENTS){
+    const b = swatch(hex,name,()=>{ state.accent=hex; syncSelection(); refresh(); });
+    b.dataset.hex = hex; accentBtns.push(b); asw.appendChild(b);
+  }
+  const custom = document.createElement("input");
+  custom.type="color"; custom.value = state.accent; custom.title = "Custom accent";
+  custom.addEventListener("input",e=>{ state.accent=e.target.value; syncSelection(); refresh(); });
+  asw.appendChild(custom);
+
+  const gsw = $("ground-sw"); gsw.innerHTML = ""; groundBtns = [];
+  const grounds = [
+    ["Smoke White",MASTER.smokeWhite],["Timberwolf",MASTER.timberwolf],["Cod Gray",MASTER.codGray],
+  ];
+  for (const [name,hex] of grounds){
+    const b = swatch(hex,name,()=>{ state.ground=hex; syncSelection(); refresh(); });
+    b.dataset.ground = hex; groundBtns.push(b); gsw.appendChild(b);
+  }
+  drenchBtn = swatch(state.accent,"Accent drench",()=>{ state.ground="__accent__"; syncSelection(); refresh(); });
+  drenchBtn.dataset.ground = "__accent__"; groundBtns.push(drenchBtn); gsw.appendChild(drenchBtn);
+  const gcustom = document.createElement("input");
+  gcustom.type="color"; gcustom.value = state.ground.startsWith("#") ? state.ground : state.accent; gcustom.title = "Custom ground";
+  gcustom.addEventListener("input",e=>{ state.ground=e.target.value; syncSelection(); refresh(); });
+  gsw.appendChild(gcustom);
+  syncSelection();
+}
+function syncSelection(){
+  chipBtns.forEach(b=>b.classList.toggle("on", state.pub===b.dataset.key));
+  accentBtns.forEach(b=>b.classList.toggle("on", state.accent===b.dataset.hex));
+  groundBtns.forEach(b=>b.classList.toggle("on", state.ground===b.dataset.ground));
+  if (drenchBtn) drenchBtn.style.background = state.accent;
+}
+
+function bindText(id,key){ $(id).value = state[key]; $(id).addEventListener("input",e=>{ state[key]=e.target.value; refresh(); }); }
+function bindCheck(id,key){ $(id).checked = state[key]; $(id).addEventListener("change",e=>{ state[key]=e.target.checked; refresh(); }); }
+function bindRange(id,key){ $(id).value = state[key]; $(id+"-v").textContent = state[key];
+  $(id).addEventListener("input",e=>{ state[key]=+e.target.value; $(id+"-v").textContent=e.target.value; refresh(); }); }
+
+bindText("headline","headline"); bindCheck("hl-upper","hlUpper");
+bindText("body","body"); bindText("author","author"); bindText("role","role");
+bindText("kicker","kicker"); bindText("url","url");
+bindCheck("topbar","topbar"); bindCheck("show-mark","showMark");
+bindRange("hl-size","hlSize"); bindRange("body-size","bodySize");
+$("width").value = String(state.width);
+$("width").addEventListener("change",e=>{ state.width=+e.target.value; refresh(); });
+bindCheck("band-auto","bandAuto");
+$("band-color").value = state.bandColor;
+$("band-auto").addEventListener("change",e=>{ $("band-row").style.display = e.target.checked?"none":"flex"; });
+$("band-color").addEventListener("input",e=>{ state.bandColor=e.target.value; refresh(); });
+
+$("avatar-pick").addEventListener("click",()=>$("avatar-file").click());
+$("avatar-file").addEventListener("change",e=>{
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=>{ const im=new Image(); im.onload=()=>{ state.avatarImg=im; $("avatar-clear").style.display="inline-block"; refresh(); }; im.src=rd.result; };
+  rd.readAsDataURL(f);
+});
+$("avatar-clear").addEventListener("click",()=>{ state.avatarImg=null; $("avatar-clear").style.display="none"; $("avatar-file").value=""; refresh(); });
+
+/* ---------- boot ---------- */
+buildChips(); buildSwatches();
+const FONT_LOADS = [
+  document.fonts.load('400 72px "Anton"'),
+  document.fonts.load('400 33px "IBM Plex Sans"'),
+  document.fonts.load('600 23px "IBM Plex Sans"'),
+  document.fonts.load('400 17px "IBM Plex Mono"'),
+  document.fonts.load('500 20px "IBM Plex Mono"'),
+];
+Promise.allSettled(FONT_LOADS).then(refresh);
+document.fonts.addEventListener("loadingdone",refresh);
+refresh();
+</script>
+</body>
+</html>
