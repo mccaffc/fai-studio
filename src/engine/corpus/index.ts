@@ -39,7 +39,7 @@ import type { VariationCurationOptions } from './curation.js';
 // GRAMMAR is typed as EngineGrammar (with Template[] templates) directly in
 // the generated file; no cast needed.
 const GRAMMAR: EngineGrammar = GRAMMAR_RAW;
-const LOCKED_ACCENT_HEXES = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const LOCKED_ACCENT_HEXES = ['#FF4F00', '#FFA300', '#7150D6', '#0E8C88', '#268B41', '#4997D0', '#C8102E'] as const;
 const LOCKED_ACCENT_SET = new Set<string>(LOCKED_ACCENT_HEXES);
 
 // ---------------------------------------------------------------------------

@@ -7,7 +7,7 @@ import { sampleWithDiagnostics } from '../../src/engine/corpus/sample.js';
 import type { BannerPlan, CorpusConfig, EngineGrammar, SampleKnobs } from '../../src/engine/corpus/types.js';
 
 const GRAMMAR = RAW_GRAMMAR as unknown as EngineGrammar;
-const ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const ACCENT_POOL = ['#FF4F00', '#FFA300', '#7150D6', '#0E8C88', '#268B41', '#4997D0', '#C8102E'] as const;
 const ACCENT_POOL_SET = new Set<string>(ACCENT_POOL);
 const STRENGTHS = [0.2, 0.35, 0.5, 0.65, 0.8, 1.0] as const;
 const EPS = 1e-9;

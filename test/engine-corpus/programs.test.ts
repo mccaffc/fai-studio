@@ -5,7 +5,8 @@
  * Covers:
  *  - PROGRAMS registry: 6 entries, correct hues
  *  - applyProgramPalette: transform rules 1-4 (grounds, inks, contrast, safety)
- *  - Frontier Indigo special rule: no indigo ink on Cod Gray ground
+ *  - both-dark guard: dark hues (lum < 0.10) never sit as ink on Cod Gray (no
+ *    current program hue triggers it since the 2026-07-16 palette lock)
  *  - palette law: output fills ⊆ {#121212, #F3F3F3, #D9D9D6, programHue}
  *  - lumRatio / hueFailsContrastOnGround helpers
  *  - generateBanner with program config: config echoed, describePlan appends name
@@ -39,7 +40,7 @@ const PROGRAM_NEUTRAL_SET = new Set(['#121212', '#F3F3F3', '#D9D9D6']);
 const COD_GRAY    = '#121212';
 const SMOKE_WHITE = '#F3F3F3';
 const TIMBERWOLF  = '#D9D9D6';
-const LOCKED_ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const LOCKED_ACCENT_POOL = ['#FF4F00', '#FFA300', '#7150D6', '#0E8C88', '#268B41', '#4997D0', '#C8102E'] as const;
 
 // ---------------------------------------------------------------------------
 // Registry integrity
@@ -52,11 +53,11 @@ describe('PROGRAMS registry', () => {
 
   it('contains the correct locked hues', () => {
     expect(PROGRAMS['technology-statecraft'].hue).toBe('#FFA300');
-    expect(PROGRAMS['american-governance'].hue).toBe('#8265DB');
+    expect(PROGRAMS['american-governance'].hue).toBe('#7150D6');
     expect(PROGRAMS['artificial-intelligence'].hue).toBe('#0E8C88');
     expect(PROGRAMS['energy-infrastructure'].hue).toBe('#268B41');
     expect(PROGRAMS['science-innovation'].hue).toBe('#4997D0');
-    expect(PROGRAMS['frontier-legal-defense'].hue).toBe('#3A4A6B');
+    expect(PROGRAMS['frontier-legal-defense'].hue).toBe('#C8102E');
   });
 
   it('every hue is uppercase 6-digit hex', () => {
@@ -109,11 +110,12 @@ describe('hueFailsContrastOnGround — 6×3 matrix', () => {
     expect(hueFailsContrastOnGround('#FFA300', SMOKE_WHITE)).toBe(false);
   });
 
-  it('3A4A6B (Frontier Indigo) passes all 3 grounds at 1.7 floor', () => {
-    // FLD ratio on CodGray: ~2.12 — passes numerically; Cod Gray remapping is a brand rule
-    expect(hueFailsContrastOnGround('#3A4A6B', COD_GRAY)).toBe(false);
-    expect(hueFailsContrastOnGround('#3A4A6B', SMOKE_WHITE)).toBe(false);
-    expect(hueFailsContrastOnGround('#3A4A6B', TIMBERWOLF)).toBe(false);
+  it('C8102E (Frontier Crimson) passes all 3 grounds at 1.7 floor', () => {
+    // FLD ratios: CodGray ~3.18, SmokeWhite ~5.30, Timberwolf ~4.16 — all pass;
+    // lum ≈ 0.128 ≥ 0.10, so the both-dark guard does not fire either.
+    expect(hueFailsContrastOnGround('#C8102E', COD_GRAY)).toBe(false);
+    expect(hueFailsContrastOnGround('#C8102E', SMOKE_WHITE)).toBe(false);
+    expect(hueFailsContrastOnGround('#C8102E', TIMBERWOLF)).toBe(false);
   });
 });
 
@@ -149,7 +151,7 @@ describe('applyProgramPalette — rule 1: grounds remap', () => {
     const plan = samplePlan(GRAMMAR, 42, { template: 'pipe-field' });
     // Force a #FFFFFF global ground for testing the rule.
     const withWhite: BannerPlan = { ...plan, ground: '#FFFFFF', cells: plan.cells.map(c => ({ ...c, ground: '#FFFFFF' })) };
-    const out = applyProgramPalette(withWhite, '#8265DB');
+    const out = applyProgramPalette(withWhite, '#7150D6');
     expect(out.ground).toBe(SMOKE_WHITE);
     for (const cell of out.cells) {
       expect(cell.ground).not.toBe('#FFFFFF');
@@ -198,7 +200,7 @@ describe('applyProgramPalette — rule 2: inks remap', () => {
       ...plan,
       cells: plan.cells.map((c, i) => i === 0 ? { ...c, ink: '#FFFFFF', inks: ['#FFFFFF'] } : c),
     };
-    const out = applyProgramPalette(withWhiteInk, '#3A4A6B');
+    const out = applyProgramPalette(withWhiteInk, '#C8102E');
     expect(out.cells[0]!.ink).toBe(SMOKE_WHITE);
   });
 });
@@ -207,7 +209,7 @@ describe('applyProgramPalette — rule 3: contrast pass', () => {
   it('ink === ground → ink flips to neutral with max contrast', () => {
     const plan = samplePlan(GRAMMAR, 1, { template: 'pipe-field' });
     // Force a cell where after remapping ink would equal ground.
-    const hue = '#8265DB';
+    const hue = '#7150D6';
     const withConflict: BannerPlan = {
       ...plan,
       cells: plan.cells.map((c, i) => i === 0 ? { ...c, ground: hue, ink: hue, inks: [hue] } : c),
@@ -220,22 +222,41 @@ describe('applyProgramPalette — rule 3: contrast pass', () => {
     expect(PROGRAM_NEUTRAL_SET.has(cell.ink!)).toBe(true);
   });
 
-  it('Frontier Indigo: no cell has indigo ink on Cod Gray ground', () => {
-    const hue = PROGRAMS['frontier-legal-defense'].hue;
+  it('both-dark guard: a dark hue (lum < 0.10) never sits as ink on Cod Gray ground', () => {
+    // Synthetic dark hue (ex-Frontier Indigo, lum≈0.069) — no current program
+    // hue triggers the guard since the 2026-07-16 lock; this keeps the branch covered.
+    const darkHue = '#3A4A6B';
     for (const seed of [1, 7, 42, 100, 500]) {
       for (const template of ['pipe-field', 'arc-mosaic', 'checker-motif', 'repeat-rhythm', 'figure-field', 'mixed-quilt'] as const) {
         const plan = samplePlan(GRAMMAR, seed, { template });
-        const out = applyProgramPalette(plan, hue);
+        const out = applyProgramPalette(plan, darkHue);
         for (const cell of out.cells) {
-          if (cell.ink === hue) {
+          if (cell.ink === darkHue) {
             expect(
               cell.ground,
-              `Frontier Indigo on Cod Gray at (${cell.col},${cell.row}) seed=${seed} template=${template}`,
+              `dark hue on Cod Gray at (${cell.col},${cell.row}) seed=${seed} template=${template}`,
             ).not.toBe(COD_GRAY);
           }
         }
       }
     }
+  });
+
+  it('Frontier Crimson ink is permitted on Cod Gray ground (floor passes, not both-dark)', () => {
+    // #C8102E: CodGray ratio ~3.18 ≥ 1.7 and lum ≈ 0.128 ≥ 0.10 — neither
+    // remap condition fires, so hue-ink-on-CodGray cells survive the transform.
+    const hue = PROGRAMS['frontier-legal-defense'].hue;
+    let onCodGray = 0;
+    for (const seed of [1, 7, 42, 100, 500]) {
+      for (const template of ['pipe-field', 'arc-mosaic', 'checker-motif', 'repeat-rhythm', 'figure-field', 'mixed-quilt'] as const) {
+        const plan = samplePlan(GRAMMAR, seed, { template });
+        const out = applyProgramPalette(plan, hue);
+        for (const cell of out.cells) {
+          if (cell.ink === hue && cell.ground === COD_GRAY) onCodGray += 1;
+        }
+      }
+    }
+    expect(onCodGray, 'expected at least one Crimson-ink-on-CodGray cell across the sweep').toBeGreaterThan(0);
   });
 });
 
@@ -391,14 +412,14 @@ describe('recolorPlan — program-hue swap', () => {
 // ---------------------------------------------------------------------------
 
 describe('recolorPlan — hue→hue swap where h1 is not a corpus accent (C2)', () => {
-  // american-governance (#8265DB) and artificial-intelligence (#0E8C88) are NOT
+  // american-governance (#7150D6) and artificial-intelligence (#0E8C88) are NOT
   // classic corpus accents — they are pure program hues. Swapping from these
   // to another program hue previously leaked h1 cells into the output because
   // remapInk/remapGround did not know about prevHue.
 
   it('american-governance → frontier-legal-defense: palette law on result, no h1 in SVG', () => {
-    const h1 = PROGRAMS['american-governance'].hue;          // #8265DB (not a corpus accent)
-    const h2 = PROGRAMS['frontier-legal-defense'].hue;       // #3A4A6B
+    const h1 = PROGRAMS['american-governance'].hue;          // #7150D6 (not a corpus accent)
+    const h2 = PROGRAMS['frontier-legal-defense'].hue;       // #C8102E
     const base = generateBanner({ seed: 7, program: 'american-governance' });
     const swapped = recolorPlan(base, h2);
 

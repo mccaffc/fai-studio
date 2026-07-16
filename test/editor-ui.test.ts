@@ -66,13 +66,13 @@ describe("editor UI wiring (jsdom)", () => {
     // last swatch row in the inspector is the page background
     const rows = document.querySelectorAll("#controls .swatches");
     const pageRow = rows[rows.length - 1]!;
-    const indigo = pageRow.querySelector(
-      'button[title="Frontier Indigo"]',
+    const crimson = pageRow.querySelector(
+      'button[title="Frontier Crimson"]',
     ) as HTMLButtonElement;
-    indigo.click();
+    crimson.click();
 
     const svg = document.querySelector("#canvas .ed-render svg")!;
-    expect(svg.innerHTML).toContain('fill="#3A4A6B"');
+    expect(svg.innerHTML).toContain('fill="#C8102E"');
   });
 
   it("switches between Select and Paint tools", async () => {

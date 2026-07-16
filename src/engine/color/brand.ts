@@ -10,11 +10,11 @@ export const MASTER_FILLS = {
 
 export const PROGRAM_HUES = {
   chromeYellow: "#FFA300",
-  electricViolet: "#8265DB",
+  irisViolet: "#7150D6",
   deepTeal: "#0E8C88",
   signalGreen: "#268B41",
   celestialBlue: "#4997D0",
-  frontierIndigo: "#3A4A6B",
+  frontierCrimson: "#C8102E",
 } as const;
 
 /** @deprecated Use MASTER_FILLS / PROGRAM_HUES. Kept for classic engine byte identity. */
@@ -28,10 +28,10 @@ export const BRAND_HEXES: readonly string[] = Object.values(BRAND);
 
 /** @deprecated Use PROGRAM_HUES. Kept for classic engine byte identity. */
 export const PROPOSAL = {
-  electricViolet: PROGRAM_HUES.electricViolet,
+  irisViolet: PROGRAM_HUES.irisViolet,
   deepTeal: PROGRAM_HUES.deepTeal,
   signalGreen: PROGRAM_HUES.signalGreen,
-  frontierIndigo: PROGRAM_HUES.frontierIndigo,
+  frontierCrimson: PROGRAM_HUES.frontierCrimson,
 } as const;
 
 export const PROPOSAL_HEXES: readonly string[] = Object.values(PROPOSAL);
@@ -39,12 +39,12 @@ export const PROPOSAL_HEXES: readonly string[] = Object.values(PROPOSAL);
 export const WARM: ReadonlySet<string> = new Set([
   MASTER_FILLS.internationalOrange,
   PROGRAM_HUES.chromeYellow,
+  PROGRAM_HUES.frontierCrimson,
 ]);
 export const COOL: ReadonlySet<string> = new Set([
   PROGRAM_HUES.celestialBlue,
-  PROGRAM_HUES.electricViolet,
+  PROGRAM_HUES.irisViolet,
   PROGRAM_HUES.signalGreen,
-  PROGRAM_HUES.frontierIndigo,
   PROGRAM_HUES.deepTeal,
 ]);
 export const NEUTRAL: ReadonlySet<string> = new Set([
@@ -61,11 +61,11 @@ export const ALL_ACCENTS: readonly string[] = [
   MASTER_FILLS.internationalOrange, // 0 warm lead
   PROGRAM_HUES.celestialBlue, // 1 cool lead
   PROGRAM_HUES.chromeYellow, // 2 warm
-  PROGRAM_HUES.electricViolet, // 3 cool
+  PROGRAM_HUES.irisViolet, // 3 cool
   PROGRAM_HUES.deepTeal, // 4 cool (Deep Teal — AI; ex-Telemagenta, moved warm→cool 2026-07-09)
   PROGRAM_HUES.signalGreen, // 5 cool
   MASTER_FILLS.timberwolf, // 6
-  PROGRAM_HUES.frontierIndigo, // 7
+  PROGRAM_HUES.frontierCrimson, // 7 warm (Frontier Crimson — FLD; ex-Frontier Indigo, cool→warm 2026-07-16)
 ];
 
 function lum(hex: string): number {

@@ -34,10 +34,10 @@ const ACCENT_HEXES = [
   "#FF4F00",
   "#4997D0",
   "#FFA300",
-  "#8265DB",
-  "#3A4A6B",
-  "#268B41",
   "#0E8C88",
+  "#C8102E",
+  "#7150D6",
+  "#268B41",
 ];
 
 function accentGroup(): HTMLElement {
@@ -588,15 +588,15 @@ describe('program hues as explicit accents (Chris, 2026-07-02)', () => {
     const { mountCorpusMode } = await import('../src/studio/corpus-mode');
     mountCorpusMode({ flash: () => {}, onSave: () => {} });
     const values = accentButtons().map(o => o.dataset.corpusAccent ?? '');
-    for (const hue of ['#8265DB', '#0E8C88', '#268B41', '#3A4A6B']) {
+    for (const hue of ['#7150D6', '#0E8C88', '#268B41', '#C8102E']) {
       expect(values.filter(v => v === hue)).toHaveLength(1);
     }
     expect(values.filter(v => v === '#4997D0')).toHaveLength(1); // no dupe for shared hues
   });
   it('engine accepts a program hue as an explicit accent', async () => {
     const { generateBanner } = await import('../src/engine/corpus/index');
-    const r = generateBanner({ seed: 777, accent: '#8265DB' });
-    expect(r.svg).toContain('#8265DB');
+    const r = generateBanner({ seed: 777, accent: '#7150D6' });
+    expect(r.svg).toContain('#7150D6');
     expect(r.svg).not.toContain('#FF4F00'); // zoning de-scatters corpus-mined strays
   });
 });
@@ -623,7 +623,7 @@ describe('F2: edited-config reroll isolation (final review wave)', () => {
     const { generateBanner } = await import('../src/engine/corpus/index');
     const originalResult = generateBanner({ seed: 314, template: 'mixed-quilt' });
     const editedPlan = structuredClone(originalResult.plan);
-    if (editedPlan.cells[0]) editedPlan.cells[0].ground = '#8265DB';
+    if (editedPlan.cells[0]) editedPlan.cells[0].ground = '#7150D6';
     const editedConfig = {
       ...originalResult.config,
       template: 'mixed-quilt',
@@ -719,15 +719,15 @@ describe('F2: edited-config reroll isolation (final review wave)', () => {
     const originalResult = generateBanner({ seed: 99 });
     const editedPlan = structuredClone(originalResult.plan);
     // Mark a cell with a distinctive ground so we can detect stale re-use
-    if (editedPlan.cells[0]) editedPlan.cells[0].ground = "#8265DB";
+    if (editedPlan.cells[0]) editedPlan.cells[0].ground = "#7150D6";
     const editedConfig = { ...originalResult.config, edited: true as const, plan: editedPlan };
 
     mountCorpusMode({ flash: () => {} });
     openCorpusItem(editedConfig, 99);
 
-    // Canvas before reroll should show the edited plan (with #8265DB)
+    // Canvas before reroll should show the edited plan (with #7150D6)
     const canvasBefore = document.querySelector('#canvas')!.innerHTML;
-    // Note: #8265DB may or may not appear in SVG depending on renderer, but the
+    // Note: #7150D6 may or may not appear in SVG depending on renderer, but the
     // plan itself is what matters.  We check via the canvas SVG content.
 
     const rerollBtn = Array.from(

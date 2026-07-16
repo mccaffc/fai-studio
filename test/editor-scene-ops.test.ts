@@ -176,10 +176,10 @@ describe("move / swap", () => {
 describe("page background", () => {
   it("updates the field and keeps canvas-role tiles in sync", () => {
     let s = ok(addNode(emptyScene({ grid: { cols: 2, rows: 2 } }), 0, 0, "disc/full", "discs"));
-    s = ok(setPageBackground(s, "#3A4A6B"));
-    expect(s.ground).toBe("#3A4A6B");
+    s = ok(setPageBackground(s, "#C8102E"));
+    expect(s.ground).toBe("#C8102E");
     // a canvas-role tile tracks the field, so no stray ground block is drawn
-    expect(s.nodes[0]!.ground).toBe("#3A4A6B");
+    expect(s.nodes[0]!.ground).toBe("#C8102E");
   });
 });
 

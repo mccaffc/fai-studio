@@ -47,11 +47,11 @@ const LOCKED_FILLS = [
   '#D9D9D6',
   '#FF4F00',
   '#FFA300',
-  '#8265DB',
+  '#7150D6',
   '#0E8C88',
   '#268B41',
   '#4997D0',
-  '#3A4A6B',
+  '#C8102E',
 ];
 
 // A spread of seeds across every template (samplePlan picks a template unless
@@ -242,16 +242,18 @@ describe('renderPlanSvg — program palette law', () => {
     }
   });
 
-  it('Frontier Indigo: no cell has indigo ink on Cod Gray ground (plan-level)', () => {
-    const { hue } = PROGRAMS['frontier-legal-defense'];
+  it('both-dark guard (plan-level): a dark hue (lum < 0.10) never sits as ink on Cod Gray', () => {
+    // Synthetic dark hue (ex-Frontier Indigo) — no current program hue triggers
+    // the guard since the 2026-07-16 lock; this keeps the branch covered.
+    const darkHue = '#3A4A6B';
     for (const seed of PROGRAM_SEEDS) {
       const template = TEMPLATES[seed % TEMPLATES.length];
       const plan = samplePlan(GRAMMAR, seed, { template });
-      const transformed = applyProgramPalette(plan, hue);
+      const transformed = applyProgramPalette(plan, darkHue);
       for (const cell of transformed.cells) {
-        if (cell.ink === hue && cell.ground === '#121212') {
+        if (cell.ink === darkHue && cell.ground === '#121212') {
           throw new Error(
-            `Frontier Indigo ink on Cod Gray at (${cell.col},${cell.row}) seed=${seed} template=${template}`,
+            `dark-hue ink on Cod Gray at (${cell.col},${cell.row}) seed=${seed} template=${template}`,
           );
         }
       }

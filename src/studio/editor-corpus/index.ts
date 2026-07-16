@@ -40,13 +40,13 @@ const FILLS = [
   "#D9D9D6",
   "#FF4F00",
   "#FFA300",
-  "#8265DB",
+  "#7150D6",
   "#0E8C88",
   "#268B41",
   "#4997D0",
-  "#3A4A6B",
+  "#C8102E",
 ];
-const SMOKE_WHITE_CHECK_HEXES = new Set(["#268B41", "#3A4A6B"]);
+const SMOKE_WHITE_CHECK_HEXES = new Set(["#268B41", "#C8102E", "#7150D6"]);
 
 // Intentionally includes programOnly tiles: the editor is a curator's hand
 // tool, not the auto-generation path — hand-placing program vocabulary is a

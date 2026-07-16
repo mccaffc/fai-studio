@@ -40,11 +40,11 @@ describe("color modes", () => {
     });
     expect(PROGRAM_HUES).toEqual({
       chromeYellow: "#FFA300",
-      electricViolet: "#8265DB",
+      irisViolet: "#7150D6",
       deepTeal: "#0E8C88",
       signalGreen: "#268B41",
       celestialBlue: "#4997D0",
-      frontierIndigo: "#3A4A6B",
+      frontierCrimson: "#C8102E",
     });
   });
 

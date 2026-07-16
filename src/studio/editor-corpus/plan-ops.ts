@@ -17,11 +17,11 @@ const PERMITTED_FILLS = new Set([
   "#D9D9D6",
   "#FF4F00",
   "#FFA300",
-  "#8265DB",
+  "#7150D6",
   "#0E8C88",
   "#268B41",
   "#4997D0",
-  "#3A4A6B",
+  "#C8102E",
 ]);
 
 const OUT_OF_BOUNDS = "Cell is out of bounds.";

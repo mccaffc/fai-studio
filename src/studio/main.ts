@@ -49,10 +49,10 @@ const SWATCHES: Array<[string, string]> = [
   ["International Orange", "#FF4F00"],
   ["Celestial Blue", "#4997D0"],
   ["Chrome Yellow", "#FFA300"],
-  ["Electric Violet", "#8265DB"],
+  ["Iris Violet", "#7150D6"],
   ["Deep Teal", "#0E8C88"],
   ["Signal Green", "#268B41"],
-  ["Frontier Indigo", "#3A4A6B"],
+  ["Frontier Crimson", "#C8102E"],
   ["Timberwolf", "#D9D9D6"],
 ];
 const MODE_LABELS: Record<ColorMode, string> = {

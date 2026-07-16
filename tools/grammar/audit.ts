@@ -22,7 +22,7 @@ const GRAMMAR_PATH = join(ROOT, 'corpus', 'grammar.json');
 const SEEDS = Array.from({ length: 60 }, (_value, index) => 5000 + index);
 const CELL_COUNT = 18;
 const CANON_ACCENT_DISTRIBUTION = [0.22, 0.20, 0.16, 0.42] as const;
-const LOCKED_ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const LOCKED_ACCENT_POOL = ['#FF4F00', '#FFA300', '#7150D6', '#0E8C88', '#268B41', '#4997D0', '#C8102E'] as const;
 const GROUND_SCHEME_KINDS: GroundSchemeKind[] = [
   'uniform',
   'checker',

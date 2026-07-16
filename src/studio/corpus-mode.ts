@@ -42,16 +42,17 @@ const ACCENT_OPTIONS: Array<[string, string]> = [
   ["International Orange", "#FF4F00"],
   ["Celestial Blue", "#4997D0"],
   ["Chrome Yellow", "#FFA300"],
-  ["Electric Violet", "#8265DB"],
-  ["Frontier Indigo", "#3A4A6B"],
-  ["Signal Green", "#268B41"],
   ["Deep Teal", "#0E8C88"],
+  ["Frontier Crimson", "#C8102E"],
+  ["Iris Violet", "#7150D6"],
+  ["Signal Green", "#268B41"],
 ];
 const ACCENT_HEXES = ACCENT_OPTIONS.map(([, hex]) => hex);
 const ACCENT_SET = new Set(ACCENT_HEXES);
 // Mirrors sample.ts's DARK_GROUND_ZONE_LUMINANCE rule without importing engine
-// code: the two dark locked hues get a SmokeWhite check; the rest get CodGray.
-const SMOKE_WHITE_CHECK_HEXES = new Set(["#268B41", "#3A4A6B"]);
+// code: the dark locked hues (Frontier Crimson, Iris Violet — zone-rule dark — plus
+// Signal Green for check legibility) get a SmokeWhite check; the rest CodGray.
+const SMOKE_WHITE_CHECK_HEXES = new Set(["#268B41", "#C8102E", "#7150D6"]);
 
 // Arrangement labels shown in the size select: id → label with dims
 const ARRANGEMENT_LABELS: Record<string, string> = {

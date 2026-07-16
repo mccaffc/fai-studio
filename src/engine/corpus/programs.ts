@@ -34,11 +34,11 @@ export type ProgramId =
 
 export const PROGRAMS: Record<ProgramId, { name: string; hue: string }> = {
   'technology-statecraft':  { name: 'Technology & Statecraft',  hue: '#FFA300' },
-  'american-governance':    { name: 'American Governance',       hue: '#8265DB' },
+  'american-governance':    { name: 'American Governance',       hue: '#7150D6' },
   'artificial-intelligence':{ name: 'Artificial Intelligence',   hue: '#0E8C88' },
   'energy-infrastructure':  { name: 'Energy & Infrastructure',   hue: '#268B41' },
   'science-innovation':     { name: 'Science & Innovation',      hue: '#4997D0' },
-  'frontier-legal-defense': { name: 'Frontier Legal Defense',    hue: '#3A4A6B' },
+  'frontier-legal-defense': { name: 'Frontier Legal Defense',    hue: '#C8102E' },
 };
 
 /** Program-mode shape identity multiplier for mapped corpus tile families.
@@ -107,7 +107,7 @@ const ORANGE      = '#FF4F00';
 const PROGRAM_NEUTRALS = new Set([COD_GRAY, SMOKE_WHITE, TIMBERWOLF]);
 
 /** Locked accent-pool fills that the transform replaces with the program hue. */
-const ACCENT_POOL = new Set([ORANGE, '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B']);
+const ACCENT_POOL = new Set([ORANGE, '#FFA300', '#7150D6', '#0E8C88', '#268B41', '#4997D0', '#C8102E']);
 
 // ---------------------------------------------------------------------------
 // Luminance helpers (WCAG relative luminance, no external deps)
@@ -230,7 +230,7 @@ function neutralMaxContrast(ground: string): string {
  *     (deterministic inputs → a throw here is a code bug, not user error).
  *
  * @param plan   Source plan (not mutated — pure function, deep-copies internally).
- * @param hue    Target program hue (e.g. '#8265DB').
+ * @param hue    Target program hue (e.g. '#7150D6').
  * @param prevHue Prior program hue to reclaim from the plan (C1: prevents
  *               h1→h2 re-transforms from leaving h1 cells behind). Omit when
  *               transforming a fresh corpus plan (generateBanner path).
@@ -269,20 +269,19 @@ export function applyProgramPalette(plan: BannerPlan, hue: string, prevHue?: str
   //   (a) contrast ratio of hue-on-ground < 1.7 (numeric floor fails), OR
   //   (b) both hue and ground have relative luminance < 0.10 ("both-dark" rule)
   //
-  // The both-dark threshold 0.10 catches FLD (#3A4A6B, lum≈0.069) on CodGray
-  // (#121212, lum≈0.006). FLD's ratio (~2.12) passes the numeric floor, so only
-  // the both-dark rule fires — preserving the brand intent that FLD must never
-  // appear as dark-ink-on-dark-ground. No other current program hue has
-  // lum < 0.10 (next lowest: energy-infrastructure lum≈0.193), so the threshold
-  // does not change behavior for any other hue/ground pair.
+  // The both-dark threshold 0.10 historically caught Frontier Indigo #3A4A6B
+  // (lum≈0.069) on CodGray. Since the 2026-07-16 palette lock no current
+  // program hue has lum < 0.10 (lowest: frontier-legal-defense Frontier
+  // Crimson #C8102E, lum≈0.128), so the both-dark rule fires for no current
+  // hue/ground pair — it is retained as a guard for any future dark hue.
   //
   // Verified 6×3 matrix (✗ = triggers ground→SmokeWhite remap):
   //   technology-statecraft #FFA300:  CodGray 9.36 ✓  SmokeWhite 1.80 ✓  Timberwolf 1.42 ✗(floor)
-  //   american-governance   #8265DB:  CodGray 4.31 ✓  SmokeWhite 3.92 ✓  Timberwolf 3.07 ✓
+  //   american-governance   #7150D6:  CodGray 3.41 ✓  SmokeWhite 4.95 ✓  Timberwolf 3.89 ✓
   //   artificial-intelligence #0E8C88: CodGray 4.57 ✓  SmokeWhite 3.69 ✓  Timberwolf 2.90 ✓
   //   energy-infrastructure  #268B41: CodGray 4.33 ✓  SmokeWhite 3.90 ✓  Timberwolf 3.06 ✓
   //   science-innovation     #4997D0: CodGray 5.91 ✓  SmokeWhite 2.86 ✓  Timberwolf 2.24 ✓
-  //   frontier-legal-defense #3A4A6B: CodGray ✗(both-dark) SmokeWhite 7.98 ✓ Timberwolf 6.26 ✓
+  //   frontier-legal-defense #C8102E: CodGray 3.18 ✓  SmokeWhite 5.30 ✓  Timberwolf 4.16 ✓
   const HUE_LUM = relativeLuminance(hue);
 
   for (const cell of out.cells) {

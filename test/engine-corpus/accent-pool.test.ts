@@ -6,7 +6,7 @@ import { sampleWithDiagnostics } from '../../src/engine/corpus/sample.js';
 import type { BannerPlan, EngineGrammar, SampleKnobs } from '../../src/engine/corpus/types.js';
 
 const GRAMMAR = RAW_GRAMMAR as unknown as EngineGrammar;
-const ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const ACCENT_POOL = ['#FF4F00', '#FFA300', '#7150D6', '#0E8C88', '#268B41', '#4997D0', '#C8102E'] as const;
 const ACCENT_POOL_SET = new Set<string>(ACCENT_POOL);
 
 type AccentPoolKnobs = SampleKnobs & { accentPool?: string[] };
@@ -48,7 +48,7 @@ describe('accent-pool knob', () => {
   it.each([
     { size: 2, pool: ['#FF4F00', '#4997D0'] },
     { size: 3, pool: ['#FF4F00', '#FFA300', '#4997D0'] },
-    { size: 5, pool: ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#4997D0'] },
+    { size: 5, pool: ['#FF4F00', '#FFA300', '#7150D6', '#0E8C88', '#4997D0'] },
   ])('uses only the selected $size-accent pool and shows every member over 100 seeds', ({ pool }) => {
     const expected = sorted(pool);
     let allMembersPresent = 0;
@@ -120,10 +120,10 @@ describe('accent-pool knob', () => {
         for (const accent of pool) {
           expect(visible.has(accent), `strength ${accentStrength} seed ${seed}: ${accent} absent`).toBe(true);
         }
-        const forced = sampleWithDiagnostics(GRAMMAR, seed, { accent: '#8265DB', accentStrength });
+        const forced = sampleWithDiagnostics(GRAMMAR, seed, { accent: '#7150D6', accentStrength });
         const forcedVisible = visibleAccentSet(forced.plan);
-        expect(forcedVisible.has('#8265DB'), `strength ${accentStrength} seed ${seed}: forced accent absent`).toBe(true);
-        expect([...forcedVisible].filter(hex => hex !== '#8265DB'), `strength ${accentStrength} seed ${seed}: second accent`).toHaveLength(0);
+        expect(forcedVisible.has('#7150D6'), `strength ${accentStrength} seed ${seed}: forced accent absent`).toBe(true);
+        expect([...forcedVisible].filter(hex => hex !== '#7150D6'), `strength ${accentStrength} seed ${seed}: second accent`).toHaveLength(0);
       }
       expect(mirrored, `strength ${accentStrength}: seed range must exercise accepted mirrors`).toBeGreaterThan(0);
     }
@@ -133,7 +133,7 @@ describe('accent-pool knob', () => {
     const cases = [
       { pool: ['#FF4F00', '#4997D0'], cap: 0.35 },
       { pool: ['#FF4F00', '#FFA300', '#4997D0'], cap: 0.5 },
-      { pool: ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#4997D0'], cap: 0.5 },
+      { pool: ['#FF4F00', '#FFA300', '#7150D6', '#0E8C88', '#4997D0'], cap: 0.5 },
     ] as const;
 
     for (const { pool, cap } of cases) {

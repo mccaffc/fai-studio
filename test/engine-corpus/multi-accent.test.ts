@@ -6,10 +6,10 @@ import { generateBanner } from '../../src/engine/corpus/index.js';
 import type { BannerPlan, CellPlan, EngineGrammar } from '../../src/engine/corpus/types.js';
 
 const GRAMMAR = RAW_GRAMMAR as unknown as EngineGrammar;
-const ACCENT_POOL = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const ACCENT_POOL = ['#FF4F00', '#FFA300', '#7150D6', '#0E8C88', '#268B41', '#4997D0', '#C8102E'] as const;
 const ACCENT_POOL_SET = new Set<string>(ACCENT_POOL);
-const WARM_ACCENTS = new Set<string>(['#FF4F00', '#FFA300']);
-const COOL_ACCENTS = new Set<string>(['#4997D0', '#8265DB', '#268B41', '#3A4A6B', '#0E8C88']);
+const WARM_ACCENTS = new Set<string>(['#FF4F00', '#FFA300', '#C8102E']);
+const COOL_ACCENTS = new Set<string>(['#4997D0', '#7150D6', '#268B41', '#0E8C88']);
 const CANON_TARGET = [0.22, 0.20, 0.16, 0.42] as const;
 const SAMPLE_COUNT = 200;
 
@@ -176,14 +176,14 @@ describe('multi-accent auto zoning', () => {
     expect(warmOnWarmSide / checked, `${warmOnWarmSide}/${checked}`).toBeGreaterThanOrEqual(0.60);
   });
 
-  it('uses light ink for Frontier Indigo ground zones with readable contrast', () => {
+  it('uses light ink for Frontier Crimson ground zones with readable contrast', () => {
     let checked = 0;
-    const frontierIndigo = '#3A4A6B';
+    const frontierCrimson = '#C8102E';
 
     for (let i = 0; i < 160; i += 1) {
       const seed = 50_000 + i;
-      const { plan } = sampleWithDiagnostics(GRAMMAR, seed, { accent: frontierIndigo, figures: false });
-      const zoneCells = plan.cells.filter(cell => cell.ground === frontierIndigo);
+      const { plan } = sampleWithDiagnostics(GRAMMAR, seed, { accent: frontierCrimson, figures: false });
+      const zoneCells = plan.cells.filter(cell => cell.ground === frontierCrimson);
       if (zoneCells.length === 0) continue;
       checked += zoneCells.length;
       for (const cell of zoneCells) {
@@ -191,7 +191,7 @@ describe('multi-accent auto zoning', () => {
       }
     }
 
-    expect(checked, 'need at least one Frontier Indigo ground-zone cell').toBeGreaterThan(0);
+    expect(checked, 'need at least one Frontier Crimson ground-zone cell').toBeGreaterThan(0);
   });
 
   it('is deterministic for multi-accent auto diagnostics and plans', () => {

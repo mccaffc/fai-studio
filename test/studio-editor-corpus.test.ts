@@ -60,7 +60,7 @@ describe("corpus editor controller (jsdom)", () => {
     await import("../src/studio/main");
 
     const generatedSvg = document.querySelector("#canvas")!.innerHTML;
-    expect(generatedSvg).not.toContain("#8265DB");
+    expect(generatedSvg).not.toContain("#7150D6");
 
     button("[data-corpus-edit]").click();
     expect(document.querySelector("[data-corpus-edit-note]")?.textContent).toMatch(/editing/i);
@@ -70,8 +70,8 @@ describe("corpus editor controller (jsdom)", () => {
     expect(document.querySelector("#canvas .corpus-editor-selection")).toBeTruthy();
     const selectedSvg = document.querySelector("#canvas")!.innerHTML;
 
-    button('[data-corpus-editor-ink="#8265DB"]').click();
-    expect(document.querySelector("#canvas")!.innerHTML).toContain("#8265DB");
+    button('[data-corpus-editor-ink="#7150D6"]').click();
+    expect(document.querySelector("#canvas")!.innerHTML).toContain("#7150D6");
 
     button("[data-corpus-editor-undo]").click();
     expect(document.querySelector("#canvas")!.innerHTML).toBe(selectedSvg);
@@ -87,12 +87,12 @@ describe("corpus editor controller (jsdom)", () => {
 
     button("[data-corpus-edit]").click();
     clickFirstEditableCell();
-    button('[data-corpus-editor-ink="#8265DB"]').click();
+    button('[data-corpus-editor-ink="#7150D6"]').click();
     button("[data-corpus-editor-save]").click();
 
-    expect(document.querySelector("#canvas")!.innerHTML).toContain("#8265DB");
+    expect(document.querySelector("#canvas")!.innerHTML).toContain("#7150D6");
     button("[data-corpus-editor-exit]").click();
-    expect(document.querySelector("#canvas")!.innerHTML).toContain("#8265DB");
+    expect(document.querySelector("#canvas")!.innerHTML).toContain("#7150D6");
     expect(document.querySelector("[data-corpus-edit-note]")).toBeNull();
 
     const stored = localStorage.getItem("fai-pattern-saved");
@@ -107,6 +107,6 @@ describe("corpus editor controller (jsdom)", () => {
     const edited = items.find((item) => item.kind === "corpus" && item.config?.edited);
     expect(edited).toBeTruthy();
     expect(edited!.config!.edited).toBe(true);
-    expect(edited!.config!.plan?.cells?.some((cell) => cell.ink === "#8265DB")).toBe(true);
+    expect(edited!.config!.plan?.cells?.some((cell) => cell.ink === "#7150D6")).toBe(true);
   });
 });

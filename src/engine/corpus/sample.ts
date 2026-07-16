@@ -22,7 +22,7 @@
  * test/engine-corpus/purity.test.ts.
  */
 
-const ACCENT_POOL_HEXES = ['#FF4F00', '#FFA300', '#8265DB', '#0E8C88', '#268B41', '#4997D0', '#3A4A6B'] as const;
+const ACCENT_POOL_HEXES = ['#FF4F00', '#FFA300', '#7150D6', '#0E8C88', '#268B41', '#4997D0', '#C8102E'] as const;
 function isAllowedExplicitAccent(accent: string, order: readonly string[]): boolean {
   return order.includes(accent) || (ACCENT_POOL_HEXES as readonly string[]).includes(accent);
 }
@@ -174,11 +174,11 @@ interface Weighted<T> {
 const ACCENT_POOL: readonly Weighted<string>[] = [
   { value: '#FF4F00', weight: 2, sortKey: '00-#FF4F00' },
   { value: '#FFA300', weight: 1, sortKey: '01-#FFA300' },
-  { value: '#8265DB', weight: 1, sortKey: '02-#8265DB' },
+  { value: '#7150D6', weight: 1, sortKey: '02-#7150D6' },
   { value: '#0E8C88', weight: 1, sortKey: '03-#0E8C88' },
   { value: '#268B41', weight: 1, sortKey: '04-#268B41' },
   { value: '#4997D0', weight: 1, sortKey: '05-#4997D0' },
-  { value: '#3A4A6B', weight: 1, sortKey: '06-#3A4A6B' },
+  { value: '#C8102E', weight: 1, sortKey: '06-#C8102E' },
 ] as const;
 const ACCENT_POOL_SET = new Set<string>(ACCENT_POOL_HEXES);
 
@@ -336,6 +336,14 @@ export function sampleWithDiagnostics(
     syncAccentDiagnostics(cells, grammar, accentRequest.forcedAccent, diag);
   }
   enforceAccentGroundContrast(cells);
+  // Ground-contrast enforcement is itself an ink mutation: dark accent zones
+  // (lum < DARK_GROUND_ZONE_LUMINANCE — Frontier Crimson, Iris Violet) force
+  // #F3F3F3 ink, which can re-merge a same-ink run across the zone seam.
+  // Re-cap after it; chooseBestSplitMutation is zone-law-aware, so these
+  // splits are stable against a further enforcement pass.
+  splitRhythmRuns(cells, grammar, template, dims);
+  splitNoSpineRunForms(cells, grammar, dims);
+  splitRhythmRuns(cells, grammar, template, dims);
   // P10 Law 1 current-sampler baseline (seeds 80000..80199, 6x3 auto):
   // isolated accent-cell share 34/1315 = 2.59% and isolated corner singletons
   // 17/200 = 0.085/banner, both inside the canon bands (1-5%, <=0.25/banner).
@@ -2122,8 +2130,8 @@ const MAX_ACCENT_ZONE_CAP = 9;
 const MIN_GROUND_MODE_PROBABILITY = 0.25;
 const SHIPPED_GROUND_MODE_PROBABILITY = 0.40;
 const MAX_GROUND_MODE_PROBABILITY = 0.55;
-const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300']);
-const COOL_ACCENTS_SET = new Set(['#4997D0', '#8265DB', '#268B41', '#3A4A6B', '#0E8C88']);
+const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300', '#C8102E']);
+const COOL_ACCENTS_SET = new Set(['#4997D0', '#7150D6', '#268B41', '#0E8C88']);
 
 function validateAccentStrength(strength: number | undefined): number {
   if (strength === undefined) return IDENTITY_ACCENT_STRENGTH;
@@ -3129,6 +3137,14 @@ function chooseBestSplitMutation(
     const originalInks = cell.inks ? [...cell.inks] : undefined;
     for (const ink of NEUTRAL_PREFS) {
       if (ink === cell.ground || ink === originalInk) continue;
+      // Zone law: dark accent grounds (lum < DARK_GROUND_ZONE_LUMINANCE) take
+      // #F3F3F3 ink only — a darker split ink here would be re-clobbered by
+      // enforceAccentGroundContrast, re-merging the run this pass just broke.
+      if (
+        ink !== '#F3F3F3' &&
+        ACCENT_POOL_SET.has(cell.ground) &&
+        relativeLuminance(cell.ground) < DARK_GROUND_ZONE_LUMINANCE
+      ) continue;
       cell.ink = ink;
       cell.inks = [ink];
       const candidateScore = score(detectRunFormsForDraft(cells, grammar, dims));
