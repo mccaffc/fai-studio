@@ -781,6 +781,29 @@ describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
     mountCorpusMode({ flash: () => {}, onSave });
   }
 
+  it('shape-emphasis slider: renders at neutral 0.5, regenerates on change, persists', async () => {
+    // Fixed seed (Math.random stub) — emphasis 0.9 provably differs from
+    // neutral at this seed; a random seed makes the canvas assertion flaky.
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.123);
+    await mountCorpusOnly();
+    randomSpy.mockRestore();
+
+    const slider = document.querySelector('[data-corpus-shape-emphasis]') as HTMLInputElement;
+    const label = document.querySelector('[data-corpus-shape-emphasis-label]') as HTMLElement;
+    expect(slider).toBeTruthy();
+    expect(Number(slider.value)).toBeCloseTo(0.5, 2);
+    expect(label.textContent).toBe('Shape emphasis: 0.50');
+
+    const before = document.querySelector('#canvas')!.innerHTML;
+    slider.value = '0.9';
+    slider.dispatchEvent(new Event('change'));
+    expect(label.textContent).toBe('Shape emphasis: 0.90');
+    expect(document.querySelector('#canvas')!.innerHTML).not.toBe(before);
+
+    const persisted = JSON.parse(localStorage.getItem('fai-corpus-config')!) as { shapeEmphasis?: number };
+    expect(persisted.shapeEmphasis).toBeCloseTo(0.9, 2);
+  });
+
   it('renders one flat seven-swatch row in spec order with aria-pressed state', async () => {
     // Sanctioned recalibration: P8 removes the explicit-accent dropdown, so the
     // old dropdown-pinned flatness test now asserts the swatch-world contract.

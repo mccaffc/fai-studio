@@ -246,12 +246,18 @@ export function renderPlanSvg(
 
   // ---- Layer 1: ground mosaic ----
   parts.push(`<rect width="${width}" height="${height}" fill="${plan.ground}"/>`);
+  // Per-cell ground rects get the same seam-guard treatment as tile elements:
+  // a centered same-fill hairline stroke bleeds half its width past the cell
+  // edge, closing the anti-alias seam where two cell grounds abut (the global
+  // ground otherwise ghosts through as a thin line at fractional display
+  // scales). 1px canvas-space ≈ the 0.6 tile-space guard at the default 320.
+  const groundGuard = seamGuard ? (fill: string) => ` stroke="${fill}" stroke-width="1"` : () => '';
   for (const cell of plan.cells) {
     const cellGround = cell.ground ?? plan.ground;
     if (cellGround !== plan.ground) {
       const x = cell.col * cellPx;
       const y = cell.row * cellPx;
-      parts.push(`<rect x="${x}" y="${y}" width="${cellPx}" height="${cellPx}" fill="${cellGround}"/>`);
+      parts.push(`<rect x="${x}" y="${y}" width="${cellPx}" height="${cellPx}" fill="${cellGround}"${groundGuard(cellGround)}/>`);
     }
   }
 

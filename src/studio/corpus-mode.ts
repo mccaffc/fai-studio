@@ -89,6 +89,7 @@ interface PersistedCorpusConfig {
   /** Legacy read-only migration input. Do not write. */
   paletteMode?: "auto" | "full";
   accentStrength?: number;
+  shapeEmphasis?: number;
   density?: number;
   figures?: boolean;
   program?: string;
@@ -121,7 +122,7 @@ function normalizeAccentPool(value: unknown): string[] {
   return ACCENT_HEXES.filter((hex) => selected.has(hex));
 }
 
-function normalizeAccentStrength(value: unknown): number | undefined {
+function normalizeUnitInterval(value: unknown): number | undefined {
   return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1
     ? value
     : undefined;
@@ -141,6 +142,7 @@ function saveCorpusConfig(): void {
     accentPool: [...state.config.accentPool],
     paletteMode: state.config.paletteMode === "full" ? "full" : undefined,
     accentStrength: state.config.accentStrength,
+    shapeEmphasis: state.config.shapeEmphasis,
     density: state.config.density,
     figures: state.config.figures,
     program: state.config.program,
@@ -163,6 +165,7 @@ interface CorpusState {
     accentPool: string[]; // [] = canon mix; 1..7 = explicit user pool
     paletteMode: "auto" | "full";
     accentStrength?: number;
+    shapeEmphasis?: number;
     density: number;
     figures: boolean;
     seed: number;
@@ -196,7 +199,8 @@ function makeDefaultConfig(): CorpusState["config"] {
     template,
     accentPool: migrateAccentPool(saved),
     paletteMode: !program && saved.paletteMode === "full" ? "full" : "auto",
-    accentStrength: normalizeAccentStrength(saved.accentStrength),
+    accentStrength: normalizeUnitInterval(saved.accentStrength),
+    shapeEmphasis: normalizeUnitInterval(saved.shapeEmphasis),
     density: saved.density ?? 0.5,
     figures: saved.figures ?? true,
     seed: (Math.random() * 0xffffffff) >>> 0,
@@ -252,7 +256,8 @@ function historyWalk(delta: -1 | 1): void {
     template: (entry.config as { template?: string }).template ?? "",
     accentPool: migrateAccentPool(entry.config),
     paletteMode: (entry.config as { paletteMode?: string }).paletteMode === "full" ? "full" : "auto",
-    accentStrength: normalizeAccentStrength((entry.config as { accentStrength?: number }).accentStrength),
+    accentStrength: normalizeUnitInterval((entry.config as { accentStrength?: number }).accentStrength),
+    shapeEmphasis: normalizeUnitInterval((entry.config as { shapeEmphasis?: number }).shapeEmphasis),
     density: (entry.config as { density?: number }).density ?? 0.5,
     figures: (entry.config as { figures?: boolean }).figures ?? true,
     seed: entry.seed,
@@ -601,6 +606,7 @@ function buildCorpusConfig(): CorpusConfig {
     figures: state.config.figures,
   };
   if (state.config.accentStrength !== undefined) config.accentStrength = state.config.accentStrength;
+  if (state.config.shapeEmphasis !== undefined) config.shapeEmphasis = state.config.shapeEmphasis;
   if (state.config.template) config.template = state.config.template;
   if (!state.config.program && state.config.paletteMode === "full") {
     config.paletteMode = "full";
@@ -861,6 +867,10 @@ function accentStrengthLabelText(value = effectiveAccentStrength()): string {
   return `Accent amount: ${value.toFixed(2)}`;
 }
 
+function shapeEmphasisLabelText(value = state.config.shapeEmphasis ?? 0.5): string {
+  return `Shape emphasis: ${value.toFixed(2)}`;
+}
+
 function visibleAccentSet(): Set<string> {
   const programHue = activeProgramHue();
   return new Set(programHue
@@ -1116,6 +1126,28 @@ function renderCorpusControls(): void {
     });
     appendControlRow(g, "Template", template);
 
+    // Shape emphasis: how hard the plan's dominant shape family carries the
+    // sheet. 0.5 = shipped sampler behavior; 1 = program-grade carry.
+    const emphasisRow = el("div", { class: "row" });
+    const emphasisLabel = el("label", { "data-corpus-shape-emphasis-label": "" }, shapeEmphasisLabelText());
+    const emphasisSlider = el("input", {
+      type: "range", min: "0", max: "1", step: "0.01",
+      value: String(state.config.shapeEmphasis ?? 0.5),
+      "data-corpus-shape-emphasis": "",
+    }) as HTMLInputElement;
+    emphasisSlider.addEventListener("input", () => {
+      emphasisLabel.textContent = shapeEmphasisLabelText(Number(emphasisSlider.value));
+    });
+    emphasisSlider.addEventListener("change", () => {
+      if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
+      state.config.shapeEmphasis = Number(emphasisSlider.value);
+      emphasisLabel.textContent = shapeEmphasisLabelText(state.config.shapeEmphasis);
+      corpusRegen(false, false);
+    });
+    emphasisRow.appendChild(emphasisLabel);
+    emphasisRow.appendChild(emphasisSlider);
+    g.appendChild(emphasisRow);
+
     const row = el("div", { class: "row" });
     const label = el("label", {}, `Density: ${state.config.density.toFixed(2)}`);
     const slider = el("input", {
@@ -1275,7 +1307,8 @@ export function openCorpusItem(config: CorpusSaveConfig, seed: number): void {
         template: config.template ?? "",
         accentPool: migrateAccentPool(config),
         paletteMode: config.paletteMode === "full" ? "full" : "auto",
-        accentStrength: normalizeAccentStrength(config.accentStrength),
+        accentStrength: normalizeUnitInterval(config.accentStrength),
+        shapeEmphasis: normalizeUnitInterval((config as { shapeEmphasis?: number }).shapeEmphasis),
         density: config.density ?? 0.5,
         figures: config.figures ?? true,
         seed,
@@ -1298,7 +1331,8 @@ export function openCorpusItem(config: CorpusSaveConfig, seed: number): void {
       template: config.template ?? "",
       accentPool: migrateAccentPool(config),
       paletteMode: config.paletteMode === "full" ? "full" : "auto",
-      accentStrength: normalizeAccentStrength(config.accentStrength),
+      accentStrength: normalizeUnitInterval(config.accentStrength),
+      shapeEmphasis: normalizeUnitInterval((config as { shapeEmphasis?: number }).shapeEmphasis),
       density: config.density ?? 0.5,
       figures: config.figures ?? true,
       seed,

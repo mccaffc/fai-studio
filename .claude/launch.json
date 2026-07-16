@@ -2,19 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "generate-banners (full mode, 6 to contact sheet)",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "scripts/fai_contact.py",
-        "banners",
-        "--color-mode", "full",
-        "--count", "6",
-        "--png",
-        "--out", "output/contact-banners"
-      ],
-      "env": {
-        "DYLD_FALLBACK_LIBRARY_PATH": "/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib"
-      }
+      "name": "studio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5173
     }
   ]
 }

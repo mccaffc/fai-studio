@@ -93,6 +93,15 @@ export interface SampleKnobs {
   templateBias?: { ids: readonly string[]; multiplier: number };
   /** Optional minimum mapped-family share in the selected working tile set. */
   familyFloor?: { families: readonly string[]; minShare: number };
+  /**
+   * Main-shape presence control, 0..1. Scales how hard the plan's dominant
+   * shape family carries the sheet: 0.5 is the shipped sampler behavior
+   * (undefined ≡ 0.5, byte-identical); toward 1 the dominant family's
+   * working-set quota, draw bias, and floor rise to program-grade carry;
+   * toward 0 the sheet flattens into an even family mix. In program mode the
+   * same curve scales the program's mapped-family bias and floor instead.
+   */
+  shapeEmphasis?: number;
   paletteMode?: 'auto' | 'full';
   density?: number;
   figures?: boolean;

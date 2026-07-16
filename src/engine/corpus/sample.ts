@@ -269,13 +269,17 @@ export function sampleWithDiagnostics(
 
   const dominantFamily = drawDominantFamily(grammar, template, rng, knobs.familyBias);
   diag.dominantFamily = dominantFamily;
+  // shapeEmphasis scales how hard the dominant family carries the working set
+  // — resolved AFTER the dominant draw so the slider changes carry, not which
+  // family wins. Undefined (or exactly 0.5) leaves every path byte-identical.
+  const emphasis = resolveShapeEmphasis(knobs, dominantFamily);
   let targetDistinct = Math.min(dims.cellCount, drawFillVarietyTarget(template.spec.distinctTiles, rng));
   if (dims.cellCount > 0 && template.spec.distinctTiles[1] > 0 && targetDistinct === 0) {
     targetDistinct = 1;
   }
-  let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct, knobs.familyBias, knobs.familyFloor, diag);
+  let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct, emphasis.familyBias, emphasis.familyFloor, diag, emphasis.quotaShare);
   if (workingSet.length === 0) {
-    workingSet = selectWorkingSet(grammar, rng, template, firstAvailableFamily(grammar), 1, knobs.familyBias, knobs.familyFloor, diag);
+    workingSet = selectWorkingSet(grammar, rng, template, firstAvailableFamily(grammar), 1, emphasis.familyBias, emphasis.familyFloor, diag, emphasis.quotaShare);
   }
   targetDistinct = workingSet.length;
 
@@ -650,6 +654,7 @@ function selectWorkingSet(
   familyBias?: FamilyBias,
   familyFloor?: FamilyFloor,
   diag?: SampleDiagnostics,
+  dominantQuotaShare: number = DOMINANT_FAMILY_QUOTA,
 ): string[] {
   // programOnly tiles are excluded from auto-mode draws; they are only reachable
   // when a familyFloor is active that explicitly covers their family.
@@ -666,7 +671,7 @@ function selectWorkingSet(
   const dominant = preferred.filter(tile => grammar.tileCatalog[tile]?.family === dominantFamily);
   const selected: string[] = [];
 
-  const quota = Math.min(targetDistinct, Math.ceil(targetDistinct * DOMINANT_FAMILY_QUOTA));
+  const quota = Math.min(targetDistinct, Math.ceil(targetDistinct * dominantQuotaShare));
   selected.push(...drawTileIds(grammar, rng, dominant, quota, selected, familyBias));
   if (selected.length < targetDistinct) {
     selected.push(...drawTileIdsByFamily(grammar, rng, preferred, targetDistinct - selected.length, selected, familyBias));
@@ -2132,6 +2137,62 @@ const SHIPPED_GROUND_MODE_PROBABILITY = 0.40;
 const MAX_GROUND_MODE_PROBABILITY = 0.55;
 const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300', '#C8102E']);
 const COOL_ACCENTS_SET = new Set(['#4997D0', '#7150D6', '#268B41', '#0E8C88']);
+
+export function validateShapeEmphasis(emphasis: number | undefined): void {
+  if (emphasis === undefined) return;
+  if (!Number.isFinite(emphasis) || emphasis < 0 || emphasis > 1) {
+    throw new Error(`shapeEmphasis must be a finite number from 0 to 1: ${String(emphasis)}`);
+  }
+}
+
+/**
+ * Resolve the effective family carry for a plan from knobs.shapeEmphasis.
+ *
+ * Neutral (undefined or exactly 0.5) returns the caller's own familyBias /
+ * familyFloor and the shipped DOMINANT_FAMILY_QUOTA — byte-identical to the
+ * pre-knob sampler. Otherwise the curves are exponential around the neutral
+ * point so 1.0 lands at program-grade carry (bias ×8, quota ×4, floor 0.6)
+ * and 0.0 flattens the dominant family into the mix:
+ *   bias multiplier  ×2^((e−0.5)·6)   → 0→0.125 · 0.5→1 · 1→8
+ *   working-set quota ×2^((e−0.5)·4)  → 0→0.045 · 0.5→0.18 · 1→0.72
+ * In program mode (familyBias already set) the same curves scale the
+ * program's mapped families rather than the drawn dominant family, and the
+ * floor scales as minShare ×2^((e−0.5)·2), capped at 0.95.
+ */
+function resolveShapeEmphasis(
+  knobs: SampleKnobs,
+  dominantFamily: string,
+): { familyBias?: FamilyBias; familyFloor?: FamilyFloor; quotaShare: number } {
+  validateShapeEmphasis(knobs.shapeEmphasis);
+  const e = knobs.shapeEmphasis;
+  if (e === undefined || e === 0.5) {
+    return { familyBias: knobs.familyBias, familyFloor: knobs.familyFloor, quotaShare: DOMINANT_FAMILY_QUOTA };
+  }
+  const biasScale = Math.pow(2, (e - 0.5) * 6);
+  const quotaShare = Math.min(1, DOMINANT_FAMILY_QUOTA * Math.pow(2, (e - 0.5) * 4));
+  // A caller-supplied floor is never replaced — only scaled by the same curve.
+  const scaledCallerFloor: FamilyFloor | undefined = knobs.familyFloor
+    ? {
+        families: knobs.familyFloor.families,
+        minShare: Math.min(0.95, knobs.familyFloor.minShare * Math.pow(2, (e - 0.5) * 2)),
+      }
+    : undefined;
+  if (knobs.familyBias) {
+    // Program (or caller-biased) mode: scale the existing carry.
+    const familyBias: FamilyBias = {
+      families: knobs.familyBias.families,
+      multiplier: Math.max(0.01, knobs.familyBias.multiplier * biasScale),
+    };
+    return { familyBias, familyFloor: scaledCallerFloor, quotaShare };
+  }
+  // Auto mode: carry (or flatten) the drawn dominant family itself. A floor is
+  // synthesized only when the caller supplied none and emphasis leans high.
+  const familyBias: FamilyBias = { families: [dominantFamily], multiplier: biasScale };
+  const familyFloor: FamilyFloor | undefined = scaledCallerFloor ?? (e > 0.5
+    ? { families: [dominantFamily], minShare: Math.min(0.6, (e - 0.5) * 1.2) }
+    : undefined);
+  return { familyBias, familyFloor, quotaShare };
+}
 
 function validateAccentStrength(strength: number | undefined): number {
   if (strength === undefined) return IDENTITY_ACCENT_STRENGTH;

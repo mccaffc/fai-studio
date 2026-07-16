@@ -17,7 +17,7 @@ import type { RubricScores } from './score.js';
 import { DEFAULT_ACCENT_STRENGTH } from './types.js';
 import { GRAMMAR as GRAMMAR_RAW } from './data/grammar.js';
 import { TILES } from './data/tiles.js';
-import { samplePlan, rezone } from './sample.js';
+import { samplePlan, rezone, validateShapeEmphasis } from './sample.js';
 import { scorePlan } from './score.js';
 import { renderPlanSvg } from './render.js';
 import {
@@ -107,6 +107,7 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
     figures: config.figures,
     arrangement: config.arrangement,
     paletteMode,
+    shapeEmphasis: config.shapeEmphasis,
     ...(programKnobs && {
       familyBias: programKnobs.familyBias,
       templateBias: programKnobs.templateBias,
@@ -180,6 +181,7 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
 function validateCorpusConfig(config: CorpusConfig): void {
   const paletteMode = config.paletteMode ?? 'auto';
   validateAccentStrength(config.accentStrength);
+  validateShapeEmphasis(config.shapeEmphasis);
   if (paletteMode !== 'auto' && paletteMode !== 'full') {
     throw new Error(`Unknown paletteMode: ${String(config.paletteMode)}`);
   }

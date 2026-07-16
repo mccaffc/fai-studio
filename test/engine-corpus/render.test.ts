@@ -459,6 +459,34 @@ describe('renderPlanSvg — canvas structure', () => {
 // ---------------------------------------------------------------------------
 
 describe('renderPlanSvg — seam-guard strokes (brand safety)', () => {
+  it('per-cell ground rects carry a same-fill hairline guard (tile-seam fix, 2026-07-16)', () => {
+    // Find a plan with at least one cell ground differing from the global
+    // ground — its Layer-1 rect must carry stroke=fill so adjacent grounds
+    // close the anti-alias seam between cells.
+    let checked = 0;
+    for (const seed of [1, 7, 42, 999]) {
+      const plan = samplePlan(GRAMMAR, seed, { template: 'checker-motif' });
+      const svg = renderPlanSvg(plan, TILES);
+      for (const cell of plan.cells) {
+        const cellGround = cell.ground ?? plan.ground;
+        if (cellGround === plan.ground) continue;
+        const x = cell.col * 320;
+        const y = cell.row * 320;
+        expect(svg).toContain(
+          `<rect x="${x}" y="${y}" width="320" height="320" fill="${cellGround}" stroke="${cellGround}" stroke-width="1"/>`,
+        );
+        checked += 1;
+      }
+    }
+    expect(checked, 'need at least one differing-ground cell across seeds').toBeGreaterThan(0);
+  });
+
+  it('seamGuard:false omits the ground-rect guard', () => {
+    const plan = samplePlan(GRAMMAR, 999, { template: 'checker-motif' });
+    const svg = renderPlanSvg(plan, TILES, { seamGuard: false });
+    expect(svg).not.toContain('stroke-width="1"');
+  });
+
   it('default (seamGuard:true) includes stroke attributes on all elements', () => {
     const plan = samplePlan(GRAMMAR, 999, { template: 'pipe-field' });
     const svg = renderPlanSvg(plan, TILES); // seamGuard defaults to true
