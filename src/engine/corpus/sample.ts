@@ -38,7 +38,7 @@ import type {
   Template,
   VariantKey,
 } from './types.js';
-import { ARRANGEMENTS, IDENTITY_ACCENT_STRENGTH } from './types.js';
+import { ARRANGEMENTS, DEFAULT_ACCENT_STRENGTH, IDENTITY_ACCENT_STRENGTH } from './types.js';
 import { detectForms, orientEdges } from './forms.js';
 import { profileIoU } from './profiles.js';
 import { mulberry32, type Rng } from './rng.js';
@@ -330,7 +330,21 @@ export function sampleWithDiagnostics(
   // first form detection pass. If accepted, only the accent budget and forms
   // are recomputed; zoning is intentionally not re-run against mirrored ink.
   void detectForms(draftPlanForForms(cells, dims), grammar.tileCatalog, FAMILIES);
-  applyMirror(cells, grammar, dims, rng, template, accentRequest.forcedAccent, diag, accentBudgetCap, accentSurvivors(accentRequest));
+  const mirrorAccentMinimums = accentStrength > DEFAULT_ACCENT_STRENGTH
+    ? new Map(accentSurvivors(accentRequest).map(accent => [accent, accentCellCount(cells, accent)]))
+    : undefined;
+  applyMirror(
+    cells,
+    grammar,
+    dims,
+    rng,
+    template,
+    accentRequest.forcedAccent,
+    diag,
+    accentBudgetCap,
+    accentSurvivors(accentRequest),
+    mirrorAccentMinimums,
+  );
   if (diag.mirrored) {
     syncAccentDiagnostics(cells, grammar, accentRequest.forcedAccent, diag);
   }
@@ -2135,6 +2149,7 @@ const MAX_ACCENT_ZONE_CAP = 9;
 const MIN_GROUND_MODE_PROBABILITY = 0.25;
 const SHIPPED_GROUND_MODE_PROBABILITY = 0.40;
 const MAX_GROUND_MODE_PROBABILITY = 0.55;
+const MAX_FORCED_ACCENT_VISIBLE_SHARE = 0.58;
 const WARM_ACCENTS_SET = new Set(['#FF4F00', '#FFA300', '#C8102E']);
 const COOL_ACCENTS_SET = new Set(['#4997D0', '#7150D6', '#268B41', '#0E8C88']);
 
@@ -2411,6 +2426,18 @@ function applyAccentZoning(
     }
   }
 
+  if (forcedAccent && accentStrength > DEFAULT_ACCENT_STRENGTH && zones[0] && zoneModes[0]) {
+    expandForcedAccentZone(
+      cells,
+      grammar,
+      zones[0],
+      zoneModes[0],
+      forcedAccent,
+      allAccents,
+      accentStrength,
+    );
+  }
+
   diag.accentZone = zoneModes[0] ?? 'none';
   diag.accentZonesPlaced = zones.length;
   diag.accentsUsed = placedAccents;
@@ -2531,6 +2558,103 @@ function takeSingleCellAccentZone(
   );
   applyInkZoneCell(cell, accent, allAccents);
   return { zone: new Set([cell]), mode: 'ink' };
+}
+
+/**
+ * The studio opens accent-carrying modes at 0.75. Above that point the
+ * control promises an appreciably hotter banner, so grow the one forced
+ * accent as a spatially connected region instead of relying on repeated
+ * copies of the exact same tile. The previous same-tile zone remains
+ * byte-identical through the default; only the upper quarter opts into this
+ * broader, still-coherent flood.
+ */
+function expandForcedAccentZone(
+  cells: DraftCell[],
+  grammar: EngineGrammar,
+  zone: Set<DraftCell>,
+  mode: AccentMode,
+  accent: string,
+  allAccents: Set<string>,
+  accentStrength: number,
+): void {
+  const upperRange = (accentStrength - DEFAULT_ACCENT_STRENGTH) / (1 - DEFAULT_ACCENT_STRENGTH);
+  const expansionMode: AccentMode = cells.length <= 3 ? 'ground' : mode;
+  if (expansionMode === 'ground' && mode !== 'ground') {
+    for (const cell of zone) applyGroundZoneCell(cell, accent);
+  }
+  const targetShare = AUTO_ACCENT_BUDGET_CAP +
+    (MAX_FORCED_ACCENT_VISIBLE_SHARE - AUTO_ACCENT_BUDGET_CAP) * upperRange;
+  const targetCount = cells.length <= 3
+    ? cells.length
+    : Math.min(
+        cells.length,
+        Math.max(
+          Math.ceil(cells.length * targetShare - EPS),
+          zone.size + Math.max(1, Math.round(upperRange)),
+        ),
+      );
+  const candidates = new Set(
+    cells.filter(cell =>
+      cell.patchInkRole === undefined &&
+      !zone.has(cell),
+    ),
+  );
+
+  while (zone.size < targetCount && candidates.size > 0) {
+    const adjoining = [...candidates]
+      .map(cell => ({
+        cell,
+        score: accentExpansionScore(cell, zone, grammar),
+      }))
+      .filter(entry => entry.score > 0)
+      .sort((a, b) => b.score - a.score || compareCells(a.cell, b.cell));
+    const next = adjoining[0]?.cell;
+    if (!next) break;
+    candidates.delete(next);
+    zone.add(next);
+    if (expansionMode === 'ground' || next.kind === 'plain') applyGroundZoneCell(next, accent);
+    else applyInkZoneCell(next, accent, allAccents);
+  }
+}
+
+function accentExpansionScore(
+  candidate: DraftCell,
+  zone: Set<DraftCell>,
+  grammar: EngineGrammar,
+): number {
+  let score = 0;
+  for (const neighbor of zone) {
+    const dc = candidate.col - neighbor.col;
+    const dr = candidate.row - neighbor.row;
+    if (Math.abs(dc) + Math.abs(dr) !== 1) continue;
+    score = Math.max(score, 1);
+    if (candidate.kind !== 'tile' || !candidate.tile || neighbor.kind !== 'tile' || !neighbor.tile) continue;
+    score = Math.max(score, candidate.tile === neighbor.tile ? 4 : 1);
+    const direction = dc === 0 ? 'v' : 'h';
+    const [leftOrTop, rightOrBottom] = dc < 0 || dr < 0
+      ? [candidate, neighbor]
+      : [neighbor, candidate];
+    const leftOrTopTile = leftOrTop.tile;
+    const rightOrBottomTile = rightOrBottom.tile;
+    if (!leftOrTopTile || !rightOrBottomTile) continue;
+    if (placementsJoin(
+      grammar,
+      {
+        tile: leftOrTopTile,
+        rotation: leftOrTop.rotation ?? 0,
+        flip: leftOrTop.flip ?? false,
+      },
+      {
+        tile: rightOrBottomTile,
+        rotation: rightOrBottom.rotation ?? 0,
+        flip: rightOrBottom.flip ?? false,
+      },
+      direction,
+    )) {
+      score += 3;
+    }
+  }
+  return score;
 }
 
 function zoneHasSpineEdge(grammar: EngineGrammar, zone: Set<DraftCell>): boolean {
@@ -2710,6 +2834,11 @@ function cellCarriesAnyAccent(cell: DraftCell, accents: Set<string>): boolean {
     (cell.inks ?? []).some(ink => accents.has(ink));
 }
 
+function accentCellCount(cells: readonly DraftCell[], accent: string): number {
+  const accentSet = new Set([accent]);
+  return cells.filter(cell => cellCarriesAnyAccent(cell, accentSet)).length;
+}
+
 function descatterAccentsOutsideZones(
   cells: DraftCell[],
   allAccents: Set<string>,
@@ -2809,6 +2938,7 @@ function applyMirror(
   diag: SampleDiagnostics,
   accentBudgetCap: number,
   requiredAccentSurvivors: readonly string[] = extraAccent ? [extraAccent] : [],
+  minimumAccentCells?: ReadonlyMap<string, number>,
 ): void {
   if (dims.cols < 2) return;
   if (!MIRROR_TEMPLATE_IDS.has(template.id)) return;
@@ -2861,6 +2991,11 @@ function applyMirror(
   // forced mode (ensureAccentPresence already ran); a mirror that breaks it
   // rolls back instead.
   if (requiredAccentSurvivors.some(accent => !cellsCarryAccent(cells, accent))) {
+    restoreDraftCells(cellSnapshots);
+    diag.runPaths = originalRunPaths;
+    return;
+  }
+  if ([...(minimumAccentCells ?? [])].some(([accent, minimum]) => accentCellCount(cells, accent) < minimum)) {
     restoreDraftCells(cellSnapshots);
     diag.runPaths = originalRunPaths;
     return;

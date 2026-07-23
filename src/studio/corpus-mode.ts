@@ -1090,10 +1090,6 @@ function renderCorpusControls(): void {
       "data-corpus-accent-strength": "",
     }) as HTMLInputElement;
     amountSlider.addEventListener("input", () => {
-      amountLabel.textContent = accentStrengthLabelText(Number(amountSlider.value));
-    });
-    amountSlider.addEventListener("change", () => {
-      if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.accentStrength = Number(amountSlider.value);
       amountLabel.textContent = accentStrengthLabelText(state.config.accentStrength);
       corpusRegen(false, false);

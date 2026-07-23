@@ -193,6 +193,30 @@ describe('engine corpus patches - sampler stamping', () => {
     assertProgramPalettePlan(programPlan, hue, 'patch program plan');
     assertProgramPaletteSvg(svg, hue, 'patch program svg');
   });
+
+  it('maximum accent strength preserves protected non-accent patch inks', () => {
+    const seed = 450_021;
+    const atDefault = sampleWithDiagnostics(GRAMMAR, seed, {
+      accent: '#FF4F00',
+      accentStrength: 0.75,
+    }).plan;
+    const atMaximum = sampleWithDiagnostics(GRAMMAR, seed, {
+      accent: '#FF4F00',
+      accentStrength: 1,
+    }).plan;
+    const anchor = patchAnchors(atDefault)[0];
+    expect(anchor, 'fixture must place a patch').toBeDefined();
+    const patch = PATCHES.find(candidate => candidate.id === anchor!.patchId);
+    expect(patch, `missing ${anchor!.patchId}`).toBeDefined();
+
+    for (const patchCell of patch!.cells.filter(cell => cell.kind === 'tile' && cell.inkRole !== 'accent')) {
+      const col = anchor!.col + patchCell.dx;
+      const row = anchor!.row + patchCell.dy;
+      const defaultCell = atDefault.cells.find(cell => cell.col === col && cell.row === row);
+      const maximumCell = atMaximum.cells.find(cell => cell.col === col && cell.row === row);
+      expect(maximumCell?.ink, `${patch!.id} protected ink at ${col},${row}`).toBe(defaultCell?.ink);
+    }
+  });
 });
 
 describe('enforceAccentBudget — patch coherence (P4 track-item)', () => {

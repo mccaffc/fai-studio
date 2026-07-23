@@ -24,6 +24,10 @@ function visibleAccentShare(plan: BannerPlan): number {
   return accented.length / Math.max(1, nonPlain.length);
 }
 
+function canvasAccentShare(plan: BannerPlan): number {
+  return plan.cells.filter(cellCarriesAccent).length / Math.max(1, plan.cells.length);
+}
+
 function accentInkShare(plan: BannerPlan): number {
   const nonPlain = plan.cells.filter(cell => cell.kind !== 'plain');
   const accented = nonPlain.filter(cell =>
@@ -133,6 +137,76 @@ describe('accentStrength engine knob', () => {
           `${mode.name}: means=${means.map(v => v.toFixed(4)).join(' < ')}`,
         ).toBeGreaterThanOrEqual(means[i - 1]!);
       }
+    }
+  });
+
+  it('makes the upper slider range visibly increase a single forced accent', () => {
+    let lowDefaultCases = 0;
+    let improvedLowDefaultCases = 0;
+    const meanShare = (strength: number): number => {
+      let total = 0;
+      for (let i = 0; i < 300; i += 1) {
+        const plan = sampleWithDiagnostics(GRAMMAR, 244_000 + i, {
+          accent: '#FF4F00',
+          accentStrength: strength,
+        }).plan;
+        total += visibleAccentShare(plan);
+      }
+      return total / 300;
+    };
+
+    const defaultShare = meanShare(0.75);
+    const maximumShare = meanShare(1);
+    for (let i = 0; i < 300; i += 1) {
+      const seed = 244_000 + i;
+      const atDefault = visibleAccentShare(sampleWithDiagnostics(GRAMMAR, seed, {
+        accent: '#FF4F00',
+        accentStrength: 0.75,
+      }).plan);
+      if (atDefault >= 0.48) continue;
+      lowDefaultCases += 1;
+      const atMaximum = visibleAccentShare(sampleWithDiagnostics(GRAMMAR, seed, {
+        accent: '#FF4F00',
+        accentStrength: 1,
+      }).plan);
+      if (atMaximum > atDefault + EPS) improvedLowDefaultCases += 1;
+    }
+
+    expect(
+      maximumShare - defaultShare,
+      `default=${defaultShare.toFixed(4)} maximum=${maximumShare.toFixed(4)}`,
+    ).toBeGreaterThanOrEqual(0.10);
+    expect(maximumShare).toBeGreaterThanOrEqual(0.48);
+    expect(
+      improvedLowDefaultCases / Math.max(1, lowDefaultCases),
+      `improved ${improvedLowDefaultCases}/${lowDefaultCases} low-accent seeds`,
+    ).toBeGreaterThanOrEqual(0.90);
+  });
+
+  it('keeps maximum useful for low-accent compact arrangements', () => {
+    for (const arrangement of ['strip', 'column-short'] as const) {
+      let eligible = 0;
+      let improved = 0;
+      for (let i = 0; i < 300; i += 1) {
+        const seed = 245_000 + i;
+        const atDefault = canvasAccentShare(sampleWithDiagnostics(GRAMMAR, seed, {
+          accent: '#FF4F00',
+          accentStrength: 0.75,
+          arrangement,
+        }).plan);
+        if (atDefault >= 1) continue;
+        eligible += 1;
+        const atMaximum = canvasAccentShare(sampleWithDiagnostics(GRAMMAR, seed, {
+          accent: '#FF4F00',
+          accentStrength: 1,
+          arrangement,
+        }).plan);
+        if (atMaximum > atDefault + EPS) improved += 1;
+      }
+      expect(
+        improved / Math.max(1, eligible),
+        `${arrangement}: improved ${improved}/${eligible} eligible seeds`,
+      ).toBeGreaterThanOrEqual(0.90);
     }
   });
 

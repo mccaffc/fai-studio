@@ -297,18 +297,21 @@ describe("P10 Task 5 — accent amount slider", () => {
     expect(accentStrengthRow().title).toBe("");
   });
 
-  it("persists explicit changes, updates the label live, and does not push history", async () => {
+  it("persists explicit changes, updates the banner live, and does not push history", async () => {
+    localStorage.setItem("fai-corpus-config", JSON.stringify({
+      accentPool: ["#FF4F00"],
+      accentStrength: 0.75,
+    }));
     await import("../src/studio/main");
     expect(backBtn().disabled).toBe(true);
 
-    accentButton("#FF4F00").click();
     const slider = accentStrengthSlider();
+    const beforeSvg = document.querySelector("#canvas svg");
 
-    slider.value = "0.82";
+    slider.value = "1";
     slider.dispatchEvent(new Event("input"));
-    expect(accentStrengthLabel().textContent).toBe("Accent amount: 0.82");
-
-    slider.dispatchEvent(new Event("change"));
+    expect(accentStrengthLabel().textContent).toBe("Accent amount: 1.00");
+    expect(document.querySelector("#canvas svg")).not.toBe(beforeSvg);
 
     expect(backBtn().disabled).toBe(true);
     const persisted = JSON.parse(localStorage.getItem("fai-corpus-config") ?? "{}") as {
@@ -316,7 +319,7 @@ describe("P10 Task 5 — accent amount slider", () => {
       accentStrength?: number;
     };
     expect(persisted.accentPool).toEqual(["#FF4F00"]);
-    expect(persisted.accentStrength).toBe(0.82);
+    expect(persisted.accentStrength).toBe(1);
   });
 
   it("enables at the effective 0.75 default when a program is active", async () => {
