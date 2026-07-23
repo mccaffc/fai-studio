@@ -177,6 +177,7 @@ async function main(): Promise<void> {
     knobs.familyBias = pk.familyBias;
     knobs.templateBias = pk.templateBias;
     knobs.familyFloor = pk.familyFloor;
+    knobs.tileDenylist = pk.tileDenylist;
   }
 
   mkdirSync(OUT_DIR, { recursive: true });

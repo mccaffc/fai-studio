@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { generateBanner } from '../../src/engine/corpus/index.js';
+import { ENERGY_OOZE_TILE_IDS } from '../../src/engine/corpus/programs.js';
 import { sampleWithDiagnostics } from '../../src/engine/corpus/sample.js';
 import { GRAMMAR as RAW_GRAMMAR } from '../../src/engine/corpus/data/grammar.js';
 import type { EngineGrammar } from '../../src/engine/corpus/types.js';
@@ -45,5 +46,25 @@ describe('program-only tile gating', () => {
     // Pass-3 probe measured 26/100; pin a conservative floor so refactors that
     // silently drop reachability fail loudly.
     expect(adopted).toBeGreaterThanOrEqual(5);
+  });
+
+  it('Energy never draws the curated bulb and scallop tiles', () => {
+    const blocked = new Set<string>(ENERGY_OOZE_TILE_IDS);
+    for (let i = 0; i < 100; i += 1) {
+      const { plan } = generateBanner({ seed: 970_000 + i, program: 'energy-infrastructure' });
+      const offenders = plan.cells
+        .map(cell => cell.tile)
+        .filter((tile): tile is string => Boolean(tile && blocked.has(tile)));
+      expect(offenders, `seed ${970_000 + i}`).toEqual([]);
+    }
+  });
+
+  it('generateBanner forwards caller tile exclusions through the public API', () => {
+    const seed = 971_234;
+    const baseline = generateBanner({ seed, maxAttempts: 1 });
+    const tile = baseline.plan.cells.find(cell => cell.tile)?.tile;
+    expect(tile).toBeTruthy();
+    const excluded = generateBanner({ seed, maxAttempts: 1, tileDenylist: [tile!] });
+    expect(excluded.plan.cells.some(cell => cell.tile === tile)).toBe(false);
   });
 });

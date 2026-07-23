@@ -98,6 +98,10 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
   const accentStrength = config.accentStrength ?? (hasAccentContext
     ? (programKnobs?.accentStrength ?? DEFAULT_ACCENT_STRENGTH)
     : undefined);
+  const tileDenylist = [
+    ...(config.tileDenylist ?? []),
+    ...(programKnobs?.tileDenylist ?? []),
+  ].filter((tile, index, all) => all.indexOf(tile) === index);
   const knobs: SampleKnobs = {
     template: config.template,
     accent: programKnobs ? programKnobs.accent : config.accent,
@@ -112,7 +116,9 @@ export function generateBanner(config: CorpusConfig = {}): CorpusResult {
       familyBias: programKnobs.familyBias,
       templateBias: programKnobs.templateBias,
       familyFloor: programKnobs.familyFloor,
+      tileDenylist,
     }),
+    ...(!programKnobs && tileDenylist.length > 0 && { tileDenylist }),
   };
 
   interface Attempt {

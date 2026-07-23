@@ -140,7 +140,7 @@ describe("studio corpus mode (jsdom)", () => {
 
     // Get a tile path's 'd' attribute before recolor
     const svgBefore = document.querySelector("#canvas svg")!;
-    const pathBefore = svgBefore.querySelector("path[d]");
+    const pathBefore = svgBefore.querySelector("g[transform] path[d]");
     const dBefore = pathBefore?.getAttribute("d");
     expect(dBefore).toBeTruthy();
 
@@ -149,7 +149,7 @@ describe("studio corpus mode (jsdom)", () => {
 
     // Same path 'd' must still exist (geometry frozen)
     const svgAfter = document.querySelector("#canvas svg")!;
-    const allPaths = Array.from(svgAfter.querySelectorAll("path[d]"));
+    const allPaths = Array.from(svgAfter.querySelectorAll("g[transform] path[d]"));
     const sameD = allPaths.some((p) => p.getAttribute("d") === dBefore);
     expect(sameD).toBe(true);
   });
@@ -185,9 +185,10 @@ describe("studio corpus mode (jsdom)", () => {
     expect(svgHtml).not.toContain("#FF4F00");
     expect(svgHtml).not.toContain('"#FFFFFF"');
 
-    // Program mode locks the program hue swatch and disables the other six.
+    // Program mode locks its hue but leaves the other program hues clickable
+    // so the swatch row can switch programs directly.
     for (const swatch of accentButtons()) {
-      expect(swatch.disabled).toBe(true);
+      expect(swatch.disabled).toBe(["#FF4F00", "#0E8C88"].includes(swatch.dataset.corpusAccent ?? ""));
     }
     expect(pressedAccentHexes()).toEqual(["#0E8C88"]);
     expect(accentButton("#0E8C88").classList.contains("locked")).toBe(true);
@@ -203,7 +204,7 @@ describe("studio corpus mode (jsdom)", () => {
     programSelect.value = "artificial-intelligence";
     programSelect.dispatchEvent(new Event("change"));
 
-    expect(accentButtons().every((swatch) => swatch.disabled)).toBe(true);
+    expect(accentButtons().filter((swatch) => !["#FF4F00", "#0E8C88"].includes(swatch.dataset.corpusAccent ?? "")).every((swatch) => !swatch.disabled)).toBe(true);
 
     // Switch back to Auto
     programSelect.value = "";
@@ -240,8 +241,8 @@ describe("studio corpus mode (jsdom)", () => {
     expect(programSelect2).toBeTruthy();
     expect(programSelect2.value).toBe("science-innovation");
 
-    // And accents should be locked to the program hue.
-    expect(accentButtons().every((swatch) => swatch.disabled)).toBe(true);
+    // And the program hue should remain locked while other programs stay reachable.
+    expect(accentButtons().filter((swatch) => !["#FF4F00", "#4997D0"].includes(swatch.dataset.corpusAccent ?? "")).every((swatch) => !swatch.disabled)).toBe(true);
     expect(pressedAccentHexes()).toEqual(["#4997D0"]);
   });
 
@@ -792,12 +793,12 @@ describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
     const label = document.querySelector('[data-corpus-shape-emphasis-label]') as HTMLElement;
     expect(slider).toBeTruthy();
     expect(Number(slider.value)).toBeCloseTo(0.5, 2);
-    expect(label.textContent).toBe('Shape emphasis: 0.50');
+    expect(label.textContent).toBe('Shape mix: Balanced');
 
     const before = document.querySelector('#canvas')!.innerHTML;
     slider.value = '0.9';
     slider.dispatchEvent(new Event('change'));
-    expect(label.textContent).toBe('Shape emphasis: 0.90');
+    expect(label.textContent).toBe('Shape mix: Unified');
     expect(document.querySelector('#canvas')!.innerHTML).not.toBe(before);
 
     const persisted = JSON.parse(localStorage.getItem('fai-corpus-config')!) as { shapeEmphasis?: number };
@@ -869,7 +870,7 @@ describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
     expect(pressedAccentHexes()).toEqual(['#4997D0']);
   });
 
-  it('program mode disables swatches and locks the program hue on', async () => {
+  it('program mode keeps program swatches clickable and locks the program hue on', async () => {
     await mountCorpusOnly();
 
     const programSelect = document.querySelector(
@@ -880,11 +881,37 @@ describe('full-palette corpus mode (Chris, 2026-07-06)', () => {
 
     expect(pressedAccentHexes()).toEqual(['#268B41']);
     for (const button of accentButtons()) {
-      expect(button.disabled).toBe(true);
+      expect(button.disabled).toBe(['#FF4F00', '#268B41'].includes(button.dataset.corpusAccent ?? ''));
     }
     expect(accentButton('#268B41').classList.contains('locked')).toBe(true);
     expect((document.querySelector('[data-corpus-accent-presets]') as HTMLElement).hidden).toBe(true);
     expect((document.querySelector('[data-corpus-accent-caption]') as HTMLElement).textContent).toBe('program hue');
+  });
+
+  it('clicking a grayed program hue switches the active program directly', async () => {
+    await mountCorpusOnly();
+
+    const programSelect = document.querySelector('[data-corpus-program]') as HTMLSelectElement;
+    programSelect.value = 'energy-infrastructure';
+    programSelect.dispatchEvent(new Event('change'));
+
+    accentButton('#4997D0').click();
+    expect(programSelect.value).toBe('science-innovation');
+    expect(accentButton('#4997D0').classList.contains('locked')).toBe(true);
+    expect(accentButton('#268B41').classList.contains('locked')).toBe(false);
+  });
+
+  it('explains shape mix and canvas fill with qualitative endpoints', async () => {
+    await mountCorpusOnly();
+
+    const shapeHint = document.querySelector('[data-corpus-shape-emphasis-hint]') as HTMLElement;
+    const densityLabel = document.querySelector('[data-corpus-density-label]') as HTMLElement;
+    const densityHint = document.querySelector('[data-corpus-density-hint]') as HTMLElement;
+    expect(shapeHint.textContent).toContain('Varied shapes');
+    expect(shapeHint.textContent).toContain('one repeated shape family');
+    expect(densityLabel.textContent).toBe('Canvas fill: Balanced');
+    expect(densityHint.textContent).toContain('More open space');
+    expect(densityHint.textContent).toContain('more patterned cells');
   });
 
   it('maps custom swatches and full palette to distinct engine configs', async () => {

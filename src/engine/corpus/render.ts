@@ -8,8 +8,8 @@
  * The two layers
  * ---------------------------------------------------------------------------
  *   Layer 1 (ground mosaic): a full-canvas rect filled with plan.ground, then
- *     one per-cell rect for every cell whose resolved ground differs from the
- *     global ground.
+ *     merged same-fill regions for cells whose resolved ground differs from
+ *     the global ground.
  *   Layer 2 (tiles + figures): for each tile cell, a `<g transform=…>` group
  *     carrying the tile's native-200-space elements, recolored by role
  *     (`fg` → cell.ink, `cutout` → cell.ground). Figure anchors emit one
@@ -47,8 +47,9 @@
  * ---------------------------------------------------------------------------
  * TRACK list
  * ---------------------------------------------------------------------------
- * TODO: guard-on pixel gate; stroke-width is tile-space (scales with cellPx/200)
- *   — 0.96px at 320; spec says 0.6 — reconcile in a future pass.
+ * Seam guards use vector-effect="non-scaling-stroke" so the same-fill overdraw
+ * remains one device pixel at fractional Studio preview scales instead of
+ * collapsing below a pixel and exposing the canvas ground.
  */
 
 import type { BannerPlan, CellPlan } from './types.js';
@@ -73,7 +74,18 @@ export interface RenderOptions {
   figureAssets?: readonly FigureAsset[];
 }
 
-const SEAM_STROKE = 0.6;
+const SEAM_STROKE = 1;
+const NON_SCALING_GUARD = ' vector-effect="non-scaling-stroke"';
+const SOURCE_CROPPED_TILE_IDS = new Set([
+  'mined-fs-wave-01',
+  'mined-fs-wave-02',
+  'mined-fs-wave-03',
+  'mined-fs-wave-04',
+  'mined-fs-wave-05',
+  'mined-fs-wave-06',
+  'mined-fs-wave-07',
+  'mined-fs-wave-08',
+]);
 
 // ---------------------------------------------------------------------------
 // Element serialization (mirrors render-recon.ts serializeColored exactly)
@@ -95,7 +107,7 @@ function escAttr(s: string): string {
 function serializeElement(el: TileElement, fill: string, seamGuard: boolean): string {
   // seam-guard stroke matches the fill; skip for fill-less semantics ('none').
   const guard = seamGuard && fill !== 'none'
-    ? ` stroke="${fill}" stroke-width="${SEAM_STROKE.toFixed(3)}" stroke-linejoin="round"`
+    ? ` stroke="${fill}" stroke-width="${SEAM_STROKE.toFixed(3)}" stroke-linejoin="round"${NON_SCALING_GUARD}`
     : '';
   const rule = el.fillRule ? ` fill-rule="${el.fillRule}"` : '';
   switch (el.kind) {
@@ -135,7 +147,7 @@ function freeformBlobPath(tx: number, ty: number, cellPx: number, fill: string, 
     'Z',
   ].join(' ');
   const guard = seamGuard && fill !== 'none'
-    ? ` stroke="${fill}" stroke-width="${SEAM_STROKE.toFixed(3)}" stroke-linejoin="round"`
+    ? ` stroke="${fill}" stroke-width="${SEAM_STROKE.toFixed(3)}" stroke-linejoin="round"${NON_SCALING_GUARD}`
     : '';
   return `<path d="${d}" fill="${fill}"${guard}/>`;
 }
@@ -244,21 +256,71 @@ export function renderPlanSvg(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
   ];
 
+  // Mined tiles retain their source paths, which may extend beyond the native
+  // 0..200 crop. The standalone source SVG clipped those paths with its
+  // viewBox; once embedded as a raw group they would otherwise paint across
+  // neighboring cells and stack in row-major render order.
+  const tileCells = plan.cells.filter(
+    cell => cell.kind === 'tile' && cell.tile && SOURCE_CROPPED_TILE_IDS.has(cell.tile),
+  );
+  if (tileCells.length > 0) {
+    const clips = tileCells.map(cell => {
+      const id = `tile-clip-${cell.col}-${cell.row}`;
+      const x = cell.col * cellPx;
+      const y = cell.row * cellPx;
+      return `<clipPath id="${id}"><rect x="${x}" y="${y}" width="${cellPx}" height="${cellPx}"/></clipPath>`;
+    }).join('');
+    parts.push(`<defs>${clips}</defs>`);
+  }
+
   // ---- Layer 1: ground mosaic ----
   parts.push(`<rect width="${width}" height="${height}" fill="${plan.ground}"/>`);
-  // Per-cell ground rects get the same seam-guard treatment as tile elements:
-  // a centered same-fill hairline stroke bleeds half its width past the cell
-  // edge, closing the anti-alias seam where two cell grounds abut (the global
-  // ground otherwise ghosts through as a thin line at fractional display
-  // scales). 1px canvas-space ≈ the 0.6 tile-space guard at the default 320.
-  const groundGuard = seamGuard ? (fill: string) => ` stroke="${fill}" stroke-width="1"` : () => '';
+  // Paint every cell ground of the same color as one compound path. Separate
+  // same-fill rect elements can expose the global ground at fractional display
+  // scales even when their coordinates match exactly; one paint operation has
+  // no inter-element compositing edge to leak through.
+  const groundGuard = seamGuard
+    ? (fill: string) => ` stroke="${fill}" stroke-width="1"${NON_SCALING_GUARD}`
+    : () => '';
+  const cellsByGround = new Map<string, CellPlan[]>();
   for (const cell of plan.cells) {
     const cellGround = cell.ground ?? plan.ground;
     if (cellGround !== plan.ground) {
-      const x = cell.col * cellPx;
-      const y = cell.row * cellPx;
-      parts.push(`<rect x="${x}" y="${y}" width="${cellPx}" height="${cellPx}" fill="${cellGround}"${groundGuard(cellGround)}/>`);
+      const group = cellsByGround.get(cellGround) ?? [];
+      group.push(cell);
+      cellsByGround.set(cellGround, group);
     }
+  }
+  for (const [fill, cells] of [...cellsByGround.entries()].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)) {
+    const available = new Set(cells.map(cell => cellKey(cell)));
+    const rects: Array<{ col: number; row: number; w: number; h: number }> = [];
+    for (const cell of cells.sort((a, b) => a.row - b.row || a.col - b.col)) {
+      if (!available.has(cellKey(cell))) continue;
+      let w = 1;
+      while (available.has(`${cell.col + w},${cell.row}`)) w += 1;
+      let h = 1;
+      while (
+        cell.row + h < plan.rows &&
+        Array.from({ length: w }, (_unused, offset) => `${cell.col + offset},${cell.row + h}`)
+          .every(key => available.has(key))
+      ) {
+        h += 1;
+      }
+      for (let row = cell.row; row < cell.row + h; row += 1) {
+        for (let col = cell.col; col < cell.col + w; col += 1) {
+          available.delete(`${col},${row}`);
+        }
+      }
+      rects.push({ col: cell.col, row: cell.row, w, h });
+    }
+    const d = rects.map(rect => {
+      const x = rect.col * cellPx;
+      const y = rect.row * cellPx;
+      const w = rect.w * cellPx;
+      const h = rect.h * cellPx;
+      return `M${x} ${y}h${w}v${h}h-${w}Z`;
+    }).join('');
+    parts.push(`<path d="${d}" fill="${fill}"${groundGuard(fill)}/>`);
   }
 
   // ---- Layer 2: tiles + figures ----
@@ -273,7 +335,12 @@ export function renderPlanSvg(
       const body = tile.elements
         .map(el => serializeElement(el, el.role === 'cutout' ? ground : ink, seamGuard))
         .join('');
-      parts.push(`<g${idAttr} transform="${cellTransform(cell, cellPx)}">${body}</g>`);
+      if (SOURCE_CROPPED_TILE_IDS.has(cell.tile)) {
+        const clipId = `tile-clip-${cell.col}-${cell.row}`;
+        parts.push(`<g${idAttr} clip-path="url(#${clipId})"><g transform="${cellTransform(cell, cellPx)}">${body}</g></g>`);
+      } else {
+        parts.push(`<g${idAttr} transform="${cellTransform(cell, cellPx)}">${body}</g>`);
+      }
     } else if (cell.kind === 'freeform' || cell.kind === 'review') {
       if (cell.figureId) {
         const asset = figureById.get(cell.figureId);

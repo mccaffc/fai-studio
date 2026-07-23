@@ -93,6 +93,8 @@ export interface SampleKnobs {
   templateBias?: { ids: readonly string[]; multiplier: number };
   /** Optional minimum mapped-family share in the selected working tile set. */
   familyFloor?: { families: readonly string[]; minShare: number };
+  /** Optional tile exclusions for a curated program vocabulary. */
+  tileDenylist?: readonly string[];
   /**
    * Main-shape presence control, 0..1. Scales how hard the plan's dominant
    * shape family carries the sheet: 0.5 is the shipped sampler behavior

@@ -277,9 +277,9 @@ export function sampleWithDiagnostics(
   if (dims.cellCount > 0 && template.spec.distinctTiles[1] > 0 && targetDistinct === 0) {
     targetDistinct = 1;
   }
-  let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct, emphasis.familyBias, emphasis.familyFloor, diag, emphasis.quotaShare);
+  let workingSet = selectWorkingSet(grammar, rng, template, dominantFamily, targetDistinct, emphasis.familyBias, emphasis.familyFloor, diag, emphasis.quotaShare, knobs.tileDenylist);
   if (workingSet.length === 0) {
-    workingSet = selectWorkingSet(grammar, rng, template, firstAvailableFamily(grammar), 1, emphasis.familyBias, emphasis.familyFloor, diag, emphasis.quotaShare);
+    workingSet = selectWorkingSet(grammar, rng, template, firstAvailableFamily(grammar), 1, emphasis.familyBias, emphasis.familyFloor, diag, emphasis.quotaShare, knobs.tileDenylist);
   }
   targetDistinct = workingSet.length;
 
@@ -669,13 +669,16 @@ function selectWorkingSet(
   familyFloor?: FamilyFloor,
   diag?: SampleDiagnostics,
   dominantQuotaShare: number = DOMINANT_FAMILY_QUOTA,
+  tileDenylist?: readonly string[],
 ): string[] {
+  const denied = new Set(tileDenylist ?? []);
   // programOnly tiles are excluded from auto-mode draws; they are only reachable
   // when a familyFloor is active that explicitly covers their family.
   const floorFamilies = familyFloor && familyFloor.families.length > 0
     ? new Set(familyFloor.families)
     : undefined;
   const allTiles = Object.keys(grammar.tileCatalog).sort().filter(tile => {
+    if (denied.has(tile)) return false;
     if (!grammar.tileCatalog[tile]?.programOnly) return true;
     // Allow programOnly tiles through only when a matching floor family is active.
     return floorFamilies !== undefined && floorFamilies.has(grammar.tileCatalog[tile]?.family ?? '');
@@ -694,7 +697,7 @@ function selectWorkingSet(
     selected.push(...drawTileIdsByFamily(grammar, rng, allTiles, targetDistinct - selected.length, selected, familyBias));
   }
 
-  return applyFamilyFloor(grammar, rng, [...new Set(selected)].sort(), targetDistinct, familyFloor, familyBias, diag);
+  return applyFamilyFloor(grammar, rng, [...new Set(selected)].sort(), targetDistinct, familyFloor, familyBias, diag, denied);
 }
 
 function templateBiasWeight(id: string, templateBias: TemplateBias | undefined): number {
@@ -710,12 +713,13 @@ function applyFamilyFloor(
   familyFloor: FamilyFloor | undefined,
   familyBias: FamilyBias | undefined,
   diag: SampleDiagnostics | undefined,
+  denied: ReadonlySet<string>,
 ): string[] {
   if (familyFloor === undefined || familyFloor.minShare <= 0 || familyFloor.families.length === 0 || targetDistinct <= 0) {
     return selected;
   }
 
-  const allTiles = Object.keys(grammar.tileCatalog).sort();
+  const allTiles = Object.keys(grammar.tileCatalog).sort().filter(tile => !denied.has(tile));
   const mappedFamilies = new Set(familyFloor.families);
   // programOnly tiles in the floor's family are intentionally included —
   // the floor top-up is what makes them reachable.

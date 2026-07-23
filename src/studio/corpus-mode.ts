@@ -49,6 +49,10 @@ const ACCENT_OPTIONS: Array<[string, string]> = [
 ];
 const ACCENT_HEXES = ACCENT_OPTIONS.map(([, hex]) => hex);
 const ACCENT_SET = new Set(ACCENT_HEXES);
+const PROGRAM_ID_BY_HUE = new Map(
+  (Object.entries(PROGRAMS) as [ProgramId, { name: string; hue: string }][])
+    .map(([id, program]) => [program.hue, id] as const),
+);
 // Mirrors sample.ts's DARK_GROUND_ZONE_LUMINANCE rule without importing engine
 // code: the dark locked hues (Frontier Crimson, Iris Violet — zone-rule dark — plus
 // Signal Green for check legibility) get a SmokeWhite check; the rest CodGray.
@@ -868,7 +872,13 @@ function accentStrengthLabelText(value = effectiveAccentStrength()): string {
 }
 
 function shapeEmphasisLabelText(value = state.config.shapeEmphasis ?? 0.5): string {
-  return `Shape emphasis: ${value.toFixed(2)}`;
+  const level = value < 0.34 ? "Varied" : value < 0.75 ? "Balanced" : "Unified";
+  return `Shape mix: ${level}`;
+}
+
+function densityLabelText(value = state.config.density): string {
+  const level = value < 0.34 ? "Airy" : value < 0.75 ? "Balanced" : "Dense";
+  return `Canvas fill: ${level}`;
 }
 
 function visibleAccentSet(): Set<string> {
@@ -902,12 +912,17 @@ function updateAccentSwatchState(): void {
   for (const button of buttons) {
     const hex = button.dataset.corpusAccent ?? "";
     const on = selected.has(hex);
+    const programHue = PROGRAM_ID_BY_HUE.has(hex);
     button.classList.toggle("on", on);
     button.classList.toggle("locked", programLocked && on);
     button.setAttribute("aria-pressed", String(on));
-    button.disabled = programLocked;
+    button.disabled = programLocked && (!programHue || on);
     button.title = programLocked
-      ? `${button.dataset.accentName ?? "Accent"} ${hex} — program hue locked`
+      ? on
+        ? `${button.dataset.accentName ?? "Accent"} ${hex} — current program`
+        : programHue
+          ? `${button.dataset.accentName ?? "Accent"} ${hex} — switch program`
+          : `${button.dataset.accentName ?? "Accent"} ${hex} — unavailable in program mode`
       : `${button.dataset.accentName ?? "Accent"} ${hex}`;
   }
   updateAccentStrengthControl();
@@ -1065,7 +1080,16 @@ function renderCorpusControls(): void {
       swatch.style.backgroundColor = hex;
       swatch.style.setProperty("--check-color", SMOKE_WHITE_CHECK_HEXES.has(hex) ? "#F3F3F3" : "#121212");
       swatch.addEventListener("click", () => {
-        if (state.config.program) return;
+        if (state.config.program) {
+          const nextProgram = PROGRAM_ID_BY_HUE.get(hex);
+          if (!nextProgram || nextProgram === state.config.program) return;
+          if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
+          state.config.program = nextProgram;
+          sel.value = nextProgram;
+          updateAccentSwatchState();
+          corpusRegen(false, false);
+          return;
+        }
         if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
         const selected = new Set(state.config.accentPool);
         if (selected.has(hex)) selected.delete(hex);
@@ -1130,6 +1154,7 @@ function renderCorpusControls(): void {
       type: "range", min: "0", max: "1", step: "0.01",
       value: String(state.config.shapeEmphasis ?? 0.5),
       "data-corpus-shape-emphasis": "",
+      "aria-label": "Shape mix — varied shapes to one repeated shape family",
     }) as HTMLInputElement;
     emphasisSlider.addEventListener("input", () => {
       emphasisLabel.textContent = shapeEmphasisLabelText(Number(emphasisSlider.value));
@@ -1143,27 +1168,38 @@ function renderCorpusControls(): void {
     emphasisRow.appendChild(emphasisLabel);
     emphasisRow.appendChild(emphasisSlider);
     g.appendChild(emphasisRow);
+    g.appendChild(el(
+      "div",
+      { class: "control-hint", "data-corpus-shape-emphasis-hint": "" },
+      "<span>Varied shapes</span><span>one repeated shape family</span>",
+    ));
 
     const row = el("div", { class: "row" });
-    const label = el("label", {}, `Density: ${state.config.density.toFixed(2)}`);
+    const label = el("label", { "data-corpus-density-label": "" }, densityLabelText());
     const slider = el("input", {
       type: "range", min: "0", max: "1", step: "0.01",
       value: String(state.config.density),
       "data-corpus-density": "",
+      "aria-label": "Canvas fill — more open space to more patterned cells",
     }) as HTMLInputElement;
     // Show live value on input (no regen); regenerate only on change (pointer-up)
     slider.addEventListener("input", () => {
-      label.textContent = `Density: ${Number(slider.value).toFixed(2)}`;
+      label.textContent = densityLabelText(Number(slider.value));
     });
     slider.addEventListener("change", () => {
       if (!confirmReplaceEdited()) { renderCorpusControls(); return; }
       state.config.density = Number(slider.value);
-      label.textContent = `Density: ${state.config.density.toFixed(2)}`;
+      label.textContent = densityLabelText();
       corpusRegen(false, false);
     });
     row.appendChild(label);
     row.appendChild(slider);
     g.appendChild(row);
+    g.appendChild(el(
+      "div",
+      { class: "control-hint", "data-corpus-density-hint": "" },
+      "<span>More open space</span><span>more patterned cells</span>",
+    ));
 
     const chip = el(
       "button",

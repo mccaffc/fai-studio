@@ -76,6 +76,18 @@ export const PROGRAM_TEMPLATE_MAP: Record<ProgramId, readonly string[]> = {
   'frontier-legal-defense': ['checker-motif', 'repeat-rhythm'],
 };
 
+/** Wave tiles whose enclosed bulbs, scallops, or dense squiggles read as ooze
+ * when repeated. Energy keeps the cleaner open arcs, channels, and sweeps. */
+export const ENERGY_OOZE_TILE_IDS = [
+  'mined-fs-wave-01',
+  'mined-fs-wave-03',
+  'wave-01',
+  'wave-02',
+  'wave-05',
+  'wave-06',
+  'wave-08',
+] as const;
+
 /**
  * Shared program-knob helper — single source of truth for the three program
  * shape-identity knobs (familyBias, templateBias, familyFloor) plus the forced
@@ -83,13 +95,14 @@ export const PROGRAM_TEMPLATE_MAP: Record<ProgramId, readonly string[]> = {
  * consume this; behavior is byte-identical to the per-caller inline blocks they
  * replaced.
  */
-export function programSampleKnobs(program: ProgramId): Pick<SampleKnobs, 'familyBias' | 'templateBias' | 'familyFloor' | 'accentStrength'> & { accent: string } {
+export function programSampleKnobs(program: ProgramId): Pick<SampleKnobs, 'familyBias' | 'templateBias' | 'familyFloor' | 'tileDenylist' | 'accentStrength'> & { accent: string } {
   return {
     accent: PROGRAMS[program].hue,
     accentStrength: DEFAULT_ACCENT_STRENGTH,
     familyBias: { families: PROGRAM_FAMILY_MAP[program], multiplier: PROGRAM_FAMILY_BIAS },
     templateBias: { ids: PROGRAM_TEMPLATE_MAP[program], multiplier: PROGRAM_TEMPLATE_BIAS },
     familyFloor: { families: PROGRAM_FAMILY_MAP[program], minShare: PROGRAM_FAMILY_FLOOR },
+    tileDenylist: program === 'energy-infrastructure' ? ENERGY_OOZE_TILE_IDS : undefined,
   };
 }
 

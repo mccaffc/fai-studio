@@ -186,6 +186,40 @@ describe('renderPlanSvg — determinism', () => {
   });
 });
 
+describe('renderPlanSvg — cell clipping', () => {
+  it('clips out-of-bounds tile geometry before it can paint neighboring cells', async () => {
+    const plan: BannerPlan = {
+      id: 'clip-regression',
+      width: 400,
+      height: 200,
+      cols: 2,
+      rows: 1,
+      ground: '#F3F3F3',
+      cells: [
+        { col: 0, row: 0, ground: '#F3F3F3', kind: 'tile', tile: 'mined-fs-wave-01', ink: '#121212' },
+        { col: 1, row: 0, ground: '#F3F3F3', kind: 'plain' },
+      ],
+      forms: [],
+      matchRate: 1,
+    };
+    const overflowTiles = {
+      'mined-fs-wave-01': {
+        family: 'wave',
+        background: true,
+        elements: [{ kind: 'rect' as const, role: 'fg' as const, x: 0, y: 0, w: 400, h: 200 }],
+        dominantDirection: 'right',
+      },
+    };
+    const svg = renderPlanSvg(plan, overflowTiles, { cellPx: 360, seamGuard: false });
+    expect(svg).toContain('clipPath');
+    const raster = await rasterizeSvg(svg);
+    const neighborPixel = (180 * RW + 540) * 4;
+    expect([...raster.data.slice(neighborPixel, neighborPixel + 3)]).toEqual([243, 243, 243]);
+    const justInsideNeighbor = (180 * RW + 361) * 4;
+    expect([...raster.data.slice(justInsideNeighbor, justInsideNeighbor + 3)]).toEqual([243, 243, 243]);
+  });
+});
+
 // ---------------------------------------------------------------------------
 // Brand-only fills
 // ---------------------------------------------------------------------------
@@ -459,7 +493,27 @@ describe('renderPlanSvg — canvas structure', () => {
 // ---------------------------------------------------------------------------
 
 describe('renderPlanSvg — seam-guard strokes (brand safety)', () => {
-  it('per-cell ground rects carry a same-fill hairline guard (tile-seam fix, 2026-07-16)', () => {
+  it('merges adjacent matching cell grounds into one painted region', () => {
+    const plan: BannerPlan = {
+      id: 'merged-ground-regression',
+      width: 400,
+      height: 200,
+      cols: 2,
+      rows: 1,
+      ground: '#121212',
+      cells: [
+        { col: 0, row: 0, ground: '#268B41', kind: 'plain' },
+        { col: 1, row: 0, ground: '#268B41', kind: 'plain' },
+      ],
+      forms: [],
+      matchRate: 0,
+    };
+    const svg = renderPlanSvg(plan, TILES, { cellPx: 320 });
+    expect(svg).toContain('d="M0 0h640v320h-640Z" fill="#268B41"');
+    expect(svg).not.toContain('M320 0h320');
+  });
+
+  it('non-global ground regions carry a same-fill scale-independent guard', () => {
     // Find a plan with at least one cell ground differing from the global
     // ground — its Layer-1 rect must carry stroke=fill so adjacent grounds
     // close the anti-alias seam between cells.
@@ -470,10 +524,8 @@ describe('renderPlanSvg — seam-guard strokes (brand safety)', () => {
       for (const cell of plan.cells) {
         const cellGround = cell.ground ?? plan.ground;
         if (cellGround === plan.ground) continue;
-        const x = cell.col * 320;
-        const y = cell.row * 320;
         expect(svg).toContain(
-          `<rect x="${x}" y="${y}" width="320" height="320" fill="${cellGround}" stroke="${cellGround}" stroke-width="1"/>`,
+          `fill="${cellGround}" stroke="${cellGround}" stroke-width="1" vector-effect="non-scaling-stroke"`,
         );
         checked += 1;
       }
@@ -498,6 +550,9 @@ describe('renderPlanSvg — seam-guard strokes (brand safety)', () => {
       const hex = m[0].toUpperCase();
       expect(LOCKED_FILLS, `non-locked stroke ${hex}`).toContain(hex);
     }
+    const guards = svg.match(/stroke-width="[^"]+"/g) ?? [];
+    const nonScalingGuards = svg.match(/vector-effect="non-scaling-stroke"/g) ?? [];
+    expect(nonScalingGuards.length).toBe(guards.length);
   });
 
   it('seamGuard:false omits all stroke attributes on tile groups', () => {

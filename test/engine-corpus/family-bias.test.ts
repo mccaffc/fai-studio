@@ -210,8 +210,10 @@ describe('program family bias', () => {
       'american-governance': 0.64,
       // artificial-intelligence 0.01 -> 0.63
       'artificial-intelligence': 0.56,
-      // energy-infrastructure 0.08 -> 0.77
-      'energy-infrastructure': 0.71,
+      // Curated Energy vocabulary deliberately backs off the former 0.77
+      // wave saturation: 0.08 -> ~0.52 keeps waves dominant without turning
+      // the whole sheet into repeated scallops/bulbs.
+      'energy-infrastructure': 0.48,
       // science-innovation 0.24 -> 0.82
       'science-innovation': 0.76,
       // frontier-legal-defense 0.16 -> 0.65
