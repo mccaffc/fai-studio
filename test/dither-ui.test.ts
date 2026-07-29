@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { serializeChevronSvg } from '../public/dither/render.js';
 
 const html = readFileSync(new URL('../public/dither/index.html', import.meta.url), 'utf8');
 
@@ -77,5 +78,41 @@ describe('Chevron Dither control model', () => {
     expect(html).toContain('function normalizeHex');
     expect(html).toContain('text-transform:uppercase');
     expect(html).toContain("||picker.value.toUpperCase()");
+  });
+
+  it('makes transparent preview compositing explicit and offers a backgroundful SVG', () => {
+    expect(html).toContain('Transparent export');
+    expect(html).toContain('id="backdrop_note" hidden');
+    expect(html).toContain('id="preview_ground" hidden aria-pressed="false">Preview Ground');
+    expect(html).toContain('id="svg_ground" hidden>SVG + Ground');
+    expect(html).toContain('function buildSVG(forceGround=false)');
+    expect(html).toContain('includeGround=forceGround||!p.trans');
+    expect(html).toContain('buildSVG(true)');
+    expect(html).toContain('faia-dither-transparent.svg');
+    expect(html).toContain('faia-dither-with-ground.svg');
+    expect(html).toContain('show("row_cg",true)');
+    expect(html).toContain('previewing ground "+p.cg');
+    expect(html).toContain('checkerboard only · + Ground uses "+p.cg');
+  });
+
+  it('serializes transparent and backgroundful SVGs from the same mark list', () => {
+    const common = {
+      width: 480,
+      height: 1216,
+      ground: '#121212',
+      pair: 'M0,0 L10,5 L0,10 Z',
+      centerX: 5,
+      centerY: 5,
+      marks: [{ x: 16.04, y: 32.06, a: -Math.PI / 2, s: 0.07912, color: '#FF4F00' }],
+    };
+
+    const transparent = serializeChevronSvg({ ...common, includeGround: false });
+    const backgroundful = serializeChevronSvg({ ...common, includeGround: true });
+
+    expect(transparent).not.toContain('<rect width="480" height="1216" fill=');
+    expect(backgroundful.match(/<rect width="480" height="1216" fill="#121212"\/>/g)).toHaveLength(1);
+    expect(transparent.match(/<path /g)).toHaveLength(1);
+    expect(backgroundful.match(/<path /g)).toHaveLength(1);
+    expect(backgroundful).toContain('translate(16.0,32.1) rotate(-90.00) scale(0.0791)');
   });
 });

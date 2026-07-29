@@ -121,7 +121,7 @@
     <div class="row"><label>Accent frequency</label><input type="range" id="acc" min="0" max="50" value="0"><span class="val" id="acc_v"></span></div>
     <div class="row" id="row_accmode"><label>Accent placement</label>
       <select id="accmode"><option value="dense">Dense side</option><option value="sparse">Sparse side</option><option value="uniform">Everywhere</option></select></div>
-    <div class="row"><label>Transparent ground</label><input type="checkbox" id="trans"></div>
+    <div class="row"><label>Transparent export</label><input type="checkbox" id="trans"></div>
     <div class="row" id="row_seed"><label>Random seed</label><input type="number" id="seed" value="7" step="1"></div>
   </div>
 
@@ -145,16 +145,17 @@
 <div id="stage">
   <div id="bar">
     <span class="dim" id="dim"></span>
-    <div class="act"><label class="dim" for="escale">resolution</label>
+    <div class="act"><span class="dim" id="backdrop_note" hidden></span><button id="preview_ground" hidden aria-pressed="false">Preview Ground</button><label class="dim" for="escale">resolution</label>
       <select id="escale" style="flex:0 0 56px"><option value="1">1×</option><option value="2" selected>2×</option><option value="3">3×</option></select>
-      <button id="png">PNG</button><button id="svg">SVG</button><button id="copy">Copy SVG</button>
+      <button id="png">PNG</button><button id="svg">SVG</button><button id="svg_ground" hidden>SVG + Ground</button><button id="copy">Copy SVG</button>
     </div>
   </div>
   <div id="view"><canvas id="cv" role="img" aria-label="Generated chevron dither pattern"></canvas></div>
 </div>
 <div class="tag">FAI Action — outlined double chevron · the angle is canonical</div>
 
-<script>
+<script type="module">
+import {serializeChevronSvg} from "./render.js";
 const PAIR="M0,0 L118.57,145.6 L0,291.2 Z M28.45,80 L81.87,145.6 L28.45,211.2 Z M123.82,0 L242.4,145.6 L123.82,291.2 Z M152.27,80 L205.70,145.6 L152.27,211.2 Z";
 const PH=291.2,CX0=121.2,CY0=145.6,P2D=new Path2D(PAIR);
 const BAYER=[[0,48,12,60,3,51,15,63],[32,16,44,28,35,19,47,31],[8,56,4,52,11,59,7,55],[40,24,36,20,43,27,39,23],[2,50,14,62,1,49,13,61],[34,18,46,30,33,17,45,29],[10,58,6,54,9,57,5,53],[42,26,38,22,41,25,37,21]];
@@ -200,7 +201,7 @@ function syncUI(){
   show("row_accmode",+$('acc').value>0);
   show("row_seed",field==="noise"||+$('jit').value>0||dir==="scatter"||+$('acc').value>0);
   show("row_ca",+$('acc').value>0);
-  show("row_cg",!$("trans").checked);
+  show("row_cg",true);
   show("ramp_controls",$("grad").checked);
   show("row_cc",!$("grad").checked);
   show("row_showtile",$("tile").checked);
@@ -255,6 +256,14 @@ function paint(ctx,p,list,scale){ctx.save();ctx.scale(scale,scale);ctx.clearRect
   if(!p.trans){ctx.fillStyle=p.cg;ctx.fillRect(0,0,p.W,p.H);}
   for(const o of list){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.a);ctx.scale(o.s,o.s);ctx.translate(-CX0,-CY0);ctx.fillStyle=o.color;ctx.fill(P2D,"evenodd");ctx.restore();}
   ctx.restore();}
+let previewGround=false;
+function updatePreviewBackdrop(p){
+  const active=p.trans&&previewGround;
+  show("backdrop_note",p.trans);show("preview_ground",p.trans);show("svg_ground",p.trans);
+  $("preview_ground").setAttribute("aria-pressed",String(active));
+  $("view").style.background=active?p.cg:"";
+  $("backdrop_note").textContent=p.trans?(active?"previewing ground "+p.cg:"checkerboard only · + Ground uses "+p.cg):"";
+}
 function draw(){syncUI();const p=P(),list=build(p),sc=+$("escale").value||2,cv=$("cv");
   if(p.tile&&p.showtile){const oc=document.createElement("canvas");oc.width=p.W*sc;oc.height=p.H*sc;paint(oc.getContext("2d"),p,list,sc);
     cv.width=p.W*2*sc;cv.height=p.H*2*sc;cv.style.width=(p.W*2)+"px";cv.style.height=(p.H*2)+"px";
@@ -263,16 +272,15 @@ function draw(){syncUI();const p=P(),list=build(p),sc=+$("escale").value||2,cv=$
   $("dim").textContent=p.W+" × "+p.H+" · "+list.length+" marks"+(p.tile?" · tile":"");
   const sv=(id,t)=>{const e=$(id);if(e)e.textContent=t;};
   sv("cell_v",p.cell);sv("size_v",$("size").value+"%");sv("start_v",$("start").value+"%");sv("scale_v",$("scale").value);
-  sv("rowpx_v",$("rowpx").value+"%");sv("colpx_v",$("colpx").value+"%");sv("jit_v",$("jit").value+"%");sv("ang_v",$("ang").value+"°");sv("scat_v","±"+$("scat").value+"°");sv("acc_v",$("acc").value+"%");}
-function buildSVG(){const p=P(),list=build(p);
-  let head=`<svg xmlns="http://www.w3.org/2000/svg" width="${p.W}" height="${p.H}" viewBox="0 0 ${p.W} ${p.H}">`;
-  if(!p.trans)head+=`<rect width="${p.W}" height="${p.H}" fill="${p.cg}"/>`;
-  head+=`<clipPath id="cp"><rect width="${p.W}" height="${p.H}"/></clipPath><g clip-path="url(#cp)">`;
-  let body="";for(const o of list){const deg=(o.a*180/Math.PI).toFixed(2);body+=`<path d="${PAIR}" transform="translate(${o.x.toFixed(1)},${o.y.toFixed(1)}) rotate(${deg}) scale(${o.s.toFixed(4)}) translate(${-CX0},${-CY0})" fill="${o.color}" fill-rule="evenodd"/>`;}
-  return head+body+"</g></svg>";}
+  sv("rowpx_v",$("rowpx").value+"%");sv("colpx_v",$("colpx").value+"%");sv("jit_v",$("jit").value+"%");sv("ang_v",$("ang").value+"°");sv("scat_v","±"+$("scat").value+"°");sv("acc_v",$("acc").value+"%");
+  updatePreviewBackdrop(p);}
+function buildSVG(forceGround=false){const p=P(),list=build(p),includeGround=forceGround||!p.trans;
+  return serializeChevronSvg({width:p.W,height:p.H,ground:p.cg,includeGround,pair:PAIR,centerX:CX0,centerY:CY0,marks:list});}
 function dl(n,b){const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 $("png").onclick=()=>{const p=P(),list=build(p),sc=+$("escale").value||2,oc=document.createElement("canvas");oc.width=p.W*sc;oc.height=p.H*sc;paint(oc.getContext("2d"),p,list,sc);oc.toBlob(b=>dl("faia-dither.png",b));};
-$("svg").onclick=()=>dl("faia-dither.svg",new Blob([buildSVG()],{type:"image/svg+xml"}));
+$("svg").onclick=()=>dl($("trans").checked?"faia-dither-transparent.svg":"faia-dither.svg",new Blob([buildSVG()],{type:"image/svg+xml"}));
+$("svg_ground").onclick=()=>dl("faia-dither-with-ground.svg",new Blob([buildSVG(true)],{type:"image/svg+xml"}));
+$("preview_ground").onclick=()=>{previewGround=!previewGround;draw();};
 $("copy").onclick=()=>{navigator.clipboard.writeText(buildSVG());$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy SVG",1000);};
 
 // brand swatches → active visible fixed field
